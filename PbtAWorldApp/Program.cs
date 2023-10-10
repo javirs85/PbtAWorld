@@ -1,13 +1,40 @@
+using DataAccessLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.Security.Claims;
 using PbtAWorldApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+ConfigurationManager configuration = builder.Configuration; // allows both to access and to set up the config
+IWebHostEnvironment environment = builder.Environment;
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddTransient<IPeopleData, PeopleData>();
+
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie(opt =>
+    {
+        opt.Cookie.Name = "TrySingOutGoogleAuth";
+        opt.LoginPath = "/auth/google-login";
+    })
+    .AddGoogle(opt =>
+    {
+        opt.ClientId = builder.Configuration["Google:Id"] ?? "Not Found";
+        opt.ClientSecret = builder.Configuration["Google:Secret"] ?? "Google secret not found";
+        opt.Scope.Add("profile");
+        opt.Events.OnCreatingTicket = context =>
+        {
+            string picuri = context.User.GetProperty("picture").GetString() ?? "No picuri found";
+            context.Identity?.AddClaim(new Claim("picture", picuri));
+
+            return Task.CompletedTask;
+        };
+    });
 
 var app = builder.Build();
 
@@ -24,6 +51,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
