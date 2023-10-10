@@ -5,6 +5,8 @@
 @using PbtAWorldApp.Models;
 
 @inject IPeopleData _db;
+@inject ISqlDataAccess sqlConnector;
+@inject IToastService Toaster;
 
 <h3>People</h3>
 <h4>Insert New Person</h4>
@@ -53,7 +55,23 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		People = await _db.GetPeople();
+		sqlConnector.ErrorToDebug += (sender, ex) =>
+		{
+			Toaster.ShowInfo(ex.Message + Environment.NewLine + Environment.NewLine + ex.StackTrace);
+		};
+
+		sqlConnector.MessageToDebug += (sender, message) =>
+		{
+			Toaster.ShowSuccess(message);
+		};
+
+		try
+		{
+			People = await _db.GetPeople();
+		}catch(Exception ex)
+		{
+			Toaster.ShowError(ex.Message + Environment.NewLine + Environment.NewLine + ex.StackTrace);
+		}
 	}
 
 	private async Task InsertPerson()

@@ -6,4 +6,6 @@ public interface ISqlDataAccess
 
 	Task<List<T>> LoadData<T, U>(string sql, U parameters);
 	Task SaveData<T>(string sql, T parameters);
+	public event EventHandler<Exception>? ErrorToDebug;
+	public event EventHandler<string>? MessageToDebug;
 }

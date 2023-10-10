@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System.Security.Claims;
 using PbtAWorldApp.Data;
+using Blazored.Toast;
+using PbtAWorldApp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +15,11 @@ IWebHostEnvironment environment = builder.Environment;
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddBlazoredToast();
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IPeopleData, PeopleData>();
+builder.Services.AddTransient<JsConsole>();
+
 
 builder.Services.AddAuthentication("Cookies")
     .AddCookie(opt =>

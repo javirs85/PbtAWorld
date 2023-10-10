@@ -1,11 +1,16 @@
 ﻿@page "/"
+@using DataAccessLibrary;
 @inject IConfiguration Config
+@inject IToastService Toaster
+@inject ISqlDataAccess sql
 
 <PageTitle>Index</PageTitle>
 
 <h1>Testing string</h1>
 <p class="h4">
 	Default connection string: @defaultConnection
+</p>
+<p class="h4">
 	google ID:@googleID
 </p>
 
@@ -32,5 +37,6 @@
 	{
 		defaultConnection = Config.GetConnectionString("Default") ?? "Unknown";
 		googleID = Config["Google:Id"] ?? "Not found";
+
 	}
 }
