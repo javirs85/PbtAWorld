@@ -11,18 +11,24 @@
 	google ID:@googleID
 </p>
 
-<p>
-	<a href="auth/google-login" class="btn btn-primary">Login with google</a>
-</p>
+
 <p>
 	<AuthorizeView>
 		<Authorized>
+			<p>
+				<a href="auth/google-logout" class="btn btn-primary">Log out</a>
+			</p>
 			@foreach(var item in context.User.Claims)
 			{
 				<h2>@item.Type @item.Value</h2>
 			}
 			<img src="@context.User.Claims.Where(s => s.Type == "picture")?.FirstOrDefault()?.Value"/>
 		</Authorized>
+		<NotAuthorized>
+			<p>
+				<a href="auth/google-login" class="btn btn-primary">Login with google</a>
+			</p>
+		</NotAuthorized>
 	</AuthorizeView>
 </p>
 
