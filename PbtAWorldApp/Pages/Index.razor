@@ -6,6 +6,7 @@
 <h1>Testing string</h1>
 <p class="h4">
 	Default connection string: @defaultConnection
+	google ID:@googleID
 </p>
 
 <p>
@@ -25,9 +26,11 @@
 
 @code{
 	private string defaultConnection = "";
+	private string googleID = "";
 
 	protected override void OnInitialized()
 	{
 		defaultConnection = Config.GetConnectionString("Default") ?? "Unknown";
+		googleID = Config["Google:Id"] ?? "Not found";
 	}
 }
