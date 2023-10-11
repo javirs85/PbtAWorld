@@ -15,9 +15,6 @@
 <p>
 	<AuthorizeView>
 		<Authorized>
-			<p>
-				<a href="auth/google-logout" class="btn btn-primary">Log out</a>
-			</p>
 			@foreach(var item in context.User.Claims)
 			{
 				<h2>@item.Type @item.Value</h2>

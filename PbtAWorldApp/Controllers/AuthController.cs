@@ -22,9 +22,8 @@ public class AuthController : ControllerBase
 
 	[HttpGet("google-logout")]
 	public IActionResult Logout()
-	{ 
-		// Redirect to Google logout URL with a return URL
-		var logoutUrl = "https://accounts.google.com/logout?returnUrl=" + Uri.EscapeDataString("/");
-		return Redirect(logoutUrl);
+	{
+		HttpContext.SignOutAsync("Cookie");
+		return Redirect("/");
 	}
 }
