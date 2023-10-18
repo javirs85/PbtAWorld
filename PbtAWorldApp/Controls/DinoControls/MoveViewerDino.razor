@@ -1,0 +1,141 @@
+﻿@inject IToastService Toaster
+@inject DinoPlayer Player
+
+<div class="accordion-item">
+	<h2 class="accordion-header" id="@Move.IDText">
+		<button class="accordion-button @(StartsOpen?"" : "collapsed")" type="button"
+				data-bs-toggle="collapse"
+				data-bs-target="#Body_@Move.IDText"
+				aria-expanded="@(StartsOpen?"true" : "false")" aria-controls="Body_@Move.IDText">
+			<div class="d-flex w-100 justify-content-between align-items-center Julius">
+				@Move.Tittle
+				@if (Dmove.Roll == DinoStates.D_Fit)
+				{
+					<div class="d-flex gap-1 me-2" @onclick:preventDefault="true" @onclick:stopPropagation="true">
+						<div class="Icon Fi" @onclick:preventDefault="true" @onclick:stopPropagation="true" @onclick=@(async()=>{ await RequestRoll(DinoStates.D_Fit);})></div>
+					</div>
+				}
+				else if (Dmove.Roll == DinoStates.D_Clever)
+				{
+					<div class="d-flex gap-1 me-2">
+						<div class="Icon Int"></div>
+					</div>
+				}
+				else if (Dmove.Roll == DinoStates.D_Steady)
+				{
+					<div class="d-flex gap-1 me-2">
+						<div class="Icon Calm"></div>
+					</div>
+				}
+				else if (Dmove.Roll == DinoStates.D_MC)
+				{
+					<div class="d-flex gap-1 me-2">
+						<div class="Icon Fi"></div>
+						<div class="Icon Calm"></div>
+						<div class="Icon Int"></div>
+					</div>
+				}
+				else if (Dmove.Roll == DinoStates.D_Weapon)
+				{
+					<div class="d-flex gap-1 me-2">
+						<div class="Icon Plus0"></div>
+						<div class="Icon Plus1"></div>
+					</div>
+				}
+
+			</div>
+		</button>
+	</h2>
+	<div id="Body_@Move.IDText" 
+		class="accordion-collapse collapse @(StartsOpen?"show" : "")"
+			aria-labelledby="@Move.IDText"
+			data-bs-parent="#@PackID">
+		<div class="accordion-body d-flex flex-column gap-3 moveCore">
+
+			@if(Move.PreCondition is not null)
+			{
+
+				<DecodedString Value="@Move.PreCondition.MainText" />
+				@if(Move.PreCondition.Options is not null)
+				{
+					<ul style="margin:0;">
+					@foreach(var op in Move.PreCondition.Options)
+					{
+						<li>@op</li>
+					}
+					</ul>
+				}
+			}
+			@if (Move.ConsequencesOn10 is not null && !string.IsNullOrEmpty(Move.ConsequencesOn10.MainText))
+			{
+				<div class="d-flex gap-2">
+					<strong class="DiceRange">>10: </strong>
+					<DecodedString Value="@Move.ConsequencesOn10.MainText" />
+				</div>
+				
+				@if (Move.ConsequencesOn10.Options is not null)
+				{
+					<ul style="margin:0; margin-left:10px;">
+						@foreach (var op in Move.ConsequencesOn10.Options)
+						{
+							<li>@op</li>
+						}
+					</ul>
+				}
+			}
+			@if (Move.ConsequencesOn79 is not null && !string.IsNullOrEmpty(Move.ConsequencesOn79.MainText))
+			{
+				<div>
+					<div class="d-flex gap-2">
+						<strong class="DiceRange">7-9: </strong>
+						<DecodedString Value="@Move.ConsequencesOn79.MainText" />
+					</div>
+					@if (Move.ConsequencesOn79.Options is not null)
+					{
+						<ul style="margin:0; margin-left:20px;">
+							@foreach (var op in Move.ConsequencesOn79.Options)
+							{
+								<li>@op</li>
+							}
+						</ul>
+					}
+				</div>
+			}
+			@if (Move.ConsequencesOn6 is not null && !string.IsNullOrEmpty(Move.ConsequencesOn6.MainText))
+			{
+				<div>
+					<div class="d-flex gap-2">
+						<strong class="DiceRange">&lt; 6: </strong>
+						<DecodedString Value="@Move.ConsequencesOn6.MainText" />
+					</div>
+					@if (Move.ConsequencesOn6.Options is not null)
+					{
+						<ul style="margin:0;">
+							@foreach (var op in Move.ConsequencesOn6.Options)
+							{
+								<li>@op</li>
+							}
+						</ul>
+					}
+				</div>
+			}
+			@if(!string.IsNullOrEmpty(Move.ClosingText))
+			{
+				<small>@Move.ClosingText</small>
+			}
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public string? PackID { get; set; } = null;
+	[Parameter] public DinoMove Move { get; set; } = new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set" };
+	[Parameter] public bool StartsOpen { get; set; } = false;
+
+	private DinoMove Dmove => (Move as DinoMove) ?? new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set"};
+
+	private async Task RequestRoll(DinoStates roll)
+	{
+		Toaster.ShowInfo($"Rolling {roll.ToUI()}");
+	}
+}

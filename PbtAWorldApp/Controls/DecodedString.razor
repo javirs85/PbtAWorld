@@ -1,0 +1,27 @@
+﻿@using System.Web
+@using System.Text.RegularExpressions;
+
+<p style="padding:0; margin:0;">
+@((MarkupString)encoded)
+</p>
+
+@code {
+    [Parameter]
+    public string Value { get; set; } = default!;
+
+    private string encoded
+    {
+        get
+        {
+            var encodedValue = HttpUtility.HtmlEncode(Value);
+            encodedValue = encodedValue.Replace("\r\n", "<br />");
+            encodedValue = encodedValue.Replace("\r", "<br />");
+            encodedValue = encodedValue.Replace("\n", "<br />");
+            encodedValue = encodedValue.Replace("**", "</b>");
+            encodedValue = encodedValue.Replace("*", "<b>");
+
+
+            return encodedValue;
+        }
+    }
+}

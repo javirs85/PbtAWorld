@@ -1,4 +1,6 @@
-﻿namespace PbtALib;
+﻿using System.Runtime.CompilerServices;
+
+namespace PbtALib;
 
 public enum DinoClasses { Hunter, Doctor, Engineer, Kid, Paleontologist,Soldier, Survivor,NotSet }
 public enum DinoStats { Fit, Mind, Cold, NotSet }
@@ -6,9 +8,20 @@ public enum DinoDangerMoves { Run, Hide, DoIt, HoldOnToYourButt, LookThere, Take
 public enum DinoSafetyMoves { LayOfTheLand, Instruct, Scavenge, TheBestLaidPlan, Casualty, NotSet }
 public enum DinoMapTokens { Airstrip, Building, Docks, Hatchery, Lake, NativeSettlement, Road, TemporalAnomaly, Aviary, Clifs, Fence, Helipad, Mountain, RadioTower, LAboratory, Tunnel, Beach, Nest, Forest, Grass, Ruins, River, Swamp, Volcano, NotSet }
 
+public enum HowOftenUsed { NeverUsed, FewUses, LotsOfUses, ToMuch };
 
 public static class Extensions
 {
+
+	public static DinoClasses ToDinoClass(this string str)
+	{
+		foreach(DinoClasses op in Enum.GetValues(typeof(DinoClasses)))
+		{
+			if (op.ToUIString() == str)
+				return op;
+		}
+		return DinoClasses.NotSet;
+	}
 	public static string ToUIString(this DinoClasses c)
 	{
 		return c switch
@@ -18,7 +31,7 @@ public static class Extensions
 			DinoClasses.Soldier => "Soldado",
 			DinoClasses.Paleontologist => "Paleontólogo",
 			DinoClasses.Hunter => "Cazador",
-			DinoClasses.Kid => "Cazador",
+			DinoClasses.Kid => "Niño",
 			DinoClasses.Doctor => "Doctor",
 			_ => "Desconocida"
 		};

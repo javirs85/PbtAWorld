@@ -1,6 +1,8 @@
 ﻿@page "/"
-
+@inject DinoMovesService Moves
 @inject IToastService Toaster
+@inject DinoPlayer Player;
+@using PbtAWorldApp.Controls.DinoControls
 
 <EditForm Model="Player">
 	<div class="Header">
@@ -13,11 +15,17 @@
 					<InputText @bind-Value=Player.Name
 							   class="borderlessInput"
 					style="color:white;background:#000; width:150px; text-align:end; border:none; outline:none;"></InputText>
-					: El
-					<InputSelect @bind-Value=Player.Class style="background:#CCC; outline: none; border: none;">
+					<span style="margin-top: 1px;">: </span>
+					<span style="margin-top: 2px; margin-right:5px;">&nbsp;El</span>
+					<InputSelect 
+						@bind-Value=Player.Class 
+						style="background:#CCC; outline: none; border: none;">
 						@foreach (DinoClasses op in Enum.GetValues(typeof(DinoClasses)))
 						{
-							<option value="@op.ToUIString()">@op.ToUIString()</option>
+							@if(op != DinoClasses.NotSet)
+							{
+								<option value="@op">@op.ToUIString()</option>
+							}
 						}
 					</InputSelect>
 				</div>
@@ -80,10 +88,22 @@
 			</div>
 		</div>
 	</div>
+	<div class="d-flex">
+		<div class="GeneralMoves flex-grow-1">
+			<h2>Movimientos de peligro</h2>
+			<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false />
+
+			<h2 class="mt-5">Movimientos de calma</h2>
+			<DinoMovesPack Moves=Moves.SafetyMoves PackName="DangerMoves" OpenFirst=false />
+		</div>
+		<div class="GeneralMoves  flex-grow-1">
+			<h2>Movimientos de @Player.Class.ToUIString()</h2>
+			<DinoMovesPack Moves=MovesOnScreen PackName="PlayerMoves" OpenFirst=false />
+		</div>
+	</div>
 </EditForm>
 
 @code {
-	[Parameter] public DinoPlayer Player { get; set; } = new();
 
 	protected override Task OnInitializedAsync()
 	{
@@ -93,7 +113,16 @@
 		Player.Physic = -1;
 		Player.Cold = +2;
 
+
 		return base.OnInitializedAsync();
+	}
+
+	private List<DinoMove> MovesOnScreen
+	{
+		get
+		{
+			return Moves.AllMoves.FindAll(x => x.ForClass == Player.Class).ToList();
+		}
 	}
 
 

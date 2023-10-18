@@ -23,8 +23,6 @@
     display: flex;
     justify-content: space-between;
     padding: 5px 10px 5px 45px;
-    font-family: 'Bungee', sans-serif;
-    font-family: 'Julius Sans One', sans-serif;
     font-family: 'Saira Stencil One', sans-serif;
     font-size: 24px;
     height: 48px;
@@ -32,6 +30,10 @@
 .SubText {
     display: flex;
     margin-left: 45px;
+}
+
+.GeneralMoves{
+    width: 25%;
 }
 
 /*

@@ -1,0 +1,74 @@
+﻿.DiceRange {
+    min-width: 32px;
+    max-width: 32px;
+    text-align: right;
+}
+
+.moveCore {
+    background: #edf4fd;
+}
+
+.Julius {
+    font-family: 'Julius Sans One', sans-serif;
+    font-weight: 600;
+}
+
+.Icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Saira Stencil One', sans-serif;
+    font-weight: 100;
+    cursor: pointer;
+}
+
+.Int {
+    background: red;
+    color: white;
+    content: "I";
+}
+    .Int::after {
+        content: "I";
+    }
+
+.Fi {
+    background: Blue;
+    color: white;
+}
+    .Fi::after {
+        content: "F";
+    }
+
+.Calm {
+    background: Green;
+    color: white;
+}
+    .Calm::after {
+        content: "C";
+    }
+
+.Plus0 {
+    background: Black;
+    color: white;
+}
+
+    .Plus0::after {
+        content: "+0";
+    }
+
+.Plus1 {
+    background: Black;
+    color: white;
+}
+
+    .Plus1::after {
+        content: "+1";
+    }
+
+.HiddenIcon{
+    width: 0px;
+    display: none;
+}

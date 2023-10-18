@@ -6,6 +6,7 @@ using PbtAWorldApp.Data;
 using Blazored.Toast;
 using PbtAWorldApp;
 using PbtAWorldConnectivity;
+using DinoIsland;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +20,9 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IPeopleData, PeopleData>();
-builder.Services.AddTransient<JsConsole>();
-builder.Services.AddTransient<DinoMovesManager>();
+//builder.Services.AddTransient<JsConsole>();
+builder.Services.AddSingleton<DinoMovesService>();
+builder.Services.AddScoped<DinoPlayer>();
 
 
 builder.Services.AddAuthentication("Cookies")

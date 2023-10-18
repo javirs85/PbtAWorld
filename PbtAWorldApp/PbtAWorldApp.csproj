@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
+    <ProjectReference Include="..\DinoIsland\DinoIsland.csproj" />
     <ProjectReference Include="..\PbtAWorldConnectivity\PbtAWorldConnectivity.csproj" />
     <ProjectReference Include="..\PbtALib\PbtALib.csproj" />
   </ItemGroup>

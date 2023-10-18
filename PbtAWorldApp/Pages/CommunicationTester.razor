@@ -1,7 +1,7 @@
-﻿@page "/"
+﻿@page "/CommTest"
 @inject NavigationManager navigationManager
 @inject IToastService Toaster
-@inject DinoMovesManager DinoMoves
+@inject DinoMovesService DinoMoves
 @using Microsoft.AspNetCore.SignalR.Client;
 
 
@@ -63,8 +63,8 @@ else
 
     private void TestMoves()
     {
-        var move = DinoMoves.DangerMoves.Find(x => x.Id == PbtAWorldConnectivity.DinoMoves.D_Run);
-        var stat = move?.Stat ?? DinoStates.D_NotSet;
+        var move = DinoMoves.DangerMoves.Find(x => x.ID == DinoMoveIDs.D_Run);
+        var stat = move?.Roll ?? DinoIsland.DinoStates.D_NotSet;
 
     }
 
