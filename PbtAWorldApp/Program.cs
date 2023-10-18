@@ -5,6 +5,7 @@ using System.Security.Claims;
 using PbtAWorldApp.Data;
 using Blazored.Toast;
 using PbtAWorldApp;
+using PbtAWorldConnectivity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IPeopleData, PeopleData>();
+builder.Services.AddTransient<JsConsole>();
+builder.Services.AddTransient<DinoMovesManager>();
 
 
 builder.Services.AddAuthentication("Cookies")
@@ -63,5 +66,6 @@ app.MapControllers();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.MapHub<PbtAWorldHub>(PbtAWorldHub.HubUrl);
 
 app.Run();
