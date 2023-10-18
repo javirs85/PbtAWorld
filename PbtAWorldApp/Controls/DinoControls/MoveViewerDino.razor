@@ -132,6 +132,10 @@
 	[Parameter] public DinoMove Move { get; set; } = new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set" };
 	[Parameter] public bool StartsOpen { get; set; } = false;
 
+	bool SelectedByDefault => Move.ForClass != DinoClasses.NotSet && Move.IsAdvancedMove == false;
+	bool IsSelectable => Move.ForClass == DinoClasses.NotSet;
+	bool IsSelected => Player.AllPurchasedMoves.Contains(Move.ID);
+
 	private DinoMove Dmove => (Move as DinoMove) ?? new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set"};
 
 	private async Task RequestRoll(DinoStates roll)

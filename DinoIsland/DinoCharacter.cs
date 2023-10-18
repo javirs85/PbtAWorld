@@ -18,7 +18,8 @@ public class DinoPlayer : Player
 	public int Physic { get; set; } = 0;
 	public int Cold { get; set; } = 0;
 
-	public List<DinoMove> AllClassMoves { get; set; } = new List<DinoMove>();
+	public List<DinoMoveIDs> AllPurchasedMoves { get; set; } = new List<DinoMoveIDs>();
+
 
 	public DinoStats FavoriteStat => Class switch
 	{
