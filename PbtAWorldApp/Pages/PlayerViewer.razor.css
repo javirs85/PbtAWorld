@@ -1,0 +1,42 @@
+﻿.Header {
+    display: flex;
+}
+.ClassIconContainer {
+    display: flex;
+    width:35px;
+}
+.ClassIconPath {
+    background: white;
+    border: 3px solid black;
+    border-radius: 50px;
+    z-index:2;
+}
+.WideArea {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.LongBlackStripe {
+    background: black;
+    color: white;
+    border-radius: 0 50px 50px 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px 5px 45px;
+    font-family: 'Bungee', sans-serif;
+    font-family: 'Julius Sans One', sans-serif;
+    font-family: 'Saira Stencil One', sans-serif;
+    font-size: 24px;
+    height: 48px;
+}
+.SubText {
+    display: flex;
+    margin-left: 45px;
+}
+
+/*
+    font-family: 'Bungee', sans-serif;
+    font-family: 'Julius Sans One', sans-serif;
+    font-family: 'Saira Stencil One', sans-serif;
+
+*/

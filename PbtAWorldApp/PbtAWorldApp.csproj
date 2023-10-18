@@ -9,10 +9,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
+    <ProjectReference Include="..\PbtALib\PbtALib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\imgs\" />
+    <Folder Include="wwwroot\imgs\Icons\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -18,7 +18,6 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IPeopleData, PeopleData>();
-builder.Services.AddTransient<JsConsole>();
 
 
 builder.Services.AddAuthentication("Cookies")

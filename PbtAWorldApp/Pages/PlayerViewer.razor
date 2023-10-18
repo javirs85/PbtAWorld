@@ -1,0 +1,157 @@
+﻿@page "/"
+
+@inject IToastService Toaster
+
+<EditForm Model="Player">
+	<div class="Header">
+		<div class="ClassIconContainer">
+			<img class="ClassIconPath" src="@Player.Class.ToPNGPath()" />
+		</div>
+		<div class="WideArea">	
+			<div class="LongBlackStripe">
+				<div class="d-flex">
+					<InputText @bind-Value=Player.Name
+							   class="borderlessInput"
+					style="color:white;background:#000; width:150px; text-align:end; border:none; outline:none;"></InputText>
+					: El
+					<InputSelect @bind-Value=Player.Class style="background:#CCC; outline: none; border: none;">
+						@foreach (DinoClasses op in Enum.GetValues(typeof(DinoClasses)))
+						{
+							<option value="@op.ToUIString()">@op.ToUIString()</option>
+						}
+					</InputSelect>
+				</div>
+				<div class="d-flex gap-2" style="font-family: Helvetica Neue; font-size:16px">
+					<InputSelect @bind-Value=Player.Behavior style="background:#CCC; outline: none; border: none;">
+						@foreach(var op in Player.BehaviorOptions)
+						{
+							<option value="@op">@op</option>
+						}
+					</InputSelect>
+					<InputSelect @bind-Value=Player.Looks style="background:#CCC; outline: none; border: none;">
+						@foreach (var op in Player.LooksOtions)
+						{
+							<option value="@op">@op</option>
+						}
+					</InputSelect>
+				</div>
+				<div class="d-flex gap-5">
+					<div class="d-flex"> 
+						@if(Player.Class == DinoClasses.Kid)
+						{
+							<i class="bi bi-info-circle me-2" title="Asigna +1, +1 y -1. "></i>
+						}
+						else
+						{
+							<i class="bi bi-info-circle me-2" title="Asigna +2, +1 y -1. Piensa que la característica favorita del @Player.Class.ToUIString() es @Player.FavoriteStat.ToUIString()"></i>
+						}
+						<InputText 
+							style="width:40px; text-align:center; padding:5px"
+							class="form-control"
+							@bind-Value="UIInt">
+						</InputText>
+						<div class="ms-1">
+							Inteligencia
+						</div>
+					</div>
+					<div class="d-flex">
+							<InputText style="width:40px; text-align:center; padding:5px"
+								   class="form-control"
+						@bind-Value="UIPhysic">
+						</InputText>
+						<div class="ms-1">
+							Forma física
+						</div>
+					</div>
+					<div class="d-flex">
+						<InputText style="width:40px; text-align:center; padding:5px"
+							   class="form-control"
+					@bind-Value="UICold">
+					</InputText>
+					<div class="ms-1">
+						Calma
+					</div>
+				</div>
+				</div>
+				<i class="text-light bi bi-x" style="font-size:40px; margin-top:-8px; "></i>
+			</div>
+			<div class="SubText">
+				Has cazado la mayoría de las cosas que pueden cazarte, pero la forma en que estas cosas se mueven...
+			</div>
+		</div>
+	</div>
+</EditForm>
+
+@code {
+	[Parameter] public DinoPlayer Player { get; set; } = new();
+
+	protected override Task OnInitializedAsync()
+	{
+		Player.Name = "Sebas";
+		Player.Class = DinoClasses.Engineer;
+		Player.Int = 1;
+		Player.Physic = -1;
+		Player.Cold = +2;
+
+		return base.OnInitializedAsync();
+	}
+
+
+	public void CustomParse(string newValue, ref int placeWhereToStore)
+	{
+		int val = 0;
+		if (int.TryParse(newValue, out val))
+		{
+			if (val > -2 && val < 4)
+				placeWhereToStore = val;
+			else
+			{
+				Toaster.ShowError("El nuevo valor tiene que estar entre -1 y +3");
+			}
+		}
+		else
+		{
+			Toaster.ShowError("Solo se pueden asignar números");
+		}
+	}
+
+	private string ToNiceUIStat(int val)
+	{
+		if (val < 0)
+			return val.ToString();
+		else
+			return "+" + val.ToString();
+	}
+
+	private string UIInt
+	{
+		get { return ToNiceUIStat(Player.Int); }
+		set
+		{
+			int val = Player.Int;
+			CustomParse(value, ref val);
+			Player.Int = val;
+		}
+	}
+	private string UICold
+	{
+		get { return ToNiceUIStat(Player.Cold); }
+		set
+		{
+			int val = Player.Cold;
+			CustomParse(value, ref val);
+			Player.Cold = val;
+		}
+	}
+	private string UIPhysic
+	{
+		get { return ToNiceUIStat(Player.Physic); }
+		set
+		{
+			int val = Player.Physic;
+			CustomParse(value, ref val);
+			Player.Physic = val;
+		}
+	}
+
+}
