@@ -79,6 +79,14 @@ public class PbtAWorldCommClient
     }
 
 
+    public async Task SendInfo(string msg)
+    {
+        await SendAsync(new InfoMessage
+        {
+            Body = msg
+        }) ;
+    }
+
     public async Task SendAsync(PbtAMessage message)
     {
         message.Sender = UserName;

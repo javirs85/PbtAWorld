@@ -1,45 +1,69 @@
-﻿@inject IToastService Toaster
+﻿@using System.Web;
+@inject IToastService Toaster
 @inject DinoPlayer Player
 
-<div class="accordion-item">
+<div class="accordion-item"> 
 	<h2 class="accordion-header" id="@Move.IDText">
-		<button class="accordion-button @(StartsOpen?"" : "collapsed")" type="button"
+		<button class="accordion-button @(StartsOpen?"" : "collapsed") @(!IsSelectable || (IsSelectable && IsSelected)?"moveCore":"MoveNotAvailable")" type="button"
 				data-bs-toggle="collapse"
 				data-bs-target="#Body_@Move.IDText"
-				aria-expanded="@(StartsOpen?"true" : "false")" aria-controls="Body_@Move.IDText">
-			<div class="d-flex w-100 justify-content-between align-items-center Julius">
+				aria-expanded="@(StartsOpen?"true" : "false")" aria-controls="Body_@Move.IDText"
+				style="box-shadow:none!important;">
+			<div class="d-flex gap-1 align-items-center Julius">
+				@if (IsSelectable)
+				{
+					@if(IsSelected)
+					{
+						<div><i class="bi bi-check2-square" style="font-size:21px;"></i></div>
+					}else
+					{
+						<div><i class="bi bi-square"></i></div>
+					}
+				}
 				@Move.Tittle
 				@if (Dmove.Roll == DinoStates.D_Fit)
 				{
-					<div class="d-flex gap-1 me-2" @onclick:preventDefault="true" @onclick:stopPropagation="true">
-						<div class="Icon Fi" @onclick:preventDefault="true" @onclick:stopPropagation="true" @onclick=@(async()=>{ await RequestRoll(DinoStates.D_Fit);})></div>
+					<div class="border-red IconHeaderContainer">
+						<div class="Icon Red Fi"></div>
+						<div class="StatNumber">@Player.Fit.ToNiceUIStat()</div>
 					</div>
 				}
 				else if (Dmove.Roll == DinoStates.D_Clever)
 				{
-					<div class="d-flex gap-1 me-2">
-						<div class="Icon Int"></div>
+					<div class="border-blue IconHeaderContainer">
+						<div class="Icon Blue Int"></div>
+						<div class="StatNumber">@Player.Clever.ToNiceUIStat()</div>
 					</div>
 				}
 				else if (Dmove.Roll == DinoStates.D_Steady)
 				{
-					<div class="d-flex gap-1 me-2">
-						<div class="Icon Calm"></div>
+					<div class="IconHeaderContainer border-green">
+						<div class="Icon Green Calm"></div>
+						<div class="StatNumber">@Player.Steady.ToNiceUIStat()</div>
 					</div>
 				}
 				else if (Dmove.Roll == DinoStates.D_MC)
 				{
-					<div class="d-flex gap-1 me-2">
-						<div class="Icon Fi"></div>
-						<div class="Icon Calm"></div>
-						<div class="Icon Int"></div>
+					<div class="IconHeaderContainer border-black gap-2">
+						<div class="d-flex align-items-center">
+							<div class="Icon Red Fi"></div>
+							<div class="StatNumber Red">@Player.Fit.ToNiceUIStat()</div>
+						</div>
+						<div class="d-flex align-items-center">
+							<div class="Icon Blue Int"></div>
+							<div class="StatNumber Blue">@Player.Clever.ToNiceUIStat()</div>
+						</div>
+						<div class="d-flex align-items-center">
+							<div class="Icon Green Calm"></div>
+							<div class="StatNumber Green">@Player.Steady.ToNiceUIStat()</div>
+						</div>
 					</div>
 				}
 				else if (Dmove.Roll == DinoStates.D_Weapon)
 				{
-					<div class="d-flex gap-1 me-2">
-						<div class="Icon Plus0"></div>
-						<div class="Icon Plus1"></div>
+					<div class="IconHeaderContainer border-black gap-2">
+						<div class="Icon StatNumber Black Plus0"></div>
+						<div class="Icon StatNumber Black Plus1"></div>
 					</div>
 				}
 
@@ -48,23 +72,24 @@
 	</h2>
 	<div id="Body_@Move.IDText" 
 		class="accordion-collapse collapse @(StartsOpen?"show" : "")"
-			aria-labelledby="@Move.IDText"
-			data-bs-parent="#@PackID">
-		<div class="accordion-body d-flex flex-column gap-3 moveCore">
+			aria-labelledby="@Move.IDText">
+		<div class="accordion-body d-flex flex-column gap-3 @(!IsSelectable || (IsSelectable && IsSelected)?"":"separator")">
 
 			@if(Move.PreCondition is not null)
 			{
-
-				<DecodedString Value="@Move.PreCondition.MainText" />
-				@if(Move.PreCondition.Options is not null)
-				{
-					<ul style="margin:0;">
-					@foreach(var op in Move.PreCondition.Options)
-					{
-						<li>@op</li>
-					}
-					</ul>
-				}
+					<div class="flex-grow-1">
+						<DecodedString Value="@Move.PreCondition.MainText" />
+						@if(Move.PreCondition.Options is not null)
+						{
+							<ul style="margin:0;">
+							@foreach(var op in Move.PreCondition.Options)
+							{
+								<li>@op</li>
+							}
+							</ul>
+						}
+					</div>
+					
 			}
 			@if (Move.ConsequencesOn10 is not null && !string.IsNullOrEmpty(Move.ConsequencesOn10.MainText))
 			{
@@ -123,6 +148,53 @@
 			{
 				<small>@Move.ClosingText</small>
 			}
+
+			@if (IsSelectable && !IsSelected)
+			{
+				<button class="btn btn-primary" @onclick=@(async() => {await Player.PurchaseMove(Move);})>Comprar <br />Movimiento</button>
+			}
+			else if(Move.Roll == DinoStates.D_Fit)
+			{
+				<button class="btn btn-danger" @onclick="@(async()=>{ await Player.Roll(Move.Roll, Move);})">Tirar <br/>Forma física</button>
+			}
+			else if (Move.Roll == DinoStates.D_Clever)
+			{
+				<button class="btn btn-primary" @onclick="@(async()=>{ await Player.Roll(Move.Roll, Move);})">Tirar <br />Inteligencia</button>
+			}
+			else if (Move.Roll == DinoStates.D_Steady)
+			{
+				<button class="btn btn-success" @onclick="@(async()=>{ await Player.Roll(Move.Roll, Move);})">Tirar <br />Calma</button>
+			}
+			else if(Move.Roll == DinoStates.D_MC)
+			{
+				<div class="container">
+					<div class="row">
+						<div class="col-sm">
+							<button class="btn btn-danger" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_Fit, Move);})">Tirar <br />Forma física</button>
+						</div>
+						<div class="col-sm">
+							<button class="btn btn-primary" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_Clever, Move);})">Tirar <br />Inteligencia</button>
+						</div>
+						<div class="col-sm">
+							<button class="btn btn-success" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_Steady, Move);})">Tirar <br />Calma</button>
+						</div>
+					</div>
+				</div>
+			}
+			else if(Move.Roll == DinoStates.D_Weapon)
+			{
+				<div class="container">
+					<div class="row">
+						<div class="col-sm">
+							<button class="btn btn-dark" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_0, Move);})">Tirar <br />+0</button>
+						</div>
+						<div class="col-sm">
+							<button class="btn btn-dark" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_1, Move);})">Tirar <br />+1</button>
+						</div>
+					</div>
+				</div>
+			}
+
 		</div>
 	</div>
 </div>
@@ -131,9 +203,10 @@
 	[Parameter] public string? PackID { get; set; } = null;
 	[Parameter] public DinoMove Move { get; set; } = new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set" };
 	[Parameter] public bool StartsOpen { get; set; } = false;
+	[Parameter] public bool AllowMultipleSelection { get; set; } = false;
 
 	bool SelectedByDefault => Move.ForClass != DinoClasses.NotSet && Move.IsAdvancedMove == false;
-	bool IsSelectable => Move.ForClass == DinoClasses.NotSet;
+	bool IsSelectable => Move.ForClass != DinoClasses.NotSet;
 	bool IsSelected => Player.AllPurchasedMoves.Contains(Move.ID);
 
 	private DinoMove Dmove => (Move as DinoMove) ?? new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set"};
@@ -142,4 +215,10 @@
 	{
 		Toaster.ShowInfo($"Rolling {roll.ToUI()}");
 	}
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+	}
+
 }

@@ -5,18 +5,35 @@
 }
 
 .moveCore {
-    background: #edf4fd;
+    background: #eaebf1;
 }
-
+.MoveNotAvailable {
+    background: #DDD;
+    color: #a26a6a;
+}
+.separator {
+    background: #DDD;
+    color: #a26a6a;
+    border-bottom: 1px solid black;
+}
+.NoBoxShadow{
+    box-shadow:none !important;
+}
 .Julius {
     font-family: 'Julius Sans One', sans-serif;
     font-weight: 600;
 }
 
+.IconHeaderContainer{
+    display:flex;
+    align-items: center;
+    border-radius: 4px;
+    padding: 0 8px;
+    opacity:0.4;
+}
+
 .Icon {
-    width: 25px;
-    height: 25px;
-    border-radius: 5px;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,45 +42,57 @@
     cursor: pointer;
 }
 
-.Int {
-    background: red;
-    color: white;
-    content: "I";
+.StatNumber {
+    font-size: 15px;
+    font-family: monospace;
+}
+
+.border-blue{
+    border: 1px solid blue;
+    color: blue;
+}
+.border-red {
+    border: 1px solid red;
+    color: red;
+}
+.border-green {
+    border: 1px solid green;
+    color: green;
+}
+.border-black {
+    border: 1px solid black;
+    color: black;
+}
+
+.Blue {
+    color: Blue;
 }
     .Int::after {
         content: "I";
     }
 
-.Fi {
-    background: Blue;
-    color: white;
+.Red {
+    color: red;
 }
     .Fi::after {
         content: "F";
     }
 
-.Calm {
-    background: Green;
-    color: white;
+.Green {
+    color: green;
 }
     .Calm::after {
         content: "C";
     }
 
 .Plus0 {
-    background: Black;
-    color: white;
 }
-
     .Plus0::after {
         content: "+0";
     }
 
 .Plus1 {
-    background: Black;
-    color: white;
 }
-
     .Plus1::after {
         content: "+1";
     }

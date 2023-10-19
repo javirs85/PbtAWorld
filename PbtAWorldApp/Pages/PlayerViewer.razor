@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inject DinoMovesService Moves
 @inject IToastService Toaster
+@inject NavigationManager navigationManager
 @inject DinoPlayer Player;
 @using PbtAWorldApp.Controls.DinoControls
 
@@ -92,12 +93,35 @@
 		<div class="flex-grow-1">
 
 		</div>
-		<div class="GeneralMoves  flex-grow-1">
-			<h2>Movimientos de @Player.Class.ToUIString()</h2>
-			@foreach(var mov in MovesOnScreen)
-			{
-				<MoveViewerDino Move="mov" StartsOpen=@(mov.IsAdvancedMove?false:true)/>
-			}
+		<div class="GeneralMoves ClassMoves  flex-grow-1 d-flex flex-column gap-3">
+			<div>
+				<h2>Movimientos de @Player.Class.ToUIString()</h2>
+				<DinoMovesPack Moves=MovesOnScreen PackName="ClassMoves" OpenFirst=false AllowMultipleSelection =true/>
+			</div>
+			<div>
+				<h2>Heridas</h2>
+				<div class="d-flex flex-column w-100 mb-4">
+					<InputText @bind-Value=Player.Wound1/>
+					<InputText @bind-Value=Player.Wound2/>
+					<div class="mt-1">
+					<PlayerDownCheck/>
+					</div>
+				</div>
+			</div>
+			<div>
+				<h2>Equipo</h2>
+				<div class="d-flex flex-column w-100">
+					<InputText @bind-Value=Gear0 />
+					<InputText @bind-Value=Gear1 />
+					<InputText @bind-Value=Gear2 />
+					<InputText @bind-Value=Gear3 />
+					<InputText @bind-Value=Gear4 />
+					<InputText @bind-Value=Gear5 />
+					<InputText @bind-Value=Gear6 />
+					<InputText @bind-Value=Gear7 />
+				</div>
+			</div>
+			
 		</div>
 		<div class="GeneralMoves flex-grow-1">
 			<h2>Movimientos de peligro</h2>
@@ -113,17 +137,22 @@
 </EditForm>
 
 @code {
-
-	protected override Task OnInitializedAsync()
+	PbtAWorldCommClient Client = new PbtAWorldCommClient();
+	protected override async Task OnInitializedAsync()
 	{
 		Player.Name = "Sebas";
 		Player.Class = DinoClasses.Engineer;
-		Player.Int = 1;
-		Player.Physic = -1;
-		Player.Cold = +2;
+		Player.Clever = 1;
+		Player.Fit = -1;
+		Player.Steady = +2;
 
+		Client.OnNewInfoMessageFromServer += (sender, msg) =>
+		{
+			Toaster.ShowInfo(msg.Body);
+		};
 
-		return base.OnInitializedAsync();
+		await Client.StartCommunication(navigationManager.BaseUri, Player.Name);
+		Player.Connect(Client);
 	}
 
 	private List<DinoMove> MovesOnScreen
@@ -134,6 +163,45 @@
 		}
 	}
 
+	private string Gear0 {
+		get { return Player.Gear[0]; }
+		set { Player.Gear[0] = value; }
+	}
+	private string Gear1
+	{
+		get { return Player.Gear[1]; }
+		set { Player.Gear[1] = value; }
+	}
+	private string Gear2
+	{
+		get { return Player.Gear[2]; }
+		set { Player.Gear[2] = value; }
+	}
+	private string Gear3
+	{
+		get { return Player.Gear[3]; }
+		set { Player.Gear[3] = value; }
+	}
+	private string Gear4
+	{
+		get { return Player.Gear[4]; }
+		set { Player.Gear[4] = value; }
+	}
+	private string Gear5
+	{
+		get { return Player.Gear[5]; }
+		set { Player.Gear[5] = value; }
+	}
+	private string Gear6
+	{
+		get { return Player.Gear[6]; }
+		set { Player.Gear[6] = value; }
+	}
+	private string Gear7
+	{
+		get { return Player.Gear[7]; }
+		set { Player.Gear[7] = value; }
+	}
 
 	public void CustomParse(string newValue, ref int placeWhereToStore)
 	{
@@ -153,42 +221,36 @@
 		}
 	}
 
-	private string ToNiceUIStat(int val)
-	{
-		if (val < 0)
-			return val.ToString();
-		else
-			return "+" + val.ToString();
-	}
+	
 
 	private string UIInt
 	{
-		get { return ToNiceUIStat(Player.Int); }
+		get { return Player.Clever.ToNiceUIStat(); }
 		set
 		{
-			int val = Player.Int;
+			int val = Player.Clever;
 			CustomParse(value, ref val);
-			Player.Int = val;
+			Player.Clever = val;
 		}
 	}
 	private string UICold
 	{
-		get { return ToNiceUIStat(Player.Cold); }
+		get { return Player.Steady.ToNiceUIStat(); }
 		set
 		{
-			int val = Player.Cold;
+			int val = Player.Steady;
 			CustomParse(value, ref val);
-			Player.Cold = val;
+			Player.Steady = val;
 		}
 	}
 	private string UIPhysic
 	{
-		get { return ToNiceUIStat(Player.Physic); }
+		get { return Player.Fit.ToNiceUIStat(); }
 		set
 		{
-			int val = Player.Physic;
+			int val = Player.Fit;
 			CustomParse(value, ref val);
-			Player.Physic = val;
+			Player.Fit = val;
 		}
 	}
 

@@ -1,12 +1,13 @@
-﻿
-<div class="d-flex" @onclick=Toggle>
+﻿@inject DinoPlayer Player
+
+<div class="d-flex" @onclick=Toggle style="cursor: pointer;">
 	@if (Player.IsDown)
 	{
-		<div style="width: 20px; height: 20px; border-radius: 2px; background: red;"></div>
+		<div style="width: 25px; height: 25px; border-radius: 4px; background: red; border: 1px solid black;"></div>
 	}
 	else
 	{
-		<div style="width: 20px; height: 20px; border-radius: 2px; background: red;"></div>
+		<div style="width: 25px; height: 25px; border-radius: 4px; background: white;border: 1px solid black;"></div>
 	}
 	<span>Fuera de combate</span>
 </div>
@@ -14,8 +15,6 @@
 
 
 @code {
-	[Parameter] public DinoPlayer Player { get; set; } = new();
-
 	private void Toggle()
 	{
 		Player.IsDown = !Player.IsDown;

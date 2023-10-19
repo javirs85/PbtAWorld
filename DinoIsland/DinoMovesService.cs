@@ -12,14 +12,13 @@ using DinoIsland;
 public enum DinoMoveIDs { notSet, D_Run, D_Hide, D_DoIt, D_ManUp, D_LookThere, D_TakeMyHand, D_Fight, D_LayLand, D_Instruct, D_Scavenge, D_LaidPlans, D_Casualty, D_RawFit, D_RawClever, D_RawSteady, D_2d6,
 	D_Doc_TreatWounds,
 	D_Eng_JuryRig,
-	D_Hun_Scaveng,
+	D_Hun_Tracker,
 	D_Pal_Expert,
-	D_Sol_KillOrBeKilled,
-	D_Sur_KillOrBeKilled,
 	D_Sur_BeenAroundTheBlock,
 	D_Sur_HomewardBound,
 	D_Sur_Hoarder,
 	D_Sur_FadeAway,
+	D_Sol_KillOrBeKilled,
 	D_Sol_LeaveNoOneBehind,
 	D_Sol_GunToYourHead,
 	D_Sol_CloseQuartersExpert,
@@ -50,8 +49,11 @@ public static class Extensions
             DinoStates.D_NoRoll => "Sin tirada",
             DinoStates.D_Clever => "Inteligencia",
             DinoStates.D_NotSet => "Not set",
-            DinoStates.D_MC => "Lo que pida el MC",
+			DinoStates.D_MC => "Lo que pida el MC",
             DinoStates.D_Weapon => "sin bonificación, o +1 si tienes un arma",
+			DinoStates.D_0 => "+0",
+			DinoStates.D_1 => "+1",
+
             _ => "Not set"
         };
     }
@@ -64,7 +66,8 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_Run, DinoStates.D_Fit)
         {
             Tittle = "Corre!",
-            PreCondition = new Consequences
+			TypeOfMovement = MovementType.DangerMove,
+			PreCondition = new Consequences
             { 
                 MainText = "Cuando corres, tira + Forma física "
             },
@@ -88,7 +91,8 @@ public class DinoMovesService : MovesServiceBase
         },
         new DinoMove(DinoMoveIDs.D_Hide, DinoStates.D_Clever)
         {
-            Tittle = "Escondete!",
+            Tittle = "Escóndete!",
+			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te escondes de un depredador, indica dónde te estás escondiendo y tira + Inteligencia"
@@ -109,6 +113,7 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_DoIt, DinoStates.D_Steady)
         {
             Tittle = "Simplemente Hazlo!",
+			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando haces algo que normalmente puedes hacer fácilmente (por ejemplo, desbloquear una puerta, cruzar silenciosamente una habitación o conducir un automóvil) bajo presión, di qué sucederá si cometes un error y luego tira + Calma"
@@ -128,7 +133,8 @@ public class DinoMovesService : MovesServiceBase
         },
          new DinoMove(DinoMoveIDs.D_ManUp, DinoStates.D_Fit)
         {
-            Tittle = "Echale valor!",
+            Tittle = "Échale valor!",
+			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando confías en la pura fisicalidad para superar dificultades o ignoras una lesión debilitante, tira + Forma física"
@@ -149,6 +155,7 @@ public class DinoMovesService : MovesServiceBase
          new DinoMove(DinoMoveIDs.D_LookThere, DinoStates.D_Clever)
         {
             Tittle = "Mira allí!",
+			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando creas una distracción para proteger a un amigo, di qué es y tira + Inteligencia"
@@ -170,6 +177,7 @@ public class DinoMovesService : MovesServiceBase
          new DinoMove(DinoMoveIDs.D_TakeMyHand, DinoStates.D_MC)
         {
             Tittle = "Toma mi Mano!",
+			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando dejas lo que estás haciendo para ayudar a alguien más en apuros, tira + lo que el MC crea conveniente"
@@ -195,6 +203,7 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_Fight, DinoStates.D_Weapon)
         {
             Tittle = "Lucha!",
+			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando luchas por tu vida, tira sin bonificación, con +1 si tienes un arma"
@@ -224,6 +233,7 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_LayLand, DinoStates.D_Clever)
         {
             Tittle = "Reconocer el terreno",
+			TypeOfMovement = MovementType.SafetyMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando tú y un compañero os tomáis un momento tranquilo para llegar a un buen punto de observación y orientaros, cuenta una historia, luego tira + Inteligencia. El MC te hablará sobre dos puntos de referencia, uno natural y otro hecho por el hombre, que puedes ver."
@@ -240,6 +250,7 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_Instruct, DinoStates.D_Steady)
         {
             Tittle = "Instruir",
+			TypeOfMovement = MovementType.SafetyMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando guías a otro héroe a través de una tarea peligrosa que sabes hacer, pero que deben hacer ellos (quizás porque estás comunicándote por walkies, están en lados opuestos de una cerca o estás herido), cuéntales una historia y tira + Calma. Con un éxito: Eres un buen maestro. Tienen éxito.",
@@ -262,6 +273,7 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_Scavenge, DinoStates.D_Clever)
         {
             Tittle = "Rebuscar",
+			TypeOfMovement = MovementType.SafetyMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando tú y otro héroe se toman un momento tranquilo para buscar objetos o información útil, cuéntales una historia y tira + Inteligencia"
@@ -282,6 +294,7 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_Casualty, DinoStates.D_NoRoll)
         {
             Tittle = "Caído",
+			TypeOfMovement = MovementType.SafetyMove,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando estás gravemente herido (o te lesionas estando ya herido), estás en mal estado. Cuéntale a alguien tu secreto más oscuro o esperanza no cumplida, luego elige 1:",
@@ -301,7 +314,8 @@ public class DinoMovesService : MovesServiceBase
         {
             Tittle = "Tratar Heridas",
             ForClass =DinoClasses.Doctor,
-            PreCondition = new Consequences
+			TypeOfMovement = MovementType.ClassMove,
+			PreCondition = new Consequences
             {
                 MainText = "Cuando tomas un momento tranquilo para atender la lesión de otra persona y tienes el equipo adecuado, cuéntales una historia (sí, incluso si están inconscientes... un momento particularmente bueno para la honestidad). Tira, y tacha la lesión.\n\nSi las condiciones no son las idóneas entonces ...",
                 Options = new List<string>
@@ -329,6 +343,7 @@ public class DinoMovesService : MovesServiceBase
 		{
 			Tittle = "De Vuelta del Abismo",
 			ForClass = DinoClasses.Doctor,
+			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
 			PreCondition = new Consequences
 			{
@@ -339,6 +354,7 @@ public class DinoMovesService : MovesServiceBase
 		{
 			Tittle = "Curarse a sí mismo",
 			ForClass = DinoClasses.Doctor,
+			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
 			PreCondition = new Consequences
 			{
@@ -349,6 +365,7 @@ public class DinoMovesService : MovesServiceBase
 		{
 			Tittle = "Veterinario",
 			ForClass = DinoClasses.Doctor,
+			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
 			PreCondition = new Consequences
 			{
@@ -362,6 +379,7 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_Eng_JuryRig, DinoStates.D_Clever)
         {
             ForClass = DinoClasses.Engineer,
+			TypeOfMovement = MovementType.ClassMove,
 			Tittle = "Chapuzas",
 	        PreCondition = new Consequences
 	        {
@@ -390,7 +408,8 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "Construir",
 	        ForClass = DinoClasses.Engineer,
-	        IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando lideras un equipo para construir algo sustancial (una balsa, puente, refugio, etc.), *asigna a una persona para que se encargue de la construcción.** Tú haces el diseño. Tira + Inteligencia.",
@@ -418,6 +437,7 @@ public class DinoMovesService : MovesServiceBase
 		{
 			Tittle = "La Opción Nuclear",
 			ForClass = DinoClasses.Engineer,
+			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
 			PreCondition = new Consequences
 			{
@@ -445,10 +465,11 @@ public class DinoMovesService : MovesServiceBase
 
     public List<DinoMove> HunterMoves = new List<DinoMove>
     {
-        new DinoMove(DinoMoveIDs.D_Hun_Scaveng, DinoStates.D_Clever)
+        new DinoMove(DinoMoveIDs.D_Hun_Tracker, DinoStates.D_Clever)
         {
             ForClass = DinoClasses.Hunter,
-            Tittle = "Rastreador",
+			TypeOfMovement = MovementType.ClassMove,
+			Tittle = "Rastreador",
             PreCondition = new Consequences
             {
                 MainText = "Cuando estudias tu entorno inmediato en busca de huellas, tira + Inteligencia.\n\nEn caso de éxito, sabes qué animales han estado aquí recientemente (aunque es posible que no sepas las especies exactas de dinosaurios) y el tamaño de sus grupos."
@@ -478,7 +499,8 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "Trampero",
 	        ForClass = DinoClasses.Hunter,
-	        IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Con el equipo adecuado, puedes preparar una trampa para un dinosaurio u otro animal y capturarlo. Describe tu plan. Cuando lo pongas en acción, tira + Inteligencia.",
@@ -506,7 +528,8 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "Demasiado silencio...",
 	        ForClass = DinoClasses.Hunter,
-	        IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Siempre sabes cuando te están cazando y no puedes ser emboscado. Para advertir a los demás sin alertar a tu enemigo, debes ¡HAZLO!"
@@ -520,7 +543,8 @@ public class DinoMovesService : MovesServiceBase
         {
             Tittle = "¡Yo Sé Esto!",
             ForClass = DinoClasses.Kid,
-            IsAdvancedMove = false,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = false,
             PreCondition = new Consequences
             {
                 MainText = "Cuando nadie más tiene una habilidad crucial, puedes revelar que, de hecho, tienes esa habilidad porque eres un niño precoz. El uso de la habilidad *siempre** requiere que *simplemente lo hagas.**"
@@ -530,6 +554,7 @@ public class DinoMovesService : MovesServiceBase
 		{
 			Tittle = "¡Ahhhhhhhhhhh!",
 			ForClass = DinoClasses.Kid,
+			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = false,
 			PreCondition = new Consequences
 			{
@@ -540,7 +565,8 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "Inspirar Heroísmo",
 	        ForClass = DinoClasses.Kid,
-	        IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando otro Héroe pone tus necesidades por encima de su propia seguridad (incluyendo en respuesta a ¡Ahhhhhh!), todas las tiradas que hagan se mejoran en un nivel. Un fallo se convierte en un 7–9, y un 7–9 se convierte en un 10+."
@@ -550,7 +576,8 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "Buen alumno",
 	        ForClass = DinoClasses.Kid,
-	        IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando te ofreces voluntario para un trabajo difícil y alguien más *TE INSTRUYE**, trata un fallo como si hubieran sacado un 7–9."
@@ -563,7 +590,8 @@ public class DinoMovesService : MovesServiceBase
 		new DinoMove(DinoMoveIDs.D_Pal_Expert, DinoStates.D_Clever)
         {
 	        ForClass = DinoClasses.Paleontologist,
-	        Tittle = "Experto en Dinosaurios",
+			TypeOfMovement = MovementType.ClassMove,
+			Tittle = "Experto en Dinosaurios",
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando recurres a tu conocimiento para lidiar con un dinosaurio real, tira + Inteligencia.\n\nEn caso de éxito, puedes identificar su especie, sexo y si es herbívoro o carnívoro."
@@ -593,7 +621,8 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "Cerebro de Lagarto",
 	        ForClass = DinoClasses.Paleontologist,
-	        IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando obtienes un éxito con *EXPERTO EN DINOSAURIOS**, en lugar de hacer una de tus preguntas, puedes infundir una emoción simple (miedo, apatía, enojo, etc.) en un dinosaurio usando lenguaje corporal y sonido."
@@ -603,7 +632,8 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "La Curiosidad Mató al Quetzalcoatlus",
 	        ForClass = DinoClasses.Paleontologist,
-	        IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando te pones en peligro en busca de conocimiento o para investigar un misterio, obtienes +1 en tu tirada."
@@ -613,7 +643,8 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "Polímata",
 	        ForClass = DinoClasses.Paleontologist,
-	        IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Tus habilidades deductivas e inductivas se extienden más allá de los fósiles y la vida prehistórica. Cuando pasas tiempo examinando algo sólidamente misterioso, cuéntales una historia y tira + Inteligencia."
@@ -638,7 +669,9 @@ public class DinoMovesService : MovesServiceBase
 		new DinoMove(DinoMoveIDs.D_Sol_KillOrBeKilled, DinoStates.D_Steady)
         {
 	        Tittle = "Matar o Morir",
-	        PreCondition = new Consequences
+			ForClass = DinoClasses.Soldier,
+			TypeOfMovement = MovementType.ClassMove,
+			PreCondition = new Consequences
 	        {
 		        MainText = "Cuando abres fuego contra un dinosaurio o grupo de dinosaurios, tira + Calma."
 	        },
@@ -659,6 +692,7 @@ public class DinoMovesService : MovesServiceBase
 		{
 			Tittle = "No Dejar a Nadie Atrás",
 			ForClass = DinoClasses.Soldier,
+			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
 			PreCondition = new Consequences
 			{
@@ -668,8 +702,9 @@ public class DinoMovesService : MovesServiceBase
 		new DinoMove(DinoMoveIDs.D_Sol_GunToYourHead, DinoStates.D_NoRoll)
         {
 	        Tittle = "Pistola en la Cabeza",
-	        ForClass = DinoClasses.Soldier, // Ajusta la clase según corresponda
-            IsAdvancedMove = true,
+	        ForClass = DinoClasses.Soldier,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando amenazas a un humano con violencia física, deben hacer lo que dices o recibir una lesión de tu elección."
@@ -678,8 +713,9 @@ public class DinoMovesService : MovesServiceBase
 		new DinoMove(DinoMoveIDs.D_Sol_CloseQuartersExpert, DinoStates.D_NoRoll)
         {
 	        Tittle = "Experto en Combate Cercano",
-	        ForClass = DinoClasses.Soldier, 
-            IsAdvancedMove = true,
+	        ForClass = DinoClasses.Soldier,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando LUCHAS!, tu tirada se mejora en un nivel. Un fallo se convierte en un 7–9, y un 7–9 se convierte en un 10+."
@@ -692,7 +728,9 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_Sur_BeenAroundTheBlock, DinoStates.D_Clever)
         {
             Tittle = "He estado allí...",
-            PreCondition = new Consequences
+			TypeOfMovement = MovementType.ClassMove,
+			ForClass = DinoClasses.Survivor,
+			PreCondition = new Consequences
             {
                 MainText = "Cuando alguien menciona un lugar específico en la isla por primera vez, tira + Inteligencia si has estado allí."
             },
@@ -713,8 +751,9 @@ public class DinoMovesService : MovesServiceBase
         new DinoMove(DinoMoveIDs.D_Sur_HomewardBound, DinoStates.D_Clever)
         {
             Tittle = "De Regreso a Casa",
-            ForClass = DinoClasses.Survivor,
-            PreCondition = new Consequences
+			ForClass = DinoClasses.Survivor,
+			TypeOfMovement = MovementType.ClassMove,
+			PreCondition = new Consequences
             {
                 MainText = "Cuando te diriges a tu refugio, tira + Inteligencia."
             },
@@ -740,7 +779,8 @@ public class DinoMovesService : MovesServiceBase
         {
             Tittle = "Acumulador",
 			ForClass = DinoClasses.Survivor,
-            IsAdvancedMove = true,
+			TypeOfMovement = MovementType.ClassMove,
+			IsAdvancedMove = true,
 			PreCondition = new Consequences
             {
                 MainText = "Has acumulado muchas cosas útiles en la isla: tarjetas clave, piezas mecánicas, botellas de orina de tiranosaurio, etc. Cuando podrías tener justo lo que necesitas, tira + Inteligencia."
@@ -767,6 +807,7 @@ public class DinoMovesService : MovesServiceBase
         {
 	        Tittle = "Desvanecerse",
 			ForClass = DinoClasses.Survivor,
+			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
 			PreCondition = new Consequences
 	        {
@@ -795,7 +836,6 @@ public class DinoMovesService : MovesServiceBase
 		AllMoves.Add(new DinoMove(DinoMoveIDs.D_RawFit, DinoStates.D_Fit) { Tittle = "Forma física" });
 		AllMoves.Add(new DinoMove(DinoMoveIDs.D_RawSteady, DinoStates.D_Steady) { Tittle = "Calma" });
 		AllMoves.Add(new DinoMove(DinoMoveIDs.D_2d6, DinoStates.D_NoRoll) { Tittle = "2d6" });
-
 	}
 
 	public override IMove GetMovement<TMovIDs, TClases>(TMovIDs ID, TClases archetype)

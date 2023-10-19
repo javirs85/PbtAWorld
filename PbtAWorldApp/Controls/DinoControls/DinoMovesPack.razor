@@ -3,11 +3,11 @@
 	{
 		@if (i==0 && OpenFirst)
 		{
-			<MoveViewerDino Move="Moves[i]" PackID="@PackName" StartsOpen=true />
+			<MoveViewerDino Move="Moves[i]" PackID="@PackName" StartsOpen=true AllowMultipleSelection=AllowMultipleSelection />
 		}
 		else
 		{
-			<MoveViewerDino Move="Moves[i]" PackID="@PackName" StartsOpen=false />
+			<MoveViewerDino Move="Moves[i]" PackID="@PackName" StartsOpen=false AllowMultipleSelection=AllowMultipleSelection />
 		}
 	}
 </div>
@@ -16,6 +16,7 @@
 	[Parameter] public string PackName { get; set; } = Guid.NewGuid().ToString();
 	[Parameter] public List<DinoMove> Moves { get; set; } = new();
 	[Parameter] public bool OpenFirst { get; set; } = true;
+	[Parameter] public bool AllowMultipleSelection { get; set; } = false;
 
 	private bool IsFirst = true;
 }
