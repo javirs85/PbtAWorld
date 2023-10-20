@@ -53,7 +53,7 @@ public class PbtAWorldCommClient
 
             await SendAsync(new InfoMessage { 
                 Sender = UserName,
-                Body = $"{UserName} joined chat room."
+                Body = $"{UserName} se ha incorporado al juego."
             });
         }
         catch (Exception ex)

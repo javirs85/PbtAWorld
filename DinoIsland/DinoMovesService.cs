@@ -532,7 +532,7 @@ public class DinoMovesService : MovesServiceBase
 			IsAdvancedMove = true,
 	        PreCondition = new Consequences
 	        {
-		        MainText = "Siempre sabes cuando te están cazando y no puedes ser emboscado. Para advertir a los demás sin alertar a tu enemigo, debes ¡HAZLO!"
+		        MainText = "Siempre sabes cuando te están cazando y no puedes ser emboscado. Para advertir a los demás sin alertar a tu enemigo, debes user *simplemente hazlo!**"
 	        }
         }
 	};

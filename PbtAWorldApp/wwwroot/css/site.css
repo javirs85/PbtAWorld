@@ -5,9 +5,20 @@
     outline: none !important;
 }
 
+
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #cccccc;
+    background: transparent;
+    min-height: 100%;
+}
+html {
+    background-image: url(../imgs/bigBack.png) ;
+}
+
+body{
+    overflow-y: scroll;
+    overflow-x:hidden;
 }
 
 h1:focus {

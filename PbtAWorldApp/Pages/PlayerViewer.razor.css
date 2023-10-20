@@ -19,23 +19,53 @@
 .LongBlackStripe {
     background: black;
     color: white;
-    border-radius: 0 50px 50px 0;
     display: flex;
     justify-content: space-between;
-    padding: 5px 10px 5px 45px;
+    padding: 5px 10px 5px 10px;
     font-family: 'Saira Stencil One', sans-serif;
     font-size: 24px;
-    height: 48px;
 }
 .SubText {
     display: flex;
     margin-left: 45px;
+    opacity: 0.5;
+}
+
+.BoxPack {
+    background: #1f2723e6;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #5d5d5d;
+    color: #cdcdcd;
+}
+
+.CustomInput {
+    background: #ffffffad;
+    font-weight: 600;
+}
+
+h2{
+    color:white;
 }
 
 .GeneralMoves{
-    width: 25%;
 }
 
+
+.flavor {
+    padding: 10px;
+    padding-right: 30px;
+    color: #000000b8;
+    background: url(imgs/paperBack.png) bottom right no-repeat;
+}
+
+    .flavor.hunter {
+        font-family: monospace;
+        font-size: 14px;
+    }
+.story{
+
+}
 /*
     font-family: 'Bungee', sans-serif;
     font-family: 'Julius Sans One', sans-serif;

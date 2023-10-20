@@ -47,6 +47,9 @@ public class DinoPlayer : Player
 	}
 
 	public List<string> Gear { get; set; } = new List<string>();
+	public string Rumor { get; set; } = string.Empty;
+
+	public List<string> Stories { get;set; } = new List<string>();
 
 
 	private DinoClasses _class = DinoClasses.NotSet;
@@ -109,6 +112,7 @@ public class DinoPlayer : Player
 	{
 		AllPurchasedMoves.Clear();
 		Gear.Clear();
+		Stories.Clear();
 		switch (Class)
 		{
 			case DinoClasses.Hunter:
@@ -121,6 +125,11 @@ public class DinoPlayer : Player
 				Gear.Add("");
 				Gear.Add("");
 				Gear.Add("");
+				Stories.Add("Tu captura más impresionante");
+				Stories.Add("Aquella vez que estuviste perdido en plena naturaleza salvaje");
+				Stories.Add("Una forma en la que los animales son mejores que las personas");
+				Stories.Add("Lo más raro que te hayas comido");
+				Stories.Add("Algo que un idiota hizo y consiguió que lo mataran");
 				break;
 			case DinoClasses.Doctor:
 				AllPurchasedMoves.Add(DinoMoveIDs.D_Doc_TreatWounds);
@@ -132,6 +141,11 @@ public class DinoPlayer : Player
 				Gear.Add("");
 				Gear.Add("");
 				Gear.Add("");
+				Stories.Add("Porque te hiciste doctor");
+				Stories.Add("Aquella vez que estuviste aterrorizado");
+				Stories.Add("Un error casi fatal");
+				Stories.Add("Cuando alguien sobrevivió milagrosamente");
+				Stories.Add("Como liberas tensión?");
 				break;
 			case DinoClasses.Engineer:
 				AllPurchasedMoves.Add(DinoMoveIDs.D_Eng_JuryRig);
@@ -143,6 +157,11 @@ public class DinoPlayer : Player
 				Gear.Add("");
 				Gear.Add("");
 				Gear.Add("");
+				Stories.Add("Algo ineficiente que te enfurece");
+				Stories.Add("Algo que está perfectamente diseñado");
+				Stories.Add("Esa cosa que sueñas con construir");
+				Stories.Add("Un momento de placer simple");
+				Stories.Add("Aquella vez en que te obligaron a tomar atajos");
 				break;
 			case DinoClasses.Kid:
 				AllPurchasedMoves.Add(DinoMoveIDs.D_Kid_aaaaah);
@@ -155,6 +174,11 @@ public class DinoPlayer : Player
 				Gear.Add("");
 				Gear.Add("");
 				Gear.Add("");
+				Stories.Add("Una vez en la que fuiste realmente valiente");
+				Stories.Add("La cosa más molesta que hacen tus padres");
+				Stories.Add("Una explicación sobre algo que desconcierta a los adultos");
+				Stories.Add("Algo cool que un amigo te contó");
+				Stories.Add("Algo de lo que estás secretamente asustado");
 				break;
 			case DinoClasses.Paleontologist:
 				AllPurchasedMoves.Add(DinoMoveIDs.D_Pal_Expert);
@@ -166,6 +190,11 @@ public class DinoPlayer : Player
 				Gear.Add("");
 				Gear.Add("");
 				Gear.Add("");
+				Stories.Add("Como te enamoraste de los dinosaurios");
+				Stories.Add("Porque tu archienemigo es un chapucero");
+				Stories.Add("Algo que nunca has entendido sobre la gente");
+				Stories.Add("Una lección de vida que tu mentor te enseñó");
+				Stories.Add("La historia detrás del fósil que llevas encima");
 				break;
 			case DinoClasses.Soldier:
 				AllPurchasedMoves.Add(DinoMoveIDs.D_Sol_KillOrBeKilled);
@@ -177,6 +206,11 @@ public class DinoPlayer : Player
 				Gear.Add("");
 				Gear.Add("");
 				Gear.Add("");
+				Stories.Add("Aquella vez que burlaste a la muerte");
+				Stories.Add("Porque te alistaste");
+				Stories.Add("Un chiste interno que compartías con tu escuadrón");
+				Stories.Add("Algo que te persigue");
+				Stories.Add("Una suprestición que te mantiene con vida");
 				break;
 			case DinoClasses.Survivor:
 				AllPurchasedMoves.Add(DinoMoveIDs.D_Sur_BeenAroundTheBlock);
@@ -189,6 +223,11 @@ public class DinoPlayer : Player
 				Gear.Add("");
 				Gear.Add("");
 				Gear.Add("");
+				Stories.Add("Una habilidad de supervivencia útil que aprendiste aquí");
+				Stories.Add("La personas con la que esperas reencontrarte");
+				Stories.Add("La comodidad mundana que echas más de menos");
+				Stories.Add("Que harías diferente si salieras de esta isla");
+				Stories.Add("Algo de la isla que, en realidad, te gusta");
 				break;
 			case DinoClasses.NotSet:
 				break;

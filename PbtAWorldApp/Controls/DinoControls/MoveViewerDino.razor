@@ -168,7 +168,7 @@
 			else if(Move.Roll == DinoStates.D_MC)
 			{
 				<div class="container">
-					<div class="row">
+					<div class="row g-1">
 						<div class="col-sm">
 							<button class="btn btn-danger" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_Fit, Move);})">Tirar <br />Forma física</button>
 						</div>
@@ -184,7 +184,7 @@
 			else if(Move.Roll == DinoStates.D_Weapon)
 			{
 				<div class="container">
-					<div class="row">
+					<div class="row g-1">
 						<div class="col-sm">
 							<button class="btn btn-dark" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_0, Move);})">Tirar <br />+0</button>
 						</div>
