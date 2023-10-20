@@ -21,6 +21,7 @@ public class PbtAWorldCommClient
     public event EventHandler<ChatMessage> OnNewChatMessageFromServer;
     public event EventHandler<string> OnNewRollFromServer;
     public event EventHandler<string> OnNewErrorMessage;
+    public event EventHandler<string> OnNewChangeInMap;
 
 
     private string _hubUrl = "/chat";
@@ -82,6 +83,10 @@ public class PbtAWorldCommClient
         {
             OnNewRollFromServer(this, EncodedMessage);
         }
+        else if(kind == MessageKinds.Map)
+        {
+            OnNewChangeInMap(this, EncodedMessage);
+        }
     }
 
 
@@ -101,6 +106,16 @@ public class PbtAWorldCommClient
         };
         msg.Parameters.Add("message", EncodedRollReport);
         await SendAsync(msg);
+	}
+
+    public async Task SendParamsMessage(MessageKinds kind, string payload)
+    {
+		ParamsMessage msg = new ParamsMessage
+		{
+			MessageKind = kind
+		};
+		msg.Parameters.Add("message", payload);
+		await SendAsync(msg);
 	}
 
     public async Task SendAsync(PbtAMessage message)

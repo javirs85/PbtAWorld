@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PbtAWorldConnectivity;
 
-public enum MessageKinds { Raw, Info, Chat, Roll};
+public enum MessageKinds { Raw, Info, Chat, Roll, Map};
 
 public class PbtAMessage
 {

@@ -11,6 +11,7 @@ namespace DinoIsland;
 
 public class DinoPlayer : Player
 {
+	public event EventHandler UpdateUI;
 	private string _name = string.Empty;
 
 	public new string Name
@@ -50,6 +51,25 @@ public class DinoPlayer : Player
 	public string Rumor { get; set; } = string.Empty;
 
 	public List<string> Stories { get;set; } = new List<string>();
+	public List<MapItem> MapItems { get; set; } = new();
+
+	public void UpdateMapItems(MapItem mapItem)
+	{
+		if (mapItem.Action == MapActions.Add)
+		{
+			if (MapItems.Find(x => x.ID == mapItem.ID) == null)
+			{
+				MapItems.Add(mapItem);
+			}
+		}
+		else if (mapItem.Action == MapActions.Remove)
+		{
+			var item = MapItems.Find(x => x.ID == mapItem.ID);
+			if (item != null)
+				MapItems.Remove(item);
+		}
+		UpdateUI?.Invoke(this, EventArgs.Empty);
+	}
 
 
 	private DinoClasses _class = DinoClasses.NotSet;
@@ -65,6 +85,12 @@ public class DinoPlayer : Player
 		{
 			throw new Exception("Client must be not null and connected before sending it here");
 		}
+	}
+
+	public async Task SendMapUpdate(MapItem item)
+	{
+		if(Client is not null && Client.IsConnected) 
+			await Client.SendParamsMessage(MessageKinds.Map, System.Text.Json.JsonSerializer.Serialize(item));
 	}
 
 	private Random rnd = new Random();

@@ -1,7 +1,9 @@
-﻿@using BlazorBootstrap;
+﻿@inject DinoPlayer Player
+
+@using BlazorBootstrap;
 <div class="MiniMapContainer">
 	<div class="MapMiniViewer" @onclick=Click>
-		@foreach(var point in Points)
+		@foreach(var point in Player.MapItems)
 		{
 			<div class="MapToken"
 				@onclick:preventDefault=true
@@ -38,27 +40,27 @@
 </Offcanvas>
 
 @code {
-	private class AnchorPoint
-	{
-		public int Id = 0;
-		public float x = 0;
-		public float y = 0;
-		public string xValue => $"{x}%";
-		public string yValue => $"{y}%";
-		public DinoMapTokens Token = DinoMapTokens.Empty;
-	}
+
+	private MapItem? temp = null;
 
 	private async Task SelectIcon(DinoMapTokens icon)
 	{
 		if(SelectedAnchorPoint is not null)
+		{
+			Player.MapItems.Remove(temp);
 			SelectedAnchorPoint.Token = icon;
+			SelectedAnchorPoint.Action = MapActions.Add;
+			await Player.SendMapUpdate(SelectedAnchorPoint);
+			SelectedAnchorPoint = null;
+			temp = null;
+		}
 
 		await offcanvas?.HideAsync();
 	}
 
-	private AnchorPoint? SelectedAnchorPoint = null;
+	private MapItem? SelectedAnchorPoint = null;
 
-	private async Task AnchorpointClicked(AnchorPoint point)
+	private async Task AnchorpointClicked(MapItem point)
 	{
 		SelectedAnchorPoint = point;
 		await offcanvas?.ShowAsync();
@@ -68,25 +70,33 @@
 	{
 		if(SelectedAnchorPoint is not null)
 		{
-			Points.Remove(SelectedAnchorPoint);
-			SelectedAnchorPoint = null;
+			/*Points.Remove(SelectedAnchorPoint);
+			SelectedAnchorPoint = null;*/
+			SelectedAnchorPoint.Action = MapActions.Remove;
+
+			await Player.SendMapUpdate(SelectedAnchorPoint);
 			await offcanvas.HideAsync();
 		}
 	}
 
-
 	private Offcanvas offcanvas;
-
-	private List<AnchorPoint> Points = new();
 
 	private async Task Click(MouseEventArgs arg)
 	{
-		Points.Add(new AnchorPoint { 
-			x = (float)Math.Round((arg.OffsetX-10)/4.240), 
-			y = (float)Math.Round((arg.OffsetY-10)/2.590), 
-			Id = Points.Count 
-		});
-		SelectedAnchorPoint = Points.Last();
+		temp = new MapItem
+			{
+				x = (float)Math.Round((arg.OffsetX - 10) / 4.240),
+				y = (float)Math.Round((arg.OffsetY - 10) / 2.590),
+				ID = Guid.NewGuid()
+			};
+		Player.MapItems.Add(temp);
+		SelectedAnchorPoint = temp;
 		await offcanvas?.ShowAsync();
 	}
+
+	public void Update()
+	{
+		InvokeAsync(() => { StateHasChanged(); });
+	}
 }
+

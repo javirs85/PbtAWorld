@@ -344,7 +344,7 @@
 						<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false />
 					</div>	
 					<div class="BoxPack">
-						<MapMini/>
+						<MapMini @ref="map"/>
 					</div>
 				</div>		
 				<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
@@ -373,6 +373,8 @@
 </EditForm>
 
 @code {
+	MapMini? map = null;
+
 	RollReport<DinoMoveIDs, DinoStates>? LastRoll = null;
 
 	PbtAWorldCommClient Client = new PbtAWorldCommClient();
@@ -394,7 +396,19 @@
 			LastRoll = System.Text.Json.JsonSerializer.Deserialize<RollReport<DinoMoveIDs, DinoStates>>(rollMessage.Parameters["message"]);
 			InvokeAsync(() => { StateHasChanged(); });
 		};
+		Client.OnNewChangeInMap += (sender, msg) =>
+		{
+			var paramMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
+			var UpdateInMap = System.Text.Json.JsonSerializer.Deserialize<MapItem>(paramMessage.Parameters["message"]);
+			if(UpdateInMap is not null)
+				Player.UpdateMapItems(UpdateInMap);
+		};
 
+		Player.UpdateUI += (o, e) =>
+		{
+			InvokeAsync(()=> { StateHasChanged(); });
+			map?.Update();
+		};
 
 		await Client.StartCommunication(navigationManager.BaseUri, Player.Name);
 		Player.Connect(Client);
