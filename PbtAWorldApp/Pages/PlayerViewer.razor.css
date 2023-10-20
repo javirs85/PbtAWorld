@@ -51,6 +51,24 @@ h2{
 .GeneralMoves{
 }
 
+.LastRollContainer{
+    display: flex;
+    flex-direction: column;
+}
+.dice{
+    width:30px;
+    height:30px;
+    border:1px solid white;
+    border-radius: 4px;
+    display:flex;
+    align-content:center;
+    justify-content:center;
+    flex-wrap: wrap;
+    
+}
+.RollResult{
+    font-size: 22px;
+}
 
 .flavor {
     padding: 10px;

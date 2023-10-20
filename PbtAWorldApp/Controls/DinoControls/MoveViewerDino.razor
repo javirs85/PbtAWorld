@@ -1,6 +1,7 @@
 ﻿@using System.Web;
 @inject IToastService Toaster
 @inject DinoPlayer Player
+@inject DinoMovesService Moves
 
 <div class="accordion-item"> 
 	<h2 class="accordion-header" id="@Move.IDText">
@@ -211,10 +212,6 @@
 
 	private DinoMove Dmove => (Move as DinoMove) ?? new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set"};
 
-	private async Task RequestRoll(DinoStates roll)
-	{
-		Toaster.ShowInfo($"Rolling {roll.ToUI()}");
-	}
 
 	protected override void OnParametersSet()
 	{

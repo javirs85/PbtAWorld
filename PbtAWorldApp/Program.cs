@@ -23,6 +23,7 @@ builder.Services.AddTransient<IPeopleData, PeopleData>();
 //builder.Services.AddTransient<JsConsole>();
 builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddScoped<DinoPlayer>();
+builder.Services.AddBlazorBootstrap();
 
 
 builder.Services.AddAuthentication("Cookies")

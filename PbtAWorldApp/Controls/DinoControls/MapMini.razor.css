@@ -1,0 +1,39 @@
+﻿.MiniMapContainer {
+    width: 424px;
+    height: 259px;
+}
+
+.MapMiniViewer {
+    background: url(imgs/Map.png);
+    width: 424px;
+    height: 259px;
+    position: absolute;
+}
+
+.AnchorPoint{
+    width:20px;
+    height: 20px;
+    border-radius: 10px;
+    background: yellow;
+    position: relative;
+}
+
+.MapToken {
+    width: 35px;
+    height: 35px;
+    border: 1px solid gray;
+    box-shadow: 2px 2px 2px 0px;
+    border-radius: 10px;
+    background: #f3ecec;
+    cursor: pointer;
+}
+.MapTokenContainer {
+    align-items: center;
+    width: 100px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    cursor:pointer;
+}
+
+

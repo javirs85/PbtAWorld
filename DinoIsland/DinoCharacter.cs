@@ -81,7 +81,19 @@ public class DinoPlayer : Player
 		else if(stat == DinoStates.D_0) bonus = 0;
 
 		if(Client is not null)
-			await Client.SendInfo($"{Name} tiró {Move.Tittle} ({stat.ToUI()}{bonus.ToNiceUIStat()}): {d1} + {d2} + {bonus.ToNiceUIStat()} = {d1+d2+bonus}");
+		{
+			var report = new RollReport<DinoMoveIDs, DinoStates>(Move.ID, stat, Move.Tittle)
+			{
+				bonus = bonus,
+				d1 = d1,
+				d2 = d2,
+				Roller = Name,
+				Stat = stat,
+			};
+			
+			var encoded = System.Text.Json.JsonSerializer.Serialize(report);
+			await Client.SendRollReport(encoded);
+		}
 	}
 
 	public DinoClasses Class
@@ -236,15 +248,15 @@ public class DinoPlayer : Player
 		}
 	}
 
-	public DinoStats FavoriteStat => Class switch
+	public DinoStates FavoriteStat => Class switch
 	{
-		DinoClasses.Doctor => DinoStats.Cold,
-		DinoClasses.Engineer => DinoStats.Mind,
-		DinoClasses.Paleontologist => DinoStats.Mind,
-		DinoClasses.Kid => DinoStats.NotSet,
-		DinoClasses.Survivor => DinoStats.Mind,
-		DinoClasses.Soldier => DinoStats.Cold,
-		DinoClasses.Hunter => DinoStats.Mind,
+		DinoClasses.Doctor => DinoStates.D_Steady,
+		DinoClasses.Engineer => DinoStates.D_Clever,
+		DinoClasses.Paleontologist => DinoStates.D_Clever,
+		DinoClasses.Kid => DinoStates.D_NotSet,
+		DinoClasses.Survivor => DinoStates.D_Clever,
+		DinoClasses.Soldier => DinoStates.D_Steady,
+		DinoClasses.Hunter => DinoStates.D_Clever,
 		_ => throw new NotImplementedException()
 	};
 

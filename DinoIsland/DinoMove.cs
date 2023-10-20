@@ -26,5 +26,5 @@ public class DinoMove : BaseMove<DinoMoveIDs, DinoStates>
 
 
 	public override bool HasRoll() => Roll != DinoStates.D_NoRoll && Roll != DinoStates.D_NotSet && Roll != DinoStates.D_MC ;
-	public override string ToUI() => Roll.ToUI();
+	public override string ToUI() => Roll.ToUIString();
 }

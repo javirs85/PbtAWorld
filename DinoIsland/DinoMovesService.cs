@@ -38,26 +38,6 @@ public enum DinoMoveIDs { notSet, D_Run, D_Hide, D_DoIt, D_ManUp, D_LookThere, D
 	D_Doc_Veterinarian
 }
 
-public static class Extensions
-{
-    public static string ToUI(this DinoStates moveId) 
-    {
-        return moveId switch
-        {
-            DinoStates.D_Fit => "Forma física",
-            DinoStates.D_Steady => "Calma",
-            DinoStates.D_NoRoll => "Sin tirada",
-            DinoStates.D_Clever => "Inteligencia",
-            DinoStates.D_NotSet => "Not set",
-			DinoStates.D_MC => "Lo que pida el MC",
-            DinoStates.D_Weapon => "sin bonificación, o +1 si tienes un arma",
-			DinoStates.D_0 => "+0",
-			DinoStates.D_1 => "+1",
-
-            _ => "Not set"
-        };
-    }
-}
 
 public class DinoMovesService : MovesServiceBase
 {

@@ -1,0 +1,92 @@
+﻿@using BlazorBootstrap;
+<div class="MiniMapContainer">
+	<div class="MapMiniViewer" @onclick=Click>
+		@foreach(var point in Points)
+		{
+			<div class="MapToken"
+				@onclick:preventDefault=true
+				@onclick:stopPropagation=true
+				@onclick=@(async ()=>{ await AnchorpointClicked(point);})
+				 style="position: absolute; left:@point.xValue ; top:@point.yValue ; background-image:url(@point.Token.ToImagePath())">
+			</div>
+		}
+	</div>
+</div>
+
+<Offcanvas @ref="offcanvas">
+	<BodyTemplate>
+		<div class="d-flex flex-wrap gap-3">
+		@foreach (var icon in Enum.GetValues(typeof(DinoMapTokens)).Cast<DinoMapTokens>())
+		{
+			@if(icon != DinoMapTokens.NotSet && icon != DinoMapTokens.Empty)
+			{
+				<div class="MapTokenContainer">
+					<div class="MapToken" 
+						@onclick=@(async ()=>{await SelectIcon(icon);}) 
+						style="background-image:url(@icon.ToImagePath())">
+					</div>
+					@icon.ToUI()
+				</div>
+			}
+		}
+			<div class="d-flex text-danger" style="cursor: pointer;" @onclick=DeleteIcon>
+				<i class="bi bi-trash"></i>
+				Eliminar icono del mapa
+			</div>
+		</div>
+	</BodyTemplate>
+</Offcanvas>
+
+@code {
+	private class AnchorPoint
+	{
+		public int Id = 0;
+		public float x = 0;
+		public float y = 0;
+		public string xValue => $"{x}%";
+		public string yValue => $"{y}%";
+		public DinoMapTokens Token = DinoMapTokens.Empty;
+	}
+
+	private async Task SelectIcon(DinoMapTokens icon)
+	{
+		if(SelectedAnchorPoint is not null)
+			SelectedAnchorPoint.Token = icon;
+
+		await offcanvas?.HideAsync();
+	}
+
+	private AnchorPoint? SelectedAnchorPoint = null;
+
+	private async Task AnchorpointClicked(AnchorPoint point)
+	{
+		SelectedAnchorPoint = point;
+		await offcanvas?.ShowAsync();
+	}
+
+	private async Task DeleteIcon()
+	{
+		if(SelectedAnchorPoint is not null)
+		{
+			Points.Remove(SelectedAnchorPoint);
+			SelectedAnchorPoint = null;
+			await offcanvas.HideAsync();
+		}
+	}
+
+
+	private Offcanvas offcanvas;
+
+	private List<AnchorPoint> Points = new();
+
+	private async Task Click(MouseEventArgs arg)
+	{
+		Points.Add(new AnchorPoint { 
+			x = (float)Math.Round((arg.OffsetX-10)/4.240), 
+			y = (float)Math.Round((arg.OffsetY-10)/2.590), 
+			Id = Points.Count 
+		});
+		SelectedAnchorPoint = Points.Last();
+		await offcanvas?.ShowAsync();
+	}
+}

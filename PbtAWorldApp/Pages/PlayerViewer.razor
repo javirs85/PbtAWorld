@@ -11,7 +11,7 @@
 		<div class="WideArea">
 			<div class="LongBlackStripe">
 				<div class="d-flex flex-wrap gap-2">
-					<div class="d-flex" style="max-height:38px;">
+					<div class="d-flex">
 						<InputText @bind-Value=Player.Name
 								   class="borderlessInput"
 								   style="color: white;
@@ -205,6 +205,84 @@
 							</ol>
 						</div>
 					}
+					else if(Player.Class == DinoClasses.Engineer)
+					{
+						<div class="flavor hunter">
+							<h5>PIENSA COMO INGENIERO</h5>
+							<ol>
+							<li>1. Aísla el problema.
+									La mayoría de las personas intentan resolver un problema no se detienen a asegurarse que tienen el problema correcto. No necesitas hacer una llave, basta con abrir la puerta.
+								</li>
+							<li>2. Haz un inventario de sus recursos.
+									Conoce lo que tienes a tu disposición... y lo que no. Una solución no sirve de nada si no puedes ponerla en práctica.
+								</li>
+							<li>3. Piensa con originalidad.
+									Cuando consideres posibles soluciones, ten en cuenta todas las posibles soluciones, incluso las que parezcan ridículas. No hay nada malo en una mala idea mientras siga siendo sólo una idea.
+								</li>
+							<li>4. Desarrolla una solución.
+									Aquí es cuando eliminas las malas ideas. Continúa hasta que te quede una.
+								</li>
+							<li>5. Evaluar los riesgos.
+									Tu primera prioridad es hacer que las cosas funcionen, pero justo detrás de eso, está estar preparado para lo que suceda si no lo hacen. Si sabes lo que puede salir mal, puedes estar preparado para mitigar lo peor.
+								</li>
+							<li>6. Prueba tu solución.
+									Si es necesario, construye un prototipo. De cualquier forma, empieza por montar un producto mínimo viable y prueba para ver si funciona como se espera.
+								</li>
+							<li>7. Itera.
+									Si tu solución funciona, estupendo. Si no, vuelve a intentarlo hasta que funcione. Acepta que puede que tengas que volver a empezar.
+								</li>
+							<li>8. Ponga en práctica la solución.
+									Cuando sepas que tu solución funciona, utilízala.
+								</li>
+							<li>9. Tómate una cerveza.
+									Te la mereces.
+								</li>
+							</ol>
+							<span class="m-5">&nbsp;</span>
+						</div>
+					}
+					else if(Player.Class == DinoClasses.Kid)
+					{
+						<div class="flavor hunter">
+							<h5>EXTRACTO DE 101 DINO - MITA</h5>
+							<h5>CHISTES DE DINOSAURIOS</h5>
+							<ul>
+								<li>¿Qué vino después del dinosaurio? Su cola.
+								</li><li>¿Qué desodorante usan los dinosaurios? REX-ona
+								</li><li>¿Qué dinosaurio tiene los mejores ritmos? - Un veloci-RAP-tor
+								</li><li>¿Qué se dice cuando necesitas un dinosaurio rápido?
+								-Pronto, saurio
+								</li><li>¿Qué da más miedo que un dinosaurio?
+								- Dos dinosaurios
+								</li><li>Y más miedo que dos dinosaurios?
+								- Dos dinosaurios enfadados!
+								</li><li>¿Cómo se llama un dinosaurio que siempre usa grandes palabras? Tesauro
+								</li>
+							</ul>
+							<span class="m-5">&nbsp;</span>
+							<div class="w-100 d-flex justify-content-center mb-5">
+								<img class="m-3" src="imgs/DinoKid.png"/>
+							</div>
+						</div>
+					}
+					else if(Player.Class == DinoClasses.Paleontologist)
+					{
+						<div class="flavor hunter d-flex justify-content-center">
+							<img src="imgs/PaleoHelp.png"/>
+						</div>
+					}
+					else if(Player.Class == DinoClasses.Soldier)
+					{
+						<div class="flavor hunter d-flex justify-content-center">
+							<img src="imgs/SoldierHelp.png"/>
+						</div>
+					}
+					else if(Player.Class == DinoClasses.Survivor)
+					{
+						<div class="flavor hunter d-flex justify-content-center">
+							<img src="imgs/SurvivorHelp.png"/>
+						</div>
+					}
 				</div>
 				<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
 					<div>
@@ -237,9 +315,36 @@
 			
 				</div>
 				<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
+					<div class="LastRollContainer BoxPack">
+						@if (LastRoll is not null)
+						{
+							<h4>Último movimiento</h4>
+							<div>@LastRoll.Roller</div>
+							<div>@LastRoll.MoveTittle <span class="small opacity-50">con</span> @LastRoll.Stat.ToUIString()</div>
+							<div class="d-flex gap-2 justify-content-center m-4">
+								<div class="d-flex align-items-center gap-2">
+									<div class="dice">@LastRoll.d1</div> +
+									<div class="dice">@LastRoll.d2</div> +
+									<div class="dice" style="border-style: none; background: #ffffff3b;">
+										@LastRoll.bonus
+									</div>
+									=
+								</div>
+								<div class="RollResult">@LastRoll.Total</div>
+							</div>
+						}
+						else
+						{
+							<div class="small">Aún nadie ha tirado nada</div>
+						}
+
+					</div>
 					<div>
 						<h2>Movimientos de peligro</h2>
 						<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false />
+					</div>	
+					<div class="BoxPack">
+						<MapMini/>
 					</div>
 				</div>		
 				<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
@@ -268,6 +373,8 @@
 </EditForm>
 
 @code {
+	RollReport<DinoMoveIDs, DinoStates>? LastRoll = null;
+
 	PbtAWorldCommClient Client = new PbtAWorldCommClient();
 	protected override async Task OnInitializedAsync()
 	{
@@ -281,6 +388,13 @@
 		{
 			Toaster.ShowInfo(msg.Body);
 		};
+		Client.OnNewRollFromServer += (sender, msg) =>
+		{
+			var rollMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
+			LastRoll = System.Text.Json.JsonSerializer.Deserialize<RollReport<DinoMoveIDs, DinoStates>>(rollMessage.Parameters["message"]);
+			InvokeAsync(() => { StateHasChanged(); });
+		};
+
 
 		await Client.StartCommunication(navigationManager.BaseUri, Player.Name);
 		Player.Connect(Client);

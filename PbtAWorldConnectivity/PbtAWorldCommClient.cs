@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.SignalR.Client;
+using PbtALib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ public class PbtAWorldCommClient
     public event EventHandler<PbtAMessage> OnNewRawMessageFromServer;
     public event EventHandler<InfoMessage> OnNewInfoMessageFromServer;
     public event EventHandler<ChatMessage> OnNewChatMessageFromServer;
+    public event EventHandler<string> OnNewRollFromServer;
     public event EventHandler<string> OnNewErrorMessage;
 
 
@@ -76,6 +78,10 @@ public class PbtAWorldCommClient
             InfoMessage msg = JsonSerializer.Deserialize<InfoMessage>(EncodedMessage) ?? throw new Exception("Cannot decode message");
             OnNewInfoMessageFromServer(this, msg);
         }
+        else if(kind == MessageKinds.Roll)
+        {
+            OnNewRollFromServer(this, EncodedMessage);
+        }
     }
 
 
@@ -86,6 +92,16 @@ public class PbtAWorldCommClient
             Body = msg
         }) ;
     }
+
+    public async Task SendRollReport(string EncodedRollReport)
+    {
+        ParamsMessage msg = new ParamsMessage
+        {
+            MessageKind = MessageKinds.Roll
+        };
+        msg.Parameters.Add("message", EncodedRollReport);
+        await SendAsync(msg);
+	}
 
     public async Task SendAsync(PbtAMessage message)
     {
@@ -104,7 +120,14 @@ public class PbtAWorldCommClient
             return;
         }
 
-        string encoded = JsonSerializer.Serialize(message);
+		var options = new JsonSerializerOptions
+		{
+			// Set PropertyNamingPolicy or other options as needed
+			WriteIndented = true,  // For better readability (optional)
+			Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+		};
+
+		string encoded = JsonSerializer.Serialize(message, options);
         await _hubConnection.SendAsync("Broadcast", message.MessageKind, encoded);
     }
 

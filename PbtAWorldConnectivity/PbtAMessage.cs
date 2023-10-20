@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PbtAWorldConnectivity;
 
-public enum MessageKinds { Raw, Info, Chat};
+public enum MessageKinds { Raw, Info, Chat, Roll};
 
 public class PbtAMessage
 {
@@ -26,11 +26,6 @@ public class PbtAMessage
             errorMessage = "sender cannot be empty";
             return false;
         }    
-        if(string.IsNullOrEmpty(Body) || string.IsNullOrWhiteSpace(Body))
-        {
-            errorMessage = "message body cannot be empty";
-            return false; 
-        }
         errorMessage = "";
 
         return IsReadyToSendInternal(out errorMessage);
@@ -99,4 +94,30 @@ public class ChatMessage : PbtAMessage
         errorMessage = "";
         return true;
     }
+}
+
+public class ParamsMessage : PbtAMessage
+{
+    public ParamsMessage() { }
+	public ParamsMessage(MessageKinds kind)
+	{
+		MessageKind = kind;
+	}
+
+	public override void FromRawText(string rawMessage)
+	{
+		Body = Parameters["message"];
+	}
+
+	public override bool IsReadyToSendInternal(out string errorMessage)
+	{
+		var msg = Parameters["message"];
+		if (msg is null || string.IsNullOrEmpty(msg))
+		{
+			errorMessage = "the message is null or empty";
+			return false;
+		}
+		errorMessage = "";
+		return true;
+	}
 }
