@@ -20,8 +20,8 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IPeopleData, PeopleData>();
-//builder.Services.AddTransient<JsConsole>();
 builder.Services.AddSingleton<DinoMovesService>();
+builder.Services.AddSingleton<DinoGameController>();
 builder.Services.AddScoped<DinoPlayer>();
 builder.Services.AddBlazorBootstrap();
 
@@ -69,6 +69,6 @@ app.MapControllers();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-app.MapHub<PbtAWorldHub>(PbtAWorldHub.HubUrl);
+app.MapHub<DinoServer>(DinoServer.HubUrl);
 
 app.Run();

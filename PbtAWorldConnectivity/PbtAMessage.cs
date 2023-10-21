@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace PbtAWorldConnectivity;
 
-public enum MessageKinds { Raw, Info, Chat, Roll, Map};
-
+public enum MessageKinds { Raw, Info, Chat, Roll, Map,
+	UpdateMapRequest,
+	NewRumor
+}
 public class PbtAMessage
 {
     public PbtAMessage() { }
@@ -119,5 +121,14 @@ public class ParamsMessage : PbtAMessage
 		}
 		errorMessage = "";
 		return true;
+	}
+}
+
+public class SimpleCommandMessage : PbtAMessage
+{
+	public override bool IsReadyToSendInternal(out string errorMessage)
+	{
+        errorMessage = "";
+        return true;
 	}
 }

@@ -12,7 +12,7 @@ public enum DinoStates { D_Fit, D_Steady, D_Clever, D_MC, D_Weapon, D_NotSet, D_
 	D_0
 }
 public enum MovementType { DangerMove, SafetyMove, ClassMove, NotSet }
-public enum DinoClasses { Doctor, Paleontologist, Kid, Hunter, Soldier, Survivor, Engineer, NotSet}
+public enum DinoClasses { Doctor, Paleontologist, Kid, Hunter, Soldier, Survivor, Engineer, Master, NotSet}
 public enum DinoMapTokens { Empty, Airstrip, Building, Docks, Hatchery, Lake, NativeSettlement, Road, TemporalAnomaly, Aviary, Clifs, Fence, Helipad, Mountain, RadioTower, LAboratory, Tunnel, Beach, Nest, Forest, Grass, Ruins, River, Swamp, Volcano, NotSet }
 
 public static class Extensions
@@ -38,6 +38,7 @@ public static class Extensions
 			DinoClasses.Hunter => "Cazador",
 			DinoClasses.Kid => "Niño",
 			DinoClasses.Doctor => "Doctor",
+			DinoClasses.Master => "Master",
 			_ => "Desconocida"
 		};
 	}

@@ -22,6 +22,8 @@ public class PbtAWorldCommClient
     public event EventHandler<string> OnNewRollFromServer;
     public event EventHandler<string> OnNewErrorMessage;
     public event EventHandler<string> OnNewChangeInMap;
+    public event EventHandler<string> OnNewForcedMapReload;
+    public event EventHandler<Tuple<string, string>> OnNewRumor;
 
 
     private string _hubUrl = "/chat";
@@ -79,6 +81,12 @@ public class PbtAWorldCommClient
             InfoMessage msg = JsonSerializer.Deserialize<InfoMessage>(EncodedMessage) ?? throw new Exception("Cannot decode message");
             OnNewInfoMessageFromServer(this, msg);
         }
+        else if (kind == MessageKinds.NewRumor)
+        {
+            ParamsMessage msg = JsonSerializer.Deserialize<ParamsMessage>(EncodedMessage) ?? throw new Exception("Cannot decode message");
+            string rumor = msg.Parameters["message"];
+            OnNewRumor(this, new Tuple<string, string>(msg.Sender, rumor));
+        }
         else if(kind == MessageKinds.Roll)
         {
             OnNewRollFromServer(this, EncodedMessage);
@@ -87,7 +95,11 @@ public class PbtAWorldCommClient
         {
             OnNewChangeInMap(this, EncodedMessage);
         }
-    }
+		else if (kind == MessageKinds.UpdateMapRequest)
+		{
+			OnNewForcedMapReload(this, EncodedMessage);
+		}
+	}
 
 
     public async Task SendInfo(string msg)
@@ -107,6 +119,12 @@ public class PbtAWorldCommClient
         msg.Parameters.Add("message", EncodedRollReport);
         await SendAsync(msg);
 	}
+
+    public async Task SendSimpleCommandMessage(MessageKinds kind)
+    {
+		SimpleCommandMessage msg = new SimpleCommandMessage { MessageKind = kind };
+        await SendAsync(msg);
+    }
 
     public async Task SendParamsMessage(MessageKinds kind, string payload)
     {

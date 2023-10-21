@@ -1,13 +1,16 @@
 ﻿.MiniMapContainer {
-    width: 424px;
-    height: 259px;
+    overflow: auto;
+}
+.UpdateButton{
+    position: relative;
+    font-size:24px;
 }
 
 .MapMiniViewer {
     background: url(imgs/Map.png);
-    width: 424px;
+    width: 415px;
     height: 259px;
-    position: absolute;
+    position: relative;
 }
 
 .AnchorPoint{

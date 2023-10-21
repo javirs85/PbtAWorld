@@ -17,8 +17,7 @@ html {
 }
 
 body{
-    overflow-y: scroll;
-    overflow-x:hidden;
+    background-color: transparent!important;
 }
 
 h1:focus {

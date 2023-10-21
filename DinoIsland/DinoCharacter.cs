@@ -22,8 +22,13 @@ public class DinoPlayer : Player
 			var oldName = _name;
 			_name = value;
 
-			if (Client is not null && Client.IsConnected)
-				Client.SendInfo($"{oldName} ahora se llama {value}");
+			if(Client is not null)
+			{
+				Client.UserName = value;
+				if (Client.IsConnected)
+					Client.SendInfo($"{oldName} ahora se llama {value}");
+			}
+			
 		}
 	}
 
@@ -48,10 +53,26 @@ public class DinoPlayer : Player
 	}
 
 	public List<string> Gear { get; set; } = new List<string>();
-	public string Rumor { get; set; } = string.Empty;
+	
+	private string _rumor = string.Empty;
+
+	public string Rumor
+	{
+		get { return _rumor; }
+		set { 
+			_rumor = value; 
+			Client.SendParamsMessage(MessageKinds.NewRumor, _rumor);
+		}
+	}
 
 	public List<string> Stories { get;set; } = new List<string>();
 	public List<MapItem> MapItems { get; set; } = new();
+
+	public void UpdateMapItems(List<MapItem> mapItems)
+	{
+		MapItems = mapItems;
+		UpdateUI?.Invoke(this, EventArgs.Empty);
+	}
 
 	public void UpdateMapItems(MapItem mapItem)
 	{
@@ -91,6 +112,12 @@ public class DinoPlayer : Player
 	{
 		if(Client is not null && Client.IsConnected) 
 			await Client.SendParamsMessage(MessageKinds.Map, System.Text.Json.JsonSerializer.Serialize(item));
+	}
+
+	public async Task RequestServerForMapUpdate()
+	{
+		if (Client is not null && Client.IsConnected)
+			await Client.SendSimpleCommandMessage(MessageKinds.UpdateMapRequest);
 	}
 
 	private Random rnd = new Random();
@@ -283,6 +310,7 @@ public class DinoPlayer : Player
 		DinoClasses.Survivor => DinoStates.D_Clever,
 		DinoClasses.Soldier => DinoStates.D_Steady,
 		DinoClasses.Hunter => DinoStates.D_Clever,
+		DinoClasses.Master => DinoStates.D_Clever,
 		_ => throw new NotImplementedException()
 	};
 
@@ -296,6 +324,7 @@ public class DinoPlayer : Player
 		DinoClasses.Survivor => new List<string> { "Aspecto", "Quemado por el sol", "Fuera de este tiempo", "Meticulosamente afeitado" },
 		DinoClasses.Soldier => new List<string> { "Aspecto", "Corpulento", "Fibrado", "con cicatrices" },
 		DinoClasses.Hunter => new List<string> { "Aspecto", "ropa técnica", "tatuado", "atractivo" },
+		DinoClasses.Master => new List<string> { "" },
 		_ => throw new NotImplementedException()
 	};
 	public string Behavior { get; set; } = "Personalidad";
@@ -308,6 +337,7 @@ public class DinoPlayer : Player
 		DinoClasses.Survivor => new List<string> { "Personalidad", "Reservado", "Gregario", "Feral (salvaje)" },
 		DinoClasses.Soldier => new List<string> { "Personalidad", "Autoritario", "Agresivo", "Imperturbable" },
 		DinoClasses.Hunter => new List<string> { "Personalidad", "arrogante", "sarcástico", "mordaz" },
+		DinoClasses.Master => new List<string> { "" },
 		_ => throw new NotImplementedException()
 	};
 }

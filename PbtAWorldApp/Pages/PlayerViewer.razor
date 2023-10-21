@@ -3,6 +3,7 @@
 @inject IToastService Toaster
 @inject NavigationManager navigationManager
 @inject DinoPlayer Player;
+@inject DinoGameController Game;
 @using PbtAWorldApp.Controls.DinoControls
 
 <EditForm Model="Player">
@@ -49,7 +50,7 @@
 				</div>
 				<div class="d-none d-xl-block">
 					<div class="d-flex gap-5 flex-wrap">
-						<div class="d-flex">
+						<div class="d-flex align-items-center">
 							@if (Player.Class == DinoClasses.Kid)
 							{
 								<i class="bi bi-info-circle me-2" title="Asigna +1, +1 y -1. "></i>
@@ -66,7 +67,7 @@
 								Inteligencia
 							</div>
 						</div>
-						<div class="d-flex">
+						<div class="d-flex align-items-center">
 							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
 									   class="form-control"
 							@bind-Value="UIPhysic">
@@ -75,7 +76,7 @@
 								Forma física
 							</div>
 						</div>
-						<div class="d-flex">
+						<div class="d-flex align-items-center">
 							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
 									   class="form-control"
 							@bind-Value="UICold">
@@ -136,239 +137,260 @@
 		</div>
 	</div>
 	<div class="me-4">
-		<div class="container-fluid p-0">
-			<div class="row mr-2">
-				<div class="GeneralMoves ClassMoves col-md-6          col-xl-3 d-none d-xl-block d-flex flex-column gap-3">
-					@if(Player.Class == DinoClasses.Hunter)
-					{
-						<div class="flavor hunter">
-							<h5>8 SEÑALES DE ANIMALES</h5>
-							<p>ROTURAS
-							Causadas por el movimiento de los animales.
-							</p>
-							<p>
-							ROCES
-							Zonas pulidas por animales. Pueden ser involuntarias -por el roce con un objeto que sobresale en el sendero (por ejemplo, una rama)- o intencionadas -un área específica donde un animal se frota-.
-							</p>
-							<p>
-							PELO Y PLUMAS
-							Suelen encontrarse donde el pelo o las plumas se enganchan. Los mechones de pelo pueden indicar un lugar de muerte.
-							</p>
-							<p>
-							ROEDURAS Y MORDISCOS
-							Se puede identificar al animal por el tamaño y el estilo de las marcas de los dientes:
-								<br/>CORTE LIMPIO DE 45 GRADOS-Indica un animal con incisivos (por ejemplo, roedores).
-								<br />PEQUEÑO BORDE DENTADO-Los ciervos tiran de la hierba contra su paleta superior y la hozan, creando este signo.
-								<br />MASTICADO-Marcas de dientes por todas partes, posiblemente con saliva, indican un masticado de depredador, utilizado para obtener minerales.
-							</p>
-							<p>
-							ARAÑAZOS
-							Marcas de garras. Pueden ser intencionadas -un mapache excavando en busca de larvas o un oso afilándose las garras en un árbol- o involuntarias -del paso del animal-.
-							</p>
-							<p>
-							RESTOS EN EL SUELO
-							Cualquier cosa en el suelo que esté arañada, pellizcada, abollada, desgastada, incluidos agujeros, rollos de piedra, ramitas rotas, etc.
-							</p>
-							<p>
-							VEGETACIÓN SUPERIOR
-							En el caso de la vegetación, la altura de la ruptura indica el tipo de animal. Para saber cuánto tiempo hace que pasó el animal, observa cómo ha envejecido la vegetación en la ruptura.
-							</p>
-							<p>
-							EXCREMENTOS
-							Indica el tipo de animal y su dieta. Los animales dejan sus excrementos donde se sienten seguros, a menudo cerca de los lagos. Busca animales cerca del excremento.
-							</p>
+		@if(Player.Class == DinoClasses.Master)
+		{
+			<div class="container-fluid p-0">
+				<div class="row mr-2">
+					<div class="col-md-6 col-lg-4 col-xl-3">
+						<div class="BoxPack">
+							<MapMini @ref="map" />
 						</div>
-					}
-					else if(Player.Class == DinoClasses.Doctor)
-					{
-						<div class="flavor hunter">
-							<h5>PRIMEROS AUXILIOS</h5>
-							<ol>
-								<li>Mantenga la calma, proporcionando a su paciente un tratamiento de primeros auxilios tranquilo y eficaz.</li>
-								<li>Mantenga al paciente caliente y tumbado.No mueva al herido hasta que haya descubierto el alcance de las lesiones.</li>
-								<li>Inicie inmediatamente la respiración artificial boca a boca si el herido no respira.</li>
-								<li>Detenga cualquier hemorragia.</li>
-								<li>Tranquilice al paciente. Observe atentamente si hay signos de shock.</li>
-								<li>Compruebe si hay cortes, fracturas, roturas y lesiones en la cabeza, el cuello o la columna vertebral.</li>
-								<li>No permita que la gente se agolpe sobre el herido.</li>
-								<li>No quite la ropa a menos que sea imprescindible.</li>
-								<li>Decida si su paciente puede ser trasladado a un centro médico adecuado.Si esto no es posible, prepare una zona habitable adecuada en la que se le proporcione cobijo, calor y comida.</li>
-							</ol>
-							<h5>FRACTURAS</h5>
-							Una fractura se clasifica como simple(cerrada) o compuesta(abierta). El tratamiento es el siguiente
-							<ol>
-								<li>Entablillar las articulaciones por encima y por debajo de la fractura.</li>
-								<li>Si la fractura puede penetrar en la piel, podría ser necesario aplicar tracción para enderezar la deformidad.</li>
-								<li>Asegúrese de acolchar las férulas.</li>
-								<li>Compruebe con frecuencia las ataduras de las férulas para asegurarse de que no dificultan la circulación.</li>
-								<li>Cubra la herida abierta con un apósito limpio antes de entablillar.</li>
-							</ol>
-						</div>
-					}
-					else if(Player.Class == DinoClasses.Engineer)
-					{
-						<div class="flavor hunter">
-							<h5>PIENSA COMO INGENIERO</h5>
-							<ol>
-							<li>1. Aísla el problema.
-									La mayoría de las personas intentan resolver un problema no se detienen a asegurarse que tienen el problema correcto. No necesitas hacer una llave, basta con abrir la puerta.
-								</li>
-							<li>2. Haz un inventario de sus recursos.
-									Conoce lo que tienes a tu disposición... y lo que no. Una solución no sirve de nada si no puedes ponerla en práctica.
-								</li>
-							<li>3. Piensa con originalidad.
-									Cuando consideres posibles soluciones, ten en cuenta todas las posibles soluciones, incluso las que parezcan ridículas. No hay nada malo en una mala idea mientras siga siendo sólo una idea.
-								</li>
-							<li>4. Desarrolla una solución.
-									Aquí es cuando eliminas las malas ideas. Continúa hasta que te quede una.
-								</li>
-							<li>5. Evaluar los riesgos.
-									Tu primera prioridad es hacer que las cosas funcionen, pero justo detrás de eso, está estar preparado para lo que suceda si no lo hacen. Si sabes lo que puede salir mal, puedes estar preparado para mitigar lo peor.
-								</li>
-							<li>6. Prueba tu solución.
-									Si es necesario, construye un prototipo. De cualquier forma, empieza por montar un producto mínimo viable y prueba para ver si funciona como se espera.
-								</li>
-							<li>7. Itera.
-									Si tu solución funciona, estupendo. Si no, vuelve a intentarlo hasta que funcione. Acepta que puede que tengas que volver a empezar.
-								</li>
-							<li>8. Ponga en práctica la solución.
-									Cuando sepas que tu solución funciona, utilízala.
-								</li>
-							<li>9. Tómate una cerveza.
-									Te la mereces.
-								</li>
-							</ol>
-							<span class="m-5">&nbsp;</span>
-						</div>
-					}
-					else if(Player.Class == DinoClasses.Kid)
-					{
-						<div class="flavor hunter">
-							<h5>EXTRACTO DE 101 DINO - MITA</h5>
-							<h5>CHISTES DE DINOSAURIOS</h5>
-							<ul>
-								<li>¿Qué vino después del dinosaurio? Su cola.
-								</li><li>¿Qué desodorante usan los dinosaurios? REX-ona
-								</li><li>¿Qué dinosaurio tiene los mejores ritmos? - Un veloci-RAP-tor
-								</li><li>¿Qué se dice cuando necesitas un dinosaurio rápido?
-								-Pronto, saurio
-								</li><li>¿Qué da más miedo que un dinosaurio?
-								- Dos dinosaurios
-								</li><li>Y más miedo que dos dinosaurios?
-								- Dos dinosaurios enfadados!
-								</li><li>¿Cómo se llama un dinosaurio que siempre usa grandes palabras? Tesauro
-								</li>
-							</ul>
-							<span class="m-5">&nbsp;</span>
-							<div class="w-100 d-flex justify-content-center mb-5">
-								<img class="m-3" src="imgs/DinoKid.png"/>
-							</div>
-						</div>
-					}
-					else if(Player.Class == DinoClasses.Paleontologist)
-					{
-						<div class="flavor hunter d-flex justify-content-center">
-							<img src="imgs/PaleoHelp.png"/>
-						</div>
-					}
-					else if(Player.Class == DinoClasses.Soldier)
-					{
-						<div class="flavor hunter d-flex justify-content-center">
-							<img src="imgs/SoldierHelp.png"/>
-						</div>
-					}
-					else if(Player.Class == DinoClasses.Survivor)
-					{
-						<div class="flavor hunter d-flex justify-content-center">
-							<img src="imgs/SurvivorHelp.png"/>
-						</div>
-					}
-				</div>
-				<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
-					<div>
-						<h2>Movimientos de @Player.Class.ToUIString()</h2>
-						<DinoMovesPack Moves=MovesOnScreen PackName="ClassMoves" OpenFirst=false AllowMultipleSelection =true/>
-					</div>
-					<div class="BoxPack">
-						<h2>Heridas</h2>
-						<div class="d-flex flex-column w-100 mb-4">
-							<InputText @bind-Value=Player.Wound1 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;"/>
-							<InputText @bind-Value=Player.Wound2 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-							<div class="mt-1">
-							<PlayerDownCheck/>
-							</div>
-						</div>
-					</div>
-					<div class="BoxPack">
-						<h2>Equipo</h2>
-						<div class="d-flex flex-column w-100">
-							<InputText @bind-Value=Gear0 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-							<InputText @bind-Value=Gear1 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-							<InputText @bind-Value=Gear2 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-							<InputText @bind-Value=Gear3 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-							<InputText @bind-Value=Gear4 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-							<InputText @bind-Value=Gear5 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-							<InputText @bind-Value=Gear6 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-							<InputText @bind-Value=Gear7 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-						</div>
-					</div>
-			
-				</div>
-				<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
-					<div class="LastRollContainer BoxPack">
-						@if (LastRoll is not null)
-						{
-							<h4>Último movimiento</h4>
-							<div>@LastRoll.Roller</div>
-							<div>@LastRoll.MoveTittle <span class="small opacity-50">con</span> @LastRoll.Stat.ToUIString()</div>
-							<div class="d-flex gap-2 justify-content-center m-4">
-								<div class="d-flex align-items-center gap-2">
-									<div class="dice">@LastRoll.d1</div> +
-									<div class="dice">@LastRoll.d2</div> +
-									<div class="dice" style="border-style: none; background: #ffffff3b;">
-										@LastRoll.bonus
-									</div>
-									=
-								</div>
-								<div class="RollResult">@LastRoll.Total</div>
-							</div>
-						}
-						else
-						{
-							<div class="small">Aún nadie ha tirado nada</div>
-						}
-
-					</div>
-					<div>
-						<h2>Movimientos de peligro</h2>
-						<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false />
-					</div>	
-					<div class="BoxPack">
-						<MapMini @ref="map"/>
-					</div>
-				</div>		
-				<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
-					<div>
-						<h2>Movimientos de calma</h2>
-						<DinoMovesPack Moves=Moves.SafetyMoves PackName="DangerMoves" OpenFirst=false />
-					</div>
-			
-					<div class="BoxPack">
-						<h2>Rumor</h2>
-						<InputText @bind-Value=Player.Rumor style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-					</div>
-					<div class="BoxPack">
-						<h2>Las historias que explicas</h2>
-						<div class="d-flex flex-column w-100">
-							@foreach (var story in Player.Stories)
+						<div class="BoxPack">
+							@foreach(var rumor in Game.Rumors)
 							{
-								<div class="story p-2">@story</div>
+								<div>@rumor.Owner : @rumor.Description</div>
 							}
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		}
+		else
+		{
+			<div class="container-fluid p-0">
+				<div class="row mr-2">
+					<div class="GeneralMoves ClassMoves col-md-6          col-xl-3 d-none d-xl-block d-flex flex-column gap-3">
+						@if(Player.Class == DinoClasses.Hunter)
+						{
+							<div class="flavor hunter">
+								<h5>8 SEÑALES DE ANIMALES</h5>
+								<p>ROTURAS
+								Causadas por el movimiento de los animales.
+								</p>
+								<p>
+								ROCES
+								Zonas pulidas por animales. Pueden ser involuntarias -por el roce con un objeto que sobresale en el sendero (por ejemplo, una rama)- o intencionadas -un área específica donde un animal se frota-.
+								</p>
+								<p>
+								PELO Y PLUMAS
+								Suelen encontrarse donde el pelo o las plumas se enganchan. Los mechones de pelo pueden indicar un lugar de muerte.
+								</p>
+								<p>
+								ROEDURAS Y MORDISCOS
+								Se puede identificar al animal por el tamaño y el estilo de las marcas de los dientes:
+									<br/>CORTE LIMPIO DE 45 GRADOS-Indica un animal con incisivos (por ejemplo, roedores).
+									<br />PEQUEÑO BORDE DENTADO-Los ciervos tiran de la hierba contra su paleta superior y la hozan, creando este signo.
+									<br />MASTICADO-Marcas de dientes por todas partes, posiblemente con saliva, indican un masticado de depredador, utilizado para obtener minerales.
+								</p>
+								<p>
+								ARAÑAZOS
+								Marcas de garras. Pueden ser intencionadas -un mapache excavando en busca de larvas o un oso afilándose las garras en un árbol- o involuntarias -del paso del animal-.
+								</p>
+								<p>
+								RESTOS EN EL SUELO
+								Cualquier cosa en el suelo que esté arañada, pellizcada, abollada, desgastada, incluidos agujeros, rollos de piedra, ramitas rotas, etc.
+								</p>
+								<p>
+								VEGETACIÓN SUPERIOR
+								En el caso de la vegetación, la altura de la ruptura indica el tipo de animal. Para saber cuánto tiempo hace que pasó el animal, observa cómo ha envejecido la vegetación en la ruptura.
+								</p>
+								<p>
+								EXCREMENTOS
+								Indica el tipo de animal y su dieta. Los animales dejan sus excrementos donde se sienten seguros, a menudo cerca de los lagos. Busca animales cerca del excremento.
+								</p>
+							</div>
+						}
+						else if(Player.Class == DinoClasses.Doctor)
+						{
+							<div class="flavor hunter">
+								<h5>PRIMEROS AUXILIOS</h5>
+								<ol>
+									<li>Mantenga la calma, proporcionando a su paciente un tratamiento de primeros auxilios tranquilo y eficaz.</li>
+									<li>Mantenga al paciente caliente y tumbado.No mueva al herido hasta que haya descubierto el alcance de las lesiones.</li>
+									<li>Inicie inmediatamente la respiración artificial boca a boca si el herido no respira.</li>
+									<li>Detenga cualquier hemorragia.</li>
+									<li>Tranquilice al paciente. Observe atentamente si hay signos de shock.</li>
+									<li>Compruebe si hay cortes, fracturas, roturas y lesiones en la cabeza, el cuello o la columna vertebral.</li>
+									<li>No permita que la gente se agolpe sobre el herido.</li>
+									<li>No quite la ropa a menos que sea imprescindible.</li>
+									<li>Decida si su paciente puede ser trasladado a un centro médico adecuado.Si esto no es posible, prepare una zona habitable adecuada en la que se le proporcione cobijo, calor y comida.</li>
+								</ol>
+								<h5>FRACTURAS</h5>
+								Una fractura se clasifica como simple(cerrada) o compuesta(abierta). El tratamiento es el siguiente
+								<ol>
+									<li>Entablillar las articulaciones por encima y por debajo de la fractura.</li>
+									<li>Si la fractura puede penetrar en la piel, podría ser necesario aplicar tracción para enderezar la deformidad.</li>
+									<li>Asegúrese de acolchar las férulas.</li>
+									<li>Compruebe con frecuencia las ataduras de las férulas para asegurarse de que no dificultan la circulación.</li>
+									<li>Cubra la herida abierta con un apósito limpio antes de entablillar.</li>
+								</ol>
+							</div>
+						}
+						else if(Player.Class == DinoClasses.Engineer)
+						{
+							<div class="flavor hunter">
+								<h5>PIENSA COMO INGENIERO</h5>
+								<ol>
+								<li>1. Aísla el problema.
+										La mayoría de las personas intentan resolver un problema no se detienen a asegurarse que tienen el problema correcto. No necesitas hacer una llave, basta con abrir la puerta.
+									</li>
+								<li>2. Haz un inventario de sus recursos.
+										Conoce lo que tienes a tu disposición... y lo que no. Una solución no sirve de nada si no puedes ponerla en práctica.
+									</li>
+								<li>3. Piensa con originalidad.
+										Cuando consideres posibles soluciones, ten en cuenta todas las posibles soluciones, incluso las que parezcan ridículas. No hay nada malo en una mala idea mientras siga siendo sólo una idea.
+									</li>
+								<li>4. Desarrolla una solución.
+										Aquí es cuando eliminas las malas ideas. Continúa hasta que te quede una.
+									</li>
+								<li>5. Evaluar los riesgos.
+										Tu primera prioridad es hacer que las cosas funcionen, pero justo detrás de eso, está estar preparado para lo que suceda si no lo hacen. Si sabes lo que puede salir mal, puedes estar preparado para mitigar lo peor.
+									</li>
+								<li>6. Prueba tu solución.
+										Si es necesario, construye un prototipo. De cualquier forma, empieza por montar un producto mínimo viable y prueba para ver si funciona como se espera.
+									</li>
+								<li>7. Itera.
+										Si tu solución funciona, estupendo. Si no, vuelve a intentarlo hasta que funcione. Acepta que puede que tengas que volver a empezar.
+									</li>
+								<li>8. Ponga en práctica la solución.
+										Cuando sepas que tu solución funciona, utilízala.
+									</li>
+								<li>9. Tómate una cerveza.
+										Te la mereces.
+									</li>
+								</ol>
+								<span class="m-5">&nbsp;</span>
+							</div>
+						}
+						else if(Player.Class == DinoClasses.Kid)
+						{
+							<div class="flavor hunter">
+								<h5>EXTRACTO DE 101 DINO - MITA</h5>
+								<h5>CHISTES DE DINOSAURIOS</h5>
+								<ul>
+									<li>¿Qué vino después del dinosaurio? Su cola.
+									</li><li>¿Qué desodorante usan los dinosaurios? REX-ona
+									</li><li>¿Qué dinosaurio tiene los mejores ritmos? - Un veloci-RAP-tor
+									</li><li>¿Qué se dice cuando necesitas un dinosaurio rápido?
+									-Pronto, saurio
+									</li><li>¿Qué da más miedo que un dinosaurio?
+									- Dos dinosaurios
+									</li><li>Y más miedo que dos dinosaurios?
+									- Dos dinosaurios enfadados!
+									</li><li>¿Cómo se llama un dinosaurio que siempre usa grandes palabras? Tesauro
+									</li>
+								</ul>
+								<span class="m-5">&nbsp;</span>
+								<div class="w-100 d-flex justify-content-center mb-5">
+									<img class="m-3" src="imgs/DinoKid.png"/>
+								</div>
+							</div>
+						}
+						else if(Player.Class == DinoClasses.Paleontologist)
+						{
+							<div class="flavor hunter d-flex justify-content-center">
+								<img src="imgs/PaleoHelp.png"/>
+							</div>
+						}
+						else if(Player.Class == DinoClasses.Soldier)
+						{
+							<div class="flavor hunter d-flex justify-content-center">
+								<img src="imgs/SoldierHelp.png"/>
+							</div>
+						}
+						else if(Player.Class == DinoClasses.Survivor)
+						{
+							<div class="flavor hunter d-flex justify-content-center">
+								<img src="imgs/SurvivorHelp.png"/>
+							</div>
+						}
+					</div>
+					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
+						<div>
+							<h2>Movimientos de @Player.Class.ToUIString()</h2>
+							<DinoMovesPack Moves=MovesOnScreen PackName="ClassMoves" OpenFirst=false AllowMultipleSelection =true/>
+						</div>
+						<div class="BoxPack">
+							<h2>Heridas</h2>
+							<div class="d-flex flex-column w-100 mb-4">
+								<InputText @bind-Value=Player.Wound1 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;"/>
+								<InputText @bind-Value=Player.Wound2 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+								<div class="mt-1">
+								<PlayerDownCheck/>
+								</div>
+							</div>
+						</div>
+						<div class="BoxPack">
+							<h2>Equipo</h2>
+							<div class="d-flex flex-column w-100">
+								<InputText @bind-Value=Gear0 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+								<InputText @bind-Value=Gear1 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+								<InputText @bind-Value=Gear2 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+								<InputText @bind-Value=Gear3 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+								<InputText @bind-Value=Gear4 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+								<InputText @bind-Value=Gear5 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+								<InputText @bind-Value=Gear6 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+								<InputText @bind-Value=Gear7 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+							</div>
+						</div>
+			
+					</div>
+					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
+						<div class="LastRollContainer BoxPack">
+							@if (LastRoll is not null)
+							{
+								<h4>Último movimiento</h4>
+								<div>@LastRoll.Roller</div>
+								<div>@LastRoll.MoveTittle <span class="small opacity-50">con</span> @LastRoll.Stat.ToUIString()</div>
+								<div class="d-flex gap-2 justify-content-center m-4">
+									<div class="d-flex align-items-center gap-2">
+										<div class="dice">@LastRoll.d1</div> +
+										<div class="dice">@LastRoll.d2</div> +
+										<div class="dice" style="border-style: none; background: #ffffff3b;">
+											@LastRoll.bonus
+										</div>
+										=
+									</div>
+									<div class="RollResult">@LastRoll.Total</div>
+								</div>
+							}
+							else
+							{
+								<div class="small">Aún nadie ha tirado nada</div>
+							}
+
+						</div>
+						<div>
+							<h2>Movimientos de peligro</h2>
+							<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false />
+						</div>	
+						<div class="BoxPack">
+							<MapMini @ref="map"/>
+						</div>
+					</div>		
+					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
+						<div>
+							<h2>Movimientos de calma</h2>
+							<DinoMovesPack Moves=Moves.SafetyMoves PackName="DangerMoves" OpenFirst=false />
+						</div>
+			
+						<div class="BoxPack">
+							<h2>Rumor</h2>
+							<InputText @bind-Value=Player.Rumor style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+						</div>
+						<div class="BoxPack">
+							<h2>Las historias que explicas</h2>
+							<div class="d-flex flex-column w-100">
+								@foreach (var story in Player.Stories)
+								{
+									<div class="story p-2">@story</div>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
 	</div>
 </EditForm>
 
@@ -376,6 +398,7 @@
 	MapMini? map = null;
 
 	RollReport<DinoMoveIDs, DinoStates>? LastRoll = null;
+	List<string> Rumors = new();
 
 	PbtAWorldCommClient Client = new PbtAWorldCommClient();
 	protected override async Task OnInitializedAsync()
@@ -385,6 +408,11 @@
 		Player.Clever = 1;
 		Player.Fit = -1;
 		Player.Steady = +2;
+
+		Game.OnUIUpdate += (o, e) =>
+		{
+			InvokeAsync(() => { StateHasChanged(); });
+		};
 
 		Client.OnNewInfoMessageFromServer += (sender, msg) =>
 		{
@@ -400,8 +428,23 @@
 		{
 			var paramMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
 			var UpdateInMap = System.Text.Json.JsonSerializer.Deserialize<MapItem>(paramMessage.Parameters["message"]);
-			if(UpdateInMap is not null)
+			if(UpdateInMap is not null){
 				Player.UpdateMapItems(UpdateInMap);
+				if(UpdateInMap.Action == MapActions.Add)
+					Toaster.ShowInfo($"{paramMessage.Sender} a añadido un/a {UpdateInMap.Token.ToUI()} al mapa");
+				else if(UpdateInMap.Action == MapActions.Remove)
+					Toaster.ShowInfo($"{paramMessage.Sender} a quitado un/a {UpdateInMap.Token.ToUI()} del mapa");
+			}
+		};
+		Client.OnNewForcedMapReload += (sender, msg) =>
+		{
+			var paramMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
+			var Items = System.Text.Json.JsonSerializer.Deserialize<List<MapItem>>(paramMessage.Parameters["message"]);
+			if (Items is not null)
+			{
+				Player.UpdateMapItems(Items);
+				Toaster.ShowInfo($"{Items.Count} añadidos al mapa");
+			}
 		};
 
 		Player.UpdateUI += (o, e) =>
