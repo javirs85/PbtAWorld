@@ -1,0 +1,156 @@
+﻿@using PbtAWorldApp.Controls.DinoControls;
+@inject DinoGameController Game;
+@inject DinoPlayer Player
+
+<div class="container-fluid p-0">
+	<div class="row mr-2">
+		<div class="col-md-6 col-lg-4 col-xl-3 BoxPack">
+			<h2>Tierra firme</h2>
+			<RollableList Options=WhyComing Tittle="Habéis llegado a tierra firme juntos, por que?" />
+			<h2>Quien sois?</h2>
+			<p>
+				Cada jugador escoge un libreto. No puede haber dos iguales. Sigue las instrucciones para crear tu héroe.
+				</p>
+			<p>
+				Introducir vuestros héroes al resto de la mesa, sentiros libres de hacer una o dos preguntas pero no os lieis mucho. Habrá tiempo para conoceros mejor.
+			</p>
+			<h2>Que habéis oído sobre la isla antes de llagar?</h2>
+			<p>
+				Da un rumor a cada jugador
+			</p>
+			<p>Haz preguntas para clarificar el plan, asegúrate de que todo el mundo está de acuerdo en COMO llegan a la isla y que tienen que hacer allí cuando lleguen. Añade al mapa lo que sea necesario.</p>
+		</div>
+
+		<div class="col-md-6 col-lg-4 col-xl-3 BoxPack">
+			<h2 @onclick=@(()=>{IsShowingRumors = !IsShowingRumors;})>Rumores</h2>
+			@if (IsShowingRumors)
+			{
+				<table>
+					@foreach(var p in Game.Players)
+					{
+						<tr>
+							<td>@p.Name</td>
+							@if(p.IsRumorSet)
+							{
+								<td>@p.Rumor</td>
+							}
+							else
+							{
+								<td>
+									<ul>
+										<li></li>
+									</ul>
+								</td>
+							}
+						</tr>
+					}
+				</table>
+			}
+		</div>
+
+		<div class="col-md-6 col-lg-4 col-xl-3">
+			<div class="btn btn-primary" @onclick=@(()=>{StateHasChanged();})>Reload</div>
+			<div class="BoxPack">
+				<MapMini @ref="Map" />
+			</div>
+			<div class="BoxPack">
+				@foreach (var rumor in Game.Rumors)
+				{
+					<div>@rumor.Owner : @rumor.Description</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public MapMini? Map { get; set; } = null;
+	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
+
+	private bool IsShowingRumors = false;
+
+	private List<string> WhyComing = new List<string>
+	{
+		"Hemos sido invitados como huéspedes, en misteriosas circunstancias.",
+		"Hemos sido contratados para trabajar aquí, en misteriosas circunstancias.",
+		"Estamos aquí para explorar o investigar.",
+		"Somos criminales o contrabandistas, aquí por un golpe.",
+		"Estamos en una misión de rescate/recuperación. ¿A quién o qué estamos persiguiendo?",
+		"Estamos en una misión encubierta, para infiltrarnos o sabotear."
+	};
+
+	private List<string> Rumors = new List<string>
+	{
+		"Corrientes oceánicas y rocas submarinas hacen que sea casi imposible llegar a la isla en barco.",
+		"Alguien está creando nuevas especies de plantas y animales en la isla.",
+		"Ningún humano había puesto un pie en la isla antes del año pasado.",
+		"El gobierno chino tiene algo que ver con lo que está sucediendo.",
+		"Hay nativos que adoran a los dinosaurios como dioses.",
+		"A veces hay extrañas nubes de tormenta moradas sobre la isla.",
+		"Un amigo borracho te contó lo que vieron en la isla. Mayormente tonterías, pero murieron poco después en circunstancias misteriosas.",
+		"Tienes un amigo o familiar que fue a esta isla y nunca regresó.",
+		"La gente va por períodos de dos años y hasta los conserjes ganan siete cifras.",
+		"Las brújulas no funcionan del todo bien.",
+		"Hay arañas del tamaño de un coco.",
+		"El Museo de Historia Natural tiene una nueva exhibición que se inaugura pronto y es tan secreta que incluso la mayoría de los curadores no saben de qué se trata."
+	};
+
+	private List<string> DinoNickNames = new List<string>
+	{
+		"MMDs (Man-Made Dinosaurs)",
+		"APAs (Animales prehistóricos artificiales)",
+		"Crichtons",
+		"Paleos",
+		"Waybacks o Retrosaurios",
+		"FIDOs (Fossil induced dinosaur organism)"
+	};
+
+	private List<string> MysteriusOrganizations = new List<string>
+	{
+		"The Hallet Institute",
+		"恐⻰龙 (Kǒnglóng)",
+		"Mantell Industries",
+		"Hilltop",
+		"SynGen",
+		"D.R.I (Dinosaur Research Institute)"
+	};
+
+	private List<string> NPCGoals = new List<string>
+	{
+		"Llegar hasta un ser querido en otra parte de la isla.",
+		"Permanecer en el lugar hasta que todo se calme.",
+		"Evitar a los dinosaurios a toda costa.",
+		"Vengarse de la persona que creen es responsable de todo el lío.",
+		"Cobrar, en efectivo.",
+		"Nadie puede irse.",
+		"Recuperar copias de seguridad de todos los datos.",
+		"Completar su investigación.",
+		"Devolver todo a la normalidad.",
+		"Proteger un secreto personal a toda costa."
+	};
+
+	private List<string> NPCOffers = new List<string>
+	{
+		"Acceso a tarjetas clave, contraseñas, etc.",
+		"Orientación hacia una ubicación o persona.",
+		"Un arma y/o la habilidad para usar una.",
+		"Conocimiento sobre un dinosaurio.",
+		"Conocimiento de un alijo de armas, combustible, artefactos, etc.",
+		"Habilidad con un vehículo.",
+		"Habilidad con un sistema técnico: energía, portales temporales, tanques de clonación, seguridad, etc.",
+		"Atención médica."
+	};
+
+	protected override void OnInitialized()
+	{
+		Player.UpdateUI += (o, e) =>
+		{
+			InvokeAsync(() => { StateHasChanged(); });
+			Map?.Update();
+		};
+		Game.OnUIUpdate += (o, e) =>
+		{
+			InvokeAsync(() => { StateHasChanged(); });
+		};
+	}
+}

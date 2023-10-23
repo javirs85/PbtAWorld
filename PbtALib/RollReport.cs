@@ -22,11 +22,12 @@ public class RollReport<T_ID, T_Stats>
 		Stat = stat;
 	}
 
-	public RollReport(T_ID MoveID, T_Stats stat, string MoveTittle)
+	public RollReport(T_ID MoveID, T_Stats stat, string MoveTittle, string _iDofTheRoller)
 	{
 		MoveId = MoveID;
 		Stat = stat;
 		LocalTittle = MoveTittle;
+		Roller = _iDofTheRoller;
 	}
 
 	public string Roller { get; set; } = string.Empty;

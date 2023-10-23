@@ -4,16 +4,18 @@
 @inject NavigationManager navigationManager
 @inject DinoPlayer Player;
 @inject DinoGameController Game;
+@inject PbtAWorldCommClient Client;
 @using PbtAWorldApp.Controls.DinoControls
 
-<EditForm Model="Player">
+<EditForm Model="Player" OnSubmit="@(()=>{})">
 
 	<div class="Header ">
 		<div class="WideArea">
-			<div class="LongBlackStripe">
+			<div class="LongBlackStripe flex-wrap">
 				<div class="d-flex flex-wrap gap-2">
-					<div class="d-flex">
-						<InputText @bind-Value=Player.Name
+					<div class="d-flex flex-wrap">
+						<button style="width:0px; height:px; display:none;" @onclick=@(()=>{StateHasChanged();})><i class="bi bi-arrow-clockwise"></i></button>
+						<InputText @bind-Value=Name
 								   class="borderlessInput"
 								   style="color: white;
 												background: #000;
@@ -22,7 +24,7 @@
 												border: none;
 												outline: none;
 												border: 1px solid #a1a1a1;"></InputText>
-						<InputSelect @bind-Value=Player.Class
+						<InputSelect @bind-Value=Playbook
 									 style="background:#CCC; outline: none; border: none;">
 							@foreach (DinoClasses op in Enum.GetValues(typeof(DinoClasses)))
 							{
@@ -48,16 +50,16 @@
 						</InputSelect>
 					</div>
 				</div>
-				<div class="d-none d-xl-block">
+				<div class="d-none d-xl-flex flex-grow-1 justify-content-center">
 					<div class="d-flex gap-5 flex-wrap">
 						<div class="d-flex align-items-center">
 							@if (Player.Class == DinoClasses.Kid)
 							{
-								<i class="bi bi-info-circle me-2" title="Asigna +1, +1 y -1. "></i>
+								<i class="bi bi-info-circle me-2 d-none d-md-block " title="Asigna +1, +1 y -1. "></i>
 							}
 							else
 							{
-								<i class="bi bi-info-circle me-2" title="Asigna +2, +1 y -1. Piensa que la característica favorita del @Player.Class.ToUIString() es @Player.FavoriteStat.ToUIString()"></i>
+								<i class="bi bi-info-circle me-2 d-none d-md-block" title="Asigna +2, +1 y -1. Piensa que la característica favorita del @Player.Class.ToUIString() es @Player.FavoriteStat.ToUIString()"></i>
 							}
 							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
 									   class="form-control"
@@ -139,21 +141,7 @@
 	<div class="me-4">
 		@if(Player.Class == DinoClasses.Master)
 		{
-			<div class="container-fluid p-0">
-				<div class="row mr-2">
-					<div class="col-md-6 col-lg-4 col-xl-3">
-						<div class="BoxPack">
-							<MapMini @ref="map" />
-						</div>
-						<div class="BoxPack">
-							@foreach(var rumor in Game.Rumors)
-							{
-								<div>@rumor.Owner : @rumor.Description</div>
-							}
-						</div>
-					</div>
-				</div>
-			</div>
+			<MasterViewer />
 		}
 		else
 		{
@@ -362,7 +350,7 @@
 						</div>
 						<div>
 							<h2>Movimientos de peligro</h2>
-							<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false />
+							<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false LastRoll="LastRoll"/>
 						</div>	
 						<div class="BoxPack">
 							<MapMini @ref="map"/>
@@ -376,7 +364,7 @@
 			
 						<div class="BoxPack">
 							<h2>Rumor</h2>
-							<InputText @bind-Value=Player.Rumor style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+							<InputText @bind-Value=Rumor style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
 						</div>
 						<div class="BoxPack">
 							<h2>Las historias que explicas</h2>
@@ -398,9 +386,7 @@
 	MapMini? map = null;
 
 	RollReport<DinoMoveIDs, DinoStates>? LastRoll = null;
-	List<string> Rumors = new();
 
-	PbtAWorldCommClient Client = new PbtAWorldCommClient();
 	protected override async Task OnInitializedAsync()
 	{
 		Player.Name = "Sebas";
@@ -414,38 +400,13 @@
 			InvokeAsync(() => { StateHasChanged(); });
 		};
 
-		Client.OnNewInfoMessageFromServer += (sender, msg) =>
-		{
-			Toaster.ShowInfo(msg.Body);
-		};
 		Client.OnNewRollFromServer += (sender, msg) =>
 		{
 			var rollMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
 			LastRoll = System.Text.Json.JsonSerializer.Deserialize<RollReport<DinoMoveIDs, DinoStates>>(rollMessage.Parameters["message"]);
 			InvokeAsync(() => { StateHasChanged(); });
 		};
-		Client.OnNewChangeInMap += (sender, msg) =>
-		{
-			var paramMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
-			var UpdateInMap = System.Text.Json.JsonSerializer.Deserialize<MapItem>(paramMessage.Parameters["message"]);
-			if(UpdateInMap is not null){
-				Player.UpdateMapItems(UpdateInMap);
-				if(UpdateInMap.Action == MapActions.Add)
-					Toaster.ShowInfo($"{paramMessage.Sender} a añadido un/a {UpdateInMap.Token.ToUI()} al mapa");
-				else if(UpdateInMap.Action == MapActions.Remove)
-					Toaster.ShowInfo($"{paramMessage.Sender} a quitado un/a {UpdateInMap.Token.ToUI()} del mapa");
-			}
-		};
-		Client.OnNewForcedMapReload += (sender, msg) =>
-		{
-			var paramMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
-			var Items = System.Text.Json.JsonSerializer.Deserialize<List<MapItem>>(paramMessage.Parameters["message"]);
-			if (Items is not null)
-			{
-				Player.UpdateMapItems(Items);
-				Toaster.ShowInfo($"{Items.Count} añadidos al mapa");
-			}
-		};
+
 
 		Player.UpdateUI += (o, e) =>
 		{
@@ -454,7 +415,7 @@
 		};
 
 		await Client.StartCommunication(navigationManager.BaseUri, Player.Name);
-		Player.Connect(Client);
+		await Player.Connect(Client, Toaster);
 	}
 
 	private List<DinoMove> MovesOnScreen
@@ -503,6 +464,56 @@
 	{
 		get { return Player.Gear[7]; }
 		set { Player.Gear[7] = value; }
+	}
+
+	public string Rumor
+	{
+		get { return Player.Rumor; }
+		set
+		{
+			Player.Rumor = value;
+			SendUpdateToServer();
+		}
+	}
+
+	public string Name
+	{
+		get { return Player.Name; }
+		set
+		{
+			if (value == Player.Name) return;
+			var oldName = Player.Name;
+			Player.Name = value;
+
+			if (Client is not null)
+			{
+				Client.UserName = value;
+				if (Client.IsConnected)
+				{
+					Client.SendInfo($"{oldName} ahora se llama {value}");
+					SendUpdateToServer();
+				}
+			}
+
+		}
+	}
+
+	private DinoClasses Playbook
+	{
+		get { return Player.Class; }
+		set
+		{
+			Player.Class =value;
+			SendUpdateToServer();
+		}
+	}
+
+	private async Task SendUpdateToServer()
+	{
+		if(Client is not null && Client.IsConnected)
+		{
+			await Client.SendParamsMessage(MessageKinds.UpdateInPlayer, System.Text.Json.JsonSerializer.Serialize(Player));
+		}
 	}
 
 	public void CustomParse(string newValue, ref int placeWhereToStore)

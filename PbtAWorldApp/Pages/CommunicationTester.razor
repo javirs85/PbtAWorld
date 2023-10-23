@@ -71,25 +71,26 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Client.OnNewInfoMessageFromServer += (sender, msg) =>
+        /*Client.OnNewInfoMessageFromServer += (sender, msg) =>
         {
-            Toaster.ShowInfo(msg.Body);
+        Toaster.ShowInfo(msg.Body);
         };
         Client.OnNewChatMessageFromServer += (sender, msg) =>
-        {
+            {
             _messages.Add(new UIMEssage(Client, msg));
             InvokeAsync(() =>
-            {
+                {
                 _newMessage = "";
                 StateHasChanged();
-            });
+        });
         };
+        */
         Client.OnNewErrorMessage += (sender, msg) => Toaster.ShowError(msg);
     }
 
     private async Task SendMessage()
     {
-        await Client.SendAsync(new ChatMessage(_newMessage) as PbtAMessage);
+        // await Client.SendAsync(new ChatMessage(_newMessage) as PbtAMessage);
     }
 
     private async Task Start()
@@ -113,13 +114,15 @@ else
         {
             get
             {
-                if (Message is InfoMessage) return (Message as InfoMessage)?.Body ?? "Message is null";
-                else if (Message is ChatMessage) return (Message as ChatMessage)?.Parameters["message"] ?? "Message is null";
-                else return "Unknown message type";
+                /*  if (Message is InfoMessage) return (Message as InfoMessage)?.Body ?? "Message is null";
+                   else if (Message is ChatMessage) return (Message as ChatMessage)?.Parameters["message"] ?? "Message is null";
+                   else return "Unknown message type";
+                   */
+                return "";
             }
         }
         public string Sender => Message?.Sender ?? "Unknown sender";
-        public bool IsNotice => Message is InfoMessage ? true : false;
+        public bool IsNotice => /*Message is InfoMessage ? true : */false;
         public string CSS => ClientUserName == Message?.Sender ? "sent" : "received" ?? "received";
     }
 

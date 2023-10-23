@@ -15,14 +15,9 @@ public class PbtAWorldCommClient
 {
     public bool IsConnected { get; set; } = false;
     public string UserName { get; set; } = string.Empty;
-
-    public event EventHandler<PbtAMessage> OnNewRawMessageFromServer;
-    public event EventHandler<InfoMessage> OnNewInfoMessageFromServer;
-    public event EventHandler<ChatMessage> OnNewChatMessageFromServer;
+    public event EventHandler<ParamsMessage> OnNewMessageToPlayer;
     public event EventHandler<string> OnNewRollFromServer;
     public event EventHandler<string> OnNewErrorMessage;
-    public event EventHandler<string> OnNewChangeInMap;
-    public event EventHandler<string> OnNewForcedMapReload;
     public event EventHandler<Tuple<string, string>> OnNewRumor;
 
 
@@ -56,10 +51,7 @@ public class PbtAWorldCommClient
 
             await _hubConnection.StartAsync();
 
-            await SendAsync(new InfoMessage { 
-                Sender = UserName,
-                Body = $"{UserName} se ha incorporado al juego."
-            });
+            await SendInfo($"{UserName} se ha unido al juego");
         }
         catch (Exception ex)
         {
@@ -71,43 +63,31 @@ public class PbtAWorldCommClient
 
     public void ReceiveMessage(MessageKinds kind, string EncodedMessage)
     {
-        if (kind == MessageKinds.Chat)
+
+        switch (kind)
         {
-            ChatMessage msg = JsonSerializer.Deserialize<ChatMessage>(EncodedMessage) ?? throw new Exception("Cannot decode message");
-            OnNewChatMessageFromServer(this, msg);
+            case MessageKinds.Raw:
+            case MessageKinds.Chat:
+                break;
+            case MessageKinds.Roll:
+                OnNewRollFromServer(this, EncodedMessage);
+				break;
+            case MessageKinds.Map:
+            case MessageKinds.UpdateMapRequest:
+            case MessageKinds.NewRumor:
+			case MessageKinds.Info:
+				ParamsMessage msg = JsonSerializer.Deserialize<ParamsMessage>(EncodedMessage) ?? throw new Exception("Cannot decode message");
+                OnNewMessageToPlayer(this, msg);
+				break;
+            default:
+                break;
         }
-        else if (kind == MessageKinds.Info)
-        {
-            InfoMessage msg = JsonSerializer.Deserialize<InfoMessage>(EncodedMessage) ?? throw new Exception("Cannot decode message");
-            OnNewInfoMessageFromServer(this, msg);
-        }
-        else if (kind == MessageKinds.NewRumor)
-        {
-            ParamsMessage msg = JsonSerializer.Deserialize<ParamsMessage>(EncodedMessage) ?? throw new Exception("Cannot decode message");
-            string rumor = msg.Parameters["message"];
-            OnNewRumor(this, new Tuple<string, string>(msg.Sender, rumor));
-        }
-        else if(kind == MessageKinds.Roll)
-        {
-            OnNewRollFromServer(this, EncodedMessage);
-        }
-        else if(kind == MessageKinds.Map)
-        {
-            OnNewChangeInMap(this, EncodedMessage);
-        }
-		else if (kind == MessageKinds.UpdateMapRequest)
-		{
-			OnNewForcedMapReload(this, EncodedMessage);
-		}
 	}
 
 
     public async Task SendInfo(string msg)
     {
-        await SendAsync(new InfoMessage
-        {
-            Body = msg
-        }) ;
+        await SendAsync(new ParamsMessage(MessageKinds.Info, msg));
     }
 
     public async Task SendRollReport(string EncodedRollReport)
@@ -168,12 +148,9 @@ public class PbtAWorldCommClient
     {
         if (IsConnected)
         {
-            await SendAsync( new InfoMessage { 
-                Sender = UserName,
-                Body= $"{UserName} left chat room." 
-            });
+            await SendInfo($"{UserName} left chat room.");
 
-            await _hubConnection.StopAsync();
+			await _hubConnection.StopAsync();
             await _hubConnection.DisposeAsync();
 
             _hubConnection = null;

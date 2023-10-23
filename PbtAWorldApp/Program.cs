@@ -7,6 +7,7 @@ using Blazored.Toast;
 using PbtAWorldApp;
 using PbtAWorldConnectivity;
 using DinoIsland;
+using System.Dynamic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddBlazoredToast();
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IPeopleData, PeopleData>();
 builder.Services.AddSingleton<DinoMovesService>();
+builder.Services.AddSingleton<PbtAWorldCommClient>();
 builder.Services.AddSingleton<DinoGameController>();
 builder.Services.AddScoped<DinoPlayer>();
 builder.Services.AddBlazorBootstrap();
@@ -69,6 +71,6 @@ app.MapControllers();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-app.MapHub<DinoServer>(DinoServer.HubUrl);
+app.MapHub<DinoGameController>(DinoGameController.HubUrl);
 
 app.Run();

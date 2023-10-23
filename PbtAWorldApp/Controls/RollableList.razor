@@ -1,0 +1,36 @@
+﻿<div class="d-flex flex-column">
+	<div class="d-flex">
+		<h4>@Tittle</h4>
+		<button class="btn btn-primary" @onclick=Roll>
+			<i class="bi bi-dice-5"></i>
+		</button>
+	</div>
+	<div class="d-flex flex-column">
+	@for(int i =0; i<Options.Count;++i)
+	{
+		<div style="border:@(i == idx?"solid 1px red;":"none")" @onclick="@(()=>{Select(i);})">
+			<div>
+				@(i+1) .
+				@Options[i]
+			</div>
+		</div>
+	}
+	</div>
+</div>
+
+@code {
+	[Parameter] public List<string> Options { get; set; } = new();
+	[Parameter] public string Tittle { get; set; } = "Title";
+
+	int idx = -1;
+	Random rnd = new();
+
+	public string Selected => idx == -1? "" : Options[idx];
+
+	private void Roll()
+	{
+		idx = rnd.Next(0, Options.Count);
+	}
+
+	private void Select(int o) => idx = o;
+}

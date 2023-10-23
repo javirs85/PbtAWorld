@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PbtAWorldConnectivity;
+using Blazored.Toast.Services;
 
 namespace DinoIsland;
 
@@ -12,58 +13,24 @@ namespace DinoIsland;
 public class DinoPlayer : Player
 {
 	public event EventHandler UpdateUI;
-	private string _name = string.Empty;
+	private string _name = "Escoge un nombre";
 
-	public new string Name
+	public string Name
 	{
 		get { return _name; }
-		set {
-			if(value == _name) return;
-			var oldName = _name;
-			_name = value;
-
-			if(Client is not null)
-			{
-				Client.UserName = value;
-				if (Client.IsConnected)
-					Client.SendInfo($"{oldName} ahora se llama {value}");
-			}
-			
-		}
+		set { _name = value; }
 	}
+
 
 	public string Wound1 { get; set; } = string.Empty;
 	public string Wound2 { get; set; } = string.Empty;
 
-	private bool _isdown = false;
-
-	public bool IsDown
-	{
-		get { return _isdown; }
-		set { 
-			_isdown = value;
-			if (Client is not null && Client.IsConnected)
-			{
-				if (_isdown)
-					Client.SendInfo($"{Name} ha caído");
-				else
-					Client.SendInfo($"{Name} ha vuelto de entre los muertos");
-			}
-		}
-	}
+	public bool IsDown { get; set; } = false;
 
 	public List<string> Gear { get; set; } = new List<string>();
 	
-	private string _rumor = string.Empty;
-
-	public string Rumor
-	{
-		get { return _rumor; }
-		set { 
-			_rumor = value; 
-			Client.SendParamsMessage(MessageKinds.NewRumor, _rumor);
-		}
-	}
+	public string Rumor { get; set; } = "Sin rumores de momento";
+	public bool IsRumorSet => Rumor == "Sin rumores de momento";
 
 	public List<string> Stories { get;set; } = new List<string>();
 	public List<MapItem> MapItems { get; set; } = new();
@@ -96,15 +63,59 @@ public class DinoPlayer : Player
 	private DinoClasses _class = DinoClasses.NotSet;
 
 	private PbtAWorldCommClient? Client;
+	private IToastService? Toaster;
 
-	public void Connect(PbtAWorldCommClient _client)
+	public async Task Connect(PbtAWorldCommClient _client, IToastService _toaster)
 	{
 		if (_client != null && _client.IsConnected) {
 			Client = _client;
+			Toaster = _toaster;
+
+			Client.OnNewMessageToPlayer += ProcessMessage;
+			await Client.SendParamsMessage(MessageKinds.UpdateInPlayer, System.Text.Json.JsonSerializer.Serialize(this));
 		}
 		else
 		{
 			throw new Exception("Client must be not null and connected before sending it here");
+		}
+	}
+
+	private void ProcessMessage(object? sender, ParamsMessage msg)
+	{
+		switch (msg.MessageKind)
+		{
+			case MessageKinds.Raw:
+				break;
+			case MessageKinds.Info:
+				Toaster?.ShowInfo(msg.Parameters["message"]);
+				break;
+			case MessageKinds.Chat:
+				break;
+			case MessageKinds.Roll:
+				break;
+			case MessageKinds.Map:
+				var UpdateInMap = System.Text.Json.JsonSerializer.Deserialize<MapItem>(msg.Parameters["message"]);
+				if (UpdateInMap is not null)
+				{
+					UpdateMapItems(UpdateInMap);
+					if (UpdateInMap.Action == MapActions.Add)
+						Toaster?.ShowInfo($"{msg.Sender} a añadido un/a {UpdateInMap.Token.ToUI()} al mapa");
+					else if (UpdateInMap.Action == MapActions.Remove)
+						Toaster?.ShowInfo($"{msg.Sender} a quitado un/a {UpdateInMap.Token.ToUI()} del mapa");
+				}
+				break;
+			case MessageKinds.UpdateMapRequest:
+				var Items = System.Text.Json.JsonSerializer.Deserialize<List<MapItem>>(msg.Parameters["message"]);
+				if (Items is not null)
+				{
+					UpdateMapItems(Items);
+					Toaster?.ShowInfo($"{Items.Count} elementos añadidos al mapa");
+				}
+				break;
+			case MessageKinds.NewRumor:
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -135,7 +146,7 @@ public class DinoPlayer : Player
 
 		if(Client is not null)
 		{
-			var report = new RollReport<DinoMoveIDs, DinoStates>(Move.ID, stat, Move.Tittle)
+			var report = new RollReport<DinoMoveIDs, DinoStates>(Move.ID, stat, Move.Tittle, Name)
 			{
 				bonus = bonus,
 				d1 = d1,

@@ -1,7 +1,8 @@
 ﻿@inject DinoPlayer Player
+@inject PbtAWorldCommClient Client
 
 <div class="d-flex" @onclick=Toggle style="cursor: pointer;">
-	@if (Player.IsDown)
+	@if (IsDown)
 	{
 		<div style="width: 25px; height: 25px; border-radius: 4px; background: red; border: 1px solid black;"></div>
 	}
@@ -18,6 +19,22 @@
 	private void Toggle()
 	{
 		Player.IsDown = !Player.IsDown;
+	}
+
+	public bool IsDown
+	{
+		get { return Player.IsDown; }
+		set
+		{
+			Player.IsDown = value;
+			if (Client is not null && Client.IsConnected)
+			{
+				if (Player.IsDown)
+					Client.SendInfo($"{Player.Name} ha caído");
+				else
+					Client.SendInfo($"{Player.Name} ha vuelto de entre los muertos");
+			}
+		}
 	}
 
 }

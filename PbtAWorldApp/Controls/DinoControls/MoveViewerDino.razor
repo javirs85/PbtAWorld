@@ -11,6 +11,7 @@
 				aria-expanded="@(StartsOpen?"true" : "false")" aria-controls="Body_@Move.IDText"
 				style="box-shadow:none!important;">
 			<div class="d-flex gap-1 align-items-center Julius">
+				
 				@if (IsSelectable)
 				{
 					@if(IsSelected)
@@ -22,6 +23,7 @@
 					}
 				}
 				@Move.Tittle
+					
 				@if (Dmove.Roll == DinoStates.D_Fit)
 				{
 					<div class="border-red IconHeaderContainer">
@@ -68,6 +70,22 @@
 					</div>
 				}
 
+				@if (ItsMeLastRoller)
+				{
+					@if(LastRoll.Total <= 6)
+					{
+						<div class="mx-2 px-3 py-1 fs-6 fw-bolder" style="color: red; background: #FF000055; border-radius:5px;">@LastRoll.Total</div>
+					}
+					else if (LastRoll.Total >= 10)
+					{
+						<div class="mx-2 px-3 py-1 fs-6 fw-bolder" style="color: green; background: #00FF0055; border-radius:5px;">@LastRoll.Total</div>
+					}
+					else
+					{
+						<div class="mx-2 px-3 py-1 fs-6 fw-bolder" style="color: orange; background: #ffa50029; border-radius:5px;">@LastRoll.Total</div>
+					}
+				}
+
 			</div>
 		</button>
 	</h2>
@@ -94,55 +112,61 @@
 			}
 			@if (Move.ConsequencesOn10 is not null && !string.IsNullOrEmpty(Move.ConsequencesOn10.MainText))
 			{
-				<div class="d-flex gap-2">
-					<strong class="DiceRange">>10: </strong>
-					<DecodedString Value="@Move.ConsequencesOn10.MainText" />
-				</div>
-				
-				@if (Move.ConsequencesOn10.Options is not null)
-				{
-					<ul style="margin:0; margin-left:10px;">
-						@foreach (var op in Move.ConsequencesOn10.Options)
-						{
-							<li>@op</li>
-						}
-					</ul>
-				}
-			}
-			@if (Move.ConsequencesOn79 is not null && !string.IsNullOrEmpty(Move.ConsequencesOn79.MainText))
-			{
-				<div>
+				<div style="@(ItsMeLastRoller && LastRoll.Total >= 10 ?"border:1px solid green; border-radius:4px; padding:5px;":"")">
 					<div class="d-flex gap-2">
-						<strong class="DiceRange">7-9: </strong>
-						<DecodedString Value="@Move.ConsequencesOn79.MainText" />
+						<strong class="DiceRange">>10: </strong>
+						<DecodedString Value="@Move.ConsequencesOn10.MainText" />
 					</div>
-					@if (Move.ConsequencesOn79.Options is not null)
+				
+					@if (Move.ConsequencesOn10.Options is not null)
 					{
-						<ul style="margin:0; margin-left:20px;">
-							@foreach (var op in Move.ConsequencesOn79.Options)
+						<ul style="margin:0; margin-left:10px;">
+							@foreach (var op in Move.ConsequencesOn10.Options)
 							{
 								<li>@op</li>
 							}
 						</ul>
 					}
+				</div>
+			}
+			@if (Move.ConsequencesOn79 is not null && !string.IsNullOrEmpty(Move.ConsequencesOn79.MainText))
+			{
+				<div style="@(ItsMeLastRoller && LastRoll.Total < 10 && LastRoll.Total > 6 ?"border:1px solid orange; border-radius:4px; padding:5px;":"")">
+					<div>
+						<div class="d-flex gap-2">
+							<strong class="DiceRange">7-9: </strong>
+							<DecodedString Value="@Move.ConsequencesOn79.MainText" />
+						</div>
+						@if (Move.ConsequencesOn79.Options is not null)
+						{
+							<ul style="margin:0; margin-left:20px;">
+								@foreach (var op in Move.ConsequencesOn79.Options)
+								{
+									<li>@op</li>
+								}
+							</ul>
+						}
+					</div>
 				</div>
 			}
 			@if (Move.ConsequencesOn6 is not null && !string.IsNullOrEmpty(Move.ConsequencesOn6.MainText))
 			{
-				<div>
-					<div class="d-flex gap-2">
-						<strong class="DiceRange">&lt; 6: </strong>
-						<DecodedString Value="@Move.ConsequencesOn6.MainText" />
+				<div style="@(ItsMeLastRoller && LastRoll.Total <= 6 ?"border:1px solid red; border-radius:4px; padding:5px;":"")">
+					<div>
+						<div class="d-flex gap-2">
+							<strong class="DiceRange">&lt; 6: </strong>
+							<DecodedString Value="@Move.ConsequencesOn6.MainText" />
+						</div>
+						@if (Move.ConsequencesOn6.Options is not null)
+						{
+							<ul style="margin:0;">
+								@foreach (var op in Move.ConsequencesOn6.Options)
+								{
+									<li>@op</li>
+								}
+							</ul>
+						}
 					</div>
-					@if (Move.ConsequencesOn6.Options is not null)
-					{
-						<ul style="margin:0;">
-							@foreach (var op in Move.ConsequencesOn6.Options)
-							{
-								<li>@op</li>
-							}
-						</ul>
-					}
 				</div>
 			}
 			@if(!string.IsNullOrEmpty(Move.ClosingText))
@@ -205,6 +229,7 @@
 	[Parameter] public DinoMove Move { get; set; } = new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set" };
 	[Parameter] public bool StartsOpen { get; set; } = false;
 	[Parameter] public bool AllowMultipleSelection { get; set; } = false;
+	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; }
 
 	bool SelectedByDefault => Move.ForClass != DinoClasses.NotSet && Move.IsAdvancedMove == false;
 	bool IsSelectable => Move.ForClass != DinoClasses.NotSet;
@@ -217,5 +242,7 @@
 	{
 		base.OnParametersSet();
 	}
+
+	private bool ItsMeLastRoller => LastRoll is not null && LastRoll.Roller == Player.Name && LastRoll.MoveId == Move.ID;
 
 }
