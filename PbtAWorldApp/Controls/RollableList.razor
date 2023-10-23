@@ -1,36 +1,61 @@
-﻿<div class="d-flex flex-column">
-	<div class="d-flex">
-		<h4>@Tittle</h4>
-		<button class="btn btn-primary" @onclick=Roll>
+﻿<div class="d-flex flex-column" style="border: 2px solid #173767; border-radius:5px; background: #1737674f;">
+	<div class="d-flex" style="background: #173767;">
+		<h4 class="p-2">@Tittle</h4>
+		<div class="btn btn-primary d-flex align-items-center" @onclick=Roll style="background: #143d7c;border-color: #14233c;">
 			<i class="bi bi-dice-5"></i>
-		</button>
+		</div>
+		<div class="btn btn-primary d-flex align-items-center" @onclick=@(()=>{ShowingEverything = !ShowingEverything;}) style="background: #143d7c;border-color: #14233c;">
+			@if(ShowingEverything)
+			{
+                <i class="bi bi-chevron-up"></i>
+			}
+			else
+			{
+				<i class="bi bi-chevron-down"></i>
+			}
+		</div>
 	</div>
 	<div class="d-flex flex-column">
-	@for(int i =0; i<Options.Count;++i)
-	{
-		<div style="border:@(i == idx?"solid 1px red;":"none")" @onclick="@(()=>{Select(i);})">
-			<div>
-				@(i+1) .
-				@Options[i]
+		@if (ShowingEverything)
+		{
+			@foreach (var o in Options)
+			{
+				<div class="p-1" style="@(o == Selected ? "border:solid 1px red; opacity:1;":"opacity:0.5;"); cursor:pointer;" @onclick="@(()=>{Select(o);})">
+					@o
+				</div>
+			}
+		}
+		else
+		{
+			<div class="p-1">
+				@Selected
 			</div>
-		</div>
-	}
+		}
 	</div>
 </div>
 
 @code {
 	[Parameter] public List<string> Options { get; set; } = new();
 	[Parameter] public string Tittle { get; set; } = "Title";
+	[Parameter] public EventCallback<Tuple<DinoPlayer,string>> NewSelection { get; set; }
+	[Parameter] public DinoPlayer Player { get; set; }
 
-	int idx = -1;
+	bool ShowingEverything = true;
+	string Selected = "";
+
 	Random rnd = new();
-
-	public string Selected => idx == -1? "" : Options[idx];
 
 	private void Roll()
 	{
-		idx = rnd.Next(0, Options.Count);
+		var idx = rnd.Next(0, Options.Count);
+		Select(Options[idx]);
 	}
 
-	private void Select(int o) => idx = o;
+	private void Select(string o) 
+	{
+		Selected = o;
+		StateHasChanged();
+		ShowingEverything = false;
+		NewSelection.InvokeAsync(new Tuple<DinoPlayer, string>(Player, Selected));
+	}
 }

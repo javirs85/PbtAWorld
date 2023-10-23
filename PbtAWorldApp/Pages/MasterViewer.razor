@@ -1,8 +1,9 @@
 ﻿@using PbtAWorldApp.Controls.DinoControls;
 @inject DinoGameController Game;
-@inject DinoPlayer Player
+@inject DinoPlayer Player;
+@inject PbtAWorldCommClient Client;
 
-<div class="container-fluid p-0">
+<div class="container-fluid px-3">
 	<div class="row mr-2">
 		<div class="col-md-6 col-lg-4 col-xl-3 BoxPack">
 			<h2>Tierra firme</h2>
@@ -30,18 +31,24 @@
 					{
 						<tr>
 							<td>@p.Name</td>
-							@if(p.IsRumorSet)
-							{
-								<td>@p.Rumor</td>
-							}
-							else
-							{
-								<td>
-									<ul>
-										<li></li>
-									</ul>
-								</td>
-							}
+							<td>
+							<RollableList Options="AvailableRumors"
+										  Tittle="Rumor"
+										  Player="p"
+										  NewSelection=SetNewRumor />
+							</td>
+						</tr>
+					}
+				</table>
+			}
+			else
+			{
+				<table>
+					@foreach (var p in Game.Players)
+					{
+						<tr>
+							<td>@p.Name</td>
+							<td>@p.Rumor</td>
 						</tr>
 					}
 				</table>
@@ -67,6 +74,22 @@
 	[Parameter] public MapMini? Map { get; set; } = null;
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
 
+
+	private void SetNewRumor(Tuple<DinoPlayer, string> data)
+	{
+		var dp = data.Item1 as DinoPlayer;
+		dp.Rumor = data.Item2;
+		UpdateThisPlayerOnServer(dp);
+	}
+
+	private async Task UpdateThisPlayerOnServer(DinoPlayer p)
+	{
+		if (Client is not null && Client.IsConnected)
+		{
+			await Client.SendParamsMessage(MessageKinds.UpdateInPlayer, System.Text.Json.JsonSerializer.Serialize(p));
+		}
+	}
+
 	private bool IsShowingRumors = false;
 
 	private List<string> WhyComing = new List<string>
@@ -79,7 +102,7 @@
 		"Estamos en una misión encubierta, para infiltrarnos o sabotear."
 	};
 
-	private List<string> Rumors = new List<string>
+	private List<string> AvailableRumors = new List<string>
 	{
 		"Corrientes oceánicas y rocas submarinas hacen que sea casi imposible llegar a la isla en barco.",
 		"Alguien está creando nuevas especies de plantas y animales en la isla.",

@@ -516,6 +516,14 @@
 		}
 	}
 
+	private async Task UpdateThisPlayerOnServer(DinoPlayer p)
+	{
+		if (Client is not null && Client.IsConnected)
+		{
+			await Client.SendParamsMessage(MessageKinds.UpdateInPlayer, System.Text.Json.JsonSerializer.Serialize(p));
+		}
+	}
+
 	public void CustomParse(string newValue, ref int placeWhereToStore)
 	{
 		int val = 0;

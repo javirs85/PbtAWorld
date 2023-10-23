@@ -30,7 +30,7 @@ public class DinoPlayer : Player
 	public List<string> Gear { get; set; } = new List<string>();
 	
 	public string Rumor { get; set; } = "Sin rumores de momento";
-	public bool IsRumorSet => Rumor == "Sin rumores de momento";
+	public bool IsRumorSet => Rumor != "Sin rumores de momento";
 
 	public List<string> Stories { get;set; } = new List<string>();
 	public List<MapItem> MapItems { get; set; } = new();
