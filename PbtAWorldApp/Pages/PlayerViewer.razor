@@ -31,6 +31,10 @@
 								@if (op != DinoClasses.NotSet)
 								{
 									<option value="@op">@op.ToUIString()</option>
+									<div class="btn btn-primary" 
+										@onclick="@(()=>{Game.Players.Add(new DinoPlayer{Name="FakePlayer"});})">
+										AddPlayer
+									</div>
 								}
 							}
 						</InputSelect>
@@ -48,6 +52,13 @@
 								<option value="@op">@op</option>
 							}
 						</InputSelect>
+					</div>
+					<div>
+						@foreach(var n in Game.Players)
+						{
+							<span>@n.Name </span>
+						}
+						<div @onclick="@(()=>{Game.AddPlayer(new DinoPlayer{Name = "TestName"});})">Add</div>
 					</div>
 				</div>
 				<div class="d-none d-xl-flex flex-grow-1 justify-content-center">

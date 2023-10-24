@@ -79,7 +79,9 @@
 	{
 		var dp = data.Item1 as DinoPlayer;
 		dp.Rumor = data.Item2;
-		UpdateThisPlayerOnServer(dp);
+		var player = Game.Players.Find(x => x.ID == dp.ID);
+
+		if(player is not null) player.Rumor = data.Item2;
 	}
 
 	private async Task UpdateThisPlayerOnServer(DinoPlayer p)

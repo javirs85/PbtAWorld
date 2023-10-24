@@ -26,7 +26,7 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 
 	internal void RequestUpdateToUIOnClients()
 	{
-		OnUIUpdate?.Invoke(this , new EventArgs());	
+		OnUIUpdate?.Invoke(this, new EventArgs());
 	}
 
 	protected override async Task<bool> PreProcessMessage(MessageKinds kind, string encodedMessage)
