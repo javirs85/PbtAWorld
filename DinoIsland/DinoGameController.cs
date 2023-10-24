@@ -29,6 +29,12 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 		OnUIUpdate?.Invoke(this, new EventArgs());
 	}
 
+	public void AddPlayer(DinoPlayer player)
+	{
+		Players.Add(player);
+		RequestUpdateToUIOnClients();
+	}
+
 	protected override async Task<bool> PreProcessMessage(MessageKinds kind, string encodedMessage)
 	{
 		if (kind == MessageKinds.UpdateMapRequest)
