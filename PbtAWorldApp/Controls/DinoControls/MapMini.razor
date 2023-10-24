@@ -1,4 +1,5 @@
 ﻿@inject DinoPlayer Player
+@inject DinoGameController Game
 
 @using BlazorBootstrap;
 <div class="MiniMapContainer">
@@ -7,7 +8,7 @@
 			<i class="bi bi-arrow-clockwise"></i>
 		</div>
 
-		@foreach(var point in Player.MapItems)
+		@foreach(var point in Game.MapTokens)
 		{
 			<div class="MapToken"
 				@onclick:preventDefault=true
@@ -48,14 +49,21 @@
 
 	private MapItem? temp = null;
 
+	protected override void OnParametersSet()
+	{
+		Game.OnUIUpdate += (o,e)=> { InvokeAsync(()=> { StateHasChanged(); }); };
+	}
+
 	private async Task SelectIcon(DinoMapTokens icon)
 	{
 		if(SelectedAnchorPoint is not null)
 		{
-			Player.MapItems.Remove(temp);
+			if(temp is not null)
+				Game.MapTokens.Remove(temp);
+
 			SelectedAnchorPoint.Token = icon;
 			SelectedAnchorPoint.Action = MapActions.Add;
-			await Player.SendMapUpdate(SelectedAnchorPoint);
+			Game.UpdateMap(SelectedAnchorPoint);
 			SelectedAnchorPoint = null;
 			temp = null;
 		}
@@ -75,11 +83,7 @@
 	{
 		if(SelectedAnchorPoint is not null)
 		{
-			/*Points.Remove(SelectedAnchorPoint);
-			SelectedAnchorPoint = null;*/
-			SelectedAnchorPoint.Action = MapActions.Remove;
-
-			await Player.SendMapUpdate(SelectedAnchorPoint);
+			Game.UpdateMap(SelectedAnchorPoint);
 			await offcanvas.HideAsync();
 		}
 	}

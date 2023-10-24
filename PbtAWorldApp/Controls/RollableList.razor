@@ -1,18 +1,20 @@
-﻿<div class="d-flex flex-column" style="border: 2px solid #173767; border-radius:5px; background: #1737674f;">
-	<div class="d-flex" style="background: #173767;">
+﻿<div class="d-flex flex-column" style="border: 2px solid #17376742; border-radius:5px; background: #05142bbd;" @onclick:stopPropagation=true>
+	<div class="d-flex justify-content-between" style="background: #17376742;">
 		<h4 class="p-2">@Tittle</h4>
-		<div class="btn btn-primary d-flex align-items-center" @onclick=Roll style="background: #143d7c;border-color: #14233c;">
-			<i class="bi bi-dice-5"></i>
-		</div>
-		<div class="btn btn-primary d-flex align-items-center" @onclick=@(()=>{ShowingEverything = !ShowingEverything;}) style="background: #143d7c;border-color: #14233c;">
-			@if(ShowingEverything)
-			{
-                <i class="bi bi-chevron-up"></i>
-			}
-			else
-			{
-				<i class="bi bi-chevron-down"></i>
-			}
+		<div class="d-flex gap-0">
+			<div class="btn btn-primary d-flex align-items-center" @onclick=Roll style="background: #143d7c;border-color: #14233c;">
+				<i class="bi bi-dice-5"></i>
+			</div>
+			<div class="btn btn-primary d-flex align-items-center" @onclick=@(()=>{ShowingEverything = !ShowingEverything;}) style="background: #143d7c;border-color: #14233c;">
+				@if(ShowingEverything)
+				{
+					<i class="bi bi-chevron-up"></i>
+				}
+				else
+				{
+					<i class="bi bi-chevron-down"></i>
+				}
+			</div>
 		</div>
 	</div>
 	<div class="d-flex flex-column">
@@ -20,7 +22,7 @@
 		{
 			@foreach (var o in Options)
 			{
-				<div class="p-1" style="@(o == Selected ? "border:solid 1px red; opacity:1;":"opacity:0.5;"); cursor:pointer;" @onclick="@(()=>{Select(o);})">
+				<div class="p-1" style="@(o == Selected ? "border:solid 1px red; opacity:1;":"opacity:0.7;"); cursor:pointer;" @onclick="@(()=>{Select(o);})">
 					@o
 				</div>
 			}
@@ -39,11 +41,21 @@
 	[Parameter] public string Tittle { get; set; } = "Title";
 	[Parameter] public EventCallback<Tuple<DinoPlayer,string>> NewSelection { get; set; }
 	[Parameter] public DinoPlayer Player { get; set; }
+	[Parameter] public string Selected { get; set; } = string.Empty;
 
 	bool ShowingEverything = true;
-	string Selected = "";
 
 	Random rnd = new();
+
+	protected override void OnInitialized()
+	{
+		if (Options.Contains(Selected))
+			ShowingEverything = false;
+		else
+			ShowingEverything = true;
+
+		ShowingEverything = false;
+	}
 
 	private void Roll()
 	{

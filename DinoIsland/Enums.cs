@@ -115,7 +115,7 @@ public static class Extensions
 			case DinoMapTokens.Nest: return "imgs/Icons/Map/Nest.png";
 			case DinoMapTokens.Forest: return "imgs/Icons/Map/Forest.png";
 			case DinoMapTokens.Grass: return "imgs/Icons/Map/Grass.png";
-			case DinoMapTokens.Ruins: return "imgs/Icons/Map/Ruins.png";
+			case DinoMapTokens.Ruins: return "imgs/Icons/Map/Ruin.png";
 			case DinoMapTokens.River: return "imgs/Icons/Map/River.png";
 			case DinoMapTokens.Swamp: return "imgs/Icons/Map/Swamp.png";
 			case DinoMapTokens.Volcano: return "imgs/Icons/Map/Volcano.png";

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using PbtALib;
 using PbtAWorldConnectivity;
 using System;
 using System.Collections.Generic;
@@ -6,27 +7,82 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DinoIsland;
 
 public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 {
+	public event EventHandler<string> NewInfoToast;
+
 	public List<MapItem> MapTokens { get; set; } = new List<MapItem>();
-	public List<Rumor> Rumors { get; set; } = new();
 
 	public List<DinoPlayer> Players { get; set; } = new();
 
-	public class Rumor
-	{
-		public string Owner { get; set; }
-		public string Description { get; set; }
-	}
 
 	public event EventHandler OnUIUpdate;
 
-	internal void RequestUpdateToUIOnClients()
+	public void RequestUpdateToUIOnClients()
 	{
 		OnUIUpdate?.Invoke(this, new EventArgs());
+	}
+
+	public void ShowToastOnAllClients(string msg)
+	{
+		NewInfoToast?.Invoke(this, msg);
+	}
+
+	public RollReport<DinoMoveIDs, DinoStates> LastRoll = new();
+	
+	public void SomeoneRolled(RollReport<DinoMoveIDs, DinoStates> roll)
+	{
+		LastRoll = roll;
+		RequestUpdateToUIOnClients();
+	}
+
+	Random rnd = new Random();
+
+	public void Roll(Guid PlayerID, DinoStates stat, DinoMove move)
+	{
+		var player = Players.Find(x=>x.ID == PlayerID);
+		if (player is not null)
+		{
+			LastRoll.d1 = rnd.Next(1, 7);
+			LastRoll.d2 = rnd.Next(1, 7);
+			LastRoll.bonus = 0;
+			if (stat == DinoStates.D_Steady) LastRoll.bonus = player.Steady;
+			else if (stat == DinoStates.D_Fit) LastRoll.bonus = player.Fit;
+			else if (stat == DinoStates.D_Clever) LastRoll.bonus = player.Clever;
+			else if (stat == DinoStates.D_1) LastRoll.bonus = 1;
+			else if (stat == DinoStates.D_0) LastRoll.bonus = 0;
+
+			LastRoll.Roller = player.Name;
+			LastRoll.LocalTittle = move.Tittle;
+			LastRoll.MoveId = move.ID;
+			LastRoll.Stat = stat;
+		}
+		RequestUpdateToUIOnClients();
+	}
+
+	public void SetRumor(Guid ID, string Rumor)
+	{
+		var player = Players.Find(x => x.ID == ID);
+
+		if (player is not null) player.Rumor = Rumor;
+		RequestUpdateToUIOnClients();
+	}
+
+	public void UpdateMap(MapItem UpdateInMap)
+	{
+		if (UpdateInMap.Action == MapActions.Add)
+			MapTokens.Add(UpdateInMap);
+		else if (UpdateInMap.Action == MapActions.Remove)
+		{
+			var item = MapTokens.Find(x => x.ID == UpdateInMap.ID);
+			if(item is not null) MapTokens.Remove(item);
+		}
+		RequestUpdateToUIOnClients();
 	}
 
 	public void AddPlayer(DinoPlayer player)
@@ -72,6 +128,7 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 		}
 		else if (kind == MessageKinds.NewRumor)
 		{
+			/*
 			var paramMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(encodedMessage);
 			var rumor = paramMessage?.Parameters["message"] ?? "cannot deserialize rumor";
 
@@ -82,6 +139,7 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 				Rumors.Add(new DinoGameController.Rumor { Owner = paramMessage.Sender, Description = rumor });
 			RequestUpdateToUIOnClients();
 			return false;
+			*/
 		}
 		else if(kind == MessageKinds.UpdateInPlayer)
 		{

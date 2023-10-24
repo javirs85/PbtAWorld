@@ -4,84 +4,174 @@
 @inject PbtAWorldCommClient Client;
 
 <div class="container-fluid px-3">
-	<div class="row mr-2">
-		<div class="col-md-6 col-lg-4 col-xl-3 BoxPack">
-			<h2>Tierra firme</h2>
-			<RollableList Options=WhyComing Tittle="Habéis llegado a tierra firme juntos, por que?" />
-			<h2>Quien sois?</h2>
-			<p>
-				Cada jugador escoge un libreto. No puede haber dos iguales. Sigue las instrucciones para crear tu héroe.
-				</p>
-			<p>
-				Introducir vuestros héroes al resto de la mesa, sentiros libres de hacer una o dos preguntas pero no os lieis mucho. Habrá tiempo para conoceros mejor.
-			</p>
-			<h2>Que habéis oído sobre la isla antes de llagar?</h2>
-			<p>
-				Da un rumor a cada jugador
-			</p>
-			<p>Haz preguntas para clarificar el plan, asegúrate de que todo el mundo está de acuerdo en COMO llegan a la isla y que tienen que hacer allí cuando lleguen. Añade al mapa lo que sea necesario.</p>
-		</div>
-
-		<div class="col-md-6 col-lg-4 col-xl-3 BoxPack">
-			<h2 @onclick=@(()=>{IsShowingRumors = !IsShowingRumors;})>Rumores</h2>
-			@if (IsShowingRumors)
-			{
-				<table>
-					@foreach(var p in Game.Players)
+	<div class="row">
+		@if(!IsInGameMode)
+		{
+			<div class="col-md-6 col-lg-4 col-xl-3">
+				<div class="BoxPack">
+					<h4>Tierra firme</h4>
+					<RollableList Options=WhyComing Tittle="Habéis llegado a tierra firme juntos, por que?" />
+				</div>
+				<div class="BoxPack">
+					<h4>Quien sois?</h4>
+					<p>
+						Cada jugador escoge un libreto. No puede haber dos iguales. Sigue las instrucciones para crear tu héroe.
+						</p>
+					<p>
+						Introducir vuestros héroes al resto de la mesa, sentiros libres de hacer una o dos preguntas pero no os lieis mucho. Habrá tiempo para conoceros mejor.
+					</p>
+				</div>
+				<div class="RumorsPack BoxPack">
+					<h2 @onclick=@(()=>{IsShowingRumors = !IsShowingRumors;})>
+						<div class="d-flex" style="cursor:pointer;">
+							Rumores
+						
+							@if (IsShowingRumors)
+							{
+								<span class="small p-2 fs-6 mx-2" style="background:#354740; border-radius:4px;">Reducir</span>
+							}
+							else
+							{
+								<span class="small p-2 fs-6 mx-2" style="background:#354740; border-radius:4px;">Ampliar</span>
+							}
+						</div>					
+					</h2>
+					@if (IsShowingRumors)
 					{
-						<tr>
-							<td>@p.Name</td>
-							<td>
+						@foreach (var p in Game.Players)
+						{
 							<RollableList Options="AvailableRumors"
-										  Tittle="Rumor"
-										  Player="p"
-										  NewSelection=SetNewRumor />
-							</td>
-						</tr>
+											Tittle="@p.Name"
+											Player="@p"
+											Selected=@p.Rumor
+											NewSelection=SetNewRumor />
+								
+						}
 					}
-				</table>
-			}
-			else
-			{
-				<table>
-					@foreach (var p in Game.Players)
+					else
 					{
-						<tr>
-							<td>@p.Name</td>
-							<td>@p.Rumor</td>
-						</tr>
+						<table>
+							@foreach (var p in Game.Players)
+							{
+								<tr>
+									<td style="vertical-align: text-bottom;">@p.Name</td>
+									<td>@p.Rumor</td>
+								</tr>
+							}
+						</table>
 					}
-				</table>
-			}
-		</div>
+				</div>
+				<div class="RumorsPack BoxPack">
+					<h4>Lo que no sabéis:</h4>
+					<ul>
+						<li>¿Cómo es que hay dinosaurios vivos en la isla?</li>
+						<li>Hay un complejo construido por el hombre en la isla. ¿Quién lo construyó y cuál es su propósito?</li>
+						<li>El complejo ha caído, tal vez recientemente o tal vez hace algún tiempo. ¿Qué salió mal?</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-4 col-xl-3">
+				<div class="BoxPack">
+					<h5>Que habéis oído sobre la isla antes de llagar?</h5>
+					<p>
+						Da un rumor a cada jugador
+					</p>
+					<p>Haz preguntas para clarificar el plan, asegúrate de que todo el mundo está de acuerdo en COMO llegan a la isla y que tienen que hacer allí cuando lleguen. Añade al mapa lo que sea necesario.</p>
+					<MapMini @ref="Map" />
+				</div>
+				<div class="BoxPack">
+					<h4>La llegada</h4>
+					<p>
+						Durante la llegada no pasó mucho tiempo hasta que encontraste vuestro primer dinosaurio<br/>
+						<span class="small">haz una pregunta a cada personaje</span>
+						<ul>
+							<li>Describe la situación: ¿Dónde estabas y qué tipo de dinosaurio era?</li>
+							<li>¿Cómo te sentiste al ver un dinosaurio real y vivo?</li>
+							<li>¿Háblanos de una cosa extraña o inquietante acerca del dinosaurio?</li>
+							<li>¿Cuéntanos una cosa extrañamente familiar acerca del dinosaurio?</li>
+						</ul>	
+					</p>
+					<p>
+						Poco después, algo salió mal.
+						<ul>
+							<li>¿Cuál fue la primera señal de que algo no estaba bien?</li>
+							<li>¿A quién miraste instintivamente y por qué?</li>
+							<li>¿Cuál es tu peor escenario personal?</li>
+							<li>¿Qué te hizo darte cuenta de que estabas en serios problemas?</li>
+						</ul>
+					</p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-4 col-xl-3">
+				<div class="BoxPack">
+					<h3>Justo ahora</h3>
+					<RollableList Options="WhereAreYouOptions"
+									Tittle="Donde estáis?"
+									Selected=@WhereAreYou />
+					<RollableList Options="TheWayOffOptions"
+								  Tittle="Conoces una forma de salir de esta isla (aunque podría haber más). ¿Cuál es? Marca en el mapa"
+								  Selected=@TheWayOff />
+				
+					<h3>Por que no podéis simplemente iros?</h3>
+					<RollableList Options="@ObstacleMCOptions"
+								  Tittle="Obstáculo (MC)"
+								  Selected=@ObstacleMC />
+					<RollableList Options="@ObstaclePlayersOptions"
+								  Tittle="Misterio (Jugadores)"
+								  Selected=@ObstaclePlayers />
 
-		<div class="col-md-6 col-lg-4 col-xl-3">
-			<div class="btn btn-primary" @onclick=@(()=>{StateHasChanged();})>Reload</div>
-			<div class="BoxPack">
-				<MapMini @ref="Map" />
+					<h3>Haz un movimiento duro, ponlos en peligro y pregunta: Que hacéis?</h3>
+				</div>
 			</div>
-			<div class="BoxPack">
-				@foreach (var rumor in Game.Rumors)
-				{
-					<div>@rumor.Owner : @rumor.Description</div>
-				}
+			<div class="col-md-6 col-lg-4 col-xl-3">
+				
 			</div>
-		</div>
+		}
+		else
+		{
+			<div class="col-md-6 col-lg-4 col-xl-3">
+				<div class="BoxPack MasterMoves d-flex flex-column gap-2">
+					<h3>Movimientos del Master</h3>
+					@foreach (var m in MasterMoves.OrderBy(x=>x.Order))
+					{
+						<div class="Move @m.HowOften.ToString()" @onclick=@(()=>{m.Use();})>
+							@m.Tittle
+							@if (m.Tittle.Contains("Introduce a un NPC útil"))
+							{
+								<RollableList Options="@NPCGoals"
+											  Tittle="Objetivo del NPC"
+											  Selected=@NPCGoalsSelected 
+											  />
+								<RollableList Options="@NPCOffers"
+											  Tittle="Que ofrece el NPC"
+											  Selected=@NPCOffersSelected
+											  />
+							}
+							else if (m.Tittle.Contains("¡Aparece un dinosaurio!"))
+							{
+								<RollableList Options="@Gimmicks"
+											  Tittle="Característica"
+											  Selected=@GimmickSelected 
+											  />
+							}
+						</div>
+					}
+				</div>
+			</div>
+		}
 	</div>
 </div>
 
 @code {
 	[Parameter] public MapMini? Map { get; set; } = null;
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
-
+	[Parameter] public bool IsInGameMode { get; set; } = false;
 
 	private void SetNewRumor(Tuple<DinoPlayer, string> data)
 	{
 		var dp = data.Item1 as DinoPlayer;
 		dp.Rumor = data.Item2;
-		var player = Game.Players.Find(x => x.ID == dp.ID);
-
-		if(player is not null) player.Rumor = data.Item2;
+		Game.SetRumor(dp.ID, data.Item2);
 	}
 
 	private async Task UpdateThisPlayerOnServer(DinoPlayer p)
@@ -94,6 +184,73 @@
 
 	private bool IsShowingRumors = false;
 
+	public List<string> Agenda = new List<string>
+	{
+		"Haz de Dino Island un lugar misterioso, peligroso y lleno de dinosaurios.",
+		"Desafía a los héroes a descubrir su verdadera identidad.",
+		"Juega para descubrir si lograrán salir de la isla y quiénes serán si lo logran."
+	};
+
+	public List<string> Principles = new List<string>
+	{
+		"Sé un fanático de los personajes.",
+		"Apunta siempre a un personaje específico.",
+		"Haz preguntas y amplía las respuestas.",
+		"Dale a cada ubicación detalles únicos y memorables.",
+		"El entorno es tan peligroso como los dinosaurios.",
+		"Atribuye a cada especie de dinosaurio algún rasgo distintivo.",
+		"Contrapone lo natural y lo artificial.",
+		"Obliga a los héroes a elegir entre salvarse a sí mismos y ayudar a los demás.",
+		"Los dinosaurios son animales, no monstruos, hazlos reales: impresionantes, aterradores, extraños, familiares, imparables o gentiles según corresponda.",
+	};
+
+	public class MasterMove
+	{
+		public string Tittle = string.Empty;
+		public HowOftenUsed HowOften = HowOftenUsed.NeverUsed;
+
+		public MasterMove(string txt) => Tittle = txt;
+
+		public void Use()
+		{
+			if (HowOften == HowOftenUsed.NeverUsed) HowOften = HowOftenUsed.FewUses;
+			else if (HowOften == HowOftenUsed.FewUses) HowOften = HowOftenUsed.LotsOfUses;
+			else if (HowOften == HowOftenUsed.LotsOfUses) HowOften = HowOftenUsed.ToMuch;
+			else if (HowOften == HowOftenUsed.ToMuch) HowOften = HowOftenUsed.NeverUsed;
+		}
+
+		public int Order
+		{
+			get
+			{
+				if (HowOften == HowOftenUsed.NeverUsed) return 0;
+				else if (HowOften == HowOftenUsed.FewUses) return 1;
+				else if (HowOften == HowOftenUsed.LotsOfUses) return 2;
+				else return 3;
+			}
+		}
+
+	}
+
+	public List<MasterMove> MasterMoves = new List<MasterMove>
+	{
+		new MasterMove("Muestra señales de la presencia cercana de un dinosaurio."),
+		new MasterMove("Huellas, evidencia de pastoreo, una presa reciente, un rugido, pequeños dinosaurios huyendo, etc."),
+		new MasterMove("¡Aparece un dinosaurio! ¡Dale algún rasgo distintivo!"),
+		new MasterMove("Lesiona a los personajes según lo establecido."),
+		new MasterMove("Sus lesiones causan problemas."),
+		new MasterMove("Introduce a un NPC útil. ¡Dales un objetivo!"),
+		new MasterMove("Mata a un NPC útil."),
+		new MasterMove("Desorienta a los personajes."),
+		new MasterMove("Ofrece lo que necesitan, con un peligro en el camino. (Cuéntales el peligro)"),
+		new MasterMove("Diles lo que necesitan y déjales descifrar como conseguirlo. (Cuando lo obtienen, tienen éxito. Otras soluciones podrían funcionar.)"),
+		new MasterMove("Sepáralos."),
+		new MasterMove("Revela algo misterioso."),
+		new MasterMove("Pasa el tiempo. (Anochece, tienen que descansar, una oportunidad expira, etc.)"),
+		new MasterMove("Usa una ACCIÓN DE DINOSAURIO."),
+		new MasterMove("Usa una ACCIÓN DE UBICACIÓN.")
+	};
+
 	private List<string> WhyComing = new List<string>
 	{
 		"Hemos sido invitados como huéspedes, en misteriosas circunstancias.",
@@ -102,6 +259,50 @@
 		"Somos criminales o contrabandistas, aquí por un golpe.",
 		"Estamos en una misión de rescate/recuperación. ¿A quién o qué estamos persiguiendo?",
 		"Estamos en una misión encubierta, para infiltrarnos o sabotear."
+	};
+
+	private string WhereAreYou { get; set; } = string.Empty;
+	private List<string> WhereAreYouOptions = new List<string>
+	{
+		"La incubadora.",
+		"Los corrales de Triceratops.",
+		"Dormitorios abandonados apresuradamente.",
+		"Un monorraíl alto sobre la selva.",
+		"Una playa llena de escombros.",
+		"Una cueva, esperando a que pase la lluvia."
+	};
+
+	private string TheWayOff { get; set; } = string.Empty;
+	private List<string> TheWayOffOptions = new List<string>
+	{
+		"Llamar para rescate en la estación de radio.",
+		"Un avión de hélice oculto de un contrabandista.",
+		"El helicóptero en el que llegaron.",
+		"Un submarino militar.",
+		"Un velero / yate de recreo anclado en alta mar.",
+		"Un crucero que pasa una vez a la semana."
+	};
+
+	private string ObstacleMC { get; set; } = string.Empty;
+	private List<string> ObstacleMCOptions = new List<string>
+	{
+		"La única ruta es a través de los corrales/territorio de Deinonychus.",
+		"El monorraíl es la única forma de llegar a donde vamos, y está fuera de servicio.",
+		"Debemos esperar esta maldita tormenta.",
+		"No podemos irnos sin completar nuestra misión.",
+		"Necesitamos entrar en el complejo, pero está asegurado.",
+		"Nuestra forma de salir de la isla está dañada, inaccesible o aún no ha llegado."
+	};
+
+	private string ObstaclePlayers { get; set; } = string.Empty;
+	private List<string> ObstaclePlayersOptions = new List<string>
+	{
+		"¿Por qué han perdido contacto con el mundo exterior?",
+		"¿Quién saboteó su misión? (¿y por qué?)",
+		"¿Por qué su contacto no los encontró y dónde están?",
+		"¿Cuál es la fuente de la extraña transmisión que está sobrecargando sus señales?",
+		"¿Por qué están fallando sus brújulas... y hacia dónde está el norte?",
+		"¿Quiénes son las figuras sombrías que los observan desde los arbustos y qué quieren?"
 	};
 
 	private List<string> AvailableRumors = new List<string>
@@ -118,6 +319,31 @@
 		"Las brújulas no funcionan del todo bien.",
 		"Hay arañas del tamaño de un coco.",
 		"El Museo de Historia Natural tiene una nueva exhibición que se inaugura pronto y es tan secreta que incluso la mayoría de los curadores no saben de qué se trata."
+	};
+
+	private string GimmickSelected { get; set; } = string.Empty;
+	private List<string> Gimmicks = new List<string>
+	{
+		"Agudeza Visual: Solo puede detectar movimiento.",
+		"Bolsas de Veneno: Tiene una mordida venenosa o escupe toxinas letales.",
+		"Piel Venenosa: Su piel es tóxica, causando dolor, parálisis, ceguera o alucinaciones.",
+		"Camuflaje: Puede cambiar de color para mezclarse con su entorno.",
+		"Inteligente: Capaz de resolver problemas complejos.",
+		"Cazadores en Manada: Trabajan juntos para cazar presas.",
+		"Arbóreo: Vive en los árboles.",
+		"Territorial: Marca y defiende límites específicos.",
+		"Caníbal: Se alimenta de su propia especie.",
+		"Mimetismo: Puede imitar sonidos, ya sea de dinosaurios, humanos o máquinas.",
+		"Eléctrico: Almacena y libera descargas eléctricas poderosas.",
+		"Regeneración: Puede curarse rápidamente y regenerar apéndices perdidos.",
+		"Sonar: Caza utilizando ecos de sonidos.",
+		"Escalada: Proficiente en escalar o incluso se adhiere a superficies.",
+		"Hierbabuena: Atraído obsesivamente por alguna sustancia moderna.",
+		"Constructor de Trampas: Construye trampas naturales, como telarañas o hoyos.",
+		"Grito Sónico: Produce un sonido que puede herir, desorientar o derribar a los oponentes en grupo.",
+		"Fértil: Se reproduce rápidamente.",
+		"Señal de Peligro: Da señales cuando está cerca, tal vez con un sonido de sonaja, despliegue, aullido o colores brillantes.",
+		"Prensil: Usa su cola, o tal vez una trompa, para sujetar cosas."
 	};
 
 	private List<string> DinoNickNames = new List<string>
@@ -140,6 +366,7 @@
 		"D.R.I (Dinosaur Research Institute)"
 	};
 
+	private string NPCGoalsSelected { get; set; } = string.Empty;
 	private List<string> NPCGoals = new List<string>
 	{
 		"Llegar hasta un ser querido en otra parte de la isla.",
@@ -154,6 +381,7 @@
 		"Proteger un secreto personal a toda costa."
 	};
 
+	private string NPCOffersSelected { get; set; } = string.Empty;
 	private List<string> NPCOffers = new List<string>
 	{
 		"Acceso a tarjetas clave, contraseñas, etc.",

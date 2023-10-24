@@ -70,6 +70,15 @@ h2{
     font-size: 22px;
 }
 
+.BlacInput {
+    background: #101815;
+    color: white;
+    font-weight: 600;
+    width: 100%;
+    outline: none;
+    border: 1px solid black;
+}
+
 .flavor {
     padding: 10px;
     padding-right: 30px;

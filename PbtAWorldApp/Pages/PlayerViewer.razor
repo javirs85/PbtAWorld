@@ -7,14 +7,16 @@
 @inject PbtAWorldCommClient Client;
 @using PbtAWorldApp.Controls.DinoControls
 
-<EditForm Model="Player" OnSubmit="@(()=>{})">
-
+<EditForm Model="Player" >
 	<div class="Header ">
 		<div class="WideArea">
 			<div class="LongBlackStripe flex-wrap">
 				<div class="d-flex flex-wrap gap-2">
 					<div class="d-flex flex-wrap">
-						<button style="width:0px; height:px; display:none;" @onclick=@(()=>{StateHasChanged();})><i class="bi bi-arrow-clockwise"></i></button>
+						<button style="width:0px; height:px; display:none;" 
+							@onclick=@(()=>{StateHasChanged();})>
+							<i class="bi bi-arrow-clockwise"></i>
+						</button>
 						<InputText @bind-Value=Name
 								   class="borderlessInput"
 								   style="color: white;
@@ -39,40 +41,91 @@
 							}
 						</InputSelect>
 					</div>
-					<div class="d-flex gap-2" style="font-family: Helvetica Neue; font-size:16px">
-						<InputSelect @bind-Value=Player.Behavior style="background:#CCC; outline: none; border: none;">
-							@foreach (var op in Player.BehaviorOptions)
+					@if (Player.Class != DinoClasses.Master)
+					{
+						<div class="d-flex gap-2" style="font-family: Helvetica Neue; font-size:16px">
+							<InputSelect @bind-Value=Player.Behavior style="background:#CCC; outline: none; border: none;">
+								@foreach (var op in Player.BehaviorOptions)
+								{
+									<option value="@op">@op</option>
+								}
+							</InputSelect>
+							<InputSelect @bind-Value=Player.Looks style="background:#CCC; outline: none; border: none;">
+								@foreach (var op in Player.LooksOtions)
+								{
+									<option value="@op">@op</option>
+								}
+							</InputSelect>
+						</div>
+					}
+					@if(Player.Class == DinoClasses.Master)
+					{
+						<button class="btn btn-primary" @onclick="@(()=>{GameIsInGameMode = !GameIsInGameMode;})">
+							@if (GameIsInGameMode)
 							{
-								<option value="@op">@op</option>
-							}
-						</InputSelect>
-						<InputSelect @bind-Value=Player.Looks style="background:#CCC; outline: none; border: none;">
-							@foreach (var op in Player.LooksOtions)
-							{
-								<option value="@op">@op</option>
-							}
-						</InputSelect>
-					</div>
-					<div>
-						@foreach(var n in Game.Players)
-						{
-							<span>@n.Name </span>
-						}
-						<div @onclick="@(()=>{Game.AddPlayer(new DinoPlayer{Name = "TestName"});})">Add</div>
-					</div>
-				</div>
-				<div class="d-none d-xl-flex flex-grow-1 justify-content-center">
-					<div class="d-flex gap-5 flex-wrap">
-						<div class="d-flex align-items-center">
-							@if (Player.Class == DinoClasses.Kid)
-							{
-								<i class="bi bi-info-circle me-2 d-none d-md-block " title="Asigna +1, +1 y -1. "></i>
+								<span>Questiones iniciales</span>
 							}
 							else
 							{
-								<i class="bi bi-info-circle me-2 d-none d-md-block" title="Asigna +2, +1 y -1. Piensa que la característica favorita del @Player.Class.ToUIString() es @Player.FavoriteStat.ToUIString()"></i>
+								<span>Partida</span>
 							}
-							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
+						</button>
+					}
+					
+				</div>
+				@if (Player.Class != DinoClasses.Master)
+				{
+					<div class="d-none d-xl-flex flex-grow-1 justify-content-center">
+						<div class="d-flex gap-5 flex-wrap">
+							<div class="d-flex align-items-center">
+								@if (Player.Class == DinoClasses.Kid)
+								{
+									<i class="bi bi-info-circle me-2 d-none d-md-block " title="Asigna +1, +1 y -1. "></i>
+								}
+								else
+								{
+									<i class="bi bi-info-circle me-2 d-none d-md-block" title="Asigna +2, +1 y -1. Piensa que la característica favorita del @Player.Class.ToUIString() es @Player.FavoriteStat.ToUIString()"></i>
+								}
+								<InputText style="width:40px; height:40px; text-align:center; padding:5px"
+								class="form-control"
+								@bind-Value="UIInt">
+								</InputText>
+								<div class="ms-1">
+									Inteligencia
+								</div>
+							</div>
+							<div class="d-flex align-items-center">
+								<InputText style="width:40px; height:40px; text-align:center; padding:5px"
+								class="form-control"
+								@bind-Value="UIPhysic">
+								</InputText>
+								<div class="ms-1 text-truncate">
+									Forma física
+								</div>
+							</div>
+							<div class="d-flex align-items-center">
+								<InputText style="width:40px; height:40px; text-align:center; padding:5px"
+								class="form-control"
+								@bind-Value="UICold">
+								</InputText>
+								<div class="ms-1">
+									Calma
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="d-block d-xl-none">
+						<div class="d-flex gap-1 flex-wrap">
+							<div class="d-flex">
+								@if (Player.Class == DinoClasses.Kid)
+								{
+									<i class="bi bi-info-circle me-2" title="Asigna +1, +1 y -1. "></i>
+								}
+								else
+								{
+									<i class="bi bi-info-circle me-2" title="Asigna +2, +1 y -1. Piensa que la característica favorita del @Player.Class.ToUIString() es @Player.FavoriteStat.ToUIString()"></i>
+								}
+								<InputText style="width:40px; height:40px; text-align:center; padding:5px"
 									   class="form-control"
 							@bind-Value="UIInt">
 							</InputText>
@@ -80,7 +133,7 @@
 								Inteligencia
 							</div>
 						</div>
-						<div class="d-flex align-items-center">
+						<div class="d-flex">
 							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
 									   class="form-control"
 							@bind-Value="UIPhysic">
@@ -89,7 +142,7 @@
 								Forma física
 							</div>
 						</div>
-						<div class="d-flex align-items-center">
+						<div class="d-flex">
 							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
 									   class="form-control"
 							@bind-Value="UICold">
@@ -100,59 +153,14 @@
 						</div>
 					</div>
 				</div>
-				<div class="d-block d-xl-none">
-					<div class="d-flex gap-1 flex-wrap">
-						<div class="d-flex">
-							@if (Player.Class == DinoClasses.Kid)
-							{
-								<i class="bi bi-info-circle me-2" title="Asigna +1, +1 y -1. "></i>
-							}
-							else
-							{
-								<i class="bi bi-info-circle me-2" title="Asigna +2, +1 y -1. Piensa que la característica favorita del @Player.Class.ToUIString() es @Player.FavoriteStat.ToUIString()"></i>
-							}
-							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
-									   class="form-control"
-							@bind-Value="UIInt">
-							</InputText>
-							<div class="ms-1">
-								Inteligencia
-							</div>
-						</div>
-						<div class="d-flex">
-							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
-									   class="form-control"
-							@bind-Value="UIPhysic">
-							</InputText>
-							<div class="ms-1 text-truncate">
-								Forma física
-							</div>
-						</div>
-						<div class="d-flex">
-							<InputText style="width:40px; height:40px; text-align:center; padding:5px"
-									   class="form-control"
-							@bind-Value="UICold">
-							</InputText>
-							<div class="ms-1">
-								Calma
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<!--
-				<i class="text-light bi bi-x" 
-					style="font-size: 40px;
-					height: 44px;
-					margin-top: -6px;"></i>
-					-->
+				}
 			</div>
 		</div>
 	</div>
 	<div class="me-4">
 		@if(Player.Class == DinoClasses.Master)
 		{
-			<MasterViewer />
+			<MasterViewer IsInGameMode=GameIsInGameMode/>
 		}
 		else
 		{
@@ -311,9 +319,9 @@
 						</div>
 						<div class="BoxPack">
 							<h2>Heridas</h2>
-							<div class="d-flex flex-column w-100 mb-4">
-								<InputText @bind-Value=Player.Wound1 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;"/>
-								<InputText @bind-Value=Player.Wound2 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+							<div class="d-flex flex-column w-100 mb-4 gap-1">
+								<InputText class="form-control BlacInput" @bind-Value=Player.Wound1 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;" />
+								<InputText class="form-control BlacInput" @bind-Value=Player.Wound2 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;" />
 								<div class="mt-1">
 								<PlayerDownCheck/>
 								</div>
@@ -321,36 +329,36 @@
 						</div>
 						<div class="BoxPack">
 							<h2>Equipo</h2>
-							<div class="d-flex flex-column w-100">
-								<InputText @bind-Value=Gear0 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-								<InputText @bind-Value=Gear1 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-								<InputText @bind-Value=Gear2 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-								<InputText @bind-Value=Gear3 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-								<InputText @bind-Value=Gear4 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-								<InputText @bind-Value=Gear5 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-								<InputText @bind-Value=Gear6 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
-								<InputText @bind-Value=Gear7 style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+							<div class="d-flex flex-column w-100 gap-1">
+								<InputText class="form-control BlacInput" @bind-Value=Gear0 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;" />
+								<InputText class="form-control BlacInput" @bind-Value=Gear1 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;"/>
+								<InputText class="form-control BlacInput" @bind-Value=Gear2 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;"/>
+								<InputText class="form-control BlacInput" @bind-Value=Gear3 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;"/>
+								<InputText class="form-control BlacInput" @bind-Value=Gear4 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;"/>
+								<InputText class="form-control BlacInput" @bind-Value=Gear5 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;"/>
+								<InputText class="form-control BlacInput" @bind-Value=Gear6 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;"/>
+								<InputText class="form-control BlacInput" @bind-Value=Gear7 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;" />
 							</div>
 						</div>
 			
 					</div>
 					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
 						<div class="LastRollContainer BoxPack">
-							@if (LastRoll is not null)
+							@if (Game.LastRoll is not null)
 							{
 								<h4>Último movimiento</h4>
-								<div>@LastRoll.Roller</div>
-								<div>@LastRoll.MoveTittle <span class="small opacity-50">con</span> @LastRoll.Stat.ToUIString()</div>
+								<div>@Game.LastRoll.Roller</div>
+								<div>@Game.LastRoll.MoveTittle <span class="small opacity-50">con</span> @Game.LastRoll.Stat.ToUIString()</div>
 								<div class="d-flex gap-2 justify-content-center m-4">
 									<div class="d-flex align-items-center gap-2">
-										<div class="dice">@LastRoll.d1</div> +
-										<div class="dice">@LastRoll.d2</div> +
+										<div class="dice">@Game.LastRoll.d1</div> +
+										<div class="dice">@Game.LastRoll.d2</div> +
 										<div class="dice" style="border-style: none; background: #ffffff3b;">
-											@LastRoll.bonus
+											@Game.LastRoll.bonus
 										</div>
 										=
 									</div>
-									<div class="RollResult">@LastRoll.Total</div>
+									<div class="RollResult">@Game.LastRoll.Total</div>
 								</div>
 							}
 							else
@@ -361,7 +369,7 @@
 						</div>
 						<div>
 							<h2>Movimientos de peligro</h2>
-							<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false LastRoll="LastRoll"/>
+							<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false LastRoll="Game.LastRoll" />
 						</div>	
 						<div class="BoxPack">
 							<MapMini @ref="map"/>
@@ -375,7 +383,7 @@
 			
 						<div class="BoxPack">
 							<h2>Rumor</h2>
-							<InputText @bind-Value=Rumor style="background: #ffffffad; font-weight: 600; width:100%; outline:none;" />
+							<div>@Player.Rumor</div>
 						</div>
 						<div class="BoxPack">
 							<h2>Las historias que explicas</h2>
@@ -395,8 +403,7 @@
 
 @code {
 	MapMini? map = null;
-
-	RollReport<DinoMoveIDs, DinoStates>? LastRoll = null;
+	bool GameIsInGameMode = false;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -411,12 +418,17 @@
 			InvokeAsync(() => { StateHasChanged(); });
 		};
 
-		Client.OnNewRollFromServer += (sender, msg) =>
+		Game.NewInfoToast += (o, msg) =>
 		{
-			var rollMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
-			LastRoll = System.Text.Json.JsonSerializer.Deserialize<RollReport<DinoMoveIDs, DinoStates>>(rollMessage.Parameters["message"]);
-			InvokeAsync(() => { StateHasChanged(); });
+			Toaster.ShowInfo(msg);
 		};
+
+		// Client.OnNewRollFromServer += (sender, msg) =>
+		// {
+		// 	var rollMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
+		// 	LastRoll = System.Text.Json.JsonSerializer.Deserialize<RollReport<DinoMoveIDs, DinoStates>>(rollMessage.Parameters["message"]);
+		// 	InvokeAsync(() => { StateHasChanged(); });
+		// };
 
 
 		Player.UpdateUI += (o, e) =>
@@ -425,8 +437,11 @@
 			map?.Update();
 		};
 
+		Game.AddPlayer(Player);
+		/*
 		await Client.StartCommunication(navigationManager.BaseUri, Player.Name);
 		await Player.Connect(Client, Toaster);
+		*/
 	}
 
 	private List<DinoMove> MovesOnScreen
@@ -477,16 +492,6 @@
 		set { Player.Gear[7] = value; }
 	}
 
-	public string Rumor
-	{
-		get { return Player.Rumor; }
-		set
-		{
-			Player.Rumor = value;
-			SendUpdateToServer();
-		}
-	}
-
 	public string Name
 	{
 		get { return Player.Name; }
@@ -495,17 +500,8 @@
 			if (value == Player.Name) return;
 			var oldName = Player.Name;
 			Player.Name = value;
-
-			if (Client is not null)
-			{
-				Client.UserName = value;
-				if (Client.IsConnected)
-				{
-					Client.SendInfo($"{oldName} ahora se llama {value}");
-					SendUpdateToServer();
-				}
-			}
-
+			Game.ShowToastOnAllClients($"{oldName} ahora se llama {value}");
+			Game.RequestUpdateToUIOnClients();
 		}
 	}
 

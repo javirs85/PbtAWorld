@@ -1,5 +1,6 @@
 ﻿@using System.Web;
 @inject IToastService Toaster
+@inject DinoGameController Game
 @inject DinoPlayer Player
 @inject DinoMovesService Moves
 
@@ -176,32 +177,35 @@
 
 			@if (IsSelectable && !IsSelected)
 			{
-				<button class="btn btn-primary" @onclick=@(async() => {await Player.PurchaseMove(Move);})>Comprar <br />Movimiento</button>
+				<button class="btn btn-primary" 
+					@onclick=@(() => {Player.PurchaseMove(Move); Game.ShowToastOnAllClients($"{Player.Name} aprendió {Move.Tittle}");})>
+					Comprar <br />Movimiento
+				</button>
 			}
 			else if(Move.Roll == DinoStates.D_Fit)
 			{
-				<button class="btn btn-danger" @onclick="@(async()=>{ await Player.Roll(Move.Roll, Move);})">Tirar <br/>Forma física</button>
+				<button class="btn btn-danger" @onclick="@(async()=>{ Game.Roll(Player.ID,Move.Roll, Move);})">Tirar <br />Forma física</button>
 			}
 			else if (Move.Roll == DinoStates.D_Clever)
 			{
-				<button class="btn btn-primary" @onclick="@(async()=>{ await Player.Roll(Move.Roll, Move);})">Tirar <br />Inteligencia</button>
+				<button class="btn btn-primary" @onclick="@(async()=>{ Game.Roll(Player.ID,Move.Roll, Move);})">Tirar <br />Inteligencia</button>
 			}
 			else if (Move.Roll == DinoStates.D_Steady)
 			{
-				<button class="btn btn-success" @onclick="@(async()=>{ await Player.Roll(Move.Roll, Move);})">Tirar <br />Calma</button>
+				<button class="btn btn-success" @onclick="@(async()=>{ Game.Roll(Player.ID,Move.Roll, Move);})">Tirar <br />Calma</button>
 			}
 			else if(Move.Roll == DinoStates.D_MC)
 			{
 				<div class="container">
 					<div class="row g-1">
 						<div class="col-sm">
-							<button class="btn btn-danger" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_Fit, Move);})">Tirar <br />Forma física</button>
+							<button class="btn btn-danger" style="width:100%;" @onclick="@(async()=>{ Game.Roll(Player.ID,DinoStates.D_Fit, Move);})">Tirar <br />Forma física</button>
 						</div>
 						<div class="col-sm">
-							<button class="btn btn-primary" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_Clever, Move);})">Tirar <br />Inteligencia</button>
+							<button class="btn btn-primary" style="width:100%;" @onclick="@(async()=>{ Game.Roll(Player.ID,DinoStates.D_Clever, Move);})">Tirar <br />Inteligencia</button>
 						</div>
 						<div class="col-sm">
-							<button class="btn btn-success" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_Steady, Move);})">Tirar <br />Calma</button>
+							<button class="btn btn-success" style="width:100%;" @onclick="@(async()=>{ Game.Roll(Player.ID,DinoStates.D_Steady, Move);})">Tirar <br />Calma</button>
 						</div>
 					</div>
 				</div>
@@ -211,10 +215,10 @@
 				<div class="container">
 					<div class="row g-1">
 						<div class="col-sm">
-							<button class="btn btn-dark" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_0, Move);})">Tirar <br />+0</button>
+							<button class="btn btn-dark" style="width:100%;" @onclick="@(async()=>{ Game.Roll(Player.ID,DinoStates.D_0, Move);})">Tirar <br />+0</button>
 						</div>
 						<div class="col-sm">
-							<button class="btn btn-dark" style="width:100%;" @onclick="@(async()=>{ await Player.Roll(DinoStates.D_1, Move);})">Tirar <br />+1</button>
+							<button class="btn btn-dark" style="width:100%;" @onclick="@(()=>{ Game.Roll(Player.ID,DinoStates.D_1, Move);})">Tirar <br />+1</button>
 						</div>
 					</div>
 				</div>

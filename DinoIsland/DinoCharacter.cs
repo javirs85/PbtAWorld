@@ -176,12 +176,10 @@ public class DinoPlayer : Player
 
 	public List<DinoMoveIDs> AllPurchasedMoves { get; set; } = new List<DinoMoveIDs>();
 
-	public async Task PurchaseMove(DinoMove move)
+	public void PurchaseMove(DinoMove move)
 	{
 		if(!AllPurchasedMoves.Contains(move.ID))	
 			AllPurchasedMoves.Add(move.ID);
-		if(Client is not null)
-			await Client.SendInfo($"{Name} adquirió {move.Tittle}");
 	}
 
 	private void InitClass()
@@ -291,6 +289,7 @@ public class DinoPlayer : Player
 			case DinoClasses.Survivor:
 				AllPurchasedMoves.Add(DinoMoveIDs.D_Sur_BeenAroundTheBlock);
 				AllPurchasedMoves.Add(DinoMoveIDs.D_Sur_HomewardBound);
+				AllPurchasedMoves.Add(DinoMoveIDs.D_Sur_SetHouse);
 				Gear.Add("Lanza");
 				Gear.Add("trapos de camuflaje");
 				Gear.Add("Plantas comestibles");

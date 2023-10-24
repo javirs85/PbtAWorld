@@ -8,14 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Pages\MasterViewer.razor.css" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Pages\MasterViewer.razor.css" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
     <ProjectReference Include="..\DinoIsland\DinoIsland.csproj" />
     <ProjectReference Include="..\PbtAWorldConnectivity\PbtAWorldConnectivity.csproj" />

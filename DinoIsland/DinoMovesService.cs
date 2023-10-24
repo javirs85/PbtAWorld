@@ -16,6 +16,7 @@ public enum DinoMoveIDs { notSet, D_Run, D_Hide, D_DoIt, D_ManUp, D_LookThere, D
 	D_Pal_Expert,
 	D_Sur_BeenAroundTheBlock,
 	D_Sur_HomewardBound,
+	D_Sur_SetHouse,
 	D_Sur_Hoarder,
 	D_Sur_FadeAway,
 	D_Sol_KillOrBeKilled,
@@ -728,7 +729,17 @@ public class DinoMovesService : MovesServiceBase
             },
             ClosingText = "Independientemente de tu tirada, cuéntales sobre la última vez que estuviste allí."
         },
-        new DinoMove(DinoMoveIDs.D_Sur_HomewardBound, DinoStates.D_Clever)
+		 new DinoMove(DinoMoveIDs.D_Sur_SetHouse, DinoStates.D_Clever)
+		{
+			Tittle = "Establece tu cabaña",
+			TypeOfMovement = MovementType.ClassMove,
+			ForClass = DinoClasses.Survivor,
+			PreCondition = new Consequences
+			{
+				MainText = "Establece en el mapa donde está tu casucha"
+			}
+		},
+		new DinoMove(DinoMoveIDs.D_Sur_HomewardBound, DinoStates.D_Clever)
         {
             Tittle = "De Regreso a Casa",
 			ForClass = DinoClasses.Survivor,
