@@ -261,16 +261,18 @@
 					@if(SelectedLoaction is not null)
 					{
 						<div>
-							@SelectedLoaction.Title
-							@SelectedLoaction.Flavor
-							@SelectedLoaction.Things
+							<div class="d-flex gap-1">
+							<strong class="fs-3">@SelectedLoaction.Title</strong>
+							<small class="flex-grow-1 border-start ps-1">@SelectedLoaction.Flavor</small>
+							</div>
+							Encontrarás: @SelectedLoaction.Things
 							@foreach(var m in SelectedLoaction.LocationMoves)
 							{
 								<div class="Move">@m.Tittle</div>
 							}
 						</div>
 					}
-					<h4>Localizaciones</h4>
+					<h4 class="border-top mt-4 pt-1">Localizaciones</h4>
 					<h6>Naturales</h6>
 					<div class="d-flex flex-wrap gap-1">
 						@foreach(var loc in Game.TextBook.NaturalLocations)
@@ -284,21 +286,30 @@
 					<div class="d-flex flex-wrap gap-1">
 						@foreach (var loc in Game.TextBook.ArtificialLocations)
 						{
-							<div class="MysteryButton">@loc.Title</div>
+							<div class="MysteryButton @(loc == SelectedLoaction?"selected":"")"
+							@onclick=@(()=>{SelectedLoaction = loc;})>
+								@loc.Title
+							</div>
 						}
 					</div>
 					<h6>En el Complejo</h6>
 					<div class="d-flex flex-wrap gap-1">
 						@foreach (var loc in Game.TextBook.ComplexLocations)
 						{
-							<div class="MysteryButton">@loc.Title</div>
+							<div class="MysteryButton @(loc == SelectedLoaction?"selected":"")"
+							@onclick=@(()=>{SelectedLoaction = loc;})>
+								@loc.Title
+							</div>
 						}
 					</div>
 					<h6>Extrañas</h6>
 					<div class="d-flex flex-wrap gap-1">
 						@foreach (var loc in Game.TextBook.ExtrangeLocations)
 						{
-							<div class="MysteryButton">@loc.Title</div>
+							<div class="MysteryButton @(loc == SelectedLoaction?"selected":"")"
+							@onclick=@(()=>{SelectedLoaction = loc;})>
+								@loc.Title
+							</div>
 						}
 					</div>
 				</div>

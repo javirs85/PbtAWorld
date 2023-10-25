@@ -452,7 +452,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "La Cueva",
+			Title = "Cueva",
 			Flavor = "Silencio espeluznante, sombras que podrían ocultar cualquier cosa, un olor a moho.",
 			Things = "Podrían encontrar: Un nido de dinosaurios, una entrada secreta al complejo, CERATOPSIDOS.",
 			LocationMoves = new List<MasterMove>
@@ -474,7 +474,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Lago",
+			Title = "Lago",
 			Flavor = "Una brisa fresca, superficie cristalina, una enorme sombra submarina, olor a pescado.",
 			Things = "Podrían encontrar: Una balsa, un puente precario, una casa de botes cerrada con llave, CRIATURAS ACUÁTICAS.",
 			LocationMoves = new List<MasterMove>
@@ -485,7 +485,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "Las Montañas",
+			Title = "Montañas",
 			Flavor = "El viento aúlla, acantilados imponentes que parecen subir para siempre.",
 			Things = "Podrían encontrar: Una torre de radio, un avión estrellado, una caja de suministros sujeta a un paracaídas, PTEROSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -509,7 +509,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Río",
+			Title = "Río",
 			Flavor = "Rápidos rugientes, rocío frío empapa tu ropa, rocas resbaladizas cubiertas de musgo.",
 			Things = "Podrían encontrar: Una balsa y remos, peces, una entrada al complejo detrás de una cascada, HADROSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -521,7 +521,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Pantano",
+			Title = "Pantano",
 			Flavor = "Humedad sofocante, agua turbia hasta la cintura, olor a descomposición.",
 			Things = "Podrían encontrar: Un bote de aire, ESPINOSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -547,7 +547,7 @@ public class DinoTextBook
 	public List<Location> ArtificialLocations { get; set; } = new List<Location> {
 		new Location
 		{
-			Title = "La Aviario",
+			Title = "Aviario",
 			Flavor = "Pasarelas oscilantes, chillidos por todas partes, niebla que oculta la vista.",
 			Things = "Podrían encontrar: Un atajo entre dos áreas, una forma de bajar de estos acantilados, PTEROSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -558,7 +558,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Monorraíl",
+			Title = "Monorraíl",
 			Flavor = "Enormes columnas de cemento, follaje cortado, música alegre pero tenue.",
 			Things = "Podrían encontrar: Un mapa digital de la isla, transporte rápido a una parte diferente de la isla, SAUROPODOS, PTEROSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -569,7 +569,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "Los Corrales",
+			Title = "Corrales",
 			Flavor = "Vallas altas, el hedor de excremento de dinosaurio, huellas en el barro.",
 			Things = "Podrían encontrar: Una valla eléctrica, un huevo de dinosaurio, excremento seco de dinosaurio, un rastreador GPS que debería estar conectado a un dinosaurio, CERATOPSIDOS, TERÓPODOS GRANDES.",
 			LocationMoves = new List<MasterMove>
@@ -581,7 +581,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "La Caseta de Energía",
+			Title = "Caseta de Energía",
 			Flavor = "Túneles estrechos, tuberías y cables, vapor silbante, goteo de agua.",
 			Things = "Podrían encontrar: Una forma de restaurar la energía a una parte o a toda la isla, linternas y herramientas, TERÓPODOS PEQUEÑOS.",
 			LocationMoves = new List<MasterMove>
@@ -593,7 +593,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "La Torre de Radio",
+			Title = "Torre de Radio",
 			Flavor = "Juntas de metal crujientes, pájaros graznando, guano por todas partes.",
 			Things = "Podrían encontrar: Walkie-talkies, un panel de control para acceder a la señal de radio, PTEROSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -605,7 +605,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Puesto Fluvial",
+			Title = "Puesto Fluvial",
 			Flavor = "Un almacén de suministros sucio, el agrio olor del combustible, agua corriendo.",
 			Things = "Podrían encontrar: Equipo de buceo, combustible, cuerda, tal vez una pequeña embarcación, SPINOSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -616,7 +616,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Escondite del Contrabandista",
+			Title = "Escondite del Contrabandista",
 			Flavor = "Una cabaña bien escondida para esconderse, mapas en todas las paredes.",
 			Things = "Podrían encontrar: Armas, drogas, dinero, walkie-talkies, una pequeña avioneta o bote, paneles o compartimentos ocultos.",
 			LocationMoves = new List<MasterMove>
@@ -630,7 +630,7 @@ public class DinoTextBook
 	{
 		new Location
 		{
-			Title = "La Sala de Control",
+			Title = "Sala de Control",
 			Flavor = "Docenas de pantallas, tazas de café abandonadas hace tiempo, el siseo de estática.",
 			Things = "Podrían encontrar: Acceso a puertas, cerraduras, energía u otros sistemas; vistas de la isla/sitios del complejo.",
 			LocationMoves = new List<MasterMove>
@@ -653,7 +653,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Vestíbulo",
+			Title = "Vestíbulo",
 			Flavor = "Un vestíbulo que alguna vez fue majestuoso, exhibiciones/estatuas celebratorias, polvo en los rayos de sol.",
 			Things = "Podrían encontrar: Una pista sobre lo que era el complejo, un mapa del complejo, rutas marcadas hacia otras partes del complejo, ANQUILOSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -664,7 +664,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "La Criadero",
+			Title = "Criadero",
 			Flavor = "El calor de las lámparas de calor de los incubadoras, cáscaras de huevo rotas crujen bajo los pies.",
 			Things = "Podrían encontrar: Un huevo de dinosaurio, un dinosaurio bebé, muestras de sangre, embriones almacenados, un biólogo aterrorizado, ESTEGOSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -677,7 +677,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Laboratorio",
+			Title = "Laboratorio",
 			Flavor = "Especímenes en tanques, montones de registros y diarios, olor a formaldehído.",
 			Things = "Podrían encontrar: Muestras o especímenes importantes, suministros médicos o científicos, equipo de manejo de dinosaurios, notas de investigación, XENOSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -689,7 +689,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "La Computadora Principal",
+			Title = "Computadora Principal",
 			Flavor = "Zumbido eléctrico, luces intermitentes, frialdad en el aire.",
 			Things = "Podrían encontrar: Datos importantes, una unidad USB, un extinguidor de incendios, acceso a los sistemas de control del complejo, TERÓPODOS PEQUEÑOS, DROMAEOSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -700,7 +700,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "La Instalación Médica",
+			Title = "Instalación Médica",
 			Flavor = "Estanterías antes ordenadas ahora en desorden, mostradores de acero inoxidable.",
 			Things = "Podrían encontrar: Un médico, suministros médicos, un PNJ con una lesión debilitante.",
 			LocationMoves = new List<MasterMove>
@@ -722,7 +722,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "Los Túneles de Vapor",
+			Title = "Túneles de Vapor",
 			Flavor = "Oscuridad casi total, vapor que se escapa, tuberías densas.",
 			Things = "Podrían encontrar: Un atajo, acceso a una ubicación anteriormente inalcanzable, TERÓPODOS PEQUEÑOS, SPINOSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -749,7 +749,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "La Aldea Nativa",
+			Title = "Aldea Nativa",
 			Flavor = "Conversaciones susurradas, música de flauta y tambor, olor a jabalí cocido.",
 			Things = "Podrían encontrar: Herramientas hechas a mano pero de alta calidad, una deliciosa comida caliente, nativos que desafían sus expectativas, dinosaurios domesticados.",
 			LocationMoves = new List<MasterMove>
@@ -761,7 +761,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "El Obelisco",
+			Title = "Obelisco",
 			Flavor = "Antiguo e antinatural, una textura extraña, un sonido familiar que simplemente no puedes ubicar.",
 			Things = "Podrían encontrar: Marcas misteriosas, pistas sobre la historia de la isla, un panel de control oculto diferente a todo lo que han visto antes, TERIZINOSAURIOS.",
 			LocationMoves = new List<MasterMove>
@@ -773,7 +773,7 @@ public class DinoTextBook
 		},
 		new Location
 		{
-			Title = "La Puerta Temporal",
+			Title = "Puerta Temporal",
 			Flavor = "Colores y sonidos psicodélicos, arcos masivos, relámpagos morados.",
 			Things = "Podrían encontrar: Una forma de detener a los dinosaurios de llegar al presente, una forma de regresar al presente, tecnología imposible.",
 			LocationMoves = new List<MasterMove>
