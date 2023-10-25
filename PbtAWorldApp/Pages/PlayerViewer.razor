@@ -381,9 +381,42 @@
 							<DinoMovesPack Moves=Moves.SafetyMoves PackName="DangerMoves" OpenFirst=false />
 						</div>
 			
-						<div class="BoxPack">
-							<h2>Rumor</h2>
-							<div>@Player.Rumor</div>
+						<div class="BoxPack d-flex flex-column gap-2">
+							<div>
+								<strong>Rumor</strong>
+								<div>@Player.Rumor</div>
+							</div>
+							<div>
+								<strong>Obstáculo</strong>
+								<div>@Game.ObstacleMC</div>
+							</div>
+							<div>
+								<strong>Misterio</strong>
+								@if(Game.ObstaclePlayers == Game.TextBook.ObstaclePlayersOptions[0])
+								{
+									<ul>
+									@foreach(var o in Game.TextBook.ObstaclePlayersOptions.Where(x=>x!= Game.ObstaclePlayers))
+									{
+										<li>@o</li>
+									}
+									</ul>
+								}
+								else
+								{
+									<div>@Game.ObstaclePlayers</div>
+								}
+								
+							</div>
+							@if(Game.SelectedExtinctionEvent is not null)
+							{
+								<div>
+									<strong>Evento de extinción</strong>
+									<div>
+										@Game.SelectedExtinctionEvent.Clock.EventAt12
+										<ClockViewer Clock="Game.SelectedExtinctionEvent.Clock"/>
+									</div>
+								</div>
+							}							
 						</div>
 						<div class="BoxPack">
 							<h2>Las historias que explicas</h2>

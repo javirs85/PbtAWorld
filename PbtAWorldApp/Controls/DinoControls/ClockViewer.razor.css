@@ -1,0 +1,28 @@
+﻿.ClockContainer
+{
+    display: flex;
+}
+.ClockTick{
+    width: 25px;
+    height: 25px;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+    opacity: 0.2;
+}
+    .ClockTick.Ticked {
+        color: red;
+        opacity: 1;
+        animation: col 3s infinite
+    }
+@keyframes col {
+    0% {
+        color: #eb4e00
+    }
+    50% {
+        color: #eb1800
+    }
+    100% {
+        color: #eb4e00
+    }
+}

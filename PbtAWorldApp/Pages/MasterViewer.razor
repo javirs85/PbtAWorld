@@ -3,14 +3,16 @@
 @inject DinoPlayer Player;
 @inject PbtAWorldCommClient Client;
 
-<div class="container-fluid px-3">
-	<div class="row">
+<div class="container-fluid px-1">
+	<div class="row px-1 gx-2">
 		@if(!IsInGameMode)
 		{
 			<div class="col-md-6 col-lg-4 col-xl-3">
 				<div class="BoxPack">
-					<h4>Tierra firme</h4>
-					<RollableList Options=WhyComing Tittle="Habéis llegado a tierra firme juntos, por que?" />
+					<h4>Tierra firme <span class="fs-6">(elijen los jugadore)</span></h4>
+					<RollableList Options="@Game.TextBook.WhyComingOptions"
+									Tittle="Habéis llegado a tierra firme juntos, por que?"
+									@bind-Value=@Game.WhyComing />
 				</div>
 				<div class="BoxPack">
 					<h4>Quien sois?</h4>
@@ -22,9 +24,9 @@
 					</p>
 				</div>
 				<div class="RumorsPack BoxPack">
-					<h2 @onclick=@(()=>{IsShowingRumors = !IsShowingRumors;})>
-						<div class="d-flex" style="cursor:pointer;">
-							Rumores
+					<h4 @onclick=@(()=>{IsShowingRumors = !IsShowingRumors;})>
+						<div class="d-flex justify-content-between" style="cursor:pointer;">
+							<div class="d-flex align-items-center gap-1">Rumores <span class="fs-6"> (jugadores)</span></div>
 						
 							@if (IsShowingRumors)
 							{
@@ -35,12 +37,12 @@
 								<span class="small p-2 fs-6 mx-2" style="background:#354740; border-radius:4px;">Ampliar</span>
 							}
 						</div>					
-					</h2>
+					</h4>
 					@if (IsShowingRumors)
 					{
 						@foreach (var p in Game.Players)
 						{
-							<RollableList Options="AvailableRumors"
+							<RollableList Options="Game.TextBook.AvailableRumors"
 											Tittle="@p.Name"
 											Player="@p"
 											Selected=@p.Rumor
@@ -104,23 +106,23 @@
 			</div>
 			<div class="col-md-6 col-lg-4 col-xl-3">
 				<div class="BoxPack">
-					<h3>Justo ahora</h3>
-					<RollableList Options="WhereAreYouOptions"
-									Tittle="Donde estáis?"
-									Selected=@WhereAreYou />
-					<RollableList Options="TheWayOffOptions"
-								  Tittle="Conoces una forma de salir de esta isla (aunque podría haber más). ¿Cuál es? Marca en el mapa"
-								  Selected=@TheWayOff />
+					<h4>Justo ahora</h4>
+					<RollableList Options="Game.TextBook.WhereAreYouOptions"
+								Tittle="Donde estáis? (jugadores)"
+								@bind-Value=@Game.WhereAreYou />
+					<RollableList Options="Game.TextBook.TheWayOutOptions"
+								Tittle="Conoces una forma de salir de esta isla (aunque podría haber más). ¿Cuál es? Marca en el mapa (jugadores)"
+								@bind-Value=@Game.TheWayOut />
 				
-					<h3>Por que no podéis simplemente iros?</h3>
-					<RollableList Options="@ObstacleMCOptions"
-								  Tittle="Obstáculo (MC)"
-								  Selected=@ObstacleMC />
-					<RollableList Options="@ObstaclePlayersOptions"
-								  Tittle="Misterio (Jugadores)"
-								  Selected=@ObstaclePlayers />
+					<h4>Por que no podéis simplemente iros?</h4>
+					<RollableList Options="@Game.TextBook.ObstacleMCOptions"
+								Tittle="Obstáculo (MC)"
+								@bind-Value=@Game.ObstacleMC />
+					<RollableList Options="@Game.TextBook.ObstaclePlayersOptions"
+								Tittle="Misterio (Jugadores)"
+								@bind-Value=@Game.ObstaclePlayers />
 
-					<h3>Haz un movimiento duro, ponlos en peligro y pregunta: Que hacéis?</h3>
+					<h4>Haz un movimiento duro, ponlos en peligro y pregunta: Que hacéis?</h4>
 				</div>
 			</div>
 			<div class="col-md-6 col-lg-4 col-xl-3">
@@ -131,31 +133,174 @@
 		{
 			<div class="col-md-6 col-lg-4 col-xl-3">
 				<div class="BoxPack MasterMoves d-flex flex-column gap-2">
-					<h3>Movimientos del Master</h3>
-					@foreach (var m in MasterMoves.OrderBy(x=>x.Order))
+					@foreach (var m in Game.TextBook.MasterMoves.OrderBy(x=>x.Order))
 					{
 						<div class="Move @m.HowOften.ToString()" @onclick=@(()=>{m.Use();})>
 							@m.Tittle
 							@if (m.Tittle.Contains("Introduce a un NPC útil"))
 							{
-								<RollableList Options="@NPCGoals"
-											  Tittle="Objetivo del NPC"
-											  Selected=@NPCGoalsSelected 
-											  />
-								<RollableList Options="@NPCOffers"
-											  Tittle="Que ofrece el NPC"
-											  Selected=@NPCOffersSelected
-											  />
+								<RollableList Options="@Game.TextBook.NPCGoals"
+											Tittle="Objetivo del NPC"
+											@bind-Value=@Game.NPCGoalsSelected />
+								<RollableList Options="@Game.TextBook.NPCOffers"
+											Tittle="Que ofrece el NPC"
+											@bind-Value=@Game.NPCOffersSelected />
 							}
 							else if (m.Tittle.Contains("¡Aparece un dinosaurio!"))
 							{
-								<RollableList Options="@Gimmicks"
-											  Tittle="Característica"
-											  Selected=@GimmickSelected 
-											  />
+								<RollableList Options="@Game.TextBook.Gimmicks"
+											Tittle="Característica"
+											@bind-Value=@Game.GimmickSelected />
 							}
 						</div>
 					}
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-1">
+				<div class="BoxPack d-flex flex-column gap-2">
+					<div>
+						<strong>Salida:</strong> @Game.TheWayOut
+					</div>
+					<div>
+						<strong>Obstáculo:</strong> @Game.ObstacleMC
+					</div>
+					<div>
+						<strong>Misterio:</strong> @Game.ObstaclePlayers
+					</div>
+				</div>
+				<div class="BoxPack MysteryBox">
+					<h4>Misterio enlazado con su misterio <i @onclick=@(()=>{Game.SelectedSolution = null;}) class="bi bi-arrow-clockwise" style="cursor: pointer;"></i></h4>
+					<div class="d-flex gap-2 mb-3">
+						<div class="@(Game.SelectedMystery == Game.TextBook.WhyDinos?"MysteryButton selected":"MysteryButton")" @onclick=@(()=>{Game.SelectedMystery = Game.TextBook.WhyDinos;})>
+							Why Dinos?
+						</div>
+						<div class="@(Game.SelectedMystery == Game.TextBook.WhyComplex?"MysteryButton selected":"MysteryButton")" @onclick=@(()=>{Game.SelectedMystery = Game.TextBook.WhyComplex;})>
+							Why Complex?
+						</div>
+						<div class="@(Game.SelectedMystery == Game.TextBook.WhatWentGrong?"MysteryButton selected":"MysteryButton")" @onclick=@(()=>{Game.SelectedMystery = Game.TextBook.WhatWentGrong;})>
+							What went wrong?
+						</div>
+					</div>
+					
+					<div class="d-flex flex-column gap-1" >
+						@if (Game.SelectedMystery is not null)
+						{
+							@if (Game.SelectedSolution is not null && Game.SelectedMystery.Solutions.Contains(Game.SelectedSolution))
+							{
+								<div class="p-1"
+								style="background: #00000044; cursor:pointer;">
+									@Game.SelectedSolution.Solution<br />
+									<small><strong>Pista:</strong> @Game.SelectedSolution.FirstClue</small>
+								</div>
+							}
+							else
+							{
+								@foreach (var s in Game.SelectedMystery.Solutions)
+								{
+									<div class="p-1" 
+									@onclick=@(()=>{Game.SelectedSolution = s;})
+									style="background: #00000044; cursor:pointer;">
+										@s.Solution<br/>
+										<small><strong>Pista:</strong> @s.FirstClue</small>
+									</div>
+								}
+							}
+						}
+					</div>
+				</div>
+				<div class="BoxPackSeparator">
+					Cuando resuelvan el óbstaculo o el misterio ... 
+				</div>
+				<div class="BoxPack">
+					<h4 class="d-flex gap-1 justify-content-between align-items-center">
+						<div class="d-flex gap-1 align-items-center">
+							Extinction event
+							<i @onclick=@(()=>{Game.SelectedExtinctionEvent = null;}) class="bi bi-arrow-clockwise" style="cursor: pointer;"></i>
+						</div>
+						@if(Game.SelectedExtinctionEvent is not null)
+						{
+							<ClockViewer Clock="Game.SelectedExtinctionEvent.Clock"/>
+						}						
+					</h4>
+					@if(Game.SelectedExtinctionEvent is null)
+					{
+						<div class="d-flex flex-wrap gap-1">
+						@foreach(var ev in Game.TextBook.ExtinctionEvents)
+						{
+							<div class="MysteryButton" @onclick=@(()=>{Game.SelectedExtinctionEvent = ev;})>
+								@ev.Tittle
+							</div>
+						}
+						</div>
+					}
+					else
+					{
+						<div class="d-flex flex-column gap-1 p-1">
+							<h5 class="MysteryButton text-center">@Game.SelectedExtinctionEvent.Tittle</h5>
+							<h5 class=""><strong>Movimientos de aviso</strong></h5>
+							@foreach (var mv in Game.SelectedExtinctionEvent.WarningMoves)
+							{
+								<span>@mv</span>
+							}
+							<h5 class="mt-4"><strong>Movimientos de master</strong></h5>
+							@foreach (var mv in Game.SelectedExtinctionEvent.NewMasterMoves.OrderBy(x=>x.Order))
+							{
+								<div class="Move @mv.HowOften.ToString()" @onclick=@(()=>{mv.Use();})>
+									@mv.Tittle
+								</div>
+							}
+						</div>
+					}
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-1">
+				<div class="BoxPack">
+					<MapMini @ref="Map" />
+				</div>
+				<div class="BoxPack">
+					@if(SelectedLoaction is not null)
+					{
+						<div>
+							@SelectedLoaction.Title
+							@SelectedLoaction.Flavor
+							@SelectedLoaction.Things
+							@foreach(var m in SelectedLoaction.LocationMoves)
+							{
+								<div class="Move">@m.Tittle</div>
+							}
+						</div>
+					}
+					<h4>Localizaciones</h4>
+					<h6>Naturales</h6>
+					<div class="d-flex flex-wrap gap-1">
+						@foreach(var loc in Game.TextBook.NaturalLocations)
+						{
+							<div class="MysteryButton @(loc == SelectedLoaction?"selected":"")"
+								@onclick=@(()=>{SelectedLoaction = loc;})>
+								@loc.Title</div>
+						}
+					</div>
+					<h6>Artificiales</h6>
+					<div class="d-flex flex-wrap gap-1">
+						@foreach (var loc in Game.TextBook.ArtificialLocations)
+						{
+							<div class="MysteryButton">@loc.Title</div>
+						}
+					</div>
+					<h6>En el Complejo</h6>
+					<div class="d-flex flex-wrap gap-1">
+						@foreach (var loc in Game.TextBook.ComplexLocations)
+						{
+							<div class="MysteryButton">@loc.Title</div>
+						}
+					</div>
+					<h6>Extrañas</h6>
+					<div class="d-flex flex-wrap gap-1">
+						@foreach (var loc in Game.TextBook.ExtrangeLocations)
+						{
+							<div class="MysteryButton">@loc.Title</div>
+						}
+					</div>
 				</div>
 			</div>
 		}
@@ -165,7 +310,16 @@
 @code {
 	[Parameter] public MapMini? Map { get; set; } = null;
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
-	[Parameter] public bool IsInGameMode { get; set; } = false;
+
+	private bool _isInGame = false;
+
+	[Parameter] public bool IsInGameMode
+	{
+		get { return _isInGame; }
+		set { _isInGame = value; }
+	}
+
+	private Location? SelectedLoaction = null;
 
 	private void SetNewRumor(Tuple<DinoPlayer, string> data)
 	{
@@ -174,225 +328,10 @@
 		Game.SetRumor(dp.ID, data.Item2);
 	}
 
-	private async Task UpdateThisPlayerOnServer(DinoPlayer p)
-	{
-		if (Client is not null && Client.IsConnected)
-		{
-			await Client.SendParamsMessage(MessageKinds.UpdateInPlayer, System.Text.Json.JsonSerializer.Serialize(p));
-		}
-	}
-
 	private bool IsShowingRumors = false;
 
-	public List<string> Agenda = new List<string>
-	{
-		"Haz de Dino Island un lugar misterioso, peligroso y lleno de dinosaurios.",
-		"Desafía a los héroes a descubrir su verdadera identidad.",
-		"Juega para descubrir si lograrán salir de la isla y quiénes serán si lo logran."
-	};
 
-	public List<string> Principles = new List<string>
-	{
-		"Sé un fanático de los personajes.",
-		"Apunta siempre a un personaje específico.",
-		"Haz preguntas y amplía las respuestas.",
-		"Dale a cada ubicación detalles únicos y memorables.",
-		"El entorno es tan peligroso como los dinosaurios.",
-		"Atribuye a cada especie de dinosaurio algún rasgo distintivo.",
-		"Contrapone lo natural y lo artificial.",
-		"Obliga a los héroes a elegir entre salvarse a sí mismos y ayudar a los demás.",
-		"Los dinosaurios son animales, no monstruos, hazlos reales: impresionantes, aterradores, extraños, familiares, imparables o gentiles según corresponda.",
-	};
 
-	public class MasterMove
-	{
-		public string Tittle = string.Empty;
-		public HowOftenUsed HowOften = HowOftenUsed.NeverUsed;
-
-		public MasterMove(string txt) => Tittle = txt;
-
-		public void Use()
-		{
-			if (HowOften == HowOftenUsed.NeverUsed) HowOften = HowOftenUsed.FewUses;
-			else if (HowOften == HowOftenUsed.FewUses) HowOften = HowOftenUsed.LotsOfUses;
-			else if (HowOften == HowOftenUsed.LotsOfUses) HowOften = HowOftenUsed.ToMuch;
-			else if (HowOften == HowOftenUsed.ToMuch) HowOften = HowOftenUsed.NeverUsed;
-		}
-
-		public int Order
-		{
-			get
-			{
-				if (HowOften == HowOftenUsed.NeverUsed) return 0;
-				else if (HowOften == HowOftenUsed.FewUses) return 1;
-				else if (HowOften == HowOftenUsed.LotsOfUses) return 2;
-				else return 3;
-			}
-		}
-
-	}
-
-	public List<MasterMove> MasterMoves = new List<MasterMove>
-	{
-		new MasterMove("Muestra señales de la presencia cercana de un dinosaurio."),
-		new MasterMove("Huellas, evidencia de pastoreo, una presa reciente, un rugido, pequeños dinosaurios huyendo, etc."),
-		new MasterMove("¡Aparece un dinosaurio! ¡Dale algún rasgo distintivo!"),
-		new MasterMove("Lesiona a los personajes según lo establecido."),
-		new MasterMove("Sus lesiones causan problemas."),
-		new MasterMove("Introduce a un NPC útil. ¡Dales un objetivo!"),
-		new MasterMove("Mata a un NPC útil."),
-		new MasterMove("Desorienta a los personajes."),
-		new MasterMove("Ofrece lo que necesitan, con un peligro en el camino. (Cuéntales el peligro)"),
-		new MasterMove("Diles lo que necesitan y déjales descifrar como conseguirlo. (Cuando lo obtienen, tienen éxito. Otras soluciones podrían funcionar.)"),
-		new MasterMove("Sepáralos."),
-		new MasterMove("Revela algo misterioso."),
-		new MasterMove("Pasa el tiempo. (Anochece, tienen que descansar, una oportunidad expira, etc.)"),
-		new MasterMove("Usa una ACCIÓN DE DINOSAURIO."),
-		new MasterMove("Usa una ACCIÓN DE UBICACIÓN.")
-	};
-
-	private List<string> WhyComing = new List<string>
-	{
-		"Hemos sido invitados como huéspedes, en misteriosas circunstancias.",
-		"Hemos sido contratados para trabajar aquí, en misteriosas circunstancias.",
-		"Estamos aquí para explorar o investigar.",
-		"Somos criminales o contrabandistas, aquí por un golpe.",
-		"Estamos en una misión de rescate/recuperación. ¿A quién o qué estamos persiguiendo?",
-		"Estamos en una misión encubierta, para infiltrarnos o sabotear."
-	};
-
-	private string WhereAreYou { get; set; } = string.Empty;
-	private List<string> WhereAreYouOptions = new List<string>
-	{
-		"La incubadora.",
-		"Los corrales de Triceratops.",
-		"Dormitorios abandonados apresuradamente.",
-		"Un monorraíl alto sobre la selva.",
-		"Una playa llena de escombros.",
-		"Una cueva, esperando a que pase la lluvia."
-	};
-
-	private string TheWayOff { get; set; } = string.Empty;
-	private List<string> TheWayOffOptions = new List<string>
-	{
-		"Llamar para rescate en la estación de radio.",
-		"Un avión de hélice oculto de un contrabandista.",
-		"El helicóptero en el que llegaron.",
-		"Un submarino militar.",
-		"Un velero / yate de recreo anclado en alta mar.",
-		"Un crucero que pasa una vez a la semana."
-	};
-
-	private string ObstacleMC { get; set; } = string.Empty;
-	private List<string> ObstacleMCOptions = new List<string>
-	{
-		"La única ruta es a través de los corrales/territorio de Deinonychus.",
-		"El monorraíl es la única forma de llegar a donde vamos, y está fuera de servicio.",
-		"Debemos esperar esta maldita tormenta.",
-		"No podemos irnos sin completar nuestra misión.",
-		"Necesitamos entrar en el complejo, pero está asegurado.",
-		"Nuestra forma de salir de la isla está dañada, inaccesible o aún no ha llegado."
-	};
-
-	private string ObstaclePlayers { get; set; } = string.Empty;
-	private List<string> ObstaclePlayersOptions = new List<string>
-	{
-		"¿Por qué han perdido contacto con el mundo exterior?",
-		"¿Quién saboteó su misión? (¿y por qué?)",
-		"¿Por qué su contacto no los encontró y dónde están?",
-		"¿Cuál es la fuente de la extraña transmisión que está sobrecargando sus señales?",
-		"¿Por qué están fallando sus brújulas... y hacia dónde está el norte?",
-		"¿Quiénes son las figuras sombrías que los observan desde los arbustos y qué quieren?"
-	};
-
-	private List<string> AvailableRumors = new List<string>
-	{
-		"Corrientes oceánicas y rocas submarinas hacen que sea casi imposible llegar a la isla en barco.",
-		"Alguien está creando nuevas especies de plantas y animales en la isla.",
-		"Ningún humano había puesto un pie en la isla antes del año pasado.",
-		"El gobierno chino tiene algo que ver con lo que está sucediendo.",
-		"Hay nativos que adoran a los dinosaurios como dioses.",
-		"A veces hay extrañas nubes de tormenta moradas sobre la isla.",
-		"Un amigo borracho te contó lo que vieron en la isla. Mayormente tonterías, pero murieron poco después en circunstancias misteriosas.",
-		"Tienes un amigo o familiar que fue a esta isla y nunca regresó.",
-		"La gente va por períodos de dos años y hasta los conserjes ganan siete cifras.",
-		"Las brújulas no funcionan del todo bien.",
-		"Hay arañas del tamaño de un coco.",
-		"El Museo de Historia Natural tiene una nueva exhibición que se inaugura pronto y es tan secreta que incluso la mayoría de los curadores no saben de qué se trata."
-	};
-
-	private string GimmickSelected { get; set; } = string.Empty;
-	private List<string> Gimmicks = new List<string>
-	{
-		"Agudeza Visual: Solo puede detectar movimiento.",
-		"Bolsas de Veneno: Tiene una mordida venenosa o escupe toxinas letales.",
-		"Piel Venenosa: Su piel es tóxica, causando dolor, parálisis, ceguera o alucinaciones.",
-		"Camuflaje: Puede cambiar de color para mezclarse con su entorno.",
-		"Inteligente: Capaz de resolver problemas complejos.",
-		"Cazadores en Manada: Trabajan juntos para cazar presas.",
-		"Arbóreo: Vive en los árboles.",
-		"Territorial: Marca y defiende límites específicos.",
-		"Caníbal: Se alimenta de su propia especie.",
-		"Mimetismo: Puede imitar sonidos, ya sea de dinosaurios, humanos o máquinas.",
-		"Eléctrico: Almacena y libera descargas eléctricas poderosas.",
-		"Regeneración: Puede curarse rápidamente y regenerar apéndices perdidos.",
-		"Sonar: Caza utilizando ecos de sonidos.",
-		"Escalada: Proficiente en escalar o incluso se adhiere a superficies.",
-		"Hierbabuena: Atraído obsesivamente por alguna sustancia moderna.",
-		"Constructor de Trampas: Construye trampas naturales, como telarañas o hoyos.",
-		"Grito Sónico: Produce un sonido que puede herir, desorientar o derribar a los oponentes en grupo.",
-		"Fértil: Se reproduce rápidamente.",
-		"Señal de Peligro: Da señales cuando está cerca, tal vez con un sonido de sonaja, despliegue, aullido o colores brillantes.",
-		"Prensil: Usa su cola, o tal vez una trompa, para sujetar cosas."
-	};
-
-	private List<string> DinoNickNames = new List<string>
-	{
-		"MMDs (Man-Made Dinosaurs)",
-		"APAs (Animales prehistóricos artificiales)",
-		"Crichtons",
-		"Paleos",
-		"Waybacks o Retrosaurios",
-		"FIDOs (Fossil induced dinosaur organism)"
-	};
-
-	private List<string> MysteriusOrganizations = new List<string>
-	{
-		"The Hallet Institute",
-		"恐⻰龙 (Kǒnglóng)",
-		"Mantell Industries",
-		"Hilltop",
-		"SynGen",
-		"D.R.I (Dinosaur Research Institute)"
-	};
-
-	private string NPCGoalsSelected { get; set; } = string.Empty;
-	private List<string> NPCGoals = new List<string>
-	{
-		"Llegar hasta un ser querido en otra parte de la isla.",
-		"Permanecer en el lugar hasta que todo se calme.",
-		"Evitar a los dinosaurios a toda costa.",
-		"Vengarse de la persona que creen es responsable de todo el lío.",
-		"Cobrar, en efectivo.",
-		"Nadie puede irse.",
-		"Recuperar copias de seguridad de todos los datos.",
-		"Completar su investigación.",
-		"Devolver todo a la normalidad.",
-		"Proteger un secreto personal a toda costa."
-	};
-
-	private string NPCOffersSelected { get; set; } = string.Empty;
-	private List<string> NPCOffers = new List<string>
-	{
-		"Acceso a tarjetas clave, contraseñas, etc.",
-		"Orientación hacia una ubicación o persona.",
-		"Un arma y/o la habilidad para usar una.",
-		"Conocimiento sobre un dinosaurio.",
-		"Conocimiento de un alijo de armas, combustible, artefactos, etc.",
-		"Habilidad con un vehículo.",
-		"Habilidad con un sistema técnico: energía, portales temporales, tanques de clonación, seguridad, etc.",
-		"Atención médica."
-	};
 
 	protected override void OnInitialized()
 	{
@@ -405,5 +344,12 @@
 		{
 			InvokeAsync(() => { StateHasChanged(); });
 		};
+
+		if (string.IsNullOrEmpty(Game.WhereAreYou)) Game.WhereAreYou = Game.TextBook.WhereAreYouOptions[0];
+		if (string.IsNullOrEmpty(Game.ObstacleMC)) Game.ObstacleMC = Game.TextBook.ObstacleMCOptions[0];
+		if (string.IsNullOrEmpty(Game.ObstaclePlayers)) Game.ObstaclePlayers = Game.TextBook.ObstaclePlayersOptions[0];
+		if (string.IsNullOrEmpty(Game.TheWayOut)) Game.TheWayOut = Game.TextBook.TheWayOutOptions[0];
+		if (string.IsNullOrEmpty(Game.WhyComing)) Game.WhyComing = Game.TextBook.WhyComingOptions[0];
+
 	}
 }

@@ -3,10 +3,19 @@
     background: black;
     border-radius: 4px;
     padding: 5px;
+    cursor: pointer;
 }
 
 .BoxPack {
     background: #35413be6;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #5d5d5d;
+    color: #cdcdcd;
+}
+
+.BoxPackSeparator {
+    background: #698979e6;
     border-radius: 10px;
     padding: 10px;
     border: 1px solid #5d5d5d;
@@ -25,3 +34,19 @@
 .ToMuch {
     background: #430101;
 }
+
+.MysteryButton {
+    background: #00000044;
+    flex-grow: 1;
+    text-align: center;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #afafaf;
+}
+    .MysteryButton.selected {
+        background: #040e09;
+        border: 1px solid black;
+        color: white;
+    }
+

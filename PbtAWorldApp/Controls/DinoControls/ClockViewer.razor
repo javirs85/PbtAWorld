@@ -1,0 +1,23 @@
+﻿@inject DinoGameController Game
+
+<div class="ClockContainer">
+	@if(Clock.Steps == 3)
+	{
+		<div class="ClockTick @(Clock.Status >0?"Ticked":"")" @onclick=@(()=>{Click(0);})><i class="bi bi-fire"></i></div>
+		<div class="ClockTick @(Clock.Status >1?"Ticked":"")" @onclick=@(()=>{Click(1);})><i class="bi bi-fire"></i></div>
+		<div class="ClockTick @(Clock.Status >2?"Ticked":"")" @onclick=@(()=>{Click(2);})><i class="bi bi-fire"></i></div>
+	}
+</div>
+
+@code{
+	[Parameter] public Clock Clock { get; set; } = new();
+
+	private void Click(int n)
+	{
+		if (n >= Clock.Status) Clock.Status++;
+		else Clock.Status--;
+
+		Game.RequestUpdateToUIOnClients();
+	}
+
+}

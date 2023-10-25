@@ -1,6 +1,6 @@
 ﻿<div class="d-flex flex-column" style="border: 2px solid #17376742; border-radius:5px; background: #05142bbd;" @onclick:stopPropagation=true>
 	<div class="d-flex justify-content-between" style="background: #17376742;">
-		<h4 class="p-2">@Tittle</h4>
+		<strong class="p-2">@Tittle</strong>
 		<div class="d-flex gap-0">
 			<div class="btn btn-primary d-flex align-items-center" @onclick=Roll style="background: #143d7c;border-color: #14233c;">
 				<i class="bi bi-dice-5"></i>
@@ -22,7 +22,7 @@
 		{
 			@foreach (var o in Options)
 			{
-				<div class="p-1" style="@(o == Selected ? "border:solid 1px red; opacity:1;":"opacity:0.7;"); cursor:pointer;" @onclick="@(()=>{Select(o);})">
+				<div class="p-1" style="@(o == Value ? "border:solid 1px red; opacity:1;":"opacity:0.7;"); cursor:pointer;" @onclick="@(()=>{Select(o);})">
 					@o
 				</div>
 			}
@@ -30,7 +30,7 @@
 		else
 		{
 			<div class="p-1">
-				@Selected
+				@Value
 			</div>
 		}
 	</div>
@@ -41,7 +41,8 @@
 	[Parameter] public string Tittle { get; set; } = "Title";
 	[Parameter] public EventCallback<Tuple<DinoPlayer,string>> NewSelection { get; set; }
 	[Parameter] public DinoPlayer Player { get; set; }
-	[Parameter] public string Selected { get; set; } = string.Empty;
+	[Parameter] public string Value { get; set; } = string.Empty;
+	[Parameter] public EventCallback<string> ValueChanged { get; set; }
 
 	bool ShowingEverything = true;
 
@@ -49,7 +50,7 @@
 
 	protected override void OnInitialized()
 	{
-		if (Options.Contains(Selected))
+		if (Options.Contains(Value))
 			ShowingEverything = false;
 		else
 			ShowingEverything = true;
@@ -65,9 +66,10 @@
 
 	private void Select(string o) 
 	{
-		Selected = o;
+		Value = o;
+		ValueChanged.InvokeAsync(Value);
 		StateHasChanged();
 		ShowingEverything = false;
-		NewSelection.InvokeAsync(new Tuple<DinoPlayer, string>(Player, Selected));
+		NewSelection.InvokeAsync(new Tuple<DinoPlayer, string>(Player, Value));
 	}
 }

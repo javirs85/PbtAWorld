@@ -16,10 +16,43 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 {
 	public event EventHandler<string> NewInfoToast;
 
-	public List<MapItem> MapTokens { get; set; } = new List<MapItem>();
+	public DinoTextBook TextBook = new DinoTextBook();
 
+	public List<MapItem> MapTokens { get; set; } = new List<MapItem>();
 	public List<DinoPlayer> Players { get; set; } = new();
 
+	public string WhereAreYou { get; set; } = string.Empty;
+	public string _obstaclePlayers = string.Empty;
+	public string ObstaclePlayers 
+	{ 
+		get { return _obstaclePlayers; } 
+		set {
+		_obstaclePlayers = value;
+			RequestUpdateToUIOnClients();
+		} 
+	}
+
+	public string _obstacleMC = string.Empty;
+	public string ObstacleMC
+	{
+		get { return _obstacleMC; }
+		set
+		{
+			_obstacleMC = value;
+			RequestUpdateToUIOnClients();
+		}
+	}
+	public string TheWayOut { get; set; } = string.Empty;
+	public string GimmickSelected { get; set; } = string.Empty;
+	
+	public string NPCGoalsSelected { get; set; } = string.Empty;
+	public string NPCOffersSelected { get; set; } = string.Empty;
+	public string WhyComing { get; set; } = string.Empty;
+	
+
+	public Mystery? SelectedMystery { get; set; }	
+	public MysterySolution? SelectedSolution { get;set; }
+	public ExtinctionEvent? SelectedExtinctionEvent { get; set; }
 
 	public event EventHandler OnUIUpdate;
 
@@ -41,15 +74,15 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 		RequestUpdateToUIOnClients();
 	}
 
-	Random rnd = new Random();
+	public Random random = new Random();
 
 	public void Roll(Guid PlayerID, DinoStates stat, DinoMove move)
 	{
 		var player = Players.Find(x=>x.ID == PlayerID);
 		if (player is not null)
 		{
-			LastRoll.d1 = rnd.Next(1, 7);
-			LastRoll.d2 = rnd.Next(1, 7);
+			LastRoll.d1 = random.Next(1, 7);
+			LastRoll.d2 = random.Next(1, 7);
 			LastRoll.bonus = 0;
 			if (stat == DinoStates.D_Steady) LastRoll.bonus = player.Steady;
 			else if (stat == DinoStates.D_Fit) LastRoll.bonus = player.Fit;
