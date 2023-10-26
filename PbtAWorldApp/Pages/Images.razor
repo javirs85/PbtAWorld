@@ -1,0 +1,72 @@
+﻿@using System.IO
+@using System.Text.Json
+
+@page "/images"
+
+<h3>añadir Imagen</h3>
+<EditForm Model="this" style="color: white;">
+    <InputFile OnChange="HandleFileSelected" />
+</EditForm>
+
+<div class="d-flex flex-wrap text-white">
+@foreach(var i in ImagesDB.GetAllNames())
+{
+    <div class="d-flex flex-column align-items-center">
+        <span>@ImagesDB.GetImage(i).Name</span>
+        <img src="@ImagesDB.GetImage(i).src" alt="Imagen desde Base64" />
+    </div>
+}
+</div>
+
+@if (!string.IsNullOrEmpty(base64String))
+{
+    <div>
+        <h4>Imagen en Base64:</h4>
+        <p>@base64String</p>
+    </div>
+}
+
+@code {
+    private string base64String;
+    private string FileName;
+
+    protected override void OnInitialized()
+    {
+        ImagesDB.Init();
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        // Verificar si es una imagen (puedes mejorar esta lógica según tus necesidades)
+        if (file.ContentType.StartsWith("image/"))
+        {
+            // Ruta de almacenamiento del archivo (puedes personalizar esto)
+            var uploadPath = "wwwroot/imgs/dinos";
+
+            // Crear el directorio si no existe
+            Directory.CreateDirectory(uploadPath);
+
+            // Generar un nombre de archivo único (puedes mejorar esto según tus necesidades)
+            var fileName = System.IO.Path.GetFileName(file.Name);
+
+            // Ruta completa del archivo
+            var filePath = Path.Combine(uploadPath, fileName);
+
+            // Guardar el archivo en el servidor
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.OpenReadStream().CopyToAsync(stream);
+            }
+        }
+        else
+        {
+            // Manejar el caso en el que el archivo no es una imagen
+            Console.WriteLine("Se ha intentado subir un archivo que no es una imagen.");
+        }
+
+        ImagesDB.Init();
+    }
+
+}

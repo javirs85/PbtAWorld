@@ -50,3 +50,43 @@
         color: white;
     }
 
+.DinoMonster{
+    color:white;
+    display:flex;
+    flex-direction:column;
+    cursor:pointer;
+    width:50%;
+}
+    .DinoMonster img {
+        /*width: 175px;
+        height: 175px;
+            */
+    }
+
+.Monster {
+    color: white;
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+    border-top: none;
+}
+
+.DinoSelectorButton {
+    width: 50%;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    background: #232d28;
+    display: flex;
+    justify-content: center;
+    color: gray;
+    border: 1px #5d5d5d;
+    border-width: 0 0 26px 0;
+    border-bottom: 1px solid #5d5d5d;
+}
+    .DinoSelectorButton.selected {
+        border: 1px solid #5d5d5d;
+        background: #303d35;
+        color: white;
+        border-bottom: none;
+        border-radius: 0;
+    }

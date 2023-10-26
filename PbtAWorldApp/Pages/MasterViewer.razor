@@ -2,6 +2,7 @@
 @inject DinoGameController Game;
 @inject DinoPlayer Player;
 @inject PbtAWorldCommClient Client;
+@inject PNJs Pnjs;
 
 <div class="container-fluid px-1">
 	<div class="row px-1 gx-2">
@@ -146,12 +147,6 @@
 											Tittle="Que ofrece el NPC"
 											@bind-Value=@Game.NPCOffersSelected />
 							}
-							else if (m.Tittle.Contains("¡Aparece un dinosaurio!"))
-							{
-								<RollableList Options="@Game.TextBook.Gimmicks"
-											Tittle="Característica"
-											@bind-Value=@Game.GimmickSelected />
-							}
 						</div>
 					}
 				</div>
@@ -237,12 +232,13 @@
 					{
 						<div class="d-flex flex-column gap-1 p-1">
 							<h5 class="MysteryButton text-center">@Game.SelectedExtinctionEvent.Tittle</h5>
-							<h5 class=""><strong>Movimientos de aviso</strong></h5>
+							<h5 class="m-0"><strong>Movimientos de aviso</strong></h5>
 							@foreach (var mv in Game.SelectedExtinctionEvent.WarningMoves)
 							{
 								<span>@mv</span>
 							}
-							<h5 class="mt-4"><strong>Movimientos de master</strong></h5>
+							<h5 class="m-0"><strong>Evento final</strong></h5>
+							<span>@Game.SelectedExtinctionEvent.Clock.EventAt12</span>
 							@foreach (var mv in Game.SelectedExtinctionEvent.NewMasterMoves.OrderBy(x=>x.Order))
 							{
 								<div class="Move @mv.HowOften.ToString()" @onclick=@(()=>{mv.Use();})>
@@ -314,6 +310,89 @@
 					</div>
 				</div>
 			</div>
+			<div class="col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-1">
+				<div class="d-flex flex-wrap w-100 justify-content-center">
+					<div class="w-100 d-flex gap-0 p-0">
+						<div class="DinoSelectorButton @(_isShowingDinos?"selected":"")" @onclick=@(()=>{_isShowingDinos = true;})>
+							Dinosaurios
+						</div>
+						<div class="DinoSelectorButton @(!_isShowingDinos?"selected":"")" @onclick=@(()=>{_isShowingDinos = false;})>
+							PNJs
+						</div>
+					</div>
+					<div class="BoxPack Monster">
+						@if (_isShowingDinos)
+						{
+							@if (SelectedMonster is not null)
+							{
+							
+								<div class="d-flex gap-2 align-items-center" style="cursor: pointer;" @onclick=@(()=>{SelectedMonster=null;})>
+									<i class="bi bi-x-lg"></i>
+									<h3>@SelectedMonster.KindName</h3>
+								</div>
+								<small>@SelectedMonster.Flavor</small>
+								<p class="border-white border-top mt-2 pt-3"><strong>Cuantos?</strong> @SelectedMonster.NumAppearing</p>
+								<p><strong>Instinto:</strong> @SelectedMonster.Instinct</p>
+								<p>
+									<strong>Ejemplos:</strong>
+									<ul>
+										@foreach (var e in SelectedMonster.Examples)
+										{
+											<li>@e</li>
+										}
+									</ul>
+								</p>
+								@foreach (var m in SelectedMonster.Moves.OrderBy(x => x.Order))
+								{
+									<div class="Move @m.HowOften.ToString()" @onclick=@(()=>{m.Use();})>
+										@m.Tittle
+									</div>
+								}
+								<div class="mt-3">
+									<RollableList Options="@Game.TextBook.Gimmicks"
+													Tittle="Característica"
+									@bind-Value=@Game.GimmickSelected />
+								</div>
+								<div class="w-100 d-flex justify-content-center p-3	">
+									<img src="@SelectedMonster.Image.src" />
+								</div>
+							
+							}
+							else
+							{
+								<div class="d-flex flex-wrap">
+								@foreach (var monster in Game.TextBook.Monsters)
+								{
+									<div class="DinoMonster" @onclick=@(()=>{SelectedMonster = monster;})>
+										@monster.KindName
+										<img src="@monster.Image.src" />
+									</div>
+								}
+								</div>
+							}
+						}
+						else
+						{
+							@if(SelecetedPnj is null)
+							{
+							
+							}
+							else
+							{
+								<div class="d-flex flex-wrap">
+									@foreach (var p in Pnjs.PNJList)
+									{
+										<div class="DinoMonster" @onclick=@(()=>{SelecetedPnj = p;})>
+											@p.Name
+											<img src="@p.Image.src" />
+										</div>
+									}
+								</div>
+							}
+						}					
+					</div>
+				</div>
+			</div>
 		}
 	</div>
 </div>
@@ -322,8 +401,11 @@
 	[Parameter] public MapMini? Map { get; set; } = null;
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
 
-	private bool _isInGame = false;
+	private bool _isShowingDinos = true;
 
+	private bool _isInGame = false;
+	private DinoMonster? SelectedMonster = null;
+	private PNJ? SelecetedPnj = null;
 	[Parameter] public bool IsInGameMode
 	{
 		get { return _isInGame; }

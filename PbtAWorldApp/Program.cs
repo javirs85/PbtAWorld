@@ -8,6 +8,7 @@ using PbtAWorldApp;
 using PbtAWorldConnectivity;
 using DinoIsland;
 using System.Dynamic;
+using PbtALib;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddTransient<IPeopleData, PeopleData>();
 builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddSingleton<PbtAWorldCommClient>();
+builder.Services.AddSingleton<PNJs>();
 builder.Services.AddSingleton<DinoGameController>();
 builder.Services.AddScoped<DinoPlayer>();
 builder.Services.AddBlazorBootstrap();

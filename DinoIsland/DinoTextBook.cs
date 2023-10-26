@@ -922,7 +922,7 @@ public class DinoTextBook
 		},
 		new DinoMonster
 		{
-			KindName = "Sauropodos",
+			KindName = "Saurópodos",
 			Flavor = "Estos enormes herbívoros cuadrúpedos tienen cuellos largos para alcanzar las copas de los árboles y colas largas para equilibrarse.",
 			Instinct = "Alimentarse desde las copas de los árboles",
 			Examples = new List<string>
@@ -1021,7 +1021,7 @@ public class DinoTextBook
 				new MasterMove("Destruir algo en su camino"),
 				new MasterMove("Perseguir incansablemente presas")
 			}
-		}
+        }
 	};
 }
 public class Location
@@ -1032,6 +1032,7 @@ public class Location
 	public List<MasterMove> LocationMoves { get; set; } = new List<MasterMove>();
 }
 
+
 public class DinoMonster
 {
 	public string KindName { get; set; } = string.Empty;
@@ -1041,7 +1042,14 @@ public class DinoMonster
 	public List<string> Examples { get; set; } = new();
 	public string Base64Image { get; set; } = string.Empty;
 	public string Gimmick { get; set; } = string.Empty;
-	public string NumAppearing { get; set; } = string.Empty;	
+	public string NumAppearing { get; set; } = string.Empty;
+	public PbtAImage Image
+	{
+		get
+		{
+			return ImagesDB.GetImage(KindName);
+		}
+	}
 }
 
 public class Mystery

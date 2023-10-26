@@ -456,13 +456,7 @@
 			Toaster.ShowInfo(msg);
 		};
 
-		// Client.OnNewRollFromServer += (sender, msg) =>
-		// {
-		// 	var rollMessage = System.Text.Json.JsonSerializer.Deserialize<PbtAMessage>(msg);
-		// 	LastRoll = System.Text.Json.JsonSerializer.Deserialize<RollReport<DinoMoveIDs, DinoStates>>(rollMessage.Parameters["message"]);
-		// 	InvokeAsync(() => { StateHasChanged(); });
-		// };
-
+		ImagesDB.Init();
 
 		Player.UpdateUI += (o, e) =>
 		{
@@ -471,10 +465,7 @@
 		};
 
 		Game.AddPlayer(Player);
-		/*
-		await Client.StartCommunication(navigationManager.BaseUri, Player.Name);
-		await Player.Connect(Client, Toaster);
-		*/
+		
 	}
 
 	private List<DinoMove> MovesOnScreen
