@@ -185,8 +185,6 @@ public class DinoTextBook
 		"Devolver todo a la normalidad.",
 		"Proteger un secreto personal a toda costa."
 	};
-
-
 	public List<string> NPCOffers = new List<string>
 	{
 		"Acceso a tarjetas clave, contraseñas, etc.",
@@ -784,6 +782,247 @@ public class DinoTextBook
 			}
 		}
 	};
+
+	public List<DinoMonster> Monsters { get; set; } = new List<DinoMonster>
+	{
+		new DinoMonster
+		{
+			KindName = "Criaturas acuáticas",
+			Flavor = "Las aguas de DinoIsland están pobladas con enormes y peligrosos bestias prehistóricas",
+			Instinct = "Alimentarse de cualquier cosa en el agua",
+			Examples = new List<string>
+			{
+				"Termnodontosaurus", "Plesiosaurus", "Dunkleosteus", "Purussaurus"
+			},
+			NumAppearing = "1",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Atacar desde abajo"),
+				new MasterMove("Arrastrar a las profundidades")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Anquilosaurios",
+			Flavor = "Estos herbívoros fuertemente espinados y blindados a menudo tienen colas con porras.",
+			Instinct = "Permanecer en su lugar",
+			Examples = new List<string>
+			{
+				"Ankylosaurus", "Euoplocephalus", "Zuul"
+			},
+			NumAppearing = "Solitario, a menos que sea temporada de apareamiento",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Cola con porra"),
+				new MasterMove("Ignorar un golpe devastador"),
+				new MasterMove("Agacharse y negarse a moverse")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Ceratópsidos",
+			Flavor = "Estos dinosaurios grandes y cuadrúpedos tienen volantes y cuernos en la cabeza.",
+			Instinct = "Defender a sus crías",
+			Examples = new List<string>
+			{
+				"Triceratops", "Styracosaurus", "Pachyrhinosaurus"
+			},
+			NumAppearing = "Una unidad familiar",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Atropellar"),
+				new MasterMove("Empalar con cuernos"),
+				new MasterMove("Cargar")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Dromaeosáuridos",
+			Flavor = "Estos depredadores inteligentes de tamaño mediano cazan en manadas con garras afiladas en sus pies.",
+			Instinct = "Cazar presas",
+			Examples = new List<string>
+			{
+				"Velociraptor", "Utahraptor", "Deinonychus"
+			},
+			NumAppearing = "3-5",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Trabajar en manada"),
+				new MasterMove("Moverse a una velocidad asombrosa"),
+				new MasterMove("Resolver un problema complejo"),
+				new MasterMove("Cortar con garras afiladas como cuchillas")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Hadrosáuridos",
+			Flavor = "Estos dinosaurios herbívoros, semi-acuáticos y de pico de pato viajan en manadas de un cuerpo de agua a otro.",
+			Instinct = "Evitar depredadores",
+			Examples = new List<string>
+			{
+				"Edmontosaurus", "Corythosaurus", "Lambeosaurus", "Parasaurolophus"
+			},
+			NumAppearing = "5-15",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Asustarse"),
+				new MasterMove("Estampida")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Ornitomímidos",
+			Flavor = "Estos dinosaurios corredores similares a avestruces se mueven en bandadas a través de campos.",
+			Instinct = "Escapar rápidamente de los depredadores",
+			Examples = new List<string>
+			{
+				"Gallimimus", "Ornithomimus", "Deinocheirus", "Struthiomimus"
+			},
+			NumAppearing = "15-20",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("¡Estampida!"),
+				new MasterMove("Escapar a toda velocidad"),
+				new MasterMove("Moverse como una manada")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Pacicefalosáuridos",
+			Flavor = "Estos dinosaurios bípedos de tamaño mediano tienen cráneos gruesos y abovedados que pueden usar como armas contundentes.",
+			Instinct = "Imponer dominancia",
+			Examples = new List<string>
+			{
+				"Pachycephalosaurus"
+			},
+			NumAppearing = "2–4",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Golpe con la cabeza"),
+				new MasterMove("Aceptar jerarquía establecida"),
+				new MasterMove("Destrozar algo importante")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Pterosaurios",
+			Flavor = "Estos reptiles voladores prehistóricos tienen picos poderosos y crestas caprichosas.",
+			Instinct = "Agarrar algo de comida",
+			Examples = new List<string>
+			{
+				"Pterodactyl", "Pteranodon", "Quetzalcoatlus", "Tupandactylus"
+			},
+			NumAppearing = "Una bandada de docenas",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Atacar desde arriba"),
+				new MasterMove("Llevarse algo"),
+				new MasterMove("Dejar caer algo desde una gran altura")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Sauropodos",
+			Flavor = "Estos enormes herbívoros cuadrúpedos tienen cuellos largos para alcanzar las copas de los árboles y colas largas para equilibrarse.",
+			Instinct = "Alimentarse desde las copas de los árboles",
+			Examples = new List<string>
+			{
+				"Apatosaurus", "Brachiosaurus", "Diplodocus", "Isisaurus", "Argentinosaurus"
+			},
+			NumAppearing = "1 o en manada",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Derribar algo"),
+				new MasterMove("Zambullirse, ajeno a las criaturas pequeñas"),
+				new MasterMove("Azotar con la cola poderosa")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Pequeños Terópodos",
+			Flavor = "Estos pequeños carnívoros parecen inofensivos...",
+			Instinct = "Derribar presas más grandes",
+			Examples = new List<string>
+			{
+				"Compsognathus", "Microraptor", "Coelophysis", "Ambopteryx"
+			},
+			NumAppearing = "Primero 1 o 2, luego demasiados para contar",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Llamar a la bandada"),
+				new MasterMove("Abrumar con números"),
+				new MasterMove("Entrar o escapar a través de pasajes pequeños")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Estegosáuridos",
+			Flavor = "Estos grandes dinosaurios herbívoros tienen filas de placas en sus espaldas y una cola espinosa llamada thagomizer.",
+			Instinct = "Buscar comida",
+			Examples = new List<string>
+			{
+				"Stegosaurus", "Kentrosaurus", "Miragaia"
+			},
+			NumAppearing = "Una gran manada",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Golpear con una espina de cola"),
+				new MasterMove("Atropellar")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Espinosaurios",
+			Flavor = "Terópodos semi-acuáticos con velas en la espalda, que van desde el tamaño de un caballo hasta la longitud de un camión semirremolque.",
+			Instinct = "Atrapar presas fáciles",
+			Examples = new List<string>
+			{
+				"Icthyovenator", "Baryonyx", "Spinosaurus"
+			},
+			NumAppearing = "1",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Emerger del agua"),
+				new MasterMove("Retirarse al agua"),
+				new MasterMove("Morder con mandíbulas poderosas"),
+				new MasterMove("Aferrarse fuertemente")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Terizinosaurios",
+			Flavor = "Estos grandes terópodos herbívoros tienen garras enormes para cortar.",
+			Instinct = "Recolectar plantas y defender el territorio",
+			Examples = new List<string>
+			{
+				"Therizinosaurus", "Alxasaurus", "Segnosaurus", "Enigmosaurus"
+			},
+			NumAppearing = "Una unidad familiar",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Cortar con garras enormes"),
+				new MasterMove("Atropellar con patas pesadas")
+			}
+		},
+		new DinoMonster
+		{
+			KindName = "Terópodos",
+			Flavor = "Estos icónicos carnívoros grandes y bípedos cazan solos o carroñean.",
+			Instinct = "Comer carne.",
+			Examples = new List<string>
+			{
+				"Tyrannosaurus", "Carnotaurus", "Acrocanthosaurus", "Spinosaurus", "Allosaurus"
+			},
+			NumAppearing = "1... o 2 si tienes muy mala suerte",
+			Moves = new List<MasterMove>
+			{
+				new MasterMove("Buscar presas escondidas"),
+				new MasterMove("Morder con fuerza inmensa"),
+				new MasterMove("Destruir algo en su camino"),
+				new MasterMove("Perseguir incansablemente presas")
+			}
+		}
+	};
 }
 public class Location
 {
@@ -791,6 +1030,18 @@ public class Location
 	public string Flavor { get; set; } = string.Empty;
 	public string Things { get; set; } = string.Empty;
 	public List<MasterMove> LocationMoves { get; set; } = new List<MasterMove>();
+}
+
+public class DinoMonster
+{
+	public string KindName { get; set; } = string.Empty;
+	public string Flavor { get; set; } = string.Empty;
+	public string Instinct { get; set; } = string.Empty;
+	public List<MasterMove> Moves { get; set; } = new List<MasterMove>();
+	public List<string> Examples { get; set; } = new();
+	public string Base64Image { get; set; } = string.Empty;
+	public string Gimmick { get; set; } = string.Empty;
+	public string NumAppearing { get; set; } = string.Empty;	
 }
 
 public class Mystery
