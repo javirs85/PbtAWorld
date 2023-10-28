@@ -138,15 +138,6 @@
 					{
 						<div class="Move @m.HowOften.ToString()" @onclick=@(()=>{m.Use();})>
 							@m.Tittle
-							@if (m.Tittle.Contains("Introduce a un NPC útil"))
-							{
-								<RollableList Options="@Game.TextBook.NPCGoals"
-											Tittle="Objetivo del NPC"
-											@bind-Value=@Game.NPCGoalsSelected />
-								<RollableList Options="@Game.TextBook.NPCOffers"
-											Tittle="Que ofrece el NPC"
-											@bind-Value=@Game.NPCOffersSelected />
-							}
 						</div>
 					}
 				</div>
@@ -316,7 +307,7 @@
 						<div class="DinoSelectorButton @(_isShowingDinos?"selected":"")" @onclick=@(()=>{_isShowingDinos = true;})>
 							Dinosaurios
 						</div>
-						<div class="DinoSelectorButton @(!_isShowingDinos?"selected":"")" @onclick=@(()=>{_isShowingDinos = false;})>
+						<div class="DinoSelectorButton @(!_isShowingDinos?"selected":"")" @onclick=@(()=>{SelectPNJsPanel();})>
 							PNJs
 						</div>
 					</div>
@@ -373,22 +364,65 @@
 						}
 						else
 						{
-							@if(SelecetedPnj is null)
-							{
-							
-							}
-							else
-							{
-								<div class="d-flex flex-wrap">
-									@foreach (var p in Pnjs.PNJList)
-									{
-										<div class="DinoMonster" @onclick=@(()=>{SelecetedPnj = p;})>
-											@p.Name
-											<img src="@p.Image.src" />
+							<button class="btn btn-primary" @onclick=@(() =>{_ShowPNJSelection = true;})>Añadir PNJ</button>
+							<div class="d-flex flex-wrap">
+								@foreach(var pnj in Game.PNJs)
+								{
+									<div class="d-flex">
+										<div class="PNJInList"
+											 style="background-image: url(@pnj.Image.src); cursor: pointer;">
+											<span class="PNJName">@pnj.Name</span>
 										</div>
-									}
+										<div>
+											<div class="fw-bold">Puede ofrecer:</div>
+											<div><small>@pnj.CanOffer</small></div>
+											<div class="mt-2 fw-bold">Objetivo</div>
+											<div><small>@pnj.Goal</small></div>
+										</div>
+									</div>
+								}
+							</div>
+							<div class="PNJSelectionPanel" style="@(_ShowPNJSelection?"display:block":"display:none")">
+								<div @onclick=@(() =>{_ShowPNJSelection = false;})
+									class="p-3 px-4"
+									 style="cursor: pointer; position:fixed; top:0px; right: 20px; z-index:11; background: black; border-radius:100px;">
+									<i class="bi bi-x-lg text-light fs-2"></i>
 								</div>
-							}
+								<div class="d-flex">
+									<div class="d-flex flex-wrap flex-grow-1">
+										@foreach (var p in Pnjs.PNJList)
+										{
+											<div class="PNJInList" 
+												@onclick=@(()=>{SelecetedPnj = p;}) 
+												style="background-image: url(@p.Image.src); cursor: pointer;">
+												<span class="PNJName">@p.Name</span>
+											</div>
+										}
+									</div>
+									<div class="d-flex flex-column gap-2 border p-3 align-items-center" style="width: 1000px;">
+										@if(SelecetedPnj is not null)
+										{
+											<div class="PNJInList"
+												 style="background-image: url(@SelecetedPnj.Image.src)">
+												<span class="PNJName">@SelecetedPnj.Name</span>
+											</div>
+
+											<EditForm class="d-flex flex-column gap-2 w-100" Model="SelecetedPnj">
+												<InputText @bind-Value=SelecetedPnj.Name class="form-control" />
+												<RollableList Options="@Game.TextBook.NPCGoals"
+															Tittle="Objetivo del NPC"
+															@bind-Value=@SelecetedPnj.Goal />
+												<RollableList Options="@Game.TextBook.NPCOffers"
+															Tittle="Que ofrece el NPC"
+															@bind-Value=@SelecetedPnj.CanOffer />
+												<div class="btn btn-primary" @onclick=@(()=>{Game.PNJs.Add(SelecetedPnj); _ShowPNJSelection=false;})>Añadir como nuevo</div>
+												<div class="btn btn-primary" @onclick=@(()=>{Game.PNJs.Remove(SelecetedPnj); _ShowPNJSelection=false;})>Borrar</div>
+											</EditForm>
+										}										
+									</div>
+								</div>
+							</div>
+							
 						}					
 					</div>
 				</div>
@@ -402,6 +436,7 @@
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
 
 	private bool _isShowingDinos = true;
+	private bool _ShowPNJSelection = false;
 
 	private bool _isInGame = false;
 	private DinoMonster? SelectedMonster = null;
@@ -413,6 +448,11 @@
 	}
 
 	private Location? SelectedLoaction = null;
+
+	private void SelectPNJsPanel()
+	{
+		_isShowingDinos = false;
+	}
 
 	private void SetNewRumor(Tuple<DinoPlayer, string> data)
 	{

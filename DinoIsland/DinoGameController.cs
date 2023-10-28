@@ -74,6 +74,8 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 		RequestUpdateToUIOnClients();
 	}
 
+	public List<PNJ> PNJs { get; set; } = new();
+
 	public Random random = new Random();
 
 	public void Roll(Guid PlayerID, DinoStates stat, DinoMove move)
