@@ -93,6 +93,54 @@ h2{
 .story{
 
 }
+
+.FullImageSpace {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    z-index: 9;
+    padding: 20px;
+    padding-top: 8px;
+    margin: 10px;
+    border: 1px solid white;
+    background: black;
+    box-shadow: 1px 2px 8px black;
+}
+
+.PNJInList {
+    max-width: 230px;
+    min-width: 230px;
+    aspect-ratio: 300/355;
+    background-size: contain;
+    position: relative;
+    background-repeat: no-repeat;
+}
+
+.PNJName {
+    position: absolute;
+    bottom: 7%;
+    left: 0;
+    color: black;
+    font-family: 'Julius Sans One';
+    font-weight: 600;
+    width: 100%;
+    display: block;
+    text-align: center;
+}
+
+.TotalSuccess {
+    background: #032308;
+    color: #c5ffc5;
+}
+.HalfSuccess {
+    background: #4b1c01;
+    color: orange;
+}
+.FailedRoll {
+    background: #3b0000;
+    color: #f3d6d6;
+}
+
 /*
     font-family: 'Bungee', sans-serif;
     font-family: 'Julius Sans One', sans-serif;

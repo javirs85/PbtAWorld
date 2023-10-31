@@ -6,9 +6,60 @@
 
 <div class="container-fluid px-1">
 	<div class="row px-1 gx-2">
+		<div class="overlays" style="position: absolute;">
+			@if (Game.LastRoll is not null && IsShowingLastRoll)
+			{
+				<div style="position: fixed;
+							background: black;
+							padding: 20px;
+							padding-top: 0;
+							border: 1px solid white;
+							margin: 5px;
+							z-index: 12;">
+					<div @onclick=@(() =>{IsShowingLastRoll = false;})
+						 class=""
+						 style="cursor: pointer;
+										position: relative;
+										top: 0px;
+										width: 100%;
+										right: 0px;
+										display: flex;
+										align-items: center;
+										gap: 20px;
+										justify-content: space-between;">
+						<h4 class="text-light">Último movimiento</h4>
+						<i class="bi bi-x-lg text-light fs-2"></i>
+					</div>
+					<div class="LastRollContainer BoxPack @LastRollBoxColor">
+						@if (Game.LastRoll is not null)
+						{
+							
+							<div>@Game.LastRoll.Roller</div>
+							<div>@Game.LastRoll.MoveTittle <span class="small opacity-50">con</span> @Game.LastRoll.Stat.ToUIString()</div>
+							<div class="d-flex gap-2 justify-content-center m-4">
+								<div class="d-flex align-items-center gap-2">
+									<div class="dice">@Game.LastRoll.d1</div> +
+									<div class="dice">@Game.LastRoll.d2</div> +
+									<div class="dice" style="border-style: none; background: #ffffff3b;">
+										@Game.LastRoll.bonus
+									</div>
+									=
+								</div>
+								<div class="RollResult">@Game.LastRoll.Total</div>
+							</div>
+						}
+						else
+						{
+							<div class="small">Aún nadie ha tirado nada</div>
+						}
+
+					</div>
+				</div>
+			}
+		</div>
 		@if(!IsInGameMode)
 		{
-			<div class="col-md-6 col-lg-4 col-xl-3">
+			<div class="col-md-6 col-lg-4 col-xl-4">
 				<div class="BoxPack">
 					<h4>Tierra firme <span class="fs-6">(elijen los jugadore)</span></h4>
 					<RollableList Options="@Game.TextBook.WhyComingOptions"
@@ -45,9 +96,8 @@
 						{
 							<RollableList Options="Game.TextBook.AvailableRumors"
 											Tittle="@p.Name"
-											Player="@p"
-											Selected=@p.Rumor
-											NewSelection=SetNewRumor />
+											@bind-Value=p.Rumor
+											NewSelection="@(()=>{Game.RequestUpdateToUIOnClients();})"/>
 								
 						}
 					}
@@ -73,7 +123,7 @@
 					</ul>
 				</div>
 			</div>
-			<div class="col-md-6 col-lg-4 col-xl-3">
+			<div class="col-md-6 col-lg-4 col-xl-4">
 				<div class="BoxPack">
 					<h5>Que habéis oído sobre la isla antes de llagar?</h5>
 					<p>
@@ -105,8 +155,8 @@
 					</p>
 				</div>
 			</div>
-			<div class="col-md-6 col-lg-4 col-xl-3">
-				<div class="BoxPack">
+			<div class="col-md-6 col-lg-4 col-xl-4">
+				<div class="BoxPack d-flex flex-column gap-2">
 					<h4>Justo ahora</h4>
 					<RollableList Options="Game.TextBook.WhereAreYouOptions"
 								Tittle="Donde estáis? (jugadores)"
@@ -125,9 +175,6 @@
 
 					<h4>Haz un movimiento duro, ponlos en peligro y pregunta: Que hacéis?</h4>
 				</div>
-			</div>
-			<div class="col-md-6 col-lg-4 col-xl-3">
-				
 			</div>
 		}
 		else
@@ -249,8 +296,8 @@
 					{
 						<div>
 							<div class="d-flex gap-1">
-							<strong class="fs-3">@SelectedLoaction.Title</strong>
-							<small class="flex-grow-1 border-start ps-1">@SelectedLoaction.Flavor</small>
+								<strong class="fs-3">@SelectedLoaction.Title</strong>
+								<small class="flex-grow-1 border-start ps-1">@SelectedLoaction.Flavor</small>
 							</div>
 							Encontrarás: @SelectedLoaction.Things
 							@foreach(var m in SelectedLoaction.LocationMoves)
@@ -320,6 +367,9 @@
 								<div class="d-flex gap-2 align-items-center" style="cursor: pointer;" @onclick=@(()=>{SelectedMonster=null;})>
 									<i class="bi bi-x-lg"></i>
 									<h3>@SelectedMonster.KindName</h3>
+									<div @onclick=@(()=>{Game.ShowImageToAllPlayers(SelectedMonster.Image);}) style="cursor: pointer;">
+										<i class="bi bi-send-plus fs-4"></i>
+									</div>
 								</div>
 								<small>@SelectedMonster.Flavor</small>
 								<p class="border-white border-top mt-2 pt-3"><strong>Cuantos?</strong> @SelectedMonster.NumAppearing</p>
@@ -369,8 +419,8 @@
 								@foreach(var pnj in Game.PNJs)
 								{
 									<div class="d-flex">
-										<div class="PNJInList"
-											 style="background-image: url(@pnj.Image.src); cursor: pointer;">
+										<div class="PNJInList SmallPnJ"
+											 style="background-image: url(@pnj.Image.src);">
 											<span class="PNJName">@pnj.Name</span>
 										</div>
 										<div>
@@ -378,6 +428,9 @@
 											<div><small>@pnj.CanOffer</small></div>
 											<div class="mt-2 fw-bold">Objetivo</div>
 											<div><small>@pnj.Goal</small></div>
+											<div @onclick=@(()=>{Game.ShowPNJToAllPlayers(pnj);}) style="cursor: pointer;">
+												<i class="bi bi-send-plus fs-3"></i>
+											</div>
 										</div>
 									</div>
 								}
@@ -435,6 +488,17 @@
 	[Parameter] public MapMini? Map { get; set; } = null;
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
 
+	private bool IsShowingLastRoll = false;
+	private string LastRollBoxColor
+	{
+		get
+		{
+			if (Game.LastRoll.Total >= 10) return "TotalSuccess";
+			else if (Game.LastRoll.Total >= 7) return "HalfSuccess";
+			else return "FailedRoll";
+		}
+	}
+
 	private bool _isShowingDinos = true;
 	private bool _ShowPNJSelection = false;
 
@@ -475,6 +539,12 @@
 		};
 		Game.OnUIUpdate += (o, e) =>
 		{
+			InvokeAsync(() => { StateHasChanged(); });
+		};
+
+		Game.OnNewRoll += (o, roll) =>
+		{
+			IsShowingLastRoll = true;
 			InvokeAsync(() => { StateHasChanged(); });
 		};
 

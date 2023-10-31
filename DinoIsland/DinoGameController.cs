@@ -15,6 +15,7 @@ namespace DinoIsland;
 public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 {
 	public event EventHandler<string> NewInfoToast;
+	public event EventHandler<RollReport<DinoMoveIDs, DinoStates>> OnNewRoll;
 
 	public DinoTextBook TextBook = new DinoTextBook();
 
@@ -42,13 +43,29 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 			RequestUpdateToUIOnClients();
 		}
 	}
+
+	public event EventHandler<PbtAImage> OnMasterShowsImage;
+	public void ShowImageToAllPlayers(PbtAImage img) => OnMasterShowsImage?.Invoke(this, img);
+
+	public event EventHandler<PNJ> OnMasterShowsPNJ;
+	public void ShowPNJToAllPlayers(PNJ pnj) => OnMasterShowsPNJ?.Invoke(this, pnj);
+
 	public string TheWayOut { get; set; } = string.Empty;
 	public string GimmickSelected { get; set; } = string.Empty;
 	
 	public string NPCGoalsSelected { get; set; } = string.Empty;
 	public string NPCOffersSelected { get; set; } = string.Empty;
-	public string WhyComing { get; set; } = string.Empty;
 	
+
+	private string _whyComing =string.Empty;
+
+	public string WhyComing
+	{
+		get { return _whyComing; }
+		set { _whyComing = value; RequestUpdateToUIOnClients(); }
+	}
+
+
 
 	public Mystery? SelectedMystery { get; set; }	
 	public MysterySolution? SelectedSolution { get;set; }
@@ -97,7 +114,8 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 			LastRoll.MoveId = move.ID;
 			LastRoll.Stat = stat;
 		}
-		RequestUpdateToUIOnClients();
+
+		OnNewRoll?.Invoke(this, LastRoll);
 	}
 
 	public void SetRumor(Guid ID, string Rumor)

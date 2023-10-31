@@ -17,6 +17,9 @@
 							@onclick=@(()=>{StateHasChanged();})>
 							<i class="bi bi-arrow-clockwise"></i>
 						</button>
+						<div	@oncontextmenu=@(()=>{Player.Name = Game.TextBook.NameMixedRandom;})
+								@oncontextmenu:preventDefault=true
+								title="botón derecho para obtener un nombre random">
 						<InputText @bind-Value=Name
 								   class="borderlessInput"
 								   style="color: white;
@@ -26,6 +29,7 @@
 												border: none;
 												outline: none;
 												border: 1px solid #a1a1a1;"></InputText>
+						</div>
 						<InputSelect @bind-Value=Playbook
 									 style="background:#CCC; outline: none; border: none;">
 							@foreach (DinoClasses op in Enum.GetValues(typeof(DinoClasses)))
@@ -166,10 +170,113 @@
 		{
 			<div class="container-fluid p-0">
 				<div class="row mr-2">
-					<div class="GeneralMoves ClassMoves col-md-6          col-xl-3 d-none d-xl-block d-flex flex-column gap-3">
-						@if(Player.Class == DinoClasses.Hunter)
+					<div class="overlays" style="position: absolute;">
+						@if (IsShowingFullScreenImage && FullScreenImage is not null)
 						{
-							<div class="flavor hunter">
+							<div class="FullImageSpace">
+								<div @onclick=@(() =>{IsShowingFullScreenImage = false;})
+									 class=""
+									 style="cursor: pointer;
+											position: relative;
+											top: 0px;
+											width: 100%;
+											right: 0px;
+											display: flex;
+											justify-content: flex-end;">
+									<i class="bi bi-x-lg text-light fs-2"></i>
+								</div>
+								<img src="@FullScreenImage.src" />
+							</div>
+						}
+						else if (IsShowingFullScreenPNJ && FullScreenPNJ is not null)
+						{
+							<div class="FullImageSpace">
+								<div @onclick=@(() =>{IsShowingFullScreenPNJ = false;})
+									 class=""
+									 style="cursor: pointer;
+										position: relative;
+										top: 0px;
+										width: 100%;
+										right: 0px;
+										display: flex;
+										justify-content: flex-end;">
+									<i class="bi bi-x-lg text-light fs-2"></i>
+								</div>
+								<div class="PNJInList"
+									 style="background-image: url(@FullScreenPNJ.Image.src);">
+									<span class="PNJName">@FullScreenPNJ.Name</span>
+								</div>
+							</div>
+						}
+						else if (Game.LastRoll is not null && IsShowingLastRoll)
+						{
+							<div class="FullImageSpace">
+								<div @onclick=@(() =>{IsShowingLastRoll = false;})
+									 class=""
+									 style="cursor: pointer;
+										position: relative;
+										top: 0px;
+										width: 100%;
+										right: 0px;
+										display: flex;
+										align-items: center;
+										gap: 20px;
+
+										justify-content: space-between;">
+									<h4 class="text-light">Último movimiento</h4>
+									<i class="bi bi-x-lg text-light fs-2"></i>
+								</div>
+								<div class="LastRollContainer BoxPack @LastRollBoxColor">
+									@if (Game.LastRoll is not null)
+									{
+										<div>@Game.LastRoll.Roller</div>
+										<div>@Game.LastRoll.MoveTittle <span class="small opacity-50">con</span> @Game.LastRoll.Stat.ToUIString()</div>
+										<div class="d-flex gap-2 justify-content-center m-4">
+											<div class="d-flex align-items-center gap-2">
+												<div class="dice">@Game.LastRoll.d1</div> +
+												<div class="dice">@Game.LastRoll.d2</div> +
+												<div class="dice" style="border-style: none; background: #ffffff3b;">
+													@Game.LastRoll.bonus
+												</div>
+												=
+											</div>
+											<div class="RollResult">@Game.LastRoll.Total</div>
+										</div>
+									}
+									else
+									{
+										<div class="small">Aún nadie ha tirado nada</div>
+									}
+
+								</div>
+							</div>
+						}
+					</div>
+					<div class="GeneralMoves ClassMoves col-md-6          col-xl-3 d-none d-xl-block d-flex flex-column gap-3">
+						<div class="flavor hunter">
+							@if(FullScreenImage is not null)
+							{
+								<i class="bi bi-image fs-4" @onclick=@(()=>{IsShowingFullScreenImage = true;}) style="cursor: pointer;"></i>
+							}
+							else if(FullScreenPNJ is not null)
+							{
+								<i class="bi bi-image fs-4" @onclick=@(()=>{IsShowingFullScreenPNJ = true;}) style="cursor: pointer;"></i>
+							}
+							else
+							{
+								<i class="bi bi-image fs-4 opacity-25"></i>
+							}
+
+							@if (string.IsNullOrEmpty(Game.LastRoll.Roller))
+							{
+								<i class="bi bi-dice-5 fs-4 opacity-25 ms-1"></i>
+							}
+							else 
+							{
+								<i class="bi bi-dice-5 fs-4 ms-1" @onclick=@(()=>{IsShowingLastRoll = true;}) style="cursor: pointer;"></i>
+							}
+							@if(Player.Class == DinoClasses.Hunter)
+							{
 								<h5>8 SEÑALES DE ANIMALES</h5>
 								<p>ROTURAS
 								Causadas por el movimiento de los animales.
@@ -205,11 +312,9 @@
 								EXCREMENTOS
 								Indica el tipo de animal y su dieta. Los animales dejan sus excrementos donde se sienten seguros, a menudo cerca de los lagos. Busca animales cerca del excremento.
 								</p>
-							</div>
-						}
-						else if(Player.Class == DinoClasses.Doctor)
-						{
-							<div class="flavor hunter">
+							}
+							else if(Player.Class == DinoClasses.Doctor)
+							{
 								<h5>PRIMEROS AUXILIOS</h5>
 								<ol>
 									<li>Mantenga la calma, proporcionando a su paciente un tratamiento de primeros auxilios tranquilo y eficaz.</li>
@@ -223,7 +328,7 @@
 									<li>Decida si su paciente puede ser trasladado a un centro médico adecuado.Si esto no es posible, prepare una zona habitable adecuada en la que se le proporcione cobijo, calor y comida.</li>
 								</ol>
 								<h5>FRACTURAS</h5>
-								Una fractura se clasifica como simple(cerrada) o compuesta(abierta). El tratamiento es el siguiente
+								<p>Una fractura se clasifica como simple(cerrada) o compuesta(abierta). El tratamiento es el siguiente</p>
 								<ol>
 									<li>Entablillar las articulaciones por encima y por debajo de la fractura.</li>
 									<li>Si la fractura puede penetrar en la piel, podría ser necesario aplicar tracción para enderezar la deformidad.</li>
@@ -231,47 +336,44 @@
 									<li>Compruebe con frecuencia las ataduras de las férulas para asegurarse de que no dificultan la circulación.</li>
 									<li>Cubra la herida abierta con un apósito limpio antes de entablillar.</li>
 								</ol>
-							</div>
-						}
-						else if(Player.Class == DinoClasses.Engineer)
-						{
-							<div class="flavor hunter">
+							}
+							else if(Player.Class == DinoClasses.Engineer)
+							{
 								<h5>PIENSA COMO INGENIERO</h5>
 								<ol>
-								<li>1. Aísla el problema.
+								<li>Aísla el problema.
 										La mayoría de las personas intentan resolver un problema no se detienen a asegurarse que tienen el problema correcto. No necesitas hacer una llave, basta con abrir la puerta.
 									</li>
-								<li>2. Haz un inventario de sus recursos.
+								<li>Haz un inventario de sus recursos.
 										Conoce lo que tienes a tu disposición... y lo que no. Una solución no sirve de nada si no puedes ponerla en práctica.
 									</li>
-								<li>3. Piensa con originalidad.
+								<li>Piensa con originalidad.
 										Cuando consideres posibles soluciones, ten en cuenta todas las posibles soluciones, incluso las que parezcan ridículas. No hay nada malo en una mala idea mientras siga siendo sólo una idea.
 									</li>
-								<li>4. Desarrolla una solución.
+								<li>Desarrolla una solución.
 										Aquí es cuando eliminas las malas ideas. Continúa hasta que te quede una.
 									</li>
-								<li>5. Evaluar los riesgos.
+								<li>Evaluar los riesgos.
 										Tu primera prioridad es hacer que las cosas funcionen, pero justo detrás de eso, está estar preparado para lo que suceda si no lo hacen. Si sabes lo que puede salir mal, puedes estar preparado para mitigar lo peor.
 									</li>
-								<li>6. Prueba tu solución.
+								<li>Prueba tu solución.
 										Si es necesario, construye un prototipo. De cualquier forma, empieza por montar un producto mínimo viable y prueba para ver si funciona como se espera.
 									</li>
-								<li>7. Itera.
+								<li>Itera.
 										Si tu solución funciona, estupendo. Si no, vuelve a intentarlo hasta que funcione. Acepta que puede que tengas que volver a empezar.
 									</li>
-								<li>8. Ponga en práctica la solución.
+								<li>Ponga en práctica la solución.
 										Cuando sepas que tu solución funciona, utilízala.
 									</li>
-								<li>9. Tómate una cerveza.
+								<li>Tómate una cerveza.
 										Te la mereces.
 									</li>
 								</ol>
 								<span class="m-5">&nbsp;</span>
-							</div>
-						}
-						else if(Player.Class == DinoClasses.Kid)
-						{
-							<div class="flavor hunter">
+							
+							}
+							else if(Player.Class == DinoClasses.Kid)
+							{
 								<h5>EXTRACTO DE 101 DINO - MITA</h5>
 								<h5>CHISTES DE DINOSAURIOS</h5>
 								<ul>
@@ -291,34 +393,35 @@
 								<div class="w-100 d-flex justify-content-center mb-5">
 									<img class="m-3" src="imgs/DinoKid.png"/>
 								</div>
-							</div>
-						}
-						else if(Player.Class == DinoClasses.Paleontologist)
+							}
+							else if(Player.Class == DinoClasses.Paleontologist)
+							{
+								<div class="d-flex justify-content-center">
+									<img src="imgs/PaleoHelp.png" />
+								</div>
+							}
+							else if(Player.Class == DinoClasses.Soldier)
+							{
+								<div class="d-flex justify-content-center">
+									<img src="imgs/SoldierHelp.png"/>
+								</div>
+							}
+							else if(Player.Class == DinoClasses.Survivor)
 						{
-							<div class="flavor hunter d-flex justify-content-center">
-								<img src="imgs/PaleoHelp.png"/>
-							</div>
-						}
-						else if(Player.Class == DinoClasses.Soldier)
-						{
-							<div class="flavor hunter d-flex justify-content-center">
-								<img src="imgs/SoldierHelp.png"/>
-							</div>
-						}
-						else if(Player.Class == DinoClasses.Survivor)
-						{
-							<div class="flavor hunter d-flex justify-content-center">
+							<div class="d-flex justify-content-center">
 								<img src="imgs/SurvivorHelp.png"/>
 							</div>
 						}
+						</div>
+						
 					</div>
 					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
 						<div>
-							<h2>Movimientos de @Player.Class.ToUIString()</h2>
+							<h4 class="text-light">Movimientos de @Player.Class.ToUIString()</h4>
 							<DinoMovesPack Moves=MovesOnScreen PackName="ClassMoves" OpenFirst=false AllowMultipleSelection =true/>
 						</div>
 						<div class="BoxPack">
-							<h2>Heridas</h2>
+							<h5 class="text-light">Heridas</h5>
 							<div class="d-flex flex-column w-100 mb-4 gap-1">
 								<InputText class="form-control BlacInput" @bind-Value=Player.Wound1 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;" />
 								<InputText class="form-control BlacInput" @bind-Value=Player.Wound2 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;" />
@@ -328,7 +431,7 @@
 							</div>
 						</div>
 						<div class="BoxPack">
-							<h2>Equipo</h2>
+							<h5 class="text-light">Equipo</h5>
 							<div class="d-flex flex-column w-100 gap-1">
 								<InputText class="form-control BlacInput" @bind-Value=Gear0 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;" />
 								<InputText class="form-control BlacInput" @bind-Value=Gear1 style="background: #010e09; color: white; font-weight: 600; width: 100%; outline: none;border: 1px solid black;"/>
@@ -343,32 +446,9 @@
 			
 					</div>
 					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
-						<div class="LastRollContainer BoxPack">
-							@if (Game.LastRoll is not null)
-							{
-								<h4>Último movimiento</h4>
-								<div>@Game.LastRoll.Roller</div>
-								<div>@Game.LastRoll.MoveTittle <span class="small opacity-50">con</span> @Game.LastRoll.Stat.ToUIString()</div>
-								<div class="d-flex gap-2 justify-content-center m-4">
-									<div class="d-flex align-items-center gap-2">
-										<div class="dice">@Game.LastRoll.d1</div> +
-										<div class="dice">@Game.LastRoll.d2</div> +
-										<div class="dice" style="border-style: none; background: #ffffff3b;">
-											@Game.LastRoll.bonus
-										</div>
-										=
-									</div>
-									<div class="RollResult">@Game.LastRoll.Total</div>
-								</div>
-							}
-							else
-							{
-								<div class="small">Aún nadie ha tirado nada</div>
-							}
-
-						</div>
+						
 						<div>
-							<h2>Movimientos de peligro</h2>
+							<h4 class="text-light">Movimientos de peligro</h4>
 							<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false LastRoll="Game.LastRoll" />
 						</div>	
 						<div class="BoxPack">
@@ -377,28 +457,44 @@
 					</div>		
 					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
 						<div>
-							<h2>Movimientos de calma</h2>
+							<h4 class="text-light">Movimientos de calma</h4>
 							<DinoMovesPack Moves=Moves.SafetyMoves PackName="DangerMoves" OpenFirst=false />
 						</div>
 			
 						<div class="BoxPack d-flex flex-column gap-2">
 							<div>
-								<strong>Rumor</strong>
+								<small class="opacity-50">Por qué estáis aquí juntos?</small>
+								@if (Game.WhyComing == Game.TextBook.WhyComingOptions[0] || Game.WhyComing == "")
+								{
+									<ul>
+										@foreach (var o in Game.TextBook.WhyComingOptions.Where(x => x != Game.TextBook.WhyComingOptions[0]))
+										{
+											<li>@o</li>
+										}
+									</ul>
+								}
+								else
+								{	
+									<div>@Game.WhyComing</div>
+								}
+							</div>
+							<div>
+								<small class="opacity-50">Rumor</small>
 								<div>@Player.Rumor</div>
 							</div>
 							<div>
-								<strong>Obstáculo</strong>
+								<small class="opacity-50">Obstáculo</small>
 								<div>@Game.ObstacleMC</div>
 							</div>
 							<div>
-								<strong>Misterio</strong>
-								@if(Game.ObstaclePlayers == Game.TextBook.ObstaclePlayersOptions[0])
+								<small class="opacity-50">Misterio</small>
+								@if (Game.ObstaclePlayers == Game.TextBook.ObstaclePlayersOptions[0] || Game.ObstaclePlayers == "")
 								{
 									<ul>
-									@foreach(var o in Game.TextBook.ObstaclePlayersOptions.Where(x=>x!= Game.ObstaclePlayers))
-									{
-										<li>@o</li>
-									}
+										@foreach (var o in Game.TextBook.ObstaclePlayersOptions.Where(x => x != Game.TextBook.ObstaclePlayersOptions[0]))
+										{
+											<li>@o</li>
+										}
 									</ul>
 								}
 								else
@@ -446,15 +542,9 @@
 		Player.Fit = -1;
 		Player.Steady = +2;
 
-		Game.OnUIUpdate += (o, e) =>
-		{
-			InvokeAsync(() => { StateHasChanged(); });
-		};
+		Game.OnUIUpdate += (o, e) => InvokeAsync(() => { StateHasChanged(); });
 
-		Game.NewInfoToast += (o, msg) =>
-		{
-			Toaster.ShowInfo(msg);
-		};
+		Game.NewInfoToast += (o, msg) => Toaster.ShowInfo(msg);
 
 		ImagesDB.Init();
 
@@ -465,14 +555,56 @@
 		};
 
 		Game.AddPlayer(Player);
-		
+
+		Game.OnMasterShowsImage += (o, img) =>
+		{
+			IsShowingFullScreenImage = true;
+			FullScreenImage = img;
+			IsShowingFullScreenPNJ = false;
+			FullScreenPNJ = null;
+			InvokeAsync(() => { StateHasChanged(); });
+		};
+
+		Game.OnMasterShowsPNJ += (o, pnj) =>
+		{
+			IsShowingFullScreenPNJ = true;
+			FullScreenPNJ= pnj	;
+			IsShowingFullScreenImage = false;
+			FullScreenImage = null;
+			InvokeAsync(() => { StateHasChanged(); });
+		};
+
+		Game.OnNewRoll += (o, roll) =>
+		{
+			IsShowingLastRoll = true;
+			IsShowingFullScreenImage = false;
+			IsShowingFullScreenPNJ = false;
+			Game.LastRoll = roll;
+			InvokeAsync(() => { StateHasChanged(); });
+		};
+
 	}
+
+	bool IsShowingFullScreenImage = false;
+	bool IsShowingFullScreenPNJ = false;
+	bool IsShowingLastRoll = false;
+	PbtAImage? FullScreenImage = null;
+	PNJ? FullScreenPNJ = null;
 
 	private List<DinoMove> MovesOnScreen
 	{
 		get
 		{
 			return Moves.AllMoves.FindAll(x => x.ForClass == Player.Class).ToList();
+		}
+	}
+
+	private string LastRollBoxColor
+	{
+		get{
+			if (Game.LastRoll.Total >= 10) return "TotalSuccess";
+			else if (Game.LastRoll.Total >= 7) return "HalfSuccess";
+			else return "FailedRoll";
 		}
 	}
 

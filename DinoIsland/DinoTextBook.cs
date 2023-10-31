@@ -152,6 +152,31 @@ public class DinoTextBook
 		"Prensil: Usa su cola, o tal vez una trompa, para sujetar cosas."
 	};
 
+	public List<string> NamesMale = new List<string>
+	{
+		"Álex", "Bruno", "Carlos", "Daniel", "Erik", "Fabián", "Gabriel", "Hugo",
+		"Isaac", "Javier", "Kevin", "Lucas", "Marcos", "Nicolás", "Óscar", "Pablo",
+		"Quentin", "Rubén", "Samuel", "Tomás", "Uriel", "Víctor", "William", "Xavier"
+	};
+
+	public List<string> NamesFemale = new List<string>
+	{
+		"Ana", "Bianca", "Carla", "Daniela", "Elena", "Fiona", "Gabriela", "Hanna", "Isabel", 
+		"Julia", "Kira", "Lara", "Marta", "Nora", "Olivia", "Patricia", "Quinn", "Raquel", 
+		"Sara", "Tania", "Uma", "Valeria", "Wendy", "Xenia", "Yara"
+	};
+
+	public IEnumerable<string> NamesMixed => NamesMale.Concat(NamesFemale);
+	Random rnd = new Random();
+	public string NameMixedRandom
+	{
+		get
+		{
+			int indiceAleatorio = rnd.Next(NamesMixed.Count());
+			return NamesMixed.ElementAt(indiceAleatorio);
+		}
+	}
+
 	public List<string> DinoNickNames = new List<string>
 	{
 		"MMDs (Man-Made Dinosaurs)",
