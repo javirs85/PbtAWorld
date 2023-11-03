@@ -20,23 +20,38 @@ public static class ImagesDB
     {
         Images.Clear();
 
-        var path = "wwwroot/imgs/dinos";
-        var allNames = Directory.GetFiles(path);
-        foreach (var file in allNames)
-        {
-            if (File.Exists(file))
-            {
-                var rawName = Path.GetFileNameWithoutExtension(file);
-                var justName = Path.GetFileName(file);
-                var image = new PbtAImage
-                {
-                    Name = rawName,
-                    src = "imgs/dinos/" + justName
-                };
-                Images.Add(rawName, image);
-            }
-        }
+        var path = "";
+        LoadFolder(path);
+	}
 
+    public static List<PbtAImage> LoadFolder(string path)
+    {
+        List<PbtAImage> loaded = new();
+        if (Directory.Exists("wwwroot/imgs/"+path))
+        { 
+		    var allNames = Directory.GetFiles("wwwroot/imgs/" + path);
+        
+		    foreach (var file in allNames)
+		    {
+			    if (File.Exists(file))
+			    {
+				    var rawName = Path.GetFileNameWithoutExtension(file);
+				    var justName = Path.GetFileName(file);
+				    var image = new PbtAImage
+				    {
+					    Name = rawName,
+					    src = "imgs/"+path+"/" + justName
+				    };
+				    Images.Add(rawName, image);
+                    loaded.Add(image);
+			    }
+		    }
+		}
+        else
+        {
+
+        }
+        return loaded;
 	}
 
     public static PbtAImage GetImage(string name)

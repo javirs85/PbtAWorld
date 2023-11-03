@@ -39,8 +39,7 @@
 @code {
 	[Parameter] public List<string> Options { get; set; } = new();
 	[Parameter] public string Tittle { get; set; } = "Title";
-	[Parameter] public EventCallback<Tuple<DinoPlayer,string>> NewSelection { get; set; }
-	[Parameter] public DinoPlayer Player { get; set; }
+	[Parameter] public EventCallback NewSelection { get; set; }
 	[Parameter] public string Value { get; set; } = string.Empty;
 	[Parameter] public EventCallback<string> ValueChanged { get; set; }
 
@@ -70,6 +69,6 @@
 		ValueChanged.InvokeAsync(Value);
 		StateHasChanged();
 		ShowingEverything = false;
-		NewSelection.InvokeAsync(new Tuple<DinoPlayer, string>(Player, Value));
+		NewSelection.InvokeAsync();
 	}
 }

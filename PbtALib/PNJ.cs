@@ -18,24 +18,14 @@ public class PNJ
 
 public class PNJs
 {
-	public List<PNJ> PNJList { get; set; } = new();
+	public List<PNJ> AvailablePNJs { get; set; } = new();
 	public PNJs()
 	{
-		var path = "wwwroot/imgs/pnjs";
-		var allNames = Directory.GetFiles(path);
-		foreach (var file in allNames)
+		var images = ImagesDB.LoadFolder("pnjs");
+		foreach(var image in images)
 		{
-			if (File.Exists(file))
-			{
-				var rawName = Path.GetFileNameWithoutExtension(file);
-				var justName = Path.GetFileName(file);
-
-				var img = new PbtAImage { Name =rawName, src = "imgs/pnjs/" + justName};
-				ImagesDB.AddImage(img);
-				PNJList.Add(new PNJ { Name =rawName, Image =img });	
-			}
+			AvailablePNJs.Add(new PNJ { Name = image.Name, Image = image });
 		}
-
 	}
 
 }

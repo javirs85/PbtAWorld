@@ -1,6 +1,6 @@
-﻿@using PbtAWorldApp.Controls.DinoControls;
-@inject DinoGameController Game;
+﻿@inject DinoGameController Game;
 @inject DinoPlayer Player;
+@inject DinoMovesService Moves;
 @inject PbtAWorldCommClient Client;
 @inject PNJs Pnjs;
 
@@ -43,17 +43,17 @@
 									<div class="dice" style="border-style: none; background: #ffffff3b;">
 										@Game.LastRoll.bonus
 									</div>
-									=
 								</div>
 								<div class="RollResult">@Game.LastRoll.Total</div>
 							</div>
+							<MoveViewerDino Move="@(Moves.GetMovement(Game.LastRoll?.MoveId) as DinoMove)" StartsOpen=true />
 						}
 						else
 						{
 							<div class="small">Aún nadie ha tirado nada</div>
 						}
-
 					</div>
+					
 				</div>
 			}
 		</div>
@@ -130,7 +130,7 @@
 						Da un rumor a cada jugador
 					</p>
 					<p>Haz preguntas para clarificar el plan, asegúrate de que todo el mundo está de acuerdo en COMO llegan a la isla y que tienen que hacer allí cuando lleguen. Añade al mapa lo que sea necesario.</p>
-					<MapMini @ref="Map" />
+					<DinoIsland.Controls.MapMini @ref="Map" />
 				</div>
 				<div class="BoxPack">
 					<h4>La llegada</h4>
@@ -242,7 +242,8 @@
 					</div>
 				</div>
 				<div class="BoxPackSeparator">
-					Cuando resuelvan el óbstaculo o el misterio ... 
+					Cuando resuelvan el obstáculo o el misterio ...<br/>
+					Todo el mundo obtiene un avance
 				</div>
 				<div class="BoxPack">
 					<h4 class="d-flex gap-1 justify-content-between align-items-center">
@@ -285,6 +286,28 @@
 							}
 						</div>
 					}
+				</div>
+				<div class="BoxPackSeparator">
+					Cuando resuelvan el otro obstáculo: Arranca el gran final
+				</div>
+				<div class="BoxPack">
+					<h4>La escapada audaz</h4>
+					<p>Lleva a los personajes a su método de escape tan rápido como puedas</p>
+					<p>Una vez la salida esté a la vista tírales todo lo que tengas.</p>
+					<ul>
+						<li contenteditable="true">Enemigos con los que no acabaron</li>
+						<li contenteditable="true">Un dinosaurio al que liberaron</li>
+						<li contenteditable="true">Una localización que han estado evitando</li>
+						<li contenteditable="true">Dio sabe que más...</li>
+					</ul>
+					<div class="d-flex flex-column gap-1 p-1 mb-3">
+						<div class="Move">Una amenaza mortal vuelve</div>
+						<div class="Move">Aparece una versión nueva y más poderosa de un enemigo con el que luchaste.</div>
+						<div class="Move">La isla comienza a morir: tal vez esté siendo destrozada por un terremoto, hundiéndose en el océano, explotando con el volcán o siendo absorbida por un vórtice del tiempo.</div>
+						<div class="Move">Un héroe debe elegir si sacrificarse o no.</div>
+					</div>
+					Haz los movimientos de Al fin a salvo, o Nunca de vuelta según proceda.<br/>
+					<div class="btn btn-primary m-1" @onclick=@(()=>{Game.ShowLastMoveToPlayers();})>Mostrar movimiento final</div>
 				</div>
 			</div>
 			<div class="col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-1">
@@ -443,7 +466,7 @@
 								</div>
 								<div class="d-flex">
 									<div class="d-flex flex-wrap flex-grow-1">
-										@foreach (var p in Pnjs.PNJList)
+										@foreach (var p in Pnjs.AvailablePNJs)
 										{
 											<div class="PNJInList" 
 												@onclick=@(()=>{SelecetedPnj = p;}) 
@@ -526,9 +549,6 @@
 	}
 
 	private bool IsShowingRumors = false;
-
-
-
 
 	protected override void OnInitialized()
 	{

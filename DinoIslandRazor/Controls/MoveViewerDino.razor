@@ -223,6 +223,13 @@
 					</div>
 				</div>
 			}
+			else if(Move.Roll == DinoStates.D_0)
+			{
+				<button class="btn btn-success" @onclick="@(async()=>{ Game.Roll(Player.ID,DinoStates.D_0, Move);})">Tirar <br />2d6+0</button>
+				<button class="btn btn-success" @onclick="@(async()=>{ Game.Roll(Player.ID,DinoStates.D_1, Move);})">Tirar <br />2d6+1</button>
+				<button class="btn btn-success" @onclick="@(async()=>{ Game.Roll(Player.ID,DinoStates.D_2, Move);})">Tirar <br />2d6+2</button>
+				<button class="btn btn-success" @onclick="@(async()=>{ Game.Roll(Player.ID,DinoStates.D_3, Move);})">Tirar <br />2d6+3</button>
+			}
 
 		</div>
 	</div>

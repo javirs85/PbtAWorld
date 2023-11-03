@@ -16,13 +16,4 @@ public class Player
 
 }
 
-public static class UIExtensions
-{
-	public static string ToNiceUIStat(this int val)
-	{
-		if (val < 0)
-			return val.ToString();
-		else
-			return "+" + val.ToString();
-	}
-}
+

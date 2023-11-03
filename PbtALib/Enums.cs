@@ -13,3 +13,22 @@ public static class Extensions
 	}
 }
 
+public enum RollTypes
+{
+	DW_Simple, DW_Advantage, DW_Disadvantage
+}
+public enum DiceTypes
+{
+	d4, d6, d8, d10, d12, d20
+}
+
+public static class UIExtensions
+{
+	public static string ToNiceUIStat(this int val)
+	{
+		if (val < 0)
+			return val.ToString();
+		else
+			return "+" + val.ToString();
+	}
+}

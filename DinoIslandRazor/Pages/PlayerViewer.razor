@@ -1,13 +1,12 @@
-﻿@page "/"
+﻿@page "/DinoPlayerViewer"
 @inject DinoMovesService Moves
 @inject IToastService Toaster
 @inject NavigationManager navigationManager
 @inject DinoPlayer Player;
 @inject DinoGameController Game;
 @inject PbtAWorldCommClient Client;
-@using PbtAWorldApp.Controls.DinoControls
 
-<EditForm Model="Player" >
+<EditForm Model="Player" style="height:100%;">
 	<div class="Header ">
 		<div class="WideArea">
 			<div class="LongBlackStripe flex-wrap">
@@ -161,7 +160,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="me-4">
+	<div class="" style="background-image: url(_content/DinoIsland/imgs/BigBack.png); min-height:100%;">
 		@if(Player.Class == DinoClasses.Master)
 		{
 			<MasterViewer IsInGameMode=GameIsInGameMode/>
@@ -249,6 +248,13 @@
 									}
 
 								</div>
+							</div>
+						}
+						else if (IsShowingLastMoves)
+						{
+							<div class="FullImageSpace d-flex flex-column gap-3" style="background: white; width: 50%;">
+								<MoveViewerDino Move="Game.TextBook.NeverToReturn"/>
+								<MoveViewerDino Move="Game.TextBook.SafeAtLast"/>
 							</div>
 						}
 					</div>
@@ -391,27 +397,27 @@
 								</ul>
 								<span class="m-5">&nbsp;</span>
 								<div class="w-100 d-flex justify-content-center mb-5">
-									<img class="m-3" src="imgs/DinoKid.png"/>
+									<img class="m-3" src="_content/DinoIsland/imgs/DinoKid.png" />
 								</div>
 							}
 							else if(Player.Class == DinoClasses.Paleontologist)
 							{
 								<div class="d-flex justify-content-center">
-									<img src="imgs/PaleoHelp.png" />
+									<img src="_content/DinoIsland/imgs/PaleoHelp.png" />
 								</div>
 							}
 							else if(Player.Class == DinoClasses.Soldier)
 							{
 								<div class="d-flex justify-content-center">
-									<img src="imgs/SoldierHelp.png"/>
+									<img src="_content/DinoIsland/imgs/SoldierHelp.png" />
 								</div>
 							}
 							else if(Player.Class == DinoClasses.Survivor)
-						{
-							<div class="d-flex justify-content-center">
-								<img src="imgs/SurvivorHelp.png"/>
-							</div>
-						}
+							{
+								<div class="d-flex justify-content-center">
+									<img src="_content/DinoIsland/imgs/SurvivorHelp.png" />
+								</div>
+							}
 						</div>
 						
 					</div>
@@ -547,6 +553,7 @@
 		Game.NewInfoToast += (o, msg) => Toaster.ShowInfo(msg);
 
 		ImagesDB.Init();
+		ImagesDB.LoadFolder("dinos");
 
 		Player.UpdateUI += (o, e) =>
 		{
@@ -583,8 +590,14 @@
 			InvokeAsync(() => { StateHasChanged(); });
 		};
 
+		Game.OnShowLastMoveToPlayers += (o, e) =>
+		{
+			IsShowingLastMoves = true;
+			InvokeAsync(() => { StateHasChanged(); });
+		};
 	}
 
+	bool IsShowingLastMoves = false;
 	bool IsShowingFullScreenImage = false;
 	bool IsShowingFullScreenPNJ = false;
 	bool IsShowingLastRoll = false;

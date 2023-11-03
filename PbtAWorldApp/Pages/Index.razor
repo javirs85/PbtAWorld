@@ -1,78 +1,11 @@
-﻿@page "/test"
-@using DataAccessLibrary;
-@inject IConfiguration Config
-@inject IToastService Toaster
-@inject ISqlDataAccess sql
-@inject IJSRuntime JS
+﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Seleccione su juego</PageTitle>
 
-<EditForm Model="@test">
-	<div class="m-2 d-flex flex-column gap-1">
-		<InputText type="text" class="form-control borderlessInput" id="Wound1" placeholder="corte en la pierna" @bind-Value=test.Wound1></InputText>
-		<InputText type="text" class="form-control borderlessInput" id="Wound2" placeholder="corte en la pierna" @bind-Value=test.Wound2></InputText>
-		<label class="d-flex gap-1">
-			<InputCheckbox id="married" @bind-Value="test.IsDown" style="width: 20px; height:20px; visibility: hidden;"></InputCheckbox>
-			<span class="PlayerDown-checkbox"></span> Fuera de combate
-		</label>
-		<button class="btn btn-primary w-25">Submit</button>
-	</div>
-</EditForm>
+	<a href="/DinoIsland">Dino Island</a>
 
 @code{
-	private string defaultConnection = "";
-	private string googleID = "";
-	private Test test = new Test();
-
-	protected override void OnInitialized()
-	{
-		defaultConnection = Config.GetConnectionString("Default") ?? "Unknown";
-		googleID = Config["Google:Id"] ?? "Not found";
-
-	}
-
-	protected void Logout()
-	{
-		JS.InvokeVoidAsync("MyModule.DeleteCookieLogout");
-	}
-
-	private class Test
-	{
-		public string Wound1 { get; set; } = "";
-		public string Wound2 { get; set; } = "";
-		public bool IsDown { get; set; } = false;
-	}
-
-	/*
-	 * 
-	 * <p>
 	
-	<AuthorizeView>
-		<Authorized>
-			<p>
-				<!--a href="auth/google-logout" class="btn btn-primary">Log out</!--a-->
-				<button class="btn btn-primary" @onclick=Logout >Log out</button>
-			</p>
-			@foreach(var item in context.User.Claims)
-			{
-				<h2>@item.Type @item.Value</h2>
-			}
-			<img src="@context.User.Claims.Where(s => s.Type == "picture")?.FirstOrDefault()?.Value"/>
-		</Authorized>
-		<NotAuthorized>
-			<p>
-				<a href="auth/google-login" class="btn btn-primary">Login with google</a>
-
-				<EditForm Model="@test"> 
-					<InputText id="Wound1" placeholder="corte en la pierna" @bind-Value=test.Wound1></InputText>
-				</EditForm>
-			</p>
-		</NotAuthorized>
-	</AuthorizeView>
-</p>
-
-
-	 */
 }
 
 
