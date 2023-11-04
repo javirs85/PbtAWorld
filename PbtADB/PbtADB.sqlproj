@@ -59,6 +59,7 @@
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
     <Folder Include="dbo\StoredProcedures" />
+    <Folder Include="dbo\StoredProcedures\Campaign" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\User.sql" />
@@ -67,11 +68,21 @@
     <Build Include="dbo\StoredProcedures\spUser_Delete.sql" />
     <Build Include="dbo\StoredProcedures\spUser_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spUser_Update.sql" />
+    <Build Include="dbo\Tables\Campaign.sql" />
+    <Build Include="dbo\Tables\Character.sql" />
+    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_GetCampaignsOfGame.sql" />
+    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_AddCampaign.sql" />
+    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_DeleteCampaign.sql" />
+    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\StoredProcedures\Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PbtADB.publish.xml" />
+    <None Include="PbtADB_Casa.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="PbtADB.refactorlog" />
   </ItemGroup>
 </Project>

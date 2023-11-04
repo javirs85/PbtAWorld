@@ -1,6 +1,6 @@
 ﻿namespace PbtALib;
 
-public class Player
+public class PbtACharacter
 {
 	private Guid _id = Guid.NewGuid();
 
@@ -10,9 +10,15 @@ public class Player
 		set { _id = value; }
 	}
 
-	public string Name { get; set; } = string.Empty;
-	public string Email { get; set; } = string.Empty;
-	public string Password { get; set; } = string.Empty;
+	private string _name = "Escoge un nombre";
+
+	public string Name
+	{
+		get { return _name; }
+		set { _name = value; }
+	}
+
+	public string SerializedData { get; set; } = string.Empty;
 
 }
 

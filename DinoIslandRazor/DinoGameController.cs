@@ -23,7 +23,7 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 	public DinoTextBook TextBook = new DinoTextBook();
 
 	public List<MapItem> MapTokens { get; set; } = new List<MapItem>();
-	public List<DinoPlayer> Players { get; set; } = new();
+	public List<DinoCharacter> Players { get; set; } = new();
 
 	public string WhereAreYou { get; set; } = string.Empty;
 	public string _obstaclePlayers = string.Empty;
@@ -141,7 +141,7 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 		RequestUpdateToUIOnClients();
 	}
 
-	public void AddPlayer(DinoPlayer player)
+	public void AddPlayer(DinoCharacter player)
 	{
 		Players.Add(player);
 		RequestUpdateToUIOnClients();
@@ -200,26 +200,14 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 		else if(kind == MessageKinds.UpdateInPlayer)
 		{
 			var paramMessage = System.Text.Json.JsonSerializer.Deserialize<ParamsMessage>(encodedMessage);
-			var UpdatedPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoPlayer>(paramMessage?.Parameters["message"] ?? "");
+			var UpdatedPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoCharacter>(paramMessage?.Parameters["message"] ?? "");
 
 			if(UpdatedPlayer is not null)
 			{
 				var player = Players.Find(x => x.ID == UpdatedPlayer.ID);
 				if (player is not null)
 				{
-					player.Name = UpdatedPlayer.Name;
-					player.Email = UpdatedPlayer.Email;
-					player.Rumor = UpdatedPlayer.Rumor;
-					player.AllPurchasedMoves = UpdatedPlayer.AllPurchasedMoves;
-					player.Behavior = UpdatedPlayer.Behavior;
-					player.Looks = UpdatedPlayer.Looks;
-					player.Steady = UpdatedPlayer.Steady;
-					player.Fit = UpdatedPlayer.Fit;
-					player.Clever = UpdatedPlayer.Clever;
-					player.Wound1 = UpdatedPlayer.Wound1;
-					player.Wound2 = UpdatedPlayer.Wound2;
-					player.Password = UpdatedPlayer.Password;
-					player.Class = UpdatedPlayer.Class;
+					player = JsonSerializer.Deserialize<DinoCharacter>(JsonSerializer.Serialize(UpdatedPlayer));
 				}
 				else
 				{

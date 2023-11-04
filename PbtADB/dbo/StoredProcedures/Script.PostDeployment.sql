@@ -6,3 +6,9 @@ begin
 	('John', 'Smith'),
 	('Mery', 'Jones');
 end
+
+if not exists (select 1 from dbo.Campaign)
+begin
+	insert into dbo.Campaign (GameID, CampaignGuid, [Name])
+	values ('0', '0000-0000-0000-0000', 'Test campaign')
+end

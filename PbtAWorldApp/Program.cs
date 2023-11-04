@@ -1,14 +1,14 @@
-using DataAccessLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System.Security.Claims;
-using PbtAWorldApp.Data;
 using Blazored.Toast;
 using PbtAWorldApp;
 using PbtAWorldConnectivity;
 using DinoIsland;
 using System.Dynamic;
 using PbtALib;
+using PbtADBConnector.DbAccess;
+using PbtADBConnector.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,16 +18,16 @@ IWebHostEnvironment environment = builder.Environment;
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddBlazoredToast();
-builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
-builder.Services.AddTransient<IPeopleData, PeopleData>();
 builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddSingleton<PbtAWorldCommClient>();
 builder.Services.AddSingleton<PNJs>();
 builder.Services.AddSingleton<DinoGameController>();
-builder.Services.AddScoped<DinoPlayer>();
+builder.Services.AddScoped<DinoCharacter>();
 builder.Services.AddBlazorBootstrap();
+
+builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddSingleton<IUserData, UserData>();
 
 
 builder.Services.AddAuthentication("Cookies")

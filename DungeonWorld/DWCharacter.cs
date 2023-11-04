@@ -7,7 +7,7 @@ using PbtALib;
 
 namespace DungeonWorld;
 
-public class DWPlayer : PbtALib.Player
+public class DWCharacter : PbtALib.PbtACharacter
 {
 	public string PhysicialDescription { get; set; } = "Physicial description";
 	public DWClasses Profession { get; set; } = DWClasses.DW_NotSet;

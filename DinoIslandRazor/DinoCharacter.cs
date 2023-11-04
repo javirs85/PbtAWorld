@@ -10,17 +10,9 @@ using Blazored.Toast.Services;
 namespace DinoIsland;
 
 
-public class DinoPlayer : Player
+public class DinoCharacter : PbtACharacter
 {
 	public event EventHandler UpdateUI;
-	private string _name = "Escoge un nombre";
-
-	public string Name
-	{
-		get { return _name; }
-		set { _name = value; }
-	}
-
 
 	public string Wound1 { get; set; } = string.Empty;
 	public string Wound2 { get; set; } = string.Empty;

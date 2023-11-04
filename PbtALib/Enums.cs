@@ -2,6 +2,8 @@
 
 namespace PbtALib;
 
+public enum AvailableGames { DW, US, DI, NotSet}
+
 public enum HowOftenUsed { NeverUsed, FewUses, LotsOfUses, ToMuch };
 
 public static class Extensions

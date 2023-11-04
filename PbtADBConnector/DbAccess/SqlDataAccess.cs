@@ -34,5 +34,4 @@ public class SqlDataAccess : ISqlDataAccess
 		using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));
 		await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
 	}
-
 }

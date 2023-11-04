@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
     <ProjectReference Include="..\DinoIslandRazor\DinoIsland.csproj" />
+    <ProjectReference Include="..\PbtADBConnector\PbtADBConnector.csproj" />
     <ProjectReference Include="..\PbtAWorldConnectivity\PbtAWorldConnectivity.csproj" />
     <ProjectReference Include="..\PbtALib\PbtALib.csproj" />
   </ItemGroup>

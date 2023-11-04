@@ -1,5 +1,5 @@
 ﻿@inject DinoGameController Game;
-@inject DinoPlayer Player;
+@inject DinoCharacter Player;
 @inject DinoMovesService Moves;
 @inject PbtAWorldCommClient Client;
 @inject PNJs Pnjs;
@@ -541,9 +541,9 @@
 		_isShowingDinos = false;
 	}
 
-	private void SetNewRumor(Tuple<DinoPlayer, string> data)
+	private void SetNewRumor(Tuple<DinoCharacter, string> data)
 	{
-		var dp = data.Item1 as DinoPlayer;
+		var dp = data.Item1 as DinoCharacter;
 		dp.Rumor = data.Item2;
 		Game.SetRumor(dp.ID, data.Item2);
 	}

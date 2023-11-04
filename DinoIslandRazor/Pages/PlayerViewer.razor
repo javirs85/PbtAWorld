@@ -2,7 +2,7 @@
 @inject DinoMovesService Moves
 @inject IToastService Toaster
 @inject NavigationManager navigationManager
-@inject DinoPlayer Player;
+@inject DinoCharacter Player;
 @inject DinoGameController Game;
 @inject PbtAWorldCommClient Client;
 
@@ -37,7 +37,7 @@
 								{
 									<option value="@op">@op.ToUIString()</option>
 									<div class="btn btn-primary" 
-										@onclick="@(()=>{Game.Players.Add(new DinoPlayer{Name="FakePlayer"});})">
+										@onclick="@(()=>{Game.Players.Add(new DinoCharacter{Name="FakePlayer"});})">
 										AddPlayer
 									</div>
 								}
@@ -692,7 +692,7 @@
 		}
 	}
 
-	private async Task UpdateThisPlayerOnServer(DinoPlayer p)
+	private async Task UpdateThisPlayerOnServer(DinoCharacter p)
 	{
 		if (Client is not null && Client.IsConnected)
 		{
