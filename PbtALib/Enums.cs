@@ -26,6 +26,23 @@ public enum DiceTypes
 
 public static class UIExtensions
 {
+	public static string ToUI(this AvailableGames game)
+	{
+		return game switch
+		{
+			AvailableGames.DI => "Escape from dino island",
+			AvailableGames.DW => "Dungeon World",
+			AvailableGames.US => "Urban shadows",
+			_ => "Game not selected"
+		};
+	}
+
+	public static string ToUI(this AvailableGames? game)
+	{
+		if (game is not null) return ((AvailableGames)game).ToUI();
+		else return "null";
+	}
+
 	public static string ToNiceUIStat(this int val)
 	{
 		if (val < 0)

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using PbtADBConnector.Data;
-@inject IUserData db;
+@inject MetaController Meta;
+@inject NavigationManager nav;
 
 <PageTitle>Seleccione su juego</PageTitle>
 
@@ -9,48 +10,26 @@
 	<div class="Title">Elije tu serie</div>
 
 	<div class="GamesContainer">
-		<a href="/DinoIsland">
-			<div class="GameCover">
-				<img src="imgs/GameCovers/DinoIsland.png" />
-			</div>
-		</a>
-		<a href="/DW/Seasons">
-			<div class="GameCover">
-				<img src="imgs/GameCovers/DungeonWorld.png" />
-			</div>
-		</a>
-		<a href="/DinoIsland">
-			<div class="GameCover">
-				<img src="imgs/GameCovers/UrbanShadows.png" />
-			</div>
-		</a>
+		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.DI; nav.NavigateTo("SeasonSelection");})>
+			<img src="imgs/GameCovers/DinoIsland.png" />
+		</div>
+		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.DW; nav.NavigateTo("SeasonSelection");})>
+			<img src="imgs/GameCovers/DungeonWorld.png" />
+		</div>
+		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.US; nav.NavigateTo("SeasonSelection");})>
+			<img src="imgs/GameCovers/UrbanShadows.png" />
+		</div>
 	</div>
-	
+
 	<div class="d-flex flex-column text-light">
-		@debug
-		<button class="btn btn-primary w-25" @onclick=Test>Test</button>
+		@Meta.debug
+		<button class="btn btn-primary w-25" @onclick=Meta.Test>Test</button>
 	</div>
 </div>
 
 @code{
-	private enum CurrentlySelectingOptions {Game, Season, Player};
-
-	private AvailableGames SelectedGame = AvailableGames.NotSet;
-	private Season? SelectedSeason = null;
-	private PbtACharacter? SelectedPlayer = null;
-
-	string debug = "Nothing yet";
-
-	private async void Test()
+	protected override void OnInitialized()
 	{
-		debug = "";
-		var res = await db.GetUsers();
-		foreach(var r in res)
-		{
-			debug += r.FirstName + ", ";
-		}
-		Update();
+		Meta.OnUpdateRequested += (o, e) => { InvokeAsync(() => { StateHasChanged(); }); };
 	}
-
-	private void Update() => InvokeAsync(()=> { StateHasChanged(); });
 }

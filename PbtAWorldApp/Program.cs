@@ -19,6 +19,7 @@ IWebHostEnvironment environment = builder.Environment;
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredToast();
+builder.Services.AddScoped<MetaController>();
 builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddSingleton<PbtAWorldCommClient>();
 builder.Services.AddSingleton<PNJs>();
@@ -28,6 +29,8 @@ builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddSingleton<IUserData, UserData>();
+builder.Services.AddSingleton<ISeasonsData, SeasonData>();
+builder.Services.AddSingleton<ICharacterData, CharacterData>();
 
 
 builder.Services.AddAuthentication("Cookies")

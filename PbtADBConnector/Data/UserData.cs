@@ -46,8 +46,14 @@ public class SeasonData : ISeasonsData
     public Task DeleteSeason(Guid id) =>
 		_db.SaveData("dbo.spCampaigns_DeleteCampaign", new { Id = id });
 
-	public Task<IEnumerable<Season>> GetAllSeasonsAlGame(AvailableGames game) =>
-		_db.LoadData<Season, dynamic>("dbo.spCampaigns_GetCampaignsOfGame", new { game });
+	public Task<IEnumerable<Season>> GetAllSeasonsOfGame(AvailableGames game)
+	{
+		byte i = (byte)game;
+		return GetAllSeasonsOfGame(i);
+	}
+
+	public Task<IEnumerable<Season>> GetAllSeasonsOfGame(byte gamecode) =>
+		_db.LoadData<Season, dynamic>("dbo.spCampaigns_GetCampaignsOfGame", new { GameID = gamecode });
 
 	public Task InsertSeason(Season season) =>
 		_db.SaveData("dbo.spCampaigns_AddCampaign", new { season.Guid, season.Name, season.GameID });
@@ -55,3 +61,17 @@ public class SeasonData : ISeasonsData
 	public Task UpdateSeason(Season season) =>
 		_db.SaveData("dbo.spCampaigns_UpdateName", season);
 }
+
+public class CharacterData : ICharacterData
+{
+	private readonly ISqlDataAccess _db;
+	public CharacterData(ISqlDataAccess db)
+	{
+		_db = db;
+	}
+
+	public Task InsertNewCharacter(byte GameID, Guid CampaignID, string serializedData, string Name, int classCode, Guid CharacterID) =>
+		_db.SaveData("dbo.spCharacter_Insert", new { GameID, CampaignID, serializedData, Name, classCode, CharacterID });
+}
+
+

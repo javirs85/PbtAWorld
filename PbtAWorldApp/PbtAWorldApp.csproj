@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DinoIslandRazor\DinoIsland.csproj" />
+    <ProjectReference Include="..\DungeonWorld\DungeonWorld.csproj" />
     <ProjectReference Include="..\PbtADBConnector\PbtADBConnector.csproj" />
     <ProjectReference Include="..\PbtAWorldConnectivity\PbtAWorldConnectivity.csproj" />
     <ProjectReference Include="..\PbtALib\PbtALib.csproj" />

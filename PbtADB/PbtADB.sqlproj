@@ -60,6 +60,7 @@
     <Folder Include="dbo\Tables" />
     <Folder Include="dbo\StoredProcedures" />
     <Folder Include="dbo\StoredProcedures\Campaign" />
+    <Folder Include="dbo\StoredProcedures\Character" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\User.sql" />
@@ -74,6 +75,7 @@
     <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_AddCampaign.sql" />
     <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_DeleteCampaign.sql" />
     <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_Update.sql" />
+    <Build Include="dbo\StoredProcedures\Character\spCharacter_Insert.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\StoredProcedures\Script.PostDeployment.sql" />
