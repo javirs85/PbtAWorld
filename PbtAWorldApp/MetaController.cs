@@ -78,6 +78,14 @@ public class MetaController
 		}
 	}
 
+	public async Task Start()
+	{
+		if (SelectedPlayer is not null)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
 	public string FromClassIDToUI(int classID)
 	{
 		if (SelectedGame == AvailableGames.DI)
