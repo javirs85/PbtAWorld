@@ -10,6 +10,8 @@ public class PbtACharacter
 		set { _id = value; }
 	}
 
+	public byte EncodedClass { get; set; }
+
 	private string _name = "Escoge un nombre";
 
 	public string Name

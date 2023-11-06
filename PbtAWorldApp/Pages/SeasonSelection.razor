@@ -17,12 +17,22 @@
 			<div class="d-flex flex-column gap-2" style="min-height: 255px;">
 				@foreach(var season in Meta.Seasons)
 				{
-					<div class="SeasonBox" @onclick=@(()=>{SelectSeason(season);})>@season.Name</div>
+					<div class="SeasonBox" @onclick=@(()=>{SelectSeason(season);})>
+						@season.Name
+						<div class="d-flex flex-wrap gap-2 opacity-50">
+							@foreach(var p in season.Players)
+							{
+								<div>
+									@p.Name <small>(@Meta.FromClassIDToUI(p.EncodedClass))</small>
+								</div>
+							}
+						</div>
+					</div>
 				}
 			</div>
 			<div class="p-4" style="background: black;">
 				<EditForm Model="@newSeason">
-					<label class="col-form-label-sm">Nueva temporada:</label>
+					<label class="col-form-label-sm text-light opacity-50">Nueva temporada:</label>
 					<InputText @bind-Value=newSeason.Name class="form-control">Titulo de la nueva temporada</InputText>
                     <div class="mt-2 btn btn-primary" @onclick=Submit>Empezar una nueva temporada</div>
 				</EditForm>
@@ -38,10 +48,14 @@
 		await Meta.LoadAllSessionsOfSelectedGame();
 	}
 
+
+
 	private async Task Submit()
 	{
 		newSeason.GameID = Meta.SelectedGame?? AvailableGames.NotSet;
+		newSeason.CampaignGuid = Guid.NewGuid();
 		await Meta.StoreSeasonAsNewSeason(newSeason);
+		newSeason.Name = "";
 	}
 
 	private void SelectSeason(Season season)

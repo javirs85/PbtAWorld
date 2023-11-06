@@ -76,12 +76,14 @@
     <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_DeleteCampaign.sql" />
     <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_Update.sql" />
     <Build Include="dbo\StoredProcedures\Character\spCharacter_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\Character\spCharacter_GetAllCharactersInSeason.sql" />
+    <Build Include="dbo\StoredProcedures\Character\spCharacter_Delete.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\StoredProcedures\Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PbtADB.publish.xml" />
+    <None Include="PbtADB_Gtec.publish.xml" />
     <None Include="PbtADB_Casa.publish.xml" />
   </ItemGroup>
   <ItemGroup>

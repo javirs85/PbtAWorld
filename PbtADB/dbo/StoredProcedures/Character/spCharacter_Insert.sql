@@ -1,10 +1,10 @@
 ﻿CREATE PROCEDURE [dbo].[spCharacter_Insert]
 	@GameID tinyint,
-	@CampaignID nvarchar(50),
+	@CampaignID UNIQUEIDENTIFIER,
 	@SerializedData text,
 	@Name nvarchar(50),
 	@ClassCode tinyint,
-	@Guid nvarchar(50)
+	@Guid UNIQUEIDENTIFIER
 AS
 begin
 	insert into dbo.[Character]([Guid], GameID, CampaignID, SerializedData, [Name], ClassCode)

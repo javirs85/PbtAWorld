@@ -62,8 +62,19 @@
 
  .PlayerBox{
      background: black;
+     color:white;
      padding: 10px;
+     border: 1px solid black;
+     cursor: pointer;
  }
+
+ .PlayerBox:hover{
+     border: 1px solid grey;
+ }
+
+    .PlayerBox.Selected {
+        background: #2e2e2f;
+    }
 
 .bitTittle {
     font-family: 'Julius Sans One', sans-serif;

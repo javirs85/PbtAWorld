@@ -6,8 +6,8 @@ namespace PbtAWorldApp;
 public class MetaController
 {
 	private readonly IUserData users;
-	private readonly ISeasonsData seasons;
-	private readonly ICharacterData characters;
+	public readonly ISeasonsData seasons;
+	public readonly ICharacterData characters;
 
 	public MetaController(IUserData _users, ISeasonsData _seasons, ICharacterData _characters)
 	{
@@ -42,14 +42,66 @@ public class MetaController
 		if (SelectedGame != null)
 		{
 			Seasons = await seasons.GetAllSeasonsOfGame((AvailableGames)SelectedGame);
+			foreach(var s in Seasons)
+				await LoadPlayerNamesForSeason(s);
+		}
+		OnUpdateRequested?.Invoke(this, EventArgs.Empty);
+	}
+
+	public async Task DeleteSelectedCharacter()
+	{
+        if (SelectedSeason is not null &&  SelectedPlayer is not null)
+        {
+			await characters.DeleteCharacter(SelectedPlayer);
+            var p = SelectedSeason.Players.Find(x => x.ID == SelectedPlayer.ID);
+            if (p != null)
+            {
+                SelectedSeason.Players.Remove(p);
+            }
+
+            OnUpdateRequested?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+
+    public async Task LoadPlayerNamesForSeason(Season season)
+	{
+		season.Players.Clear();
+		var summaries =  await characters.GetAllCharactersOfSeason(season.CampaignGuid);
+		foreach(var s in summaries)
+		{
+			season.Players.Add(new PbtACharacter { 
+				ID = s.Guid, 
+				Name = s.Name,
+				EncodedClass = s.ClassCode
+			});
 		}
 	}
+
+	public string FromClassIDToUI(int classID)
+	{
+		if (SelectedGame == AvailableGames.DI)
+		{
+			return DinoIsland.Extensions.ToUIString((DinoIsland.DinoClasses)classID);
+		}
+		else if (SelectedGame == AvailableGames.DW)
+		{
+			return ((DungeonWorld.DWClasses)classID).ToString();
+		}
+		else
+			return "Wrong SelectedGame at FromClassIDToUI";
+	}
+
+
 
 	public async Task DeleteSelectedSeason()
 	{
 		if (SelectedSeason is not null)
 		{
-			await seasons.DeleteSeason(SelectedSeason.Guid);
+			foreach (var p in SelectedSeason.Players)
+				await characters.DeleteCharacter(p);
+
+			await seasons.DeleteSeason(SelectedSeason.CampaignGuid);
 			SelectedSeason = null;
 		}
 	}

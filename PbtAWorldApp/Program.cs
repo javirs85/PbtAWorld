@@ -29,7 +29,7 @@ builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddSingleton<IUserData, UserData>();
-builder.Services.AddSingleton<ISeasonsData, SeasonData>();
+builder.Services.AddSingleton<PbtADBConnector.Data.ISeasonsData ,  SeasonData>();
 builder.Services.AddSingleton<ICharacterData, CharacterData>();
 
 

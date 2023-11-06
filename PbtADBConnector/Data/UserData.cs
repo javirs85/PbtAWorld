@@ -35,7 +35,7 @@ public class UserData : IUserData
 		_db.SaveData("dbo.spUser_Delete", new { Id = id });
 }
 
-public class SeasonData : ISeasonsData
+public class SeasonData : PbtADBConnector.Data.ISeasonsData
 {
 	private readonly ISqlDataAccess _db;
 	public SeasonData(ISqlDataAccess db)
@@ -43,8 +43,8 @@ public class SeasonData : ISeasonsData
 		_db = db;
 	}
 
-    public Task DeleteSeason(Guid id) =>
-		_db.SaveData("dbo.spCampaigns_DeleteCampaign", new { Id = id });
+	public Task DeleteSeason(Guid id) =>
+		_db.SaveData("dbo.spCampaigns_DeleteCampaign", new { Guid = id });
 
 	public Task<IEnumerable<Season>> GetAllSeasonsOfGame(AvailableGames game)
 	{
@@ -56,10 +56,10 @@ public class SeasonData : ISeasonsData
 		_db.LoadData<Season, dynamic>("dbo.spCampaigns_GetCampaignsOfGame", new { GameID = gamecode });
 
 	public Task InsertSeason(Season season) =>
-		_db.SaveData("dbo.spCampaigns_AddCampaign", new { season.Guid, season.Name, season.GameID });
+		_db.SaveData("dbo.spCampaigns_AddCampaign", new { season.CampaignGuid, season.Name, season.GameID });
 
 	public Task UpdateSeason(Season season) =>
-		_db.SaveData("dbo.spCampaigns_UpdateName", season);
+		_db.SaveData("dbo.spCampaigns_Update", new { season.CampaignGuid, season.Name, season.GameID });
 }
 
 public class CharacterData : ICharacterData
@@ -71,7 +71,22 @@ public class CharacterData : ICharacterData
 	}
 
 	public Task InsertNewCharacter(byte GameID, Guid CampaignID, string serializedData, string Name, int classCode, Guid CharacterID) =>
-		_db.SaveData("dbo.spCharacter_Insert", new { GameID, CampaignID, serializedData, Name, classCode, CharacterID });
+		_db.SaveData("dbo.spCharacter_Insert", new
+		{
+			GameID = GameID,
+			CampaignID = CampaignID,
+			serializedData = serializedData,
+			Name = Name,
+			classCode = classCode,
+			Guid = CharacterID
+		});
+
+	public Task<IEnumerable<PlayerSummary>> GetAllCharactersOfSeason(Guid guid) =>
+		_db.LoadData<PlayerSummary, dynamic>("dbo.spCharacter_GetAllCharactersInSeason", 
+			new { SesionID = guid });
+
+	public Task DeleteCharacter(PbtACharacter p) =>
+		_db.SaveData("dbo.spCharacter_Delete", new { Guid = p.ID });
 }
 
 

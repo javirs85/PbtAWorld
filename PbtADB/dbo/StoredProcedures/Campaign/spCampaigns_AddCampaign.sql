@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[spCampaigns_AddCampaign]
-	@Guid nvarchar(50),
+	@Guid UNIQUEIDENTIFIER,
 	@name nvarchar(50),
 	@gameid tinyint
 AS

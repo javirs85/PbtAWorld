@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[spCampaigns_DeleteCampaign]
-	@Guid nvarchar(50)
+	@Guid UNIQUEIDENTIFIER
 AS
 begin
 	delete

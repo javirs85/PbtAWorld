@@ -3,81 +3,137 @@
 @inject MetaController Meta;
 @inject NavigationManager nav;
 @inject DinoCharacter DinoCharacter;
-@inject DWCharacter DWCharacter;
 
 <PageTitle>Seleccione su personaje</PageTitle>
 
 <div class="FullPage">
 	<div class="DarkUpperMenu d-flex align-items-center justify-content-between">
 		<i class="bi bi-arrow-left-short fs-1 p-2" style="cursor:pointer;" @onclick=GoBack></i>
-		<p class="mt-3">@Meta.SelectedGame.ToUI() / @Meta.SelectedSeason.Name</p>
+		<p class="mt-3">@Meta.SelectedGame.ToUI() / @Meta.SelectedSeason?.Name</p>
 		<i class="bi bi-arrow-left-short fs-1 p-2" style="cursor:pointer; color:black" @onclick=GoBack></i>
 	</div>
 	<div class="Title">Elije su personaje</div>
 	<div class="d-flex gap-2 p-2">
-		<div class="p-3 d-flex flex-column gap-3 align-items-center" style="background:black;">
+		<div class="p-3 d-flex flex-column gap-1 align-items-center" style="background:black;">
 			<img src="@Meta.SelectedGameCover" />
-			<div class="bitTittle fs-1">@Meta.SelectedSeason.Name</div>
-			<div class="btn btn-danger w-100" @onclick=Delete>Eliminar</div>
+			<div class="bitTittle fs-1 text-light opacity-50">@Meta.SelectedSeason?.Name</div>
+			@if (Meta.SelectedSeason is not null &&  IsShowingTools)
+			{
+				<EditForm Model="Meta.SelectedSeason">
+					<div class="w-100 p-2" style="border: 1px solid gray; position:relative;" >
+						<i class="bi bi-x-lg text-light" style="position:absolute; right: 10px; cursor:pointer" @onclick=@(()=>{IsShowingTools = false;})></i>
+						<h3>Cambiar nombre</h3>
+						<div class="d-flex gap-1">
+							<InputText class="form-control" @bind-Value=Meta.SelectedSeason.Name></InputText>
+							<div class="btn btn-primary" @onclick=UpdateSeasonName>Actualizar</div>
+						</div>
+						<div class="btn btn-danger w-100 mt-1" @onclick=Delete>Eliminar</div>
+					</div>
+				</EditForm>
+			}
+			else
+			{
+				<i class="bi bi-gear text-light opacity-50 w-100" style="cursor:pointer" @onclick=@(()=>{IsShowingTools = true;})></i>
+			}
 		</div>
 		<div class="p-3" style="background: black;">
-			<EditForm Model="Meta.SelectedSeason">
-				<div class="d-flex gap-1">
-					<InputText class="form-control" @bind-Value=Meta.SelectedSeason.Name></InputText>
-					<div class="btn btn-primary">Actualizar</div>
-				</div>
-				@if(Meta.SelectedSeason.Players.Count == 0)
-				{
-					<small>No hay personajes...</small>
-				}
-				else
-				{
-					@foreach(var p in Meta.SelectedSeason.Players)
-					{
-						<div class="PlayerBox"></div>
-					}
-				}
-			</EditForm>
-		</div>
-		<div class="p-3 d-flex flex-column gap-2 text-light" style="background: black;">
-			<p>Crear nuevo personaje de tipo...</p>
-			@if(Meta.SelectedGame == AvailableGames.DW)
+			
+			@if (Meta.SelectedSeason is null || Meta.SelectedSeason.Players.Count == 0)
 			{
-				@foreach (DungeonWorld.DWClasses c in Enum.GetValues(typeof(DungeonWorld.DWClasses)))
-				{
-					@if(c != DWClasses.DW_NotSet)
-					{
-						<div class="btn btn-primary">@c.ToUI()</div>
-					}
-				}
-			}else if(Meta.SelectedGame == AvailableGames.DI)
+				<small>No hay personajes...</small>
+			}
+			else
 			{
-				@foreach (DinoIsland.DinoClasses c in Enum.GetValues(typeof(DinoIsland.DinoClasses)))
+				@foreach(var p in Meta.SelectedSeason.Players)
 				{
-					@if (c != DinoClasses.NotSet)
-					{
-						<div class="btn btn-primary" @onclick=@(async ()=>{await CreateNewDinoCharacter(c);})>@c.ToUIString()</div>
-					}
+					<div class="PlayerBox d-flex gap-2 align-items-center @(p == Meta.SelectedPlayer?"Selected":"")" @onclick=@(async ()=>{await SelectPlayer(p);})>
+						@p.Name (@Meta.FromClassIDToUI(p.EncodedClass))
+						@if(p==Meta.SelectedPlayer)
+						{
+							<div class="btn btn-primary">Empezar a jugar!</div>
+							@if (IsShowingDeleteCharacterButton)
+							{
+								<div class="btn btn-danger" @onclick=DeleteSelectedCharacter>Eliminar personaje</div>
+							}
+							else
+							{
+								<div class="bg-danger text-light rounded-circle p-2 py-1"
+									style="cursor:pointer"
+									@onclick=@(()=>{IsShowingDeleteCharacterButton = true;})>
+									<i class="bi bi-three-dots"></i>
+								</div>
+							}
+						}						
+					</div>
 				}
 			}
-			<div></div>
+			@if (IsShowingNewCharacterTools)
+			{
+				<div class="PlayerBox opacity-50" style="border: none!important;" @onclick=@(()=>{IsShowingNewCharacterTools = false;})>
+					Crear un personaje nuevo
+				</div>
+			}
+			else
+			{
+				<div class="PlayerBox" @onclick=@(()=>{IsShowingNewCharacterTools = true; Meta.SelectedPlayer = null;})>
+					Crear un personaje nuevo
+				</div>
+			}
+			
 		</div>
+		@if(IsShowingNewCharacterTools)
+		{
+			<div class="p-3 d-flex flex-column gap-2 text-light" style="background: black;">
+				<p>Crear nuevo personaje de tipo...</p>
+				<EditForm Model="this">
+					<InputText class="form-control" @bind-Value=NewCharacterName></InputText>
+				</EditForm>
+
+				@if(Meta.SelectedGame == AvailableGames.DW)
+				{
+					@foreach (DungeonWorld.DWClasses c in Enum.GetValues(typeof(DungeonWorld.DWClasses)))
+					{
+						@if(c != DWClasses.DW_NotSet)
+						{
+							<div class="btn btn-primary">@c.ToUI()</div>
+						}
+					}
+				}else if(Meta.SelectedGame == AvailableGames.DI)
+				{
+					@foreach (DinoIsland.DinoClasses c in Enum.GetValues(typeof(DinoIsland.DinoClasses)))
+					{
+						@if (c != DinoClasses.NotSet)
+						{
+							<div class="btn btn-primary" @onclick=@(async ()=>{await CreateNewDinoCharacter(c);})>@c.ToUIString()</div>
+						}
+					}
+				}
+
+			</div>
+		}
 	</div>
 </div>
 @code {
-	private void GoBack()
-	{
-		nav.NavigateTo("SeasonSelection");
-	}
+    private bool IsShowingTools = false;
+    private bool IsShowingNewCharacterTools = false;
+    private string NewCharacterName = "Nombre";
+    private bool IsShowingDeleteCharacterButton = false;
 
-	private async Task Delete()
-	{
-		await Meta.DeleteSelectedSeason();
-		nav.NavigateTo("SeasonSelection");
-	}
+    private void GoBack()
+    {
+        nav.NavigateTo("SeasonSelection");
+    }
 
-	public Type AvailableProfessionsForSelectedGame
-	{
+    private async Task Delete()
+    {
+        await Meta.DeleteSelectedSeason();
+        nav.NavigateTo("SeasonSelection");
+    }
+
+    private async Task DeleteSelectedCharacter() => await Meta.DeleteSelectedCharacter();
+
+    public Type AvailableProfessionsForSelectedGame
+    {
 		get
 		{
 			if (Meta.SelectedGame == AvailableGames.DW) return typeof(DungeonWorld.DWClasses);
@@ -87,11 +143,34 @@
 		}
 	}
 
+	private async Task SelectPlayer(PbtACharacter p)
+	{
+		IsShowingNewCharacterTools = false;
+		IsShowingTools = false;
+		Meta.SelectedPlayer = p;
+	}
+
+	private async Task UpdateSeasonName()
+	{
+		await Meta.seasons.UpdateSeason(Meta.SelectedSeason);
+	}
+
 	private async Task CreateNewDinoCharacter(DinoClasses c)
 	{
 		DinoCharacter newCharacter = new DinoCharacter();
+		newCharacter.ID = Guid.NewGuid();
+		newCharacter.Name = NewCharacterName;
 		newCharacter.Class = c;
-		Meta.sto
+		if(Meta.SelectedGame is not null && Meta.SelectedSeason is not null)
+			await Meta.InsertNewCharacter(
+				(byte)Meta.SelectedGame, 
+				Meta.SelectedSeason.CampaignGuid, 
+				System.Text.Json.JsonSerializer.Serialize(newCharacter), 
+				newCharacter.Name, 
+				(byte)newCharacter.Class,
+				newCharacter.ID);
 
+		NewCharacterName = "Nombre";
+		await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
 	}
 }
