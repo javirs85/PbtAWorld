@@ -1,0 +1,531 @@
+﻿@page "/DWPlayer/{PlayerID:guid}"
+
+
+@inject NavigationManager NavigationManager
+@inject DWGameController Game
+@inject IToastService Toaster
+@inject DWMovesService Moves
+
+@if (false)
+{
+	<h3>Loading DW player sheet .... </h3>
+}
+else
+{
+	<div class="d-flex SheetContainer" @onclick=FinishAllEdits>
+		<div class="PaperSheet d-flex flex-column">
+			<div class="w-100 m-2 d-flex align-items-center">
+
+				<div class="HeaderName @(IsEditingName ? "Hidden" : "" )" @onclick=EditName @onclick:stopPropagation>@Player.Name</div>
+				<input class="HeaderNameInput @(!IsEditingName ? "Hidden" : "" )" @onclick:stopPropagation @bind=Player.Name @onfocusout=UpdatePlayerName>
+
+				<div class="HeaderProfession"> - @Player.Profession.ToUI() |</div>
+				@if(Player.Motivation == "")
+				{
+					<button class="btn btn-primary" @onclick=ChooseMotivation>Elejir motivación</button>
+				}
+				else
+				{
+					<div class="HeaderMotivation" @onclick=ChooseMotivation>@Player.Motivation</div>
+				}
+
+			</div>
+			<div class="d-flex">
+				<div class="PaperFirstColumn">
+					@if (Player.STR == 0 && Player.DEX == 0 && Player.CON == 0 && Player.INT == 0 && Player.WIS == 0 && Player.CHA == 0)
+					{ 
+						<div>Reparte +2 +1 +1 0 0 -1</div>
+					}
+					<div class="d-flex flex-column">
+						<div class="d-flex w-100 align-items-center">
+							<StatViewer Stat=DWStats.DW_STR  UpdateUI="StateHasChanged"/>
+							<StatViewer Stat=DWStats.DW_DEX />
+							<StatViewer Stat=DWStats.DW_CON />
+						</div>
+						<div class="d-flex">
+							<StatViewer Stat=DWStats.DW_INT />
+							<StatViewer Stat=DWStats.DW_WIS />
+							<StatViewer Stat=DWStats.DW_CHA />
+						</div>
+					</div>
+					<div class="d-flex w-100 justify-content-center">
+						<div class="ArmorOuter">
+							<div class="ArmorTittle">Armadura</div>
+							<input @bind=Player.Armor @onfocusout=@(async()=>{await EditFinish("Armadura = "+Player.Armor);}) />
+						</div>
+						<div class="HealthOuter">
+							<div class="d-flex">
+								<input @bind=Player.CurrentHP @onfocusout=@(async ()=>{ await EditFinish($"Actualizó sus PG a {Player.CurrentHP}");}) />
+								<div>/@Player.MaxHP</div>
+							</div>
+						</div>
+						<div class="DamageOuter" @onclick=RequestRollDamage>
+							<div>Daño</div>
+							<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" width="65" />
+						</div>
+					</div>
+					<div class="d-flex flex-column w-100">
+						<div class="d-flex align-items-center gap-1">
+							<RedCheckBox Style="Controls.RedCheckBox.Styles.Transparent"
+								Value=Player.IsWeak Clicked="@(async()=>{Player.IsWeak = !Player.IsWeak; await EditFinish($"Cambió débil {Player.IsWeak}");})"/>
+							<div>Débil: desventaja en FUE y DES</div>
+						</div>
+						<div class="d-flex align-items-center gap-1">
+							<RedCheckBox Style="Controls.RedCheckBox.Styles.Transparent"
+								Value=Player.IsStun Clicked="@(async()=>{Player.IsStun = !Player.IsStun; await EditFinish($"Cambió Aturdido {Player.IsStun}");})" />
+							<div>Aturdido: desventaja en INT y SAB</div>
+						</div>
+						<div class="d-flex align-items-center gap-1">
+							<RedCheckBox Style="Controls.RedCheckBox.Styles.Transparent"
+								Value=Player.IsMiserable Clicked="@(async()=>{Player.IsMiserable = !Player.IsMiserable; await EditFinish($"Cambió miserable {Player.IsMiserable}");})" />
+							<div>Miserable: desventaja en CON y CAR</div>
+						</div>
+						<div class="Separator"></div>
+					</div>
+					<div class="d-flex flex-column align-items-center w-100">
+						<!--PointsViewer NonFixedWidth=true points="Player.PX" Player="Player"/-->
+						<div class="comment">
+							Gasta 1PX para añadir +1 a una tirada después de tirar.
+						</div>
+						<div class="comment">
+							Gasta 5PX para elegir un avance
+						</div>
+						<div class="Separator"></div>
+					</div>
+					<div class="d-flex flex-column align-items-center w-100">
+						@for(int i = 0 ; i<Player.Tracks.Count; ++i)
+						{
+							var Track = Player.Tracks[i];
+							<div class="d-flex align-items-center">
+								<PointsViewer points="Track" Player="Player"/>
+								@if(i == Player.Tracks.Count -1)
+								{
+									<div class="TrackButton" style="background: green;"
+										@onclick:stopPropagation @onclick=@(
+											async() =>{ 
+												Player.Tracks.Add(new Points{Tittle="Track"}); 
+												await Game.StoreChangesOn(Player, "añadió un track");
+											})>
+										+
+									</div>
+								}
+								else
+								{
+									<div class="TrackButton" style=" background: red;  "
+										@onclick:stopPropagation @onclick=@(
+											async() =>{
+											 await RemoveTrack(Track);
+											 await Game.StoreChangesOn(Player, "eliminó un track");
+											})>
+										x
+									</div>
+								}
+							</div>
+						}						
+						<div class="Separator"></div>
+					</div>
+					<textarea class="SmallThingsTextArea" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOn(Player, "Modificó sus aspecto físico");}) />
+					<div class="Separator"></div>
+					<div class="PaperSheetSubTittle w-100">Agenda</div>
+					<div class="d-flex flex-column w-100 ps-3" style="font-family: 'Roboto'; font-size: 12px;">
+						<div>
+							Representar un personaje atractivo<br/>
+							Interactuar con el mundo ficticio<br />
+							Jugar para descubrir qué sucede
+						</div>
+					</div>
+					<div class="PaperSheetSubTittle w-100">
+						<div  class="DownloadButton" @onclick=DownloadPlayer>Descargar</div>
+					</div>
+
+				</div>
+				<div class="flex-grow-1 h-100 px-3" style="max-width: 400px;">
+					<div class="d-flex align-items-center justify-content-between">
+						<div class="PaperSheetTittle">Equipo</div>
+						<div>
+							@for(int i = 0; i<Player.MaxLoad; ++i)
+							{
+								<RedCheckBox
+									Style="@(Player.Load > Player.MaxLoad ? Controls.RedCheckBox.Styles.RED : Controls.RedCheckBox.Styles.Diamond)"
+									Value=@(i < Player.Load)
+								/>
+							}
+						</div>
+					</div>
+					@if(Player.Equip is not null && Player.Equip.GoodWeapons is not null && Player.Equip.GoodWeapons.Count > 0)
+					{						
+						<div class="PaperSheetSubTittle">
+							Armas buenas (+1 daño)
+						</div>
+						<div class="ItemPack">
+							@foreach(var i in Player.Equip.GoodWeapons)
+							{
+								<ItemViewer Game="Game"  Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})"/>
+							}
+						</div>
+					}
+					@if (Player.Equip is not null && Player.Equip.ArmorItems is not null && Player.Equip.ArmorItems.Count > 0)
+					{						
+						<div class="ItemPack">
+							@foreach(var i in Player.Equip.ArmorItems)
+							{
+								<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
+							}
+						</div>
+					}
+					@if (Player.Equip is not null && Player.Equip.OtherItems is not null && Player.Equip.OtherItems.Count > 0)
+					{
+						<div class="ItemPack">
+							@foreach (var i in Player.Equip.OtherItems)
+							{
+								<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
+							}
+						</div>
+					}
+					@if (Player.Equip is not null && Player.Equip.Misc is not null && Player.Equip.Misc.Count > 0)
+					{
+						<div class="ItemPack">
+							@foreach (var i in Player.Equip.Misc)
+							{
+								<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
+							}
+						</div>
+					}
+					@if (Player.Equip is not null && Player.Equip.Things is not null && Player.Equip.MoreThings is not null)
+					{
+						<div class="ItemPack flex-row justify-content-evenly">
+							<ItemViewer Game="Game" Player="Player" Item="Player.Equip.Things" UpdateUI="@(()=>{StateHasChanged();})" />
+							<ItemViewer Game="Game" Player="Player" Item="Player.Equip.MoreThings" UpdateUI="@(()=>{StateHasChanged();})" />
+						</div>
+					}
+					@if (Player.Equip is not null && Player.Equip.EditableItems is not null && Player.Equip.EditableItems.Count > 0)
+					{
+						<div class="PaperSheetSubTittle">Otros <span style="font-size:14px;">(Cuerda, antorchas, palanca, cosas pequeñas)</span></div>
+						<div class="ItemPack">
+							@foreach (var i in Player.Equip.EditableItems)
+							{
+								<ItemViewer Game="Game" Wide100=true Player="Player" Item="i" IsEditable=true UpdateUI="@(()=>{StateHasChanged();})" />
+							}
+						</div>
+					}
+					<div class="border-dark w-100">
+						<div class="PaperSheetSubTittle">Cosas pequeñas</div>
+						@if(Player.Equip is not null)
+						{
+							<textarea class="SmallThingsTextArea" @bind=Player.Equip.SmallThings @onfocusout=@(async ()=>{await Game.StoreChangesOn(Player, "Modificó sus bolsillos");})/>
+						}						
+					</div>
+					<div class="PaperSheetSubTittle w-100">PRINCIPIOS</div>
+					<div class="d-flex flex-column ps-2" style="font-family: 'Roboto'; font-size: 12px;">
+						<div>
+							Comenzar y terminar en la ficción<br/>
+							Mostrarnos lo que es importante para ti<br/>
+							Establecer conexiones con otros personajes<br/>
+							Ser audaz y tomar riesgos<br/>
+							Aceptar la dificultad, el contratiempo y el fracaso<br/>
+							Contribuir a su parte del mundo<br/>
+							Construir sobre lo que otros han dicho<br/>
+							Dar a otros la oportunidad de brillar<br />
+							Contribuir a la conversación: prestar atención, hacer preguntas y ofrecer sugerencias<br/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="MovementsArea flex-grow-1 d-flex">
+			<div class="MovementsColum">
+				@if(Player.Background is null)
+				{
+					<button class="btn btn-primary" @onclick=ChooseBackground>Elejir Trasfondo</button>
+				}
+				else
+				{
+					<div>
+						<BackgroundViewer AllowEdit=true Background="Player.Background" EditButtonClicked="ChooseBackground" ShowEditButton=true/>
+					</div>
+				}
+				<div class="MovementsGroup">
+					<div class="MovementsGroupTittle">Movimientos de @Player.Profession.ToUI()</div>
+					@foreach (var m in ClassMovements)
+					{
+						<MovementViewer Movement="m" />
+					}
+				</div>
+				<div class="MovementsGroup">
+					<div class="MovementsGroupTittle d-flex align-items-center">
+						Movimientos de @Player.Profession.ToUI() Avanzados
+						<img src="imgs/DW/editIcon.png" @onclick=AdvancedMovementsSelector/>
+					</div>
+					@foreach (var m in AvancedClassMovements)
+					{
+						<MovementViewer Movement="m"/>
+					}
+				</div>
+			</div>
+			<div class="MovementsColum">
+				<div class="MovementsGroup">
+					<div class="MovementsGroupTittle">Movimientos comunes</div>
+					@foreach(var m in BasicMovements)
+					{
+						<MovementViewer Movement="m"/>
+					}
+					<div class="MovementsGroupTittle"> </div>
+					@foreach(var m in AdvancedMovements)
+					{
+						<MovementViewer Movement="m"/>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+	@if(CurrentState != States.Character)
+	{
+		<div class="SelectorOuter" @onclick=CloseSelection>
+			@if(CurrentState == States.StringSelector)
+			{
+				<div class="Selector StringSelector" @onclick:stopPropagation>
+					@foreach(var s in StringsForStringSelector)
+					{
+						<div class="StringSelectorItem" @onclick="@(async()=>{await StringSelected(s);})">@s</div>
+					}
+				</div>
+			}
+			else if(CurrentState == States.BackgroundSelector)
+			{
+				<div class="Selector BackgroundSelector" @onclick:stopPropagation>
+					@foreach (var b in BackgroundsForBackgroundSelector)
+					{
+						<div class="BackgroundSelectorItem">
+							<BackgroundViewer Background="b" BackgroundClicked="@(async ()=>{await BackgroundSelected(b);})"/>
+						</div>
+					}
+				</div>
+			}
+			else if(CurrentState == States.MovementSelector)
+			{
+				<div class="Selector BackgroundSelector" @onclick:stopPropagation>
+					@foreach (var m in MovmentsForAdvancedSelector)
+					{
+						<div class="MovementInSelectorItem  d-flex">
+							<MovementViewer Movement="m"/> 
+							@if(Player.ClassAdvancedMovments.Contains(m.ID))
+							{
+								<img src="imgs/US/DeleteIcon.svg" @onclick:stopPropagation @onclick=@(async ()=>{await ToggleMovment(m);}) />
+							}
+							else
+							{
+								<img src="imgs/US/Add.svg" @onclick:stopPropagation @onclick=@(async ()=>{await ToggleMovment(m);}) />
+							}
+						</div>
+					}
+				</div>
+			}
+		</div>
+	}
+}
+
+
+@code {
+	private enum States {Character, StringSelector, MovementSelector, BackgroundSelector, StringEditing}
+	private enum EditableBits {Name, Background1, Background2, Background3x}
+	private States CurrentState = States.Character;
+
+	private List<string> StringsForStringSelector = new();
+	private List<Background> BackgroundsForBackgroundSelector = new();
+	private List<DWMove> MovmentsForAdvancedSelector = new();
+	private string EditableString = "";
+	private string EditableStringTopic = "";
+
+	[Parameter] public string RequestedPlayerName { get; set; } = string.Empty;
+
+	private List<IMove> BasicMovements = new();
+	private List<IMove> AdvancedMovements = new();
+	private List<IMove> ClassMovements = new();
+	private List<IMove> AvancedClassMovements = new();
+
+	private bool IsEditingName = false;
+	private string EditDetails = "";
+	private void EditName(){
+		IsEditingName = true;
+		EditDetails = "Modificó su nombre";
+	}
+
+	private async Task RemoveTrack(Points track)
+	{
+		Player.Tracks.Remove(track);
+		await Game.StoreChangesOn(Player, "Eliminó " + track.Tittle);
+		StateHasChanged();
+	}
+
+	private async Task FinishAllEdits()
+	{
+		if (IsEditingName)
+		{
+			IsEditingName = false;
+			await Game.StoreChangesOn(Player, EditDetails);
+		}
+	}
+
+	private DWCharacter Player;
+
+	protected override async Task OnInitializedAsync()
+	{
+
+		// if(Game.Player.CharacterName == "Name")
+		// {
+		// 	Game.Player = await LocalStorage.GetItemAsync<DWPlayer>(RequestedPlayerName);
+		// }
+		// Player = Game.Player;
+
+		BasicMovements.Clear();
+		foreach (var movID in Moves.BasicMovements)
+		{
+			var m = Moves.GetMovement(movID);
+			BasicMovements.Add(m);
+		}
+		AdvancedMovements.Clear();
+		foreach(var movID in Moves.AdvancedMovements)
+		{
+			var m = Moves.GetMovement(movID);
+			AdvancedMovements.Add(m);
+		}
+		ClassMovements.Clear();
+		foreach(var movID in Player.ClassMovments)
+		{
+			var m = Moves.GetMovement(movID);
+			if(m is not null)
+				ClassMovements.Add(m);
+		}
+		AvancedClassMovements.Clear();
+		foreach(var movID in Player.ClassAdvancedMovments)
+		{
+			var m = Moves.GetMovement(movID);
+			if (m is not null)
+				AvancedClassMovements.Add(m);
+		}
+
+
+		Game.OnNewRoll += (o, report) =>
+		{
+			Toaster.ShowInfo(report.Total.ToString());
+		};
+
+		//await messages.Init(new Guid().ToString());
+
+		/*messages.NewMQTTMessage += (sender, data) =>
+		{
+			toastService.ShowInfo(data.CustomMessage, data.PlayerName);
+		};
+		*/
+	}
+
+	private async Task DownloadPlayer()
+	{
+		// var obj = System.Text.Json.JsonSerializer.Serialize(Player);
+		// var fileStream = new MemoryStream(new System.Text.UTF8Encoding(true).GetBytes(obj));
+		// using var streamRef = new DotNetStreamReference(stream: fileStream);
+		// await JSRuntime.InvokeVoidAsync("DownloadJson", $"{Player.CharacterName}.json", streamRef);
+	}
+
+	private async Task Connect()
+	{
+	}
+
+	private async Task EditFinish(string details) => await Game.StoreChangesOn(Player, details);
+	private async Task ArmorEditFinished() => await Game.StoreChangesOn(Player, $"Cambió su armadura a {Player.Armor}");
+	private async Task UpdatePlayerName() => await Game.StoreChangesOn(Player, $"Cambió su nombre a {Player.Name}");
+	private async Task UpdateMotivation() => await Game.StoreChangesOn(Player, $"Cambió su motivación a {Player.Motivation}");
+
+	private async Task ExternalStringEditFinished()
+	{
+		await Game.StoreChangesOn(Player, EditableStringTopic);
+	}
+
+	private void StartStringEditing(ref string ToEdit, string why)
+	{
+
+	}
+
+
+	private void AdvancedMovementsSelector()
+	{
+		var IDs =  Moves.GetAdvancedMovementsFor(Player.Profession);
+		MovmentsForAdvancedSelector.Clear();
+		foreach (var m in IDs)
+			MovmentsForAdvancedSelector.Add(Moves.GetMovement(m));
+
+		CurrentState = States.MovementSelector;
+	}
+
+	private void ChooseBackground()
+	{
+		BackgroundsForBackgroundSelector = DWCharacter.ProvideAvailableBackgrounds(Player.Profession);
+		CurrentState = States.BackgroundSelector;
+	}
+	private void ChooseMotivation()
+	{
+		StringsForStringSelector = DWCharacter.ProvideAvailableMotivations(Player.Profession);
+		CurrentState = States.StringSelector;
+	}
+
+	private async Task StringSelected(string s){
+		Player.Motivation = s;
+		await UpdateMotivation();
+		CurrentState = States.Character;
+		StateHasChanged();
+	}
+
+	private async Task BackgroundSelected(Background b)
+	{
+		Player.Background = b;
+		await Game.StoreChangesOn(Player, $"Cambió su trasfondo a {b.Title}");
+		CurrentState = States.Character;
+		StateHasChanged();
+	}
+
+	private async Task ToggleMovment(DWMove mov){
+		if(!Player.ClassAdvancedMovments.Contains(mov.ID))
+		{
+			Player.ClassAdvancedMovments.Add(mov.ID);
+			await Game.StoreChangesOn(Player, $"añadió {mov.Tittle}");
+		}
+		else
+		{
+			Player.ClassAdvancedMovments.Remove(mov.ID);
+			await Game.StoreChangesOn(Player, $"quitó {mov.Tittle}");
+		}
+
+		AvancedClassMovements.Clear();
+		foreach(var movID in Player.ClassAdvancedMovments)
+		{
+			var m = Moves.GetMovement(movID);
+			AvancedClassMovements.Add(m);
+		}
+		StateHasChanged();
+	}
+
+	private void ShowInitialQuestions()
+	{
+		StringsForStringSelector = Player.Background.InitialQuestions;
+		CurrentState = States.StringSelector;
+	}
+
+	private void CloseSelection() => CurrentState = States.Character;
+
+	public async ValueTask DisposeAsync()
+	{/*
+		if (hubConnection != null)
+			await hubConnection.DisposeAsync();
+			*/
+	}
+
+	private async Task RequestRollDamage()
+	{
+		await Game.RequestRawRol(Player, new List<DiceTypes> { Player.Damage });
+	}
+
+	private AvailableGames GameName = AvailableGames.DW;
+	
+
+}

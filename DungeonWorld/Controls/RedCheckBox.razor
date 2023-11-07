@@ -1,0 +1,72 @@
+﻿@if (!Value)
+{
+	@if(Style == Styles.White)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxWhite" src="imgs/US/CheckBoxWhite.svg" />
+	}
+	else if(Style == Styles.Transparent)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxTransparent" src="imgs/US/CheckBoxTransparent.png" />
+	}
+	else if(Style == Styles.Diamond)  
+	{
+		<img @onclick=InternalClick  @onclick:stopPropagation=true class="CheckBoxTransparent Extrabig" src="imgs/US/DiamondEmpty.png" />
+	}
+	else if ( Style == Styles.DiamondGray)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxTransparent" src="imgs/US/DiamondEmpty.png" />
+	}
+	else if(Style == Styles.Circular)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxTransparent" src="imgs/US/CircularEmpty.png" />
+	}
+}
+else
+{
+	@if (Style == Styles.White)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxWhite" src="imgs/US/CheckBoxRED.svg" />
+	}
+	else if (Style == Styles.Transparent)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxTransparent" src="imgs/US/CheckBoxRedTransparent.png" />
+	}
+	else if (Style == Styles.Diamond)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxTransparent Extrabig" src="imgs/US/DiamondFull.png" />
+	}
+	else if(Style == Styles.DiamondGray)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxTransparent" src="imgs/US/DiamondFullGray.png" />
+	}
+	else if(Style == Styles.Circular)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxTransparent" src="imgs/US/CircularFull.png" />
+	}
+	else if (Style == Styles.RED)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true 
+			class="CheckBoxTransparent Extrabig" 
+			style="filter: invert(1) brightness(0.5) sepia(4) saturate(9.5) hue-rotate(316deg) brightness(0.8);"
+			src="imgs/US/DiamondFull.png"
+		/>
+	}
+}
+
+@code {
+	public enum Styles {White, Transparent, Diamond,  DiamondGray, Circular, RED};
+
+	[Parameter] public bool Value { get; set; } = false;
+	[Parameter] public EventCallback Clicked { get; set; }
+	[Parameter] public Styles Style { get; set; } = Styles.White;
+
+	private async Task InternalClick()
+	{
+		if (Style == Styles.Diamond) return;
+
+		if (Clicked.HasDelegate)
+			await Clicked.InvokeAsync();
+		else
+			Value = !Value;
+	}
+}

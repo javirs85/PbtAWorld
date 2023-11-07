@@ -306,8 +306,7 @@ public class DinoMovesService : MovesServiceBase
                     "Si la situación es peligrosa, tira + Calma",
                     "Sin el equipo adecuado, tira + Inteligencia",
                     "Si se dan las dos, tira sin bonus"
-                },
-				
+                },				
 			},
 			ConsequencesOn10 = new Consequences
 			{

@@ -1,0 +1,51 @@
+﻿
+<div class="d-flex gap-1 align-items-center">
+	<div style="@(NonFixedWidth? "" : "width:100px;") text-align:right  @(isEditing ? "display: none !important;" : "" )" @onclick=StartEdit @onclick:stopPropagation>@(points.Tittle + ":")</div>
+	<div class="d-flex" style="@(!isEditing ? "display: none !important;" : "")">
+		<input style="width: 142px" @bind=points.Tittle @onclick:stopPropagation />
+		<div @onclick=FinishEdit 
+			class="d-flex justify-content-center align-items-center" 
+			style="cursor: pointer; width: 30px; height: 30px; background: green; color:white;">
+			🗸
+		</div>
+	</div>	
+	<RedCheckBox Style=RedCheckBox.Styles.Transparent Value=v1 Clicked=@(async ()=>{await BoxClicked(1);})/>
+	<RedCheckBox Style=RedCheckBox.Styles.Transparent Value=v2 Clicked=@(async ()=>{await BoxClicked(2);}) />
+	<RedCheckBox Style=RedCheckBox.Styles.Transparent Value=v3 Clicked=@(async ()=>{await BoxClicked(3);}) />
+	<RedCheckBox Style=RedCheckBox.Styles.Transparent Value=v4 Clicked=@(async ()=>{await BoxClicked(4);}) />
+	<RedCheckBox Style=RedCheckBox.Styles.Transparent Value=v5 Clicked=@(async ()=>{await BoxClicked(5);}) />
+</div>
+
+@code {
+	[Parameter] public Points points { get; set; } = new();
+	[Parameter] public DWCharacter Player { get; set; } = new();
+	[Parameter] public bool NonFixedWidth { get; set; } = false;
+	private bool isEditing = false;
+
+	private bool v1 => points.Value > 0;
+	private bool v2 => points.Value > 1;
+	private bool v3 => points.Value > 2;
+	private bool v4 => points.Value > 3;
+	private bool v5 => points.Value > 4;
+
+	private async Task BoxClicked(int idx)
+	{
+		if (idx > points.Value) points.Value++;
+		else points.Value--;
+		await Store($"{points.Tittle}:{points.Value}");
+	}
+	private void StartEdit()
+	{
+		isEditing = true;
+	}
+	private async Task FinishEdit()
+	{
+		isEditing = false;
+		await Store($"{points.Tittle}:{points.Value}");
+	}
+
+	private async Task Store(string details)
+	{
+		// await Game.StoreChangesOn(Player, details);
+	}
+}

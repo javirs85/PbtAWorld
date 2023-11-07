@@ -1,0 +1,122 @@
+﻿
+
+<div class="d-flex align-items-center @(Wide100 ? "w-100 mx-3" : "")">
+	<div style="white-space: nowrap;">
+	<RedCheckBox Style="RedCheckBox.Styles.DiamondGray" Value=Item.IsLoaded Clicked="Clicked"/>
+	@if(Item.Weight == 2)
+	{
+		<RedCheckBox Style="RedCheckBox.Styles.DiamondGray" Value=Item.IsLoaded Clicked="Clicked" />
+	}
+	</div>
+	@if(IsEditable)
+	{
+		<input class="ItemViewerInput @(Item.IsLoaded ? "" : "Unselected") @(Wide100? "w-100" : "")" @bind=Item.Name @onfocusout=EditFinished>
+	}
+	else
+	{
+		<div class="@(Item.IsLoaded ? "" : "Unselected")">@Item.Name</div>
+	}
+	@if(Item.Explanation != "")
+	{
+		<div class="ItemViewerExplanation">@Item.Explanation</div>
+	}
+	@if(Item.IsAmunitionWeapon)
+	{
+		<div class="ms-1 d-flex align-items-center gap-1">
+			<RedCheckBox Style="RedCheckBox.Styles.Circular" Value=IsFirstUseDone Clicked=@(async() =>{await BoxClicked(1);})/>
+			<div>Poca munición</div>
+			<RedCheckBox Style="RedCheckBox.Styles.Circular" Value=IsSecondUseDone Clicked=@(async() =>{await BoxClicked(2);})/>
+			<div>Sin munición</div>
+		</div>
+	}
+	@if(Item.IsAmunitionWeapon== false &&  Item.Uses != -1)
+	{
+		<div class="d-flex align-items-center">
+			@if(ShowFirstUses)
+			{
+				<RedCheckBox Style="RedCheckBox.Styles.Circular" Value=IsFirstUseDone Clicked=@(async() =>{await BoxClicked(1);}) />
+			}
+			@if(ShowSecondUses)
+			{
+				<RedCheckBox Style="RedCheckBox.Styles.Circular" Value=IsSecondUseDone Clicked=@(async() =>{await BoxClicked(2);}) />
+			}
+			@if(ShowThirdUses)
+			{
+				<RedCheckBox Style="RedCheckBox.Styles.Circular" Value=IsThirdUseDone Clicked=@(async() =>{await BoxClicked(3);}) />
+			}
+			@if (ShowFourthUse)
+			{
+				<RedCheckBox Style="RedCheckBox.Styles.Circular" Value=IsFourthUseDone Clicked=@(async() =>{await BoxClicked(4);}) />
+			}
+		</div>
+	}
+</div>
+
+<style>
+	.ItemViewerNotSelected{
+		opacity: 0.5;
+	}
+	.ItemViewerExplanation{
+		font-size: 11px;
+		opacity: 0.8;
+		margin-left: 5px;
+		line-height: 11px;
+	}
+	.Unselected{
+		opacity:0.5;
+	}
+	.ItemViewerInput{
+		background: transparent;
+		border: none;
+		border-bottom: 1px solid black;
+	}
+</style>
+
+@code {
+	[Parameter] public EquipmentItem Item { get; set; } = new();
+	[Parameter] public DWGameController Game { get; set; }
+	[Parameter] public DWCharacter Player { get; set; } = new();
+	[Parameter] public EventCallback UpdateUI { get; set; }
+	[Parameter] public bool IsEditable { get; set; }
+	[Parameter] public bool Wide100 { get; set; }
+
+	private bool IsFirstUseDone => Item.Uses > 0;
+	private bool IsSecondUseDone => Item.Uses > 1;
+	private bool IsThirdUseDone => Item.Uses > 2;
+	private bool IsFourthUseDone => Item.Uses > 3;
+	private bool ShowFirstUses => Item.MaxUses >= 1;
+	private bool ShowSecondUses => Item.MaxUses >= 2;
+	private bool ShowThirdUses => Item.MaxUses >= 3;
+	private bool ShowFourthUse => Item.MaxUses >= 4;
+
+	private async Task Clicked()
+	{
+		Item.IsLoaded = !Item.IsLoaded;
+		await EditFinished($"Cambió {Item.Name}");
+		await UpdateUI.InvokeAsync();
+	}
+
+	private async Task EditFinished()
+	{
+		await EditFinished(null);
+	}
+
+	private async Task EditFinished(string? details = null)
+	{
+		if(details is null)
+			await Game.StoreChangesOn(Player, $"Cambió {Item.Name}");
+		else
+			await Game.StoreChangesOn(Player, details);	
+	}
+
+	private async Task BoxClicked(int i)
+	{
+		if (i > Item.Uses) Item.Uses++;
+		else Item.Uses--;
+
+		Item.Uses = Math.Max(Item.Uses, 0);
+		Item.Uses = Math.Min(Item.Uses, Item.MaxUses);
+
+		await EditFinished($"{Item.Name} usado {Item.Uses} veces");
+	}
+}

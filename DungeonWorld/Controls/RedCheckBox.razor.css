@@ -1,0 +1,24 @@
+﻿.CheckBoxWhite {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.CheckBoxTransparent {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.Extrabig {
+    width:28px;
+    height:28px;
+    cursor: default;
+}
+
+.CheckBoxRed {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background-color: white;
+}

@@ -1,0 +1,141 @@
+﻿@using VikingBoardGames.Shared.DW
+@using VikingShared.DW
+@inject DWMainController Game
+
+<div class="StatViewerMain d-flex flex-column align-items-center" @onclick=MainClicked>
+	<div class="StatViewerTitle">
+		@Stat.ToUI()
+	</div>
+	<div class="StatViewerValue">
+		<input @bind=StatValueString @onclick:stopPropagation @onfocusout=EditFinished>
+	</div>
+	<div class="d-flex">
+		<div class="diceButton redDice" @onclick=RedClicked @onclick:stopPropagation></div>
+		<div class="diceButton greenDice" @onclick=GreenClicked @onclick:stopPropagation></div>
+	</div>
+</div>
+
+<style>
+	.StatViewerMain{
+		width: 99px;
+		height: 115px;
+		background-image: url(imgs/DW/Flag_Semi.png);
+		cursor: pointer;
+		background-size: cover;
+	}
+	.StatViewerMain:hover{
+			background-image: url(imgs/DW/Flag_Full.png);
+	}
+
+	.StatViewerTitle{
+		font-size:26px;
+		margin-top:9px;
+	}
+	.StatViewerValue{
+		font-size: 40px;
+		margin-top: -28px;
+		margin-bottom: -8px;
+	}
+	.StatViewerValue input{
+			width: 50px;
+			height: 38px;
+			background: transparent;
+			text-align: center;
+			border: none;
+	}
+	.diceButton{
+		width: 33px;
+		height:33px;
+		cursor:pointer;
+		background-size: cover;
+	}
+	.greenDice{
+		background-image: url(imgs/DW/GreenDice_off.png);
+	}.greenDice:hover{
+			background-image: url(imgs/DW/GreenDice_on.png);
+	}
+
+	.redDice {
+		background-image: url(imgs/DW/RedDice_off.png);
+	}
+
+		.redDice:hover {
+			background-image: url(imgs/DW/RedDice_on.png);
+		}
+</style>
+
+@code {
+	[Parameter] public DWStats Stat { get; set; }
+	[Parameter] public EventCallback UpdateUI { get; set; }
+
+	private int StatValue;
+
+	private async Task MainClicked(){
+		await RequestRoll(RawMovement, RollTypes.DW_Simple);
+	}
+	private async Task RedClicked(){
+		await RequestRoll(RawMovement, RollTypes.DW_Dissadventage);
+	}
+	private async Task GreenClicked(){
+		await RequestRoll(RawMovement, RollTypes.DW_Adventage);
+	}
+
+	private async Task RequestRoll(DWMovementIDs movID, RollTypes rt)
+	{
+		var mov = DWMovementsService.DWMovsReference.GetMovement(movID);
+		await Game.RequestRoll(mov, rt);
+	}
+
+	private async Task EditFinished()
+	{
+		await UpdateUI.InvokeAsync();
+		await Game.StoreChangesOn(Game.Player, $"Modificó {Stat.ToUI()} ({StatValueString})");
+	}
+
+	private DWMovementIDs RawMovement{
+		get{
+			return Stat switch {
+				DWStats.DW_STR => DWMovementIDs.DW_RawSTR,
+				DWStats.DW_DEX => DWMovementIDs.DW_RawDEX,
+				DWStats.DW_CON => DWMovementIDs.DW_RawCON,
+				DWStats.DW_INT => DWMovementIDs.DW_RawINT,
+				DWStats.DW_WIS => DWMovementIDs.DW_RawWIS,
+				DWStats.DW_CHA => DWMovementIDs.DW_RawCHA,
+
+				_ => DWMovementIDs.DW_NotSet
+			};
+		}
+	}
+
+	private string StatValueString{
+		get{
+			if (Stat == DWStats.DW_STR) StatValue = Game.Player.STR;
+			if (Stat == DWStats.DW_DEX) StatValue = Game.Player.DEX;
+			if (Stat == DWStats.DW_CON) StatValue = Game.Player.CON;
+			if (Stat == DWStats.DW_INT) StatValue = Game.Player.INT;
+			if (Stat == DWStats.DW_WIS) StatValue = Game.Player.WIS;
+			if (Stat == DWStats.DW_CHA) StatValue = Game.Player.CHA;
+
+			if (StatValue >= 0) return "+" + StatValue;
+			else return StatValue.ToString();
+		}
+		set{
+			var temp = StatValue;
+			try
+			{
+				StatValue = int.Parse(value);
+				if (Stat == DWStats.DW_STR) Game.Player.STR = StatValue;
+				if (Stat == DWStats.DW_DEX) Game.Player.DEX = StatValue;
+				if (Stat == DWStats.DW_CON) Game.Player.CON = StatValue;
+				if (Stat == DWStats.DW_INT) Game.Player.INT = StatValue;
+				if (Stat == DWStats.DW_WIS) Game.Player.WIS = StatValue;
+				if (Stat == DWStats.DW_CHA) Game.Player.CHA = StatValue;
+
+				Task.Run(async () => await Game.StoreChangesOn(Game.Player, $"Modificó {Stat.ToUI()} ({StatValueString})"));
+			}catch
+			{
+				StatValue = temp;
+			}
+		}
+	}
+}
