@@ -9,6 +9,7 @@ using System.Dynamic;
 using PbtALib;
 using PbtADBConnector.DbAccess;
 using PbtADBConnector.Data;
+using PbtADBConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ IWebHostEnvironment environment = builder.Environment;
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredToast();
 builder.Services.AddScoped<MetaController>();
@@ -28,7 +30,6 @@ builder.Services.AddScoped<DinoCharacter>();
 builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
-builder.Services.AddSingleton<IUserData, UserData>();
 builder.Services.AddSingleton<PbtADBConnector.Data.ISeasonsData ,  SeasonData>();
 builder.Services.AddSingleton<ICharacterData, CharacterData>();
 

@@ -78,6 +78,8 @@
     <Build Include="dbo\StoredProcedures\Character\spCharacter_Insert.sql" />
     <Build Include="dbo\StoredProcedures\Character\spCharacter_GetAllCharactersInSeason.sql" />
     <Build Include="dbo\StoredProcedures\Character\spCharacter_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_GetCampaign.sql" />
+    <Build Include="dbo\StoredProcedures\Character\spCharacter_GetSerializedDateForPlayer.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\StoredProcedures\Script.PostDeployment.sql" />
@@ -85,6 +87,7 @@
   <ItemGroup>
     <None Include="PbtADB_Gtec.publish.xml" />
     <None Include="PbtADB_Casa.publish.xml" />
+    <None Include="PbtADB_Azure.publish.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="PbtADB.refactorlog" />

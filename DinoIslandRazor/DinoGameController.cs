@@ -143,8 +143,11 @@ public class DinoGameController : PbtAWorldConnectivity.PbtAWorldHub
 
 	public void AddPlayer(DinoCharacter player)
 	{
-		Players.Add(player);
-		RequestUpdateToUIOnClients();
+		if (Players.Find(x => x.ID == player.ID) is null)
+		{
+			Players.Add(player);
+			RequestUpdateToUIOnClients();
+		}
 	}
 
 	protected override async Task<bool> PreProcessMessage(MessageKinds kind, string encodedMessage)

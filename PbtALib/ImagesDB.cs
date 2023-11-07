@@ -42,8 +42,12 @@ public static class ImagesDB
 					    Name = rawName,
 					    src = "imgs/"+path+"/" + justName
 				    };
-				    Images.Add(rawName, image);
-                    loaded.Add(image);
+                    try
+                    {
+                        Images.Add(rawName, image);
+                        loaded.Add(image);
+                    }catch(Exception ex) { }
+                    
 			    }
 		    }
 		}

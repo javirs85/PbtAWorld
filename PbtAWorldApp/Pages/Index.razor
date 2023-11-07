@@ -10,13 +10,13 @@
 	<div class="Title">Elije tu serie</div>
 
 	<div class="GamesContainer">
-		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.DI; nav.NavigateTo("SeasonSelection");})>
+		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.DI; nav.NavigateTo($"SeasonSelection/{Meta.SelectedGame}");})>
 			<img src="imgs/GameCovers/DinoIsland.png" />
 		</div>
-		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.DW; nav.NavigateTo("SeasonSelection");})>
+		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.DW; nav.NavigateTo($"SeasonSelection/{Meta.SelectedGame}");})>
 			<img src="imgs/GameCovers/DungeonWorld.png" />
 		</div>
-		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.US; nav.NavigateTo("SeasonSelection");})>
+		<div class="GameCover" @onclick=@(()=>{Meta.SelectedGame = AvailableGames.US; nav.NavigateTo($"SeasonSelection/{Meta.SelectedGame}");})>
 			<img src="imgs/GameCovers/UrbanShadows.png" />
 		</div>
 	</div>

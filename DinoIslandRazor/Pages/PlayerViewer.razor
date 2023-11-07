@@ -1,10 +1,13 @@
 ﻿@page "/DinoPlayerViewer"
+@using PbtADBConnector;
 @inject DinoMovesService Moves
 @inject IToastService Toaster
 @inject NavigationManager navigationManager
 @inject DinoCharacter Player;
 @inject DinoGameController Game;
 @inject PbtAWorldCommClient Client;
+@inject MetaController Meta;
+
 
 <EditForm Model="Player" style="height:100%;">
 	<div class="Header ">
@@ -27,22 +30,10 @@
 												padding-left: 9px;
 												border: none;
 												outline: none;
+												margin-right: 10px;
 												border: 1px solid #a1a1a1;"></InputText>
 						</div>
-						<InputSelect @bind-Value=Playbook
-									 style="background:#CCC; outline: none; border: none;">
-							@foreach (DinoClasses op in Enum.GetValues(typeof(DinoClasses)))
-							{
-								@if (op != DinoClasses.NotSet)
-								{
-									<option value="@op">@op.ToUIString()</option>
-									<div class="btn btn-primary" 
-										@onclick="@(()=>{Game.Players.Add(new DinoCharacter{Name="FakePlayer"});})">
-										AddPlayer
-									</div>
-								}
-							}
-						</InputSelect>
+						@Player.Class.ToUIString()
 					</div>
 					@if (Player.Class != DinoClasses.Master)
 					{
@@ -253,8 +244,8 @@
 						else if (IsShowingLastMoves)
 						{
 							<div class="FullImageSpace d-flex flex-column gap-3" style="background: white; width: 50%;">
-								<MoveViewerDino Move="Game.TextBook.NeverToReturn"/>
-								<MoveViewerDino Move="Game.TextBook.SafeAtLast"/>
+								<MoveViewerDino Player=Player Move="Game.TextBook.NeverToReturn"/>
+								<MoveViewerDino Player=Player Move="Game.TextBook.SafeAtLast" />
 							</div>
 						}
 					</div>
@@ -424,7 +415,7 @@
 					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
 						<div>
 							<h4 class="text-light">Movimientos de @Player.Class.ToUIString()</h4>
-							<DinoMovesPack Moves=MovesOnScreen PackName="ClassMoves" OpenFirst=false AllowMultipleSelection =true/>
+							<DinoMovesPack Player="Player" Moves=MovesOnScreen PackName="ClassMoves" OpenFirst=false AllowMultipleSelection =true/>
 						</div>
 						<div class="BoxPack">
 							<h5 class="text-light">Heridas</h5>
@@ -455,7 +446,7 @@
 						
 						<div>
 							<h4 class="text-light">Movimientos de peligro</h4>
-							<DinoMovesPack Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false LastRoll="Game.LastRoll" />
+							<DinoMovesPack Player="Player" Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false LastRoll="Game.LastRoll" />
 						</div>	
 						<div class="BoxPack">
 							<MapMini @ref="map"/>
@@ -464,7 +455,7 @@
 					<div class="GeneralMoves ClassMoves col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-3 mt-4">
 						<div>
 							<h4 class="text-light">Movimientos de calma</h4>
-							<DinoMovesPack Moves=Moves.SafetyMoves PackName="DangerMoves" OpenFirst=false />
+							<DinoMovesPack Player="Player" Moves=Moves.SafetyMoves PackName="DangerMoves" OpenFirst=false />
 						</div>
 			
 						<div class="BoxPack d-flex flex-column gap-2">
@@ -540,13 +531,11 @@
 	MapMini? map = null;
 	bool GameIsInGameMode = false;
 
-	protected override async Task OnInitializedAsync()
+	[Parameter] public DinoCharacter DinoPlayer { get; set; }
+
+	protected override void OnParametersSet()
 	{
-		Player.Name = "Sebas";
-		Player.Class = DinoClasses.Engineer;
-		Player.Clever = 1;
-		Player.Fit = -1;
-		Player.Steady = +2;
+		Player = DinoPlayer;
 
 		Game.OnUIUpdate += (o, e) => InvokeAsync(() => { StateHasChanged(); });
 
@@ -750,5 +739,4 @@
 			Player.Fit = val;
 		}
 	}
-
 }

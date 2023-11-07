@@ -1,8 +1,9 @@
-﻿@page "/SeasonViewer"
+﻿@page "/SeasonViewer/{SelectedSeasonID:guid}"
 @using DungeonWorld;
 @inject MetaController Meta;
 @inject NavigationManager nav;
 @inject DinoCharacter DinoCharacter;
+@inject IToastService Toaster;
 
 <PageTitle>Seleccione su personaje</PageTitle>
 
@@ -50,7 +51,7 @@
 				@foreach(var p in Meta.SelectedSeason.Players)
 				{
 					<div class="PlayerBox d-flex gap-2 align-items-center @(p == Meta.SelectedPlayer?"Selected":"")" @onclick=@(async ()=>{await SelectPlayer(p);})>
-						@p.Name (@Meta.FromClassIDToUI(p.EncodedClass))
+						@p.Name (@FromClassIDToUI(p.EncodedClass))
 						@if(p==Meta.SelectedPlayer)
 						{
 							<div class="btn btn-primary" @onclick=Start>Empezar a jugar!</div>
@@ -117,14 +118,51 @@
 	</div>
 </div>
 @code {
+	[Parameter] public Guid SelectedSeasonID { get; set; } = new Guid();
+
 	private bool IsShowingTools = false;
 	private bool IsShowingNewCharacterTools = false;
 	private string NewCharacterName = "Nombre";
 	private bool IsShowingDeleteCharacterButton = false;
 
+	protected async override Task OnParametersSetAsync()
+	{
+		if (SelectedSeasonID == new Guid())
+			nav.NavigateTo("/");
+		else
+		{
+			if(Meta.SelectedSeason is null || Meta.SelectedGame is null)
+			{
+				Meta.SelectedSeason = await Meta.seasons.GetSeason((Guid)SelectedSeasonID);
+				if(Meta.SelectedSeason is not null)
+				{
+					Meta.SelectedGame = Meta.SelectedSeason?.GameID;
+					await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
+				}
+				else
+					nav.NavigateTo("/");
+			}
+		}
+	}
+
+	public string FromClassIDToUI(int classID)
+	{
+		if (Meta.SelectedGame == AvailableGames.DI)
+		{
+			return DinoIsland.Extensions.ToUIString((DinoIsland.DinoClasses)classID);
+		}
+		else if (Meta.SelectedGame == AvailableGames.DW)
+		{
+			return ((DungeonWorld.DWClasses)classID).ToString();
+		}
+		else
+			return "Wrong SelectedGame at FromClassIDToUI";
+	}
+
+
 	private void GoBack()
 	{
-		nav.NavigateTo("SeasonSelection");
+		nav.NavigateTo($"SeasonSelection/{Meta.SelectedGame}");
 	}
 
 	private async Task Delete()
@@ -160,7 +198,7 @@
 
 	private async Task CreateNewDinoCharacter(DinoClasses c)
 	{
-		DinoCharacter newCharacter = new DinoCharacter();
+		DinoCharacter newCharacter = new DinoCharacter(Meta);
 		newCharacter.ID = Guid.NewGuid();
 		newCharacter.Name = NewCharacterName;
 		newCharacter.Class = c;
@@ -184,6 +222,14 @@
 
 	private async Task Start()
 	{
-		Meta.Start();
+		if(Meta.SelectedPlayer is not null)
+		{
+			if (Meta.SelectedGame == AvailableGames.DI)
+				nav.NavigateTo($"/Running/{Meta.SelectedGame}/{Meta.SelectedPlayer.ID}");
+		}
+		else
+		{
+			Toaster.ShowError("Character not selected");
+		}
 	}
 }

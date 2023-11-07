@@ -18,14 +18,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PbtADBConnector\PbtADBConnector.csproj" />
     <ProjectReference Include="..\PbtALib\PbtALib.csproj" />
     <ProjectReference Include="..\PbtAWorldConnectivity\PbtAWorldConnectivity.csproj" />
     <ProjectReference Include="..\PbtaWorldRazonCommonComponents\PbtaWorldRazonCommonComponents.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\imgs\dinos\**" CopyToOutputDirectory="PreserveNewest"/>
-    <Content Update="wwwroot\imgs\pnjs\**" CopyToOutputDirectory="PreserveNewest"/>
+    <Content Update="wwwroot\imgs\dinos\**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Update="wwwroot\imgs\pnjs\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

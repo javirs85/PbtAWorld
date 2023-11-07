@@ -1,4 +1,4 @@
-﻿@page "/SeasonSelection"
+﻿@page "/SeasonSelection/{SelectedGameString}"
 @inject MetaController Meta;
 @inject NavigationManager nav;
 
@@ -27,7 +27,7 @@
 							@foreach(var p in season.Players)
 							{
 								<div>
-									@p.Name <small>(@Meta.FromClassIDToUI(p.EncodedClass))</small>
+									@p.Name <small>(@FromClassIDToUI(p.EncodedClass))</small>
 								</div>
 							}
 						</div>
@@ -46,8 +46,18 @@
 </div>
 
 @code {
-	protected override async Task OnInitializedAsync()
+	[Parameter] public string SelectedGameString { get; set; } = "NotSet";
+
+	protected override async Task OnParametersSetAsync()
 	{
+		bool isOk = Enum.TryParse(SelectedGameString, out AvailableGames encodedGame);
+
+		if (encodedGame == AvailableGames.NotSet || !isOk)
+			nav.NavigateTo("/");
+		else
+			Meta.SelectedGame = encodedGame;
+			Meta.SelectedGame = encodedGame;
+
 		Meta.OnUpdateRequested += (o, e) => { InvokeAsync(() => { StateHasChanged(); }); };
 		await Meta.LoadAllSessionsOfSelectedGame();
 	}
@@ -57,6 +67,19 @@
 		await Meta.LoadAllSessionsOfSelectedGame();
 	}
 
+	public string FromClassIDToUI(int classID)
+	{
+		if (Meta.SelectedGame == AvailableGames.DI)
+		{
+			return DinoIsland.Extensions.ToUIString((DinoIsland.DinoClasses)classID);
+		}
+		else if (Meta.SelectedGame == AvailableGames.DW)
+		{
+			return ((DungeonWorld.DWClasses)classID).ToString();
+		}
+		else
+			return "Wrong SelectedGame at FromClassIDToUI";
+	}
 
 
 	private async Task Submit()
@@ -70,7 +93,7 @@
 	private void SelectSeason(Season season)
 	{
 		Meta.SelectedSeason = season;
-		nav.NavigateTo("/SeasonViewer");
+		nav.NavigateTo($"/SeasonViewer/{Meta.SelectedSeason.CampaignGuid}");
 	}
 
 	private Season newSeason = new Season();

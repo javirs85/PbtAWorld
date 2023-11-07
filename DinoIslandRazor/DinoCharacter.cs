@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PbtAWorldConnectivity;
 using Blazored.Toast.Services;
+using PbtADBConnector;
 
 namespace DinoIsland;
 
@@ -14,7 +15,15 @@ public class DinoCharacter : PbtACharacter
 {
 	public event EventHandler UpdateUI;
 
-	public string Wound1 { get; set; } = string.Empty;
+	public MetaController Meta;
+    public DinoCharacter(MetaController meta)
+    {
+		Meta = meta;
+    }
+	public DinoCharacter() { }
+
+
+    public string Wound1 { get; set; } = string.Empty;
 	public string Wound2 { get; set; } = string.Empty;
 
 	public bool IsDown { get; set; } = false;

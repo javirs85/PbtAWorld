@@ -1,0 +1,41 @@
+﻿@page "/Running/{SelectedGameString}/{SelectedCharacterID:guid}"
+@inject NavigationManager nav
+@inject MetaController Meta
+
+@if(SelectedGame == AvailableGames.DI)
+{
+	<DinoIsland.Pages.PlayerViewer DinoPlayer="DinoPlayer"/>
+}
+
+@code {
+	[Parameter] public string SelectedGameString { get; set; } = "NotSet";
+	[Parameter] public Guid SelectedCharacterID { get; set; } = new Guid();
+
+	DinoCharacter DinoPlayer;
+
+	AvailableGames SelectedGame = AvailableGames.NotSet;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		//we need a local version so the Pages in the html does not get set until the player is deserialized
+		AvailableGames localGameId;
+		bool isOk = Enum.TryParse(SelectedGameString, out localGameId);
+
+		if (localGameId == AvailableGames.NotSet || !isOk)
+			nav.NavigateTo("/");
+
+		string data = "";
+
+		data = await Meta.characters.GetSerializedDateForPlayer(SelectedCharacterID);
+
+
+		if (localGameId == AvailableGames.DI)
+		{
+			DinoPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoCharacter>(data);
+			Meta.SelectedPlayer = DinoPlayer;
+		}
+
+		//we perform the update in the UI
+		SelectedGame = localGameId;
+	}
+}

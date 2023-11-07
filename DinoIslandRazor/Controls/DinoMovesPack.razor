@@ -3,11 +3,11 @@
 	{
 		@if (i==0 && OpenFirst)
 		{
-			<MoveViewerDino Move="Moves[i]" PackID="@PackName" StartsOpen=true LastRoll="LastRoll" AllowMultipleSelection=AllowMultipleSelection />
+			<MoveViewerDino Move="Moves[i]" PackID="@PackName" Player="Player" StartsOpen=true LastRoll="LastRoll" AllowMultipleSelection=AllowMultipleSelection />
 		}
 		else
 		{
-			<MoveViewerDino Move="Moves[i]" PackID="@PackName" StartsOpen=false LastRoll="LastRoll" AllowMultipleSelection=AllowMultipleSelection />
+			<MoveViewerDino Move="Moves[i]" PackID="@PackName" Player="Player" StartsOpen=false LastRoll="LastRoll" AllowMultipleSelection=AllowMultipleSelection />
 		}
 	}
 </div>
@@ -18,6 +18,7 @@
 	[Parameter] public bool OpenFirst { get; set; } = true;
 	[Parameter] public bool AllowMultipleSelection { get; set; } = false;
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; }
+	[Parameter] public DinoCharacter Player { get; set; }
 
 	private bool IsFirst = true;
 }

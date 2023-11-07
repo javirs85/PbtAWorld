@@ -293,7 +293,7 @@ public class DinoMovesService : MovesServiceBase
 
     public List<DinoMove> DoctorMoves = new List<DinoMove>
     {
-        new DinoMove(DinoMoveIDs.D_Doc_TreatWounds, DinoStates.D_Story)
+        new DinoMove(DinoMoveIDs.D_Doc_TreatWounds, DinoStates.D_MC)
         {
             Tittle = "Tratar Heridas",
             ForClass =DinoClasses.Doctor,

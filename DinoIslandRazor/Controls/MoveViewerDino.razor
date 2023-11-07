@@ -1,7 +1,6 @@
 ﻿@using System.Web;
 @inject IToastService Toaster
 @inject DinoGameController Game
-@inject DinoCharacter Player
 @inject DinoMovesService Moves
 
 <div class="accordion-item"> 
@@ -241,6 +240,7 @@
 	[Parameter] public bool StartsOpen { get; set; } = false;
 	[Parameter] public bool AllowMultipleSelection { get; set; } = false;
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; }
+	[Parameter] public DinoCharacter Player { get; set; }
 
 	bool SelectedByDefault => Move.ForClass != DinoClasses.NotSet && Move.IsAdvancedMove == false;
 	bool IsSelectable => Move.ForClass != DinoClasses.NotSet;

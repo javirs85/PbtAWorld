@@ -46,7 +46,7 @@
 								</div>
 								<div class="RollResult">@Game.LastRoll.Total</div>
 							</div>
-							<MoveViewerDino Move="@(Moves.GetMovement(Game.LastRoll?.MoveId) as DinoMove)" StartsOpen=true />
+							<MoveViewerDino Player="Player" Move="@(Moves.GetMovement(Game.LastRoll?.MoveId) as DinoMove)" StartsOpen=true />
 						}
 						else
 						{
@@ -92,7 +92,7 @@
 					</h4>
 					@if (IsShowingRumors)
 					{
-						@foreach (var p in Game.Players)
+						@foreach (var p in Game.Players.Where(x=>x.Class != DinoClasses.Master))
 						{
 							<RollableList Options="Game.TextBook.AvailableRumors"
 											Tittle="@p.Name"
@@ -104,7 +104,7 @@
 					else
 					{
 						<table>
-							@foreach (var p in Game.Players)
+							@foreach (var p in Game.Players.Where(x => x.Class != DinoClasses.Master))
 							{
 								<tr>
 									<td style="vertical-align: text-bottom;">@p.Name</td>
@@ -374,11 +374,14 @@
 			<div class="col-md-6 col-lg-4 col-xl-3 d-flex flex-column gap-1">
 				<div class="d-flex flex-wrap w-100 justify-content-center">
 					<div class="w-100 d-flex gap-0 p-0">
-						<div class="DinoSelectorButton @(_isShowingDinos?"selected":"")" @onclick=@(()=>{_isShowingDinos = true;})>
+						<div class="DinoSelectorButton @(_isShowingDinos?"selected":"")" @onclick=SelectDinos>
 							Dinosaurios
 						</div>
-						<div class="DinoSelectorButton @(!_isShowingDinos?"selected":"")" @onclick=@(()=>{SelectPNJsPanel();})>
+						<div class="DinoSelectorButton @(_isShowingPnjsPanel?"selected":"")" @onclick=@(()=>{SelectPNJsPanel();})>
 							PNJs
+						</div>
+						<div class="DinoSelectorButton @(_isShowingMoves?"selected":"")" @onclick=@(()=>{SelectMovesPanel();})>
+							Moves
 						</div>
 					</div>
 					<div class="BoxPack Monster">
@@ -435,7 +438,7 @@
 								</div>
 							}
 						}
-						else
+						else if(_isShowingPnjsPanel)
 						{
 							<button class="btn btn-primary" @onclick=@(() =>{_ShowPNJSelection = true;})>Añadir PNJ</button>
 							<div class="d-flex flex-wrap">
@@ -498,8 +501,19 @@
 									</div>
 								</div>
 							</div>
-							
-						}					
+						}
+						else if(_isShowingMoves)
+						{
+							<div class="d-flex flex-column gap-2">
+								<DinoMovesPack Player="Player" Moves=Moves.DangerMoves PackName="DangerMoves" OpenFirst=false LastRoll="Game.LastRoll"/>
+								<DinoMovesPack Player="Player" Moves=Moves.SafetyMoves PackName="DangerMoves" OpenFirst=false LastRoll="Game.LastRoll"/>
+							</div>
+							@foreach(var mpp in MovesOnScreen)
+							{
+								<h4>@mpp.Player.Name</h4>
+								<DinoMovesPack Player="mpp.Player" Moves="mpp.Moves" PackName="mpp.Player.Name" OpenFirst=false LastRoll="Game.LastRoll"/>
+							}
+						}
 					</div>
 				</div>
 			</div>
@@ -510,6 +524,22 @@
 @code {
 	[Parameter] public MapMini? Map { get; set; } = null;
 	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
+	private List<MovePackPlayer> MovesOnScreen = new();
+
+	protected override void OnParametersSet()
+	{
+		MovesOnScreen.Clear();
+		foreach(var p in Game.Players.Where(x => x.Class != DinoClasses.Master))
+		{
+			MovesOnScreen.Add(
+				new MovePackPlayer
+				{
+					Player = p,
+					Moves = Moves.AllMoves.FindAll(x => x.ForClass == p.Class).ToList()
+				}
+			);
+		}
+	}
 
 	private bool IsShowingLastRoll = false;
 	private string LastRollBoxColor
@@ -524,6 +554,8 @@
 
 	private bool _isShowingDinos = true;
 	private bool _ShowPNJSelection = false;
+	private bool _isShowingMoves = false;
+	private bool _isShowingPnjsPanel = false;
 
 	private bool _isInGame = false;
 	private DinoMonster? SelectedMonster = null;
@@ -536,9 +568,24 @@
 
 	private Location? SelectedLoaction = null;
 
+	private void SelectDinos()
+	{
+		_isShowingDinos = true;
+		_isShowingMoves = false;
+		_isShowingPnjsPanel = false;
+	}
+
 	private void SelectPNJsPanel()
 	{
 		_isShowingDinos = false;
+		_isShowingMoves = false;
+		_isShowingPnjsPanel = true;
+	}
+	private void SelectMovesPanel()
+	{
+		_isShowingDinos = false;
+		_isShowingMoves = true;
+		_isShowingPnjsPanel = false;
 	}
 
 	private void SetNewRumor(Tuple<DinoCharacter, string> data)
@@ -574,5 +621,10 @@
 		if (string.IsNullOrEmpty(Game.TheWayOut)) Game.TheWayOut = Game.TextBook.TheWayOutOptions[0];
 		if (string.IsNullOrEmpty(Game.WhyComing)) Game.WhyComing = Game.TextBook.WhyComingOptions[0];
 
+	}
+
+	public class MovePackPlayer{
+		public DinoCharacter Player;
+		public List<DinoMove> Moves;
 	}
 }

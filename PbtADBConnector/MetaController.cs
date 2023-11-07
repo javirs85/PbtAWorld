@@ -1,17 +1,15 @@
 ﻿using PbtADBConnector.Data;
 using PbtALib;
 
-namespace PbtAWorldApp;
+namespace PbtADBConnector;
 
 public class MetaController
 {
-	private readonly IUserData users;
 	public readonly ISeasonsData seasons;
 	public readonly ICharacterData characters;
 
-	public MetaController(IUserData _users, ISeasonsData _seasons, ICharacterData _characters)
+	public MetaController(ISeasonsData _seasons, ICharacterData _characters)
 	{
-		this.users = _users;
 		seasons = _seasons;
 		characters = _characters;
 	}
@@ -78,27 +76,17 @@ public class MetaController
 		}
 	}
 
-	public async Task Start()
+	public async Task<string> GetSerializedDataOfSelectedPlayer()
 	{
 		if (SelectedPlayer is not null)
 		{
-			throw new NotImplementedException();
-		}
-	}
-
-	public string FromClassIDToUI(int classID)
-	{
-		if (SelectedGame == AvailableGames.DI)
-		{
-			return DinoIsland.Extensions.ToUIString((DinoIsland.DinoClasses)classID);
-		}
-		else if (SelectedGame == AvailableGames.DW)
-		{
-			return ((DungeonWorld.DWClasses)classID).ToString();
+			return await characters.GetSerializedDateForPlayer(SelectedPlayer.ID);
 		}
 		else
-			return "Wrong SelectedGame at FromClassIDToUI";
+			return "";
 	}
+
+	
 
 
 

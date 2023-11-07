@@ -1,5 +1,4 @@
 ﻿using PbtADBConnector.DbAccess;
-using PbtADBConnector.Models;
 using PbtALib;
 using System;
 using System.Collections.Generic;
@@ -8,32 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PbtADBConnector.Data;
-
-public class UserData : IUserData
-{
-	private readonly ISqlDataAccess _db;
-
-	public UserData(ISqlDataAccess db)
-	{
-		_db = db;
-	}
-
-	public Task<IEnumerable<UserModel>> GetUsers() =>
-		_db.LoadData<UserModel, dynamic>("dbo.spUser_GetAll", new { });
-
-	public async Task<UserModel?> GetUser(int id) =>
-		(await _db.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { Id = id })).FirstOrDefault();
-
-
-	public Task InsertUser(UserModel user) =>
-		_db.SaveData("dbo.spUser_Insert", new { user.FirstName, user.LastName });
-
-	public Task UpdateUser(UserModel user) =>
-		_db.SaveData("dbo.spUser_Update", user);
-
-	public Task DeleteUser(int id) =>
-		_db.SaveData("dbo.spUser_Delete", new { Id = id });
-}
 
 public class SeasonData : PbtADBConnector.Data.ISeasonsData
 {
@@ -52,7 +25,10 @@ public class SeasonData : PbtADBConnector.Data.ISeasonsData
 		return GetAllSeasonsOfGame(i);
 	}
 
-	public Task<IEnumerable<Season>> GetAllSeasonsOfGame(byte gamecode) =>
+	public async Task<Season?> GetSeason(Guid SeasonID) =>
+		(await _db.LoadData<Season, dynamic>("dbo.spCampaigns_GetCampaign", new { SeasonID = SeasonID })).FirstOrDefault();
+
+public Task<IEnumerable<Season>> GetAllSeasonsOfGame(byte gamecode) =>
 		_db.LoadData<Season, dynamic>("dbo.spCampaigns_GetCampaignsOfGame", new { GameID = gamecode });
 
 	public Task InsertSeason(Season season) =>
@@ -69,6 +45,9 @@ public class CharacterData : ICharacterData
 	{
 		_db = db;
 	}
+
+	public async Task<string> GetSerializedDateForPlayer(Guid guid) =>
+		(await _db.LoadData<string, dynamic>("dbo.spCharacter_GetSerializedDateForPlayer", new { Guid = guid })).FirstOrDefault();
 
 	public Task InsertNewCharacter(byte GameID, Guid CampaignID, string serializedData, string Name, int classCode, Guid CharacterID) =>
 		_db.SaveData("dbo.spCharacter_Insert", new
