@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PbtADBConnector\PbtADBConnector.csproj" />
     <ProjectReference Include="..\PbtALib\PbtALib.csproj" />
-    <ProjectReference Include="..\PbtAWorldConnectivity\PbtAWorldConnectivity.csproj" />
     <ProjectReference Include="..\PbtaWorldRazonCommonComponents\PbtaWorldRazonCommonComponents.csproj" />
   </ItemGroup>
 

@@ -5,8 +5,6 @@
 @inject NavigationManager navigationManager
 @inject DinoCharacter Player;
 @inject DinoGameController Game;
-@inject PbtAWorldCommClient Client;
-@inject MetaController Meta;
 
 
 <EditForm Model="Player" style="height:100%;">
@@ -669,25 +667,10 @@
 		set
 		{
 			Player.Class =value;
-			SendUpdateToServer();
+			//SendUpdateToServer();
 		}
 	}
 
-	private async Task SendUpdateToServer()
-	{
-		if(Client is not null && Client.IsConnected)
-		{
-			await Client.SendParamsMessage(MessageKinds.UpdateInPlayer, System.Text.Json.JsonSerializer.Serialize(Player));
-		}
-	}
-
-	private async Task UpdateThisPlayerOnServer(DinoCharacter p)
-	{
-		if (Client is not null && Client.IsConnected)
-		{
-			await Client.SendParamsMessage(MessageKinds.UpdateInPlayer, System.Text.Json.JsonSerializer.Serialize(p));
-		}
-	}
 
 	public void CustomParse(string newValue, ref int placeWhereToStore)
 	{

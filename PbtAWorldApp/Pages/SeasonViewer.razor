@@ -1,6 +1,6 @@
 ﻿@page "/SeasonViewer/{SelectedSeasonID:guid}"
 @using DungeonWorld;
-@inject MetaController Meta;
+@inject DataBaseController Meta;
 @inject NavigationManager nav;
 @inject DinoCharacter DinoCharacter;
 @inject IToastService Toaster;
@@ -48,6 +48,10 @@
 			}
 			else
 			{
+				@if (IsLoadingFromDB)
+				{
+					<p>Cargando datos de la base de datos ...</p>
+				}
 				@foreach(var p in Meta.SelectedSeason.Players)
 				{
 					<div class="PlayerBox d-flex gap-2 align-items-center @(p == Meta.SelectedPlayer?"Selected":"")" @onclick=@(async ()=>{await SelectPlayer(p);})>
@@ -99,7 +103,7 @@
 					{
 						@if(c != DWClasses.DW_NotSet)
 						{
-							<div class="btn btn-primary">@c.ToUI()</div>
+							<div class="btn btn-primary" @onclick=@(async ()=>{await CreateNewDWCharacter(c);})>@c.ToUI()</div>
 						}
 					}
 				}else if(Meta.SelectedGame == AvailableGames.DI)
@@ -124,6 +128,7 @@
 	private bool IsShowingNewCharacterTools = false;
 	private string NewCharacterName = "Nombre";
 	private bool IsShowingDeleteCharacterButton = false;
+	private bool IsLoadingFromDB = false;
 
 	protected async override Task OnParametersSetAsync()
 	{
@@ -133,11 +138,15 @@
 		{
 			if(Meta.SelectedSeason is null || Meta.SelectedGame is null)
 			{
-				Meta.SelectedSeason = await Meta.seasons.GetSeason((Guid)SelectedSeasonID);
+				IsLoadingFromDB = true;
+				Meta.SelectedSeason = await Meta.SeasonsDB.GetSeason((Guid)SelectedSeasonID);
+				IsLoadingFromDB = false;
 				if(Meta.SelectedSeason is not null)
 				{
 					Meta.SelectedGame = Meta.SelectedSeason?.GameID;
+					IsLoadingFromDB = true;
 					await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
+					IsLoadingFromDB = false;
 				}
 				else
 					nav.NavigateTo("/");
@@ -153,7 +162,7 @@
 		}
 		else if (Meta.SelectedGame == AvailableGames.DW)
 		{
-			return ((DungeonWorld.DWClasses)classID).ToString();
+			return DWExtesions.ToUI((DWClasses)classID);
 		}
 		else
 			return "Wrong SelectedGame at FromClassIDToUI";
@@ -168,7 +177,7 @@
 	private async Task Delete()
 	{
 		await Meta.DeleteSelectedSeason();
-		nav.NavigateTo("SeasonSelection");
+		nav.NavigateTo("SeasonSelection/"+Meta.SelectedGame);
 	}
 
 	private async Task DeleteSelectedCharacter() => await Meta.DeleteSelectedCharacter();
@@ -193,12 +202,12 @@
 
 	private async Task UpdateSeasonName()
 	{
-		await Meta.seasons.UpdateSeason(Meta.SelectedSeason);
+		await Meta.SeasonsDB.UpdateSeason(Meta.SelectedSeason);
 	}
 
 	private async Task CreateNewDinoCharacter(DinoClasses c)
 	{
-		DinoCharacter newCharacter = new DinoCharacter(Meta);
+		DinoCharacter newCharacter = new DinoCharacter();
 		newCharacter.ID = Guid.NewGuid();
 		newCharacter.Name = NewCharacterName;
 		newCharacter.Class = c;
@@ -212,20 +221,45 @@
 				newCharacter.ID);
 
 		NewCharacterName = "Nombre";
+		IsLoadingFromDB = true;
 		await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
+		IsLoadingFromDB = false;
+	}
+
+	private async Task CreateNewDWCharacter(DWClasses c)
+	{
+		DWCharacter newCharacter = new DWCharacter();
+		newCharacter.ID = Guid.NewGuid();
+		newCharacter.Name = NewCharacterName;
+		newCharacter.Profession = c;
+
+		if (Meta.SelectedGame is not null && Meta.SelectedSeason is not null)
+			await Meta.InsertNewCharacter(
+				(byte)Meta.SelectedGame,
+				Meta.SelectedSeason.CampaignGuid,
+				System.Text.Json.JsonSerializer.Serialize(newCharacter),
+				newCharacter.Name,
+				(byte)newCharacter.Profession,
+				newCharacter.ID);
+
+		NewCharacterName = "Nombre";
+		IsLoadingFromDB = true;
+		await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
+		IsLoadingFromDB = false;
 	}
 
 	private async Task Reload()
 	{
+		IsLoadingFromDB = true;
 		await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
+		IsLoadingFromDB = false;
 	}
 
 	private async Task Start()
 	{
 		if(Meta.SelectedPlayer is not null)
 		{
-			if (Meta.SelectedGame == AvailableGames.DI)
-				nav.NavigateTo($"/Running/{Meta.SelectedGame}/{Meta.SelectedPlayer.ID}");
+			nav.NavigateTo($"/Running/{Meta.SelectedGame}/{Meta.SelectedPlayer.ID}");
 		}
 		else
 		{

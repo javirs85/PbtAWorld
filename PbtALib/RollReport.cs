@@ -14,7 +14,10 @@ public class RollReport<T_ID, T_Stats>
 	{
 
 	}
-
+	public RollReport(MovesServiceBase moves)
+	{
+		Moves = moves;
+	}
 	public RollReport(MovesServiceBase moves, T_ID MoveID, T_Stats stat)
 	{
 		Moves = moves;
@@ -22,7 +25,7 @@ public class RollReport<T_ID, T_Stats>
 		Stat = stat;
 	}
 
-	public RollReport(T_ID MoveID, T_Stats stat, string MoveTittle, string _iDofTheRoller, RollTypes type = RollTypes.DW_Simple)
+	public RollReport(T_ID MoveID, T_Stats stat, string MoveTittle, string _iDofTheRoller, RollTypes type = RollTypes.Roll_Simple)
 	{
 		MoveId = MoveID;
 		Stat = stat;
@@ -32,20 +35,21 @@ public class RollReport<T_ID, T_Stats>
 	}
 
 
-	public RollTypes RollType { get; set; } = RollTypes.DW_Simple;
+	public RollTypes RollType { get; set; } = RollTypes.Roll_Simple;
 	public string Roller { get; set; } = string.Empty;
 	public int d1 { get; set; } = 0;
 	public int d2 { get; set; } = 0;
+	public int d3 { get; set; } = 0;
 	public int StatValue { get; set; } = 0;
 	public int bonus { get; set; } = 0;
-	public int Total => d1 + d2 + bonus;
+	public int Total { get; set; } = 0;
 	public T_ID MoveId { get; set; }
 	public T_Stats Stat { get; set; }
 	public string LocalTittle { get; set; } = "";
 	public string MoveTittle { 
 		get { 
 			if(!string.IsNullOrEmpty(LocalTittle)) return LocalTittle;
-			return Moves?.GetMovement<T_ID>(MoveId).Tittle ?? "Cannot find move's tittle @ RollReport::MoveTittle"; 
+			return Moves?.GetMovement<T_ID>(MoveId).Tittle ?? $"Cannot find move's tittle {MoveId} @ RollReport::MoveTittle"; 
 		} 
 	}
 }

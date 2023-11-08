@@ -10,6 +10,7 @@ using PbtALib;
 using PbtADBConnector.DbAccess;
 using PbtADBConnector.Data;
 using PbtADBConnector;
+using DungeonWorld;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,15 +18,16 @@ ConfigurationManager configuration = builder.Configuration; // allows both to ac
 IWebHostEnvironment environment = builder.Environment;
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddApplicationPart(typeof(DungeonWorld.Pages.DWPlayerSheet).Assembly);
 
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredToast();
-builder.Services.AddScoped<MetaController>();
+builder.Services.AddSingleton<DataBaseController>();
 builder.Services.AddSingleton<DinoMovesService>();
-builder.Services.AddSingleton<PbtAWorldCommClient>();
+builder.Services.AddSingleton<DWMovesService>();
 builder.Services.AddSingleton<PNJs>();
 builder.Services.AddSingleton<DinoGameController>();
+builder.Services.AddSingleton<DWGameController>();
 builder.Services.AddScoped<DinoCharacter>();
 builder.Services.AddBlazorBootstrap();
 
@@ -77,6 +79,6 @@ app.MapControllers();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-app.MapHub<DinoGameController>(DinoGameController.HubUrl);
+//app.MapHub<DinoGameController>(DinoGameController.HubUrl);
 
 app.Run();

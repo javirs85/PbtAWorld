@@ -1,10 +1,4 @@
 ﻿using PbtALib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PbtAWorldConnectivity;
 using Blazored.Toast.Services;
 using PbtADBConnector;
 
@@ -15,11 +9,6 @@ public class DinoCharacter : PbtACharacter
 {
 	public event EventHandler UpdateUI;
 
-	public MetaController Meta;
-    public DinoCharacter(MetaController meta)
-    {
-		Meta = meta;
-    }
 	public DinoCharacter() { }
 
 
@@ -63,102 +52,36 @@ public class DinoCharacter : PbtACharacter
 
 	private DinoClasses _class = DinoClasses.NotSet;
 
-	private PbtAWorldCommClient? Client;
 	private IToastService? Toaster;
 
-	public async Task Connect(PbtAWorldCommClient _client, IToastService _toaster)
-	{
-		if (_client != null && _client.IsConnected) {
-			Client = _client;
-			Toaster = _toaster;
 
-			Client.OnNewMessageToPlayer += ProcessMessage;
-			await Client.SendParamsMessage(MessageKinds.UpdateInPlayer, System.Text.Json.JsonSerializer.Serialize(this));
-		}
-		else
+
+	public override int GetStatBonus<T>(T _stat)
+	{
+		if(_stat is DinoStates)
 		{
-			throw new Exception("Client must be not null and connected before sending it here");
-		}
-	}
-
-	private void ProcessMessage(object? sender, ParamsMessage msg)
-	{
-		switch (msg.MessageKind)
-		{
-			case MessageKinds.Raw:
-				break;
-			case MessageKinds.Info:
-				Toaster?.ShowInfo(msg.Parameters["message"]);
-				break;
-			case MessageKinds.Chat:
-				break;
-			case MessageKinds.Roll:
-				break;
-			case MessageKinds.Map:
-				var UpdateInMap = System.Text.Json.JsonSerializer.Deserialize<MapItem>(msg.Parameters["message"]);
-				if (UpdateInMap is not null)
-				{
-					UpdateMapItems(UpdateInMap);
-					if (UpdateInMap.Action == MapActions.Add)
-						Toaster?.ShowInfo($"{msg.Sender} a añadido un/a {UpdateInMap.Token.ToUI()} al mapa");
-					else if (UpdateInMap.Action == MapActions.Remove)
-						Toaster?.ShowInfo($"{msg.Sender} a quitado un/a {UpdateInMap.Token.ToUI()} del mapa");
-				}
-				break;
-			case MessageKinds.UpdateMapRequest:
-				var Items = System.Text.Json.JsonSerializer.Deserialize<List<MapItem>>(msg.Parameters["message"]);
-				if (Items is not null)
-				{
-					UpdateMapItems(Items);
-					Toaster?.ShowInfo($"{Items.Count} elementos añadidos al mapa");
-				}
-				break;
-			case MessageKinds.NewRumor:
-				break;
-			default:
-				break;
-		}
-	}
-
-	public async Task SendMapUpdate(MapItem item)
-	{
-		if(Client is not null && Client.IsConnected) 
-			await Client.SendParamsMessage(MessageKinds.Map, System.Text.Json.JsonSerializer.Serialize(item));
-	}
-
-	public async Task RequestServerForMapUpdate()
-	{
-		if (Client is not null && Client.IsConnected)
-			await Client.SendSimpleCommandMessage(MessageKinds.UpdateMapRequest);
-	}
-
-	private Random rnd = new Random();
-
-	public async Task Roll(DinoStates stat, DinoMove Move)
-	{
-		int d1 = rnd.Next(1,7);
-		int d2 = rnd.Next(1,7);
-		int bonus = 0;
-		if (stat == DinoStates.D_Steady) bonus = Steady;
-		else if (stat == DinoStates.D_Fit) bonus = Fit;
-		else if (stat == DinoStates.D_Clever) bonus = Clever;
-		else if(stat == DinoStates.D_1) bonus = 1;
-		else if(stat == DinoStates.D_0) bonus = 0;
-
-		if(Client is not null)
-		{
-			var report = new RollReport<DinoMoveIDs, DinoStates>(Move.ID, stat, Move.Tittle, Name)
+			DinoStates stat = (DinoStates)(object)_stat;
+			switch (stat)
 			{
-				bonus = bonus,
-				d1 = d1,
-				d2 = d2,
-				Roller = Name,
-				Stat = stat,
-			};
-			
-			var encoded = System.Text.Json.JsonSerializer.Serialize(report);
-			await Client.SendRollReport(encoded);
+				case DinoStates.D_Fit: return Fit;
+				case DinoStates.D_Steady: return Steady;
+				case DinoStates.D_Clever: return Clever;
+				case DinoStates.D_1:return 1;
+				case DinoStates.D_0:return 0;
+				case DinoStates.D_2:return 2;
+				case DinoStates.D_3: return 3;
+
+				case DinoStates.D_MC:
+				case DinoStates.D_Weapon:
+				case DinoStates.D_NotSet:
+				case DinoStates.D_NoRoll:
+				case DinoStates.D_Story:
+				default:
+					throw new Exception($"Cannot roll {stat} at DinoCharacter GetStatBonus");
+			}
 		}
+
+		throw new Exception("stat is not a DinoState");
 	}
 
 	public DinoClasses Class

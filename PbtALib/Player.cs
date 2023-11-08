@@ -20,6 +20,10 @@ public class PbtACharacter
 		set { _name = value; }
 	}
 
+	public virtual int GetStatBonus<T>(T stat){
+		throw new NotImplementedException();
+	}
+
 	public string SerializedData { get; set; } = string.Empty;
 
 }

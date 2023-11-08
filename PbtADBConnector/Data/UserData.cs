@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PbtADBConnector.Data;
 
-public class SeasonData : PbtADBConnector.Data.ISeasonsData
+public class SeasonData : ISeasonsData
 {
 	private readonly ISqlDataAccess _db;
 	public SeasonData(ISqlDataAccess db)

@@ -1,5 +1,6 @@
 ﻿@page "/SeasonSelection/{SelectedGameString}"
-@inject MetaController Meta;
+@using DungeonWorld;
+@inject DataBaseController Meta;
 @inject NavigationManager nav;
 
 <PageTitle>Seleccione temporada</PageTitle>
@@ -19,6 +20,10 @@
 		<img src="@Meta.SelectedGameCover" style="height: 340px;"/>
 		<div class="d-flex flex-column gap-2">
 			<div class="d-flex flex-column gap-2" style="min-height: 255px;">
+				@if (IsLoading)
+				{
+					<p>Cargando de la BD ...</p>
+				}
 				@foreach(var season in Meta.Seasons)
 				{
 					<div class="SeasonBox" @onclick=@(()=>{SelectSeason(season);})>
@@ -47,6 +52,7 @@
 
 @code {
 	[Parameter] public string SelectedGameString { get; set; } = "NotSet";
+	private bool IsLoading = false; 
 
 	protected override async Task OnParametersSetAsync()
 	{
@@ -56,15 +62,19 @@
 			nav.NavigateTo("/");
 		else
 			Meta.SelectedGame = encodedGame;
-			Meta.SelectedGame = encodedGame;
+		Meta.SelectedGame = encodedGame;
 
 		Meta.OnUpdateRequested += (o, e) => { InvokeAsync(() => { StateHasChanged(); }); };
+		IsLoading = true;
 		await Meta.LoadAllSessionsOfSelectedGame();
+		IsLoading = false;
 	}
 
 	private async Task Reload()
 	{
+		IsLoading = true;
 		await Meta.LoadAllSessionsOfSelectedGame();
+		IsLoading = false;
 	}
 
 	public string FromClassIDToUI(int classID)
@@ -75,7 +85,7 @@
 		}
 		else if (Meta.SelectedGame == AvailableGames.DW)
 		{
-			return ((DungeonWorld.DWClasses)classID).ToString();
+			return DWExtesions.ToUI((DWClasses)classID);
 		}
 		else
 			return "Wrong SelectedGame at FromClassIDToUI";

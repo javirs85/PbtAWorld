@@ -1,5 +1,4 @@
 ﻿@inject DinoCharacter Player
-@inject PbtAWorldCommClient Client
 
 <div class="d-flex" @onclick=Toggle style="cursor: pointer;">
 	@if (IsDown)
@@ -27,13 +26,6 @@
 		set
 		{
 			Player.IsDown = value;
-			if (Client is not null && Client.IsConnected)
-			{
-				if (Player.IsDown)
-					Client.SendInfo($"{Player.Name} ha caído");
-				else
-					Client.SendInfo($"{Player.Name} ha vuelto de entre los muertos");
-			}
 		}
 	}
 

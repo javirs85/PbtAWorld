@@ -1,7 +1,6 @@
 ﻿@inject DinoGameController Game;
 @inject DinoCharacter Player;
 @inject DinoMovesService Moves;
-@inject PbtAWorldCommClient Client;
 @inject PNJs Pnjs;
 
 <div class="container-fluid px-1">
@@ -92,7 +91,7 @@
 					</h4>
 					@if (IsShowingRumors)
 					{
-						@foreach (var p in Game.Players.Where(x=>x.Class != DinoClasses.Master))
+						@foreach (DinoCharacter p in Game.Players.Where(x => (x as DinoCharacter).Class != DinoClasses.Master))
 						{
 							<RollableList Options="Game.TextBook.AvailableRumors"
 											Tittle="@p.Name"
@@ -104,7 +103,7 @@
 					else
 					{
 						<table>
-							@foreach (var p in Game.Players.Where(x => x.Class != DinoClasses.Master))
+							@foreach (DinoCharacter p in Game.Players.Where(x => (x as DinoCharacter).Class != DinoClasses.Master))
 							{
 								<tr>
 									<td style="vertical-align: text-bottom;">@p.Name</td>
@@ -529,13 +528,13 @@
 	protected override void OnParametersSet()
 	{
 		MovesOnScreen.Clear();
-		foreach(var p in Game.Players.Where(x => x.Class != DinoClasses.Master))
+		foreach (DinoCharacter p in Game.Players.Where(x => (x as DinoCharacter).Class != DinoClasses.Master))
 		{
 			MovesOnScreen.Add(
 				new MovePackPlayer
 				{
 					Player = p,
-					Moves = Moves.AllMoves.FindAll(x => x.ForClass == p.Class).ToList()
+						Moves = Moves.AllMoves.FindAll(x => x.ForClass == p.Class).ToList()
 				}
 			);
 		}

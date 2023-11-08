@@ -17,7 +17,7 @@ public static class Extensions
 
 public enum RollTypes
 {
-	DW_Simple, DW_Advantage, DW_Disadvantage
+	Roll_Simple, Roll_Advantage, Roll_Disadvantage
 }
 public enum DiceTypes
 {

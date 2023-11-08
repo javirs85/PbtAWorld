@@ -4,10 +4,6 @@
 @using BlazorBootstrap;
 <div class="MiniMapContainer">
 	<div class="MapMiniViewer" @onclick=Click>
-		<div class="UpdateButton" @onclick:preventDefault=true @onclick:stopPropagation=true @onclick=Player.RequestServerForMapUpdate>
-			<i class="bi bi-arrow-clockwise"></i>
-		</div>
-
 		@foreach(var point in Game.MapTokens)
 		{
 			<div class="MapToken"

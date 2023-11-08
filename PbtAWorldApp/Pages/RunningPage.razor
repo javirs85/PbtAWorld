@@ -1,10 +1,14 @@
 ﻿@page "/Running/{SelectedGameString}/{SelectedCharacterID:guid}"
 @inject NavigationManager nav
-@inject MetaController Meta
+@inject DataBaseController Meta
 
 @if(SelectedGame == AvailableGames.DI)
 {
 	<DinoIsland.Pages.PlayerViewer DinoPlayer="DinoPlayer"/>
+}
+else if(SelectedGame == AvailableGames.DW)
+{
+	<DungeonWorld.Pages.DWPlayerSheet Player="DWPlayer" />
 }
 
 @code {
@@ -12,6 +16,7 @@
 	[Parameter] public Guid SelectedCharacterID { get; set; } = new Guid();
 
 	DinoCharacter DinoPlayer;
+	DungeonWorld.DWCharacter DWPlayer;
 
 	AvailableGames SelectedGame = AvailableGames.NotSet;
 
@@ -26,13 +31,18 @@
 
 		string data = "";
 
-		data = await Meta.characters.GetSerializedDateForPlayer(SelectedCharacterID);
+		data = await Meta.CharactersDB.GetSerializedDateForPlayer(SelectedCharacterID);
 
 
 		if (localGameId == AvailableGames.DI)
 		{
 			DinoPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoCharacter>(data);
 			Meta.SelectedPlayer = DinoPlayer;
+		}
+		else if(localGameId == AvailableGames.DW)
+		{
+			DWPlayer = System.Text.Json.JsonSerializer.Deserialize<DungeonWorld.DWCharacter>(data);
+			Meta.SelectedPlayer = DWPlayer;
 		}
 
 		//we perform the update in the UI

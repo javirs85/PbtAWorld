@@ -22,11 +22,11 @@ else
 				<div class="HeaderProfession"> - @Player.Profession.ToUI() |</div>
 				@if(Player.Motivation == "")
 				{
-					<button class="btn btn-primary" @onclick=ChooseMotivation>Elejir motivación</button>
+					<button class="btn btn-primary" title="Cuando *HAGAS CAMPAMENTO* marca XP si has cumplido con tu motivación"  @onclick=ChooseMotivation>Elegir motivación</button>
 				}
 				else
 				{
-					<div class="HeaderMotivation" @onclick=ChooseMotivation>@Player.Motivation</div>
+					<div class="HeaderMotivation" title="Cuando *HAGAS CAMPAMENTO* marca XP si has cumplido con tu motivación" @onclick=ChooseMotivation>@Player.Motivation</div>
 				}
 
 			</div>
@@ -38,14 +38,14 @@ else
 					}
 					<div class="d-flex flex-column">
 						<div class="d-flex w-100 align-items-center">
-							<StatViewer Stat=DWStats.DW_STR  UpdateUI="StateHasChanged"/>
-							<StatViewer Stat=DWStats.DW_DEX />
-							<StatViewer Stat=DWStats.DW_CON />
+							<StatViewer Player="Player" Stat=DWStats.DW_STR  UpdateUI="StateHasChanged"/>
+							<StatViewer Player="Player" Stat=DWStats.DW_DEX />
+							<StatViewer Player="Player" Stat=DWStats.DW_CON />
 						</div>
 						<div class="d-flex">
-							<StatViewer Stat=DWStats.DW_INT />
-							<StatViewer Stat=DWStats.DW_WIS />
-							<StatViewer Stat=DWStats.DW_CHA />
+							<StatViewer Player="Player" Stat=DWStats.DW_INT />
+							<StatViewer Player="Player" Stat=DWStats.DW_WIS />
+							<StatViewer Player="Player" Stat=DWStats.DW_CHA />
 						</div>
 					</div>
 					<div class="d-flex w-100 justify-content-center">
@@ -237,7 +237,7 @@ else
 			<div class="MovementsColum">
 				@if(Player.Background is null)
 				{
-					<button class="btn btn-primary" @onclick=ChooseBackground>Elejir Trasfondo</button>
+					<button class="btn btn-primary" @onclick=ChooseBackground>Elegir Trasfondo</button>
 				}
 				else
 				{
@@ -279,6 +279,7 @@ else
 			</div>
 		</div>
 	</div>
+
 	@if(CurrentState != States.Character)
 	{
 		<div class="SelectorOuter" @onclick=CloseSelection>
@@ -337,7 +338,7 @@ else
 	private string EditableString = "";
 	private string EditableStringTopic = "";
 
-	[Parameter] public string RequestedPlayerName { get; set; } = string.Empty;
+	[Parameter] public DWCharacter Player { get; set; } = new();
 
 	private List<IMove> BasicMovements = new();
 	private List<IMove> AdvancedMovements = new();
@@ -367,17 +368,9 @@ else
 		}
 	}
 
-	private DWCharacter Player;
 
-	protected override async Task OnInitializedAsync()
+	protected override async Task OnParametersSetAsync()
 	{
-
-		// if(Game.Player.CharacterName == "Name")
-		// {
-		// 	Game.Player = await LocalStorage.GetItemAsync<DWPlayer>(RequestedPlayerName);
-		// }
-		// Player = Game.Player;
-
 		BasicMovements.Clear();
 		foreach (var movID in Moves.BasicMovements)
 		{
@@ -411,13 +404,6 @@ else
 			Toaster.ShowInfo(report.Total.ToString());
 		};
 
-		//await messages.Init(new Guid().ToString());
-
-		/*messages.NewMQTTMessage += (sender, data) =>
-		{
-			toastService.ShowInfo(data.CustomMessage, data.PlayerName);
-		};
-		*/
 	}
 
 	private async Task DownloadPlayer()

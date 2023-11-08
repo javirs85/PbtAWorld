@@ -10,7 +10,22 @@ namespace DungeonWorld;
 public class DWCharacter : PbtALib.PbtACharacter
 {
 	public string PhysicialDescription { get; set; } = "Physicial description";
-	public DWClasses Profession { get; set; } = DWClasses.DW_NotSet;
+
+	private DWClasses _profession = DWClasses.DW_NotSet;
+
+	public DWClasses Profession
+	{
+		get { return _profession; }
+		set {
+            if (value != _profession)
+			{
+				_profession = value;
+				Init();
+			}
+		}
+	}
+
+
 	public Equipment Equip { get; set; } = new();
 
 	public string Motivation { get; set; } = "";
@@ -869,11 +884,14 @@ public class DWCharacter : PbtALib.PbtACharacter
 	}
 
 
-	public void Init(DWClasses clas)
+	public void Init(DWClasses? clas = null)
 	{
+		if(clas is not null)
+			this.Profession = (DWClasses)clas;
+
 		Tracks.Add(new Points { Tittle = "Defender", Value = 0 });
-		this.Profession = clas;
-		switch (clas)
+		
+		switch (this.Profession)
 		{
 			case DWClasses.DW_Barbarian:
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Barbarian_InitialChoose, DWMovementIDs.DW_Barbarian_Forastero, DWMovementIDs.DW_Barbarian_Formidable, DWMovementIDs.DW_Barbarian_Hunger, DWMovementIDs.DW_Barbarian_UpperHand });

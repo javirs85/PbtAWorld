@@ -1,6 +1,5 @@
-﻿@using VikingBoardGames.Shared.DW
-@using VikingShared.DW
-@inject DWMainController Game
+﻿@inject DWGameController Game
+@inject DWMovesService Moves
 
 <div class="StatViewerMain d-flex flex-column align-items-center" @onclick=MainClicked>
 	<div class="StatViewerTitle">
@@ -67,29 +66,30 @@
 @code {
 	[Parameter] public DWStats Stat { get; set; }
 	[Parameter] public EventCallback UpdateUI { get; set; }
+	[Parameter] public DWCharacter Player { get; set; }
 
 	private int StatValue;
 
 	private async Task MainClicked(){
-		await RequestRoll(RawMovement, RollTypes.DW_Simple);
+		await RequestRoll(RawMovement, RollTypes.Roll_Simple);
 	}
 	private async Task RedClicked(){
-		await RequestRoll(RawMovement, RollTypes.DW_Dissadventage);
+		await RequestRoll(RawMovement, RollTypes.Roll_Disadvantage);
 	}
 	private async Task GreenClicked(){
-		await RequestRoll(RawMovement, RollTypes.DW_Adventage);
+		await RequestRoll(RawMovement, RollTypes.Roll_Advantage);
 	}
 
 	private async Task RequestRoll(DWMovementIDs movID, RollTypes rt)
 	{
-		var mov = DWMovementsService.DWMovsReference.GetMovement(movID);
-		await Game.RequestRoll(mov, rt);
+		var mov = Moves.GetMovement(movID);
+		//await Game.RequestRoll(mov, rt);
 	}
 
 	private async Task EditFinished()
 	{
 		await UpdateUI.InvokeAsync();
-		await Game.StoreChangesOn(Game.Player, $"Modificó {Stat.ToUI()} ({StatValueString})");
+		await Game.StoreChangesOn(Player, $"Modificó {Stat.ToUI()} ({StatValueString})");
 	}
 
 	private DWMovementIDs RawMovement{
@@ -109,12 +109,12 @@
 
 	private string StatValueString{
 		get{
-			if (Stat == DWStats.DW_STR) StatValue = Game.Player.STR;
-			if (Stat == DWStats.DW_DEX) StatValue = Game.Player.DEX;
-			if (Stat == DWStats.DW_CON) StatValue = Game.Player.CON;
-			if (Stat == DWStats.DW_INT) StatValue = Game.Player.INT;
-			if (Stat == DWStats.DW_WIS) StatValue = Game.Player.WIS;
-			if (Stat == DWStats.DW_CHA) StatValue = Game.Player.CHA;
+			if (Stat == DWStats.DW_STR) StatValue = Player.STR;
+			if (Stat == DWStats.DW_DEX) StatValue = Player.DEX;
+			if (Stat == DWStats.DW_CON) StatValue = Player.CON;
+			if (Stat == DWStats.DW_INT) StatValue = Player.INT;
+			if (Stat == DWStats.DW_WIS) StatValue = Player.WIS;
+			if (Stat == DWStats.DW_CHA) StatValue = Player.CHA;
 
 			if (StatValue >= 0) return "+" + StatValue;
 			else return StatValue.ToString();
@@ -124,14 +124,14 @@
 			try
 			{
 				StatValue = int.Parse(value);
-				if (Stat == DWStats.DW_STR) Game.Player.STR = StatValue;
-				if (Stat == DWStats.DW_DEX) Game.Player.DEX = StatValue;
-				if (Stat == DWStats.DW_CON) Game.Player.CON = StatValue;
-				if (Stat == DWStats.DW_INT) Game.Player.INT = StatValue;
-				if (Stat == DWStats.DW_WIS) Game.Player.WIS = StatValue;
-				if (Stat == DWStats.DW_CHA) Game.Player.CHA = StatValue;
+				if (Stat == DWStats.DW_STR) Player.STR = StatValue;
+				if (Stat == DWStats.DW_DEX) Player.DEX = StatValue;
+				if (Stat == DWStats.DW_CON) Player.CON = StatValue;
+				if (Stat == DWStats.DW_INT) Player.INT = StatValue;
+				if (Stat == DWStats.DW_WIS) Player.WIS = StatValue;
+				if (Stat == DWStats.DW_CHA) Player.CHA = StatValue;
 
-				Task.Run(async () => await Game.StoreChangesOn(Game.Player, $"Modificó {Stat.ToUI()} ({StatValueString})"));
+				Task.Run(async () => await Game.StoreChangesOn(Player, $"Modificó {Stat.ToUI()} ({StatValueString})"));
 			}catch
 			{
 				StatValue = temp;
