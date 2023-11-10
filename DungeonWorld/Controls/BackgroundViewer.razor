@@ -1,0 +1,159 @@
+﻿@using PbtaWorldRazonCommonComponents
+
+<div class="BackgroundViewerOuter">
+	<div class="BackgroundViewerMain" @onclick=BackgroundClickedInternal>
+		<div class="d-flex align-items-center gap-1">
+			<span class="BackgroundViewerTittle">@Background.Title</span>
+			@if (ShowEditButton)
+			{
+				<img src="imgs/DW/editIcon.png" class="IconButton" @onclick=EditButtonClicked @onclick:stopPropagation/>
+			}
+			<img src="imgs/DW/TalkIcon.png" class="IconButton" @onclick="TalkIconClicked" @onclick:stopPropagation />
+		</div>
+
+		@foreach(var m in Background.Movements)
+		{
+			<div class="BackgroundViewerMovement">
+				<div @onclick=@(async()=>{
+						stringToEdit = m;
+						NewValue =m;
+						await EnableEditMode();
+					}) @onclick:stopPropagation>
+					<DecodedString  Value="@m"/>
+				</div>
+			</div>
+		}
+
+		<textarea class="@(!IsEditMode ? "Hidden" : "")" @bind=NewValue style="width: 100%; height: 100%;"
+				  @onfocusout=FinishEditMode @onclick:stopPropagation />
+	</div>
+	@if (ShowingQuestions == true)
+	{
+		<div class="questionscontainer" @onclick="TalkIconClicked" @onclick:stopPropagation>
+			@foreach (var q in Background.InitialQuestions)
+			{
+				<div>@q</div>
+			}
+		</div>
+	}
+</div>
+
+
+<style>
+	.Hidden{
+	display:none;
+	}
+	.BackgroundViewerOuter {
+	position: relative;
+	}
+	.BackgroundViewerMain{
+	width:100%;
+	background: #506A5388;
+	padding:10px;
+	gap:10px;
+	display:flex;
+	flex-direction:column;
+	}
+	.BackgroundViewerTittle{
+	font-size: 25px;
+	line-height: 19px;
+	font-weight: bold;
+	margin-right: 14px;
+	}
+	.IconButton{
+	cursor: pointer;
+	opacity: 0.5;
+	}
+	.IconButton:hover{
+	opacity: 1;
+	}
+
+	.BackgroundViewerMovement{
+	background: #d4dbd5;
+	padding: 10px;
+	font-family: 'Roboto';
+	}
+
+	.questionscontainer{
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #d1d7d2;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction:column;
+	align-items: center;
+	justify-content: center;
+	background-image: url(/imgs/DW/CloseBlack.png);
+	background-repeat: no-repeat;
+	background-position: 98% 10px;	
+	font-family:Roboto;
+	cursor:pointer;
+	}
+
+	.questionscontainer:hover{
+	background-size: 28px;
+	}
+</style>
+@code {
+	private string stringToEdit = "";
+	private string NewValue = "";
+	private int IdToEdit = 0;
+	private bool _edit = false;
+
+	private bool IsEditMode {
+		get {
+			return _edit;
+		}
+		set {
+			_edit = value;
+		}
+	}
+
+	[Parameter] public Background Background { get; set; } = new Background { Title = "Not set" };
+	[Parameter] public bool ShowEditButton { get; set; } = false;
+	[Parameter] public EventCallback EditButtonClicked { get; set; }
+	[Parameter] public EventCallback BackgroundClicked { get; set; }
+	[Parameter] public bool AllowEdit {get;set;} = false;
+
+	private bool ShowingQuestions = false;
+
+	private async Task EnableEditMode()
+	{
+		if (AllowEdit)
+			IsEditMode = true;
+		else
+			await BackgroundClickedInternal();
+	}
+
+	private async Task FinishEditMode()
+	{
+		if(IsEditMode)
+		{
+			for(int i = 0; i < Background.Movements.Count; ++i)
+			{
+				if (Background.Movements[i].Contains(stringToEdit))
+					IdToEdit = i;
+			}
+			Background.Movements[IdToEdit] = NewValue;
+			IsEditMode = false;
+			//store to the DB
+		}
+	}
+
+	private async Task BackgroundClickedInternal()
+	{
+		if (!AllowEdit)
+		{
+			await BackgroundClicked.InvokeAsync();
+		}
+		else
+			await FinishEditMode();
+	}
+
+	private void TalkIconClicked()
+	{
+		ShowingQuestions = !ShowingQuestions;
+	}
+}

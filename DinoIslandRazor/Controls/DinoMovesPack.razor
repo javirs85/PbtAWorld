@@ -17,7 +17,7 @@
 	[Parameter] public List<DinoMove> Moves { get; set; } = new();
 	[Parameter] public bool OpenFirst { get; set; } = true;
 	[Parameter] public bool AllowMultipleSelection { get; set; } = false;
-	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; }
+	[Parameter] public IRollReport LastRoll { get; set; }
 	[Parameter] public DinoCharacter Player { get; set; }
 
 	private bool IsFirst = true;

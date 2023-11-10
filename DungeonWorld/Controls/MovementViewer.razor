@@ -1,0 +1,275 @@
+﻿@using PbtaWorldRazonCommonComponents
+@inject DWGameController DWGameController
+
+<div class="MovementViewerMain @((IsLastMasterBox)? Movement.HowOften.ToString() : "")" @onclick=HeaderClicked @onclick:stopPropagation>
+	<div class="MovementHeader" >
+		@MovementHeader
+		<div class="buttonsBox d-flex gap-2 align-items-center px-2">
+			@if (IsLastMasterBox == true && RollResult != null)
+			{
+				<div class="RollResultBox @(RollResultColor)">
+					@RollResult
+				</div>
+			}
+			@if (Movement.IsImproved)
+			{
+				<img src="imgs/US/UpgradedIcon.svg" width="16" height="16" />
+			}
+			@if (Movement.HasRoll())
+			{
+				<div class="d-flex gap-1">
+					<img src="imgs/DW/RedDice_on.png" title="Tirar con desventaja" width="18" height="18" @onclick=RollClickedWithDISAdvantage @onclick:stopPropagation/>
+					<img src="imgs/US/dice-5-outline.svg" width="18" height="18" @onclick=RollClicked @onclick:stopPropagation/>
+					<img src="imgs/DW/greenDice_off.png"title="Tirar con ventaja" width="18" height="18" @onclick=RollClickedWithAdvantage @onclick:stopPropagation/>
+				</div>
+			}
+			else {
+				<img src="imgs/US/ComicBubble.svg" width="18" height="18" @onclick=RollClicked @onclick:stopPropagation />
+			}
+		</div>
+	</div>
+	<div class="MovementContentOuter @(State == States.Minimized?"Hide":"")">
+		@if (Movement is not DWMove)
+		{
+			<div class="MovementContent">
+				<DecodedString Value=@Movement.PreCondition.MainText />
+
+				@if (Movement.PreCondition.Options != null && Movement.PreCondition.Options.Count > 0)
+				{
+					<ul>
+						@foreach (var entry in Movement.PreCondition.Options)
+						{
+							<li><DecodedString Value="@entry" /></li>
+						}
+					</ul>
+				}
+				@if (Movement.ConsequencesOn79 != null)
+				{
+					@Movement.ConsequencesOn79.MainText
+					@if (Movement.ConsequencesOn79.Options != null && Movement.ConsequencesOn79.Options.Count > 0)
+					{
+						<ul>
+							@foreach (var entry in Movement.ConsequencesOn79.Options)
+							{
+								<li>@entry</li>
+							}
+						</ul>
+					}
+				}
+				@if (Movement.ConsequencesOn10 != null)
+				{
+					@Movement.ConsequencesOn10.MainText
+					@if (Movement.ConsequencesOn10.Options != null && Movement.ConsequencesOn10.Options.Count > 0)
+					{
+						<ul>
+							@foreach (var entry in Movement.ConsequencesOn10.Options)
+							{
+								<li>@entry</li>
+							}
+						</ul>
+					}
+				}
+				@if (Movement.AdvancedConsequences != null && Movement.AdvancedConsequences.MainText != null && Movement.AdvancedConsequences.MainText != "")
+				{
+					<div class="AdvancedMovementContent @(Movement.IsImproved?"":"NotAdvancedMovement")">
+						@Movement.AdvancedConsequences.MainText
+						@if (Movement.AdvancedConsequences.Options != null && Movement.AdvancedConsequences.Options.Count > 0)
+						{
+							<ul>
+								@foreach (var entry in Movement.AdvancedConsequences.Options)
+								{
+									<li>@entry</li>
+								}
+							</ul>
+						}
+					</div>
+				}
+			</div>
+		}
+		else
+		{
+			<div class="MovementContent">
+				@if (Movement.PreCondition != null && Movement.PreCondition.MainText != "")
+				{
+					<DecodedString Value=@Movement.PreCondition.MainText />
+				}
+				@if (Movement.PreCondition.Options != null && Movement.PreCondition.Options.Count > 0)
+				{
+					<ul>
+						@foreach (var entry in Movement.PreCondition.Options)
+						{
+							<li><DecodedString Value="@entry" /></li>
+						}
+					</ul>
+				}
+				@if (Movement.ConsequencesOn6 != null && Movement.ConsequencesOn6.MainText != "")
+				{
+					<div class="d-flex mb-2">
+						<div>
+							<span class="MovementRangeMarker">@("<6"):</span>
+						</div/> 
+						<div>
+							@Movement.ConsequencesOn6.MainText
+							@if (Movement.ConsequencesOn6.Options != null && Movement.ConsequencesOn6.Options.Count > 0)
+							{
+								<ul>
+									@foreach (var entry in Movement.ConsequencesOn6.Options)
+									{
+										<li><DecodedString Value="@entry" /></li>
+									}
+								</ul>
+							}
+						</div>
+					</div>
+				}
+				@if (Movement.ConsequencesOn79 != null && Movement.ConsequencesOn79.MainText != "")
+				{
+					<div class="d-flex mb-2">
+						<div>
+							<span class="MovementRangeMarker">7-9:</span>
+						</div/> 
+						<div>
+							@Movement.ConsequencesOn79.MainText
+							@if (Movement.ConsequencesOn79.Options != null && Movement.ConsequencesOn79.Options.Count > 0)
+							{
+								<ul>
+									@foreach (var entry in Movement.ConsequencesOn79.Options)
+									{
+										<li><DecodedString Value="@entry" /></li>
+									}
+								</ul>
+							}
+						</div>
+					</div>
+				}
+				@if (Movement.ConsequencesOn10 != null && Movement.ConsequencesOn10.MainText != "")
+				{
+					<div class="d-flex">
+						<div>
+							<span class="MovementRangeMarker">>10:</span>
+						</div/> 
+						<div>
+							@Movement.ConsequencesOn10.MainText
+							@if (Movement.ConsequencesOn10.Options != null && Movement.ConsequencesOn10.Options.Count > 0)
+							{
+								<ul>
+									@foreach (var entry in Movement.ConsequencesOn10.Options)
+									{
+										<li><DecodedString Value="@entry" /></li>
+									}
+								</ul>
+							}
+						</div>
+					</div>
+				}
+				@if ((Movement as DWMove).HasSubMovements && (Movement as DWMove).SelectableOptions is not null)
+				{
+					@foreach (var sub in (Movement as DWMove).SelectableOptions)
+					{
+						<div class="mb-2">
+							<RedCheckBox Value=CheckSubID(sub) Clicked="@(async ()=>{await Toggle(sub);})"/>
+							<span style="font-weight:bold; margin-right:10px;">@sub.Tittle</span>@sub.Description
+						</div>
+					}
+				}
+			</div>
+		}
+
+	</div>
+</div>
+
+
+@code {
+	[Parameter] public IMove Movement { get; set; } = new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet);
+	[Parameter] public States State { get; set; } = States.Minimized;
+	[Parameter] public bool IsLastMasterBox { get; set; } = false;
+	[Parameter] public int? RollResult { get; set; } = null;
+	[Parameter] public DWCharacter? Player { get; set; } = null;
+
+	public int NumTimesUsed { get; set; } = 0;	
+
+	private string RollResultColor{
+		get {
+			if (RollResult == null) return "";
+			else if (RollResult < 7) return "red";
+			else if (RollResult < 10) return "orange";
+			else return "green";
+		}
+	}
+
+	private bool CheckSubID(SubMovement subm)
+	{
+		if (DWGameController is not null)
+		{
+			return Player.ClassMovments.Contains(subm.ID);
+		}
+		else
+			return false;
+	}
+
+	private async Task Toggle(SubMovement sub)
+	{
+		if (Player.ClassMovments.Contains(sub.ID))
+		{
+			Player.ClassMovments.Remove(sub.ID);
+			await DWGameController.StoreChangesOn(Player, "quitó " + sub.Tittle);
+		}
+		else
+		{
+			Player.ClassMovments.Add(sub.ID);
+			await DWGameController.StoreChangesOn(Player, "añadió " + sub.Tittle);
+		}
+	}
+
+	private string MovementHeader {
+		get{
+			try
+			{
+
+				if(Movement == null)
+				{
+					;
+				}
+				string txt = $"{Movement.Tittle}";
+
+				if (Movement.HasRoll())
+				{
+					if (DWGameController == null || Player == null)
+						txt += $" - {Movement.ToUI()}";
+					else
+						txt += $" - {Movement.ToUI()} ({Player.getBonus(Movement)})";
+				}
+				return txt;
+			}
+			catch(Exception e)
+			{
+				return "fallo";
+			}
+		}
+	} 
+	public enum States {Minimized, Maximized};
+
+	private void HeaderClicked()
+	{
+		if (State == States.Minimized) State = States.Maximized;
+		else if (State == States.Maximized) State = States.Minimized;
+	}
+
+	private void RollClicked() => RollWithType(RollTypes.Roll_Simple);
+	private void RollClickedWithAdvantage()=> RollWithType(RollTypes.Roll_Advantage);
+	private void RollClickedWithDISAdvantage()=> RollWithType(RollTypes.Roll_Disadvantage);
+
+	private void RollWithType(RollTypes rType)
+	{
+		if(Player is null)
+		{
+			throw new Exception("Player has not been assigned to movement viewer");
+		}
+		if(Movement is DWMove)
+		{
+			var DWMove = Movement as DWMove;
+			DWGameController.Roll(Player.ID, DWMove.Roll, DWMove.ID, Player.GetBonus(DWMove.Roll) , rType);
+		}
+	}
+
+}

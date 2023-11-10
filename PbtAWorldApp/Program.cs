@@ -11,6 +11,7 @@ using PbtADBConnector.DbAccess;
 using PbtADBConnector.Data;
 using PbtADBConnector;
 using DungeonWorld;
+using static PbtaWorldRazonCommonComponents.LastRollOverlay;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddSingleton<DWMovesService>();
 builder.Services.AddSingleton<PNJs>();
 builder.Services.AddSingleton<DinoGameController>();
 builder.Services.AddSingleton<DWGameController>();
+builder.Services.AddSingleton<LastRollViewerService>();
 builder.Services.AddScoped<DinoCharacter>();
 builder.Services.AddBlazorBootstrap();
 

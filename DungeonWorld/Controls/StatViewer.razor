@@ -70,20 +70,23 @@
 
 	private int StatValue;
 
-	private async Task MainClicked(){
-		await RequestRoll(RawMovement, RollTypes.Roll_Simple);
+	private void MainClicked()
+	{
+		RequestRoll(RawMovement, RollTypes.Roll_Simple);
 	}
-	private async Task RedClicked(){
-		await RequestRoll(RawMovement, RollTypes.Roll_Disadvantage);
+	private void RedClicked()
+	{
+		RequestRoll(RawMovement, RollTypes.Roll_Disadvantage);
 	}
-	private async Task GreenClicked(){
-		await RequestRoll(RawMovement, RollTypes.Roll_Advantage);
+	private void GreenClicked()
+	{
+		RequestRoll(RawMovement, RollTypes.Roll_Advantage);
 	}
 
-	private async Task RequestRoll(DWMovementIDs movID, RollTypes rt)
+	private void RequestRoll(DWMovementIDs movID, RollTypes rt)
 	{
 		var mov = Moves.GetMovement(movID);
-		//await Game.RequestRoll(mov, rt);
+		Game.Roll(Player.ID, Stat, movID, Player.getBonus(Stat), rt);
 	}
 
 	private async Task EditFinished()

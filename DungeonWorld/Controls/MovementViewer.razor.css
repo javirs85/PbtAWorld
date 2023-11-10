@@ -1,0 +1,92 @@
+﻿.MovementViewerMain {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    background-color: #F0F0F0;
+    color: black;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.External {
+    background-color: aliceblue;
+}
+
+.MovementHeader {
+    font-family: 'Alegreya SC', serif;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 5px;
+}
+
+.MovementContentOuter {
+    overflow: hidden;
+    transition: all 1s ease-in;
+}
+
+.Hide {
+    height: 0;
+}
+
+.MovementContent {
+    border-left: 3px solid red;
+    padding: 5px;
+    margin: 10px;
+    margin-top: 0;
+}
+
+    .MovementContent span {
+        font-weight: bold;
+        margin-right: 10px;
+        white-space: nowrap;
+    }
+
+.AdvancedMovementContent {
+    border-left: 3px solid #14A911;
+    padding: 5px;
+    margin: 10px;
+    margin-top: 0;
+}
+
+.NotAdvancedMovement {
+    background: #fdfbfb;
+    opacity: .5;
+    border-color: #adf9ac;
+}
+
+.RollResultBox {
+    color: white;
+    font-size: 28px;
+    line-height: 29px;
+    width: 41px;
+    text-align: center;
+}
+
+
+.red {
+    background-color: darkred;
+}
+
+.orange {
+    background-color: darkgoldenrod;
+}
+
+.green {
+    background-color: darkgreen;
+}
+
+.NeverUsed {
+}
+
+.FewUses {
+    background-color: aquamarine;
+}
+
+.LotsOfUses {
+    background-color: burlywood;
+}
+
+.ToMuch {
+    background-color: lightcoral;
+}

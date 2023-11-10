@@ -2,6 +2,9 @@
 
 public class PbtACharacter
 {
+	public event EventHandler UpdateUI;
+	public void OnUpdateUI()=>UpdateUI?.Invoke(this, EventArgs.Empty);
+
 	private Guid _id = Guid.NewGuid();
 
 	public Guid ID
@@ -20,7 +23,7 @@ public class PbtACharacter
 		set { _name = value; }
 	}
 
-	public virtual int GetStatBonus<T>(T stat){
+	public virtual int GetBonus<T>(T stat){
 		throw new NotImplementedException();
 	}
 

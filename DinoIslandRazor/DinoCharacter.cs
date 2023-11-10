@@ -7,7 +7,6 @@ namespace DinoIsland;
 
 public class DinoCharacter : PbtACharacter
 {
-	public event EventHandler UpdateUI;
 
 	public DinoCharacter() { }
 
@@ -28,7 +27,7 @@ public class DinoCharacter : PbtACharacter
 	public void UpdateMapItems(List<MapItem> mapItems)
 	{
 		MapItems = mapItems;
-		UpdateUI?.Invoke(this, EventArgs.Empty);
+		OnUpdateUI();
 	}
 
 	public void UpdateMapItems(MapItem mapItem)
@@ -46,7 +45,7 @@ public class DinoCharacter : PbtACharacter
 			if (item != null)
 				MapItems.Remove(item);
 		}
-		UpdateUI?.Invoke(this, EventArgs.Empty);
+		OnUpdateUI();
 	}
 
 
@@ -56,7 +55,7 @@ public class DinoCharacter : PbtACharacter
 
 
 
-	public override int GetStatBonus<T>(T _stat)
+	public override int GetBonus<T>(T _stat)
 	{
 		if(_stat is DinoStates)
 		{

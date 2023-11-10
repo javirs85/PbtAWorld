@@ -24,8 +24,6 @@ public class DWCharacter : PbtALib.PbtACharacter
 			}
 		}
 	}
-
-
 	public Equipment Equip { get; set; } = new();
 
 	public string Motivation { get; set; } = "";
@@ -1273,7 +1271,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 		}
 	}
 
-	public int getBonus<T>(T statsEnum)
+	public override int GetBonus<T>(T statsEnum)
 	{
 		if (typeof(T) == typeof(DWStats))
 		{

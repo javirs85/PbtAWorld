@@ -1,10 +1,11 @@
 ﻿@page "/DWPlayer/{PlayerID:guid}"
-
+@using static PbtaWorldRazonCommonComponents.LastRollOverlay;
 
 @inject NavigationManager NavigationManager
 @inject DWGameController Game
 @inject IToastService Toaster
 @inject DWMovesService Moves
+@inject LastRollViewerService LastRollViewer
 
 @if (false)
 {
@@ -12,10 +13,15 @@
 }
 else
 {
+	@if (_ShowingLastRoll)
+	{
+		<div class="LastRoll">
+		</div>
+	}
+	
 	<div class="d-flex SheetContainer" @onclick=FinishAllEdits>
 		<div class="PaperSheet d-flex flex-column">
 			<div class="w-100 m-2 d-flex align-items-center">
-
 				<div class="HeaderName @(IsEditingName ? "Hidden" : "" )" @onclick=EditName @onclick:stopPropagation>@Player.Name</div>
 				<input class="HeaderNameInput @(!IsEditingName ? "Hidden" : "" )" @onclick:stopPropagation @bind=Player.Name @onfocusout=UpdatePlayerName>
 
@@ -59,9 +65,30 @@ else
 								<div>/@Player.MaxHP</div>
 							</div>
 						</div>
-						<div class="DamageOuter" @onclick=RequestRollDamage>
+						<div class="DamageOuter" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);})>
 							<div>Daño</div>
-							<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" width="65" />
+							<div class="DamageBox">
+								<div class="DamageOptions d-flex flex-column" 
+								@onclick:stopPropagation
+								@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
+								@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;})
+								style="@(IsShowingDamageOptions?"display:flex;":"display:none!important;")">
+									<div class="d-flex">
+										<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Disadvantage);}) style="background: #ff000036;" />
+										<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);}) />
+										<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Advantage);}) style="    background: #0cb53836;" />
+									</div>
+									<div class="d-flex">
+										<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_DisadvantagePlus1d6);}) style="background: #ff000036;">+1d6</div>
+										<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_SimplePlus1d6);})>+1d6</div>
+										<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_AdvantagePlus1d6);}) style="background: #0cb53836;">+1d6</div>
+									</div>
+								</div>
+								<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")"
+								class="DamageBoxImage"
+								@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
+								@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;}) />
+							</div>
 						</div>
 					</div>
 					<div class="d-flex flex-column w-100">
@@ -249,7 +276,7 @@ else
 					<div class="MovementsGroupTittle">Movimientos de @Player.Profession.ToUI()</div>
 					@foreach (var m in ClassMovements)
 					{
-						<MovementViewer Movement="m" />
+						<MovementViewer Player="Player" Movement="m" />
 					}
 				</div>
 				<div class="MovementsGroup">
@@ -259,7 +286,7 @@ else
 					</div>
 					@foreach (var m in AvancedClassMovements)
 					{
-						<MovementViewer Movement="m"/>
+						<MovementViewer Player="Player" Movement="m" />
 					}
 				</div>
 			</div>
@@ -268,12 +295,12 @@ else
 					<div class="MovementsGroupTittle">Movimientos comunes</div>
 					@foreach(var m in BasicMovements)
 					{
-						<MovementViewer Movement="m"/>
+						<MovementViewer Player="Player" Movement="m" />
 					}
 					<div class="MovementsGroupTittle"> </div>
 					@foreach(var m in AdvancedMovements)
 					{
-						<MovementViewer Movement="m"/>
+						<MovementViewer Player="Player" Movement="m" />
 					}
 				</div>
 			</div>
@@ -309,7 +336,7 @@ else
 					@foreach (var m in MovmentsForAdvancedSelector)
 					{
 						<div class="MovementInSelectorItem  d-flex">
-							<MovementViewer Movement="m"/> 
+							<MovementViewer Player="Player" Movement="m" />
 							@if(Player.ClassAdvancedMovments.Contains(m.ID))
 							{
 								<img src="imgs/US/DeleteIcon.svg" @onclick:stopPropagation @onclick=@(async ()=>{await ToggleMovment(m);}) />
@@ -331,6 +358,8 @@ else
 	private enum States {Character, StringSelector, MovementSelector, BackgroundSelector, StringEditing}
 	private enum EditableBits {Name, Background1, Background2, Background3x}
 	private States CurrentState = States.Character;
+	private bool _ShowingLastRoll = false;
+	private bool IsShowingDamageOptions = false;
 
 	private List<string> StringsForStringSelector = new();
 	private List<Background> BackgroundsForBackgroundSelector = new();
@@ -398,12 +427,29 @@ else
 				AvancedClassMovements.Add(m);
 		}
 
+		Game.OnUIUpdate += (o, e) => InvokeAsync(() => { StateHasChanged(); });
 
-		Game.OnNewRoll += (o, report) =>
+		Game.NewInfoToast += (o, msg) => Toaster.ShowInfo(msg);
+		ImagesDB.Init();
+		Game.AddPlayer(Player);
+
+		Game.OnNewRoll -= ShowRoll;
+		Game.OnNewRoll += ShowRoll;
+
+		Player.UpdateUI += (o, e) =>
 		{
-			Toaster.ShowInfo(report.Total.ToString());
+			InvokeAsync(() => { StateHasChanged(); });
+			//map?.Update();
 		};
+	}
 
+	private void ShowRoll(object? sender, IRollReport roll)
+	{
+		LastRollViewer.Show(roll);
+		InvokeAsync(() => { StateHasChanged(); });
+		// //Game.LastRoll = roll;
+		// Toaster.ShowInfo($"{roll.Roller} tiró por {roll.MoveTittle} y sacó un {roll.Total}");
+		// InvokeAsync(() => { StateHasChanged(); });
 	}
 
 	private async Task DownloadPlayer()
@@ -506,9 +552,9 @@ else
 			*/
 	}
 
-	private async Task RequestRollDamage()
+	private void RequestRollDamage(RollTypes Advantage)
 	{
-		await Game.RequestRawRol(Player, new List<DiceTypes> { Player.Damage });
+		Game.RollDamage(Player.ID,  Player.Damage , Advantage);
 	}
 
 	private AvailableGames GameName = AvailableGames.DW;

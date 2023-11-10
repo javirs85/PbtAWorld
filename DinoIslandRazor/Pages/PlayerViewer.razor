@@ -218,7 +218,7 @@
 									@if (Game.LastRoll is not null)
 									{
 										<div>@Game.LastRoll.Roller</div>
-										<div>@Game.LastRoll.MoveTittle <span class="small opacity-50">con</span> @Game.LastRoll.Stat.ToUIString()</div>
+										<div>@Game.LastRoll.MoveTittle <span class="small opacity-50">con</span> @Game.LastRoll.StatString</div>
 										<div class="d-flex gap-2 justify-content-center m-4">
 											<div class="d-flex align-items-center gap-2">
 												<div class="dice">@Game.LastRoll.d1</div> +
@@ -262,7 +262,7 @@
 								<i class="bi bi-image fs-4 opacity-25"></i>
 							}
 
-							@if (string.IsNullOrEmpty(Game.LastRoll.Roller))
+							@if (Game.LastRoll is not null && string.IsNullOrEmpty(Game.LastRoll.Roller))
 							{
 								<i class="bi bi-dice-5 fs-4 opacity-25 ms-1"></i>
 							}

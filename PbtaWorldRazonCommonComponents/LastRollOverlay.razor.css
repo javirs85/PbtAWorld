@@ -1,0 +1,95 @@
+﻿.LastRollContainer {
+    display: flex;
+    flex-direction: column;
+}
+.BoxPack {
+    background: #1f2723e6;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #5d5d5d;
+    color: #cdcdcd;
+}
+
+.dice {
+    width: 30px;
+    height: 30px;
+    border: 1px solid white;
+    border-radius: 4px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.dice.crossed{
+    opacity: 0.4;
+}
+
+.RollResult {
+    font-size: 22px;
+}
+
+.TotalSuccess {
+    background: #032308;
+    color: #c5ffc5;
+}
+
+.HalfSuccess {
+    background: #4b1c01;
+    color: orange;
+}
+
+.FailedRoll {
+    background: #3b0000;
+    color: #f3d6d6;
+}
+
+.LastRollHeader {
+    cursor: pointer;
+    position: relative;
+    top: 0px;
+    width: 100%;
+    right: 0px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.FloatinCover {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 11;
+    background: black;
+    border-radius: 9px;
+    padding: 20px;
+    box-shadow: 2px 2px 6px #000000a3;
+}
+
+.RawRollerDice {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.RawRollerDice img{
+    position:absolute;
+    opacity: 0.5;
+    width: 70px;
+    height:70px;
+}
+.RawDollerDiceNumber {
+    position: relative;
+    background: #c9c9c9b8;
+    color: black;
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 36px;
+}

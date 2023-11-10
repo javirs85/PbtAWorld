@@ -34,7 +34,7 @@
 						{
 							
 							<div>@Game.LastRoll.Roller</div>
-							<div>@Game.LastRoll.MoveTittle <span class="small opacity-50">con</span> @Game.LastRoll.Stat.ToUIString()</div>
+							<div>@Game.LastRoll.MoveTittle <span class="small opacity-50">con</span> @Game.LastRoll.StatString</div>
 							<div class="d-flex gap-2 justify-content-center m-4">
 								<div class="d-flex align-items-center gap-2">
 									<div class="dice">@Game.LastRoll.d1</div> +
@@ -45,7 +45,7 @@
 								</div>
 								<div class="RollResult">@Game.LastRoll.Total</div>
 							</div>
-							<MoveViewerDino Player="Player" Move="@(Moves.GetMovement(Game.LastRoll?.MoveId) as DinoMove)" StartsOpen=true />
+							<MoveViewerDino Player="Player" Move="@(Moves.GetMovement(Game.LastRoll?.GetID<DinoMoveIDs>()) as DinoMove)" StartsOpen=true />
 						}
 						else
 						{
@@ -522,7 +522,7 @@
 
 @code {
 	[Parameter] public MapMini? Map { get; set; } = null;
-	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; } = null;
+	[Parameter] public DinoRollReport? LastRoll { get; set; } = null;
 	private List<MovePackPlayer> MovesOnScreen = new();
 
 	protected override void OnParametersSet()

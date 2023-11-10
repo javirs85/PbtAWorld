@@ -1,0 +1,139 @@
+﻿@using PbtALib;
+@inject LastRollViewerService service
+
+@if(service.IsVisible)
+{
+	<div class="FloatinCover">
+		@if(service.LastRoll is not null && service.LastRoll.IsRaw == false)
+		{
+			<div @onclick=service.Hide
+				 class="LastRollHeader">
+				<h4 class="text-light">@service.LastRoll.MoveTittle</h4>
+				<i class="bi bi-x-lg text-light fs-2"></i>
+			</div>
+			<div class="LastRollContainer BoxPack @LastRollBoxColor">
+							
+				<div>
+					@service.LastRoll.Roller <span class="small opacity-50">tira </span>
+					@service.LastRoll.MoveTittle <span class="small opacity-50">con </span> 
+					@if(service.LastRoll.RollType == RollTypes.Roll_Simple)
+					{
+						@service.LastRoll.StatString
+					}
+					else if(service.LastRoll.RollType == RollTypes.Roll_Advantage)
+					{
+						<span>ventaja</span>
+					}
+					else
+					{
+						<span>desventaja</span>
+					}
+				</div>
+					
+				<div class="d-flex gap-2 justify-content-center m-4">
+					<div class="d-flex align-items-center gap-2">
+						@if(service.LastRoll.RollType == RollTypes.Roll_Disadvantage)
+						{
+							<div class="dice">@service.LastRoll.d1</div>							
+						}
+						else
+						{
+							<div class="dice crossed">@service.LastRoll.d1</div>
+						}
+						<span> + </span>
+						<div class="dice">@service.LastRoll.d2</div> +
+						@if (service.LastRoll.RollType == RollTypes.Roll_Advantage)
+						{
+							<div class="dice">@service.LastRoll.d3</div>
+							<span> + </span>
+						}
+						else if (service.LastRoll.RollType == RollTypes.Roll_Disadvantage)
+						{
+							<div class="dice crossed">@service.LastRoll.d3</div>
+							<span> + </span>
+						}
+						
+						<div class="dice rounded-circle" style="border-style: none; background: #ffffff2e;">
+							@service.LastRoll.bonus
+						</div>
+						=
+					</div>
+					<div class="RollResult">@service.LastRoll.Total</div>
+				</div>
+				
+
+			</div>
+		}
+		else if (service.LastRoll is not null && service.LastRoll.IsRaw == true)
+		{
+			<div @onclick=service.Hide
+				 class="LastRollHeader">
+				<h4 class="text-light">@service.LastRoll.Roller</h4>
+				<i class="bi bi-x-lg text-light fs-2"></i>
+			</div>
+			<div class="LastRollContainer BoxPack d-flex flex-row gap-2" style="background: @DamageBackgroundColor">
+				@foreach (var d in service.LastRoll.Dices)
+			{
+					<div class="RawRollerDice">
+						<img src="imgs/DW/@d.Item1.ToImagePath()"/>
+						<div class="RawDollerDiceNumber">@d.Item2</div>
+					</div>
+				}
+			</div>
+		}
+		else
+		{
+			<div>Aún nadie ha tirado nada</div>
+		}
+	</div>
+}
+
+@code {
+	protected override void OnParametersSet()
+	{
+		service.UpdateNeeded += (o, e) => { InvokeAsync(() => { StateHasChanged(); }); };
+	}
+
+	private string DamageBackgroundColor
+	{
+		get
+		{
+			if (service.LastRoll.RollType == RollTypes.Roll_Simple || service.LastRoll.RollType == RollTypes.Roll_SimplePlus1d6  )
+				return "white";
+			if (service.LastRoll.RollType == RollTypes.Roll_Disadvantage || service.LastRoll.RollType == RollTypes.Roll_DisadvantagePlus1d6)
+				return "#e9acac";
+			if (service.LastRoll.RollType == RollTypes.Roll_Advantage || service.LastRoll.RollType == RollTypes.Roll_AdvantagePlus1d6)
+				return "#dce9dc";
+			else
+				return "white";
+		}
+	}
+
+	private string LastRollBoxColor
+	{
+		get
+		{
+			if (service.LastRoll.Total >= 10) return "TotalSuccess";
+			else if (service.LastRoll.Total >= 7) return "HalfSuccess";
+			else return "FailedRoll";
+		}
+	}
+
+	public class LastRollViewerService
+	{
+		public event EventHandler UpdateNeeded;
+		public bool IsVisible = false;
+		public IRollReport LastRoll { get; set; }
+
+		public void Show(IRollReport roll)
+		{
+			LastRoll = roll;
+			IsVisible = true;
+			UpdateNeeded?.Invoke(this, EventArgs.Empty);
+		} 
+		public void Hide(){
+			IsVisible = false;
+			UpdateNeeded?.Invoke(this, EventArgs.Empty);
+		}
+	}
+}

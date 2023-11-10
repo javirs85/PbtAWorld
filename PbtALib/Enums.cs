@@ -17,7 +17,7 @@ public static class Extensions
 
 public enum RollTypes
 {
-	Roll_Simple, Roll_Advantage, Roll_Disadvantage
+	Roll_Simple, Roll_Advantage, Roll_Disadvantage, Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6
 }
 public enum DiceTypes
 {
@@ -26,6 +26,35 @@ public enum DiceTypes
 
 public static class UIExtensions
 {
+
+	public static string ToImagePath(this DiceTypes dice)
+	{
+		return dice switch
+		{
+			DiceTypes.d4 => "d4.svg",
+			DiceTypes.d6 => "d6.svg",
+			DiceTypes.d8 => "d8.svg",
+			DiceTypes.d10 => "d10.svg",
+			DiceTypes.d12 => "d12.svg",
+			DiceTypes.d20 => "d20.svg",
+			_ => "error"
+		};
+	}
+
+	public static int MaxValue(this DiceTypes dice)
+	{
+		return dice switch
+		{
+			DiceTypes.d4 => 4,
+			DiceTypes.d6 => 6,
+			DiceTypes.d8 => 8,
+			DiceTypes.d10 => 10,
+			DiceTypes.d12 => 12,
+			DiceTypes.d20 => 20,
+			_ => 0
+		};
+	}
+
 	public static string ToUI(this AvailableGames game)
 	{
 		return game switch

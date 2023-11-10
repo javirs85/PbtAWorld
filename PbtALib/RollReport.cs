@@ -6,7 +6,28 @@ using System.Threading.Tasks;
 
 namespace PbtALib;
 
-public class RollReport<T_ID, T_Stats>
+public interface IRollReport
+{
+	bool IsRaw { get; set; }
+	List<Tuple<DiceTypes, int>> Dices { get; set; }
+	string Roller { get; set; }
+	RollTypes RollType { get; set; }
+	int d1 { get; set; }
+	int d2 { get; set; }
+	int d3 { get; set; }
+	int StatValue { get; set; }
+	int bonus { get; set; }
+	int Total { get; set; }
+	string MoveTittle { get; }
+	string StatString { get; }
+	void SetID<T>(T id);
+	T GetID<T>();
+	void SetStat<T>(T id);
+	T GetStat<T>();
+
+}
+
+public abstract class RollReport<T_ID, T_Stats> : IRollReport
 {
 	MovesServiceBase? Moves;
 
@@ -24,7 +45,6 @@ public class RollReport<T_ID, T_Stats>
 		MoveId = MoveID;
 		Stat = stat;
 	}
-
 	public RollReport(T_ID MoveID, T_Stats stat, string MoveTittle, string _iDofTheRoller, RollTypes type = RollTypes.Roll_Simple)
 	{
 		MoveId = MoveID;
@@ -44,12 +64,39 @@ public class RollReport<T_ID, T_Stats>
 	public int bonus { get; set; } = 0;
 	public int Total { get; set; } = 0;
 	public T_ID MoveId { get; set; }
+	
 	public T_Stats Stat { get; set; }
 	public string LocalTittle { get; set; } = "";
-	public string MoveTittle { 
-		get { 
-			if(!string.IsNullOrEmpty(LocalTittle)) return LocalTittle;
-			return Moves?.GetMovement<T_ID>(MoveId).Tittle ?? $"Cannot find move's tittle {MoveId} @ RollReport::MoveTittle"; 
-		} 
+	public string MoveTittle
+	{
+		get
+		{
+			if (!string.IsNullOrEmpty(LocalTittle)) return LocalTittle;
+			return Moves?.GetMovement<T_ID>(MoveId).Tittle ?? $"Cannot find move's tittle {MoveId} @ RollReport::MoveTittle";
+		}
+	}
+	public abstract string StatString { get; }
+	public bool IsRaw { get; set; } = false;
+	public List<Tuple<DiceTypes, int>> Dices { get; set; } = new();
+
+	public void SetID<T>(T id)
+	{
+		MoveId = (T_ID)(object)id;
+	}
+
+	public T GetID<T>()
+	{
+		return (T)(object)MoveId;
+	}
+
+	public void SetStat<T>(T stat)
+	{
+		Stat = (T_Stats)(object)stat; ;
+	}
+
+	public T GetStat<T>()
+	{
+		return (T)(object)Stat;
 	}
 }
+

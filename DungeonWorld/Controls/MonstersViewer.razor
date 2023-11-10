@@ -1,0 +1,71 @@
+﻿@page "/DW/Monsters/"
+
+
+<div class="d-flex flex-column">
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.cavernas;})>Cavernas</button>
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.pantano;})>Pantano</button>
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.nomuerto;})>Legiones de muertos vivientes</button>
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.BosqueOscuro;})>Bosques oscuros</button>
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.Horda;})>Hordas voraces</button>
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.Experimentos;})>Experimentos perversos</button>
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.Profundidades;})>Profundidades insondables</button>
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.Planares;})>Poderes planares</button>
+	<button class="btn btn-primary" @onclick=@(()=>{MonsterKind = MonsterKinds.Gentes;})>Gentes del reino</button>
+</div>
+
+@if(MonsterKind != MonsterKinds.NotSet)
+{
+	<div style="height: 100vh;overflow:auto;overflow-x: hidden;">
+		<div class="d-flex flex-column">
+			<h1>@Tittle</h1>
+			<div class="d-flex flex-column">
+				@for (int i = 1; i <= Amount; ++i)
+				{
+					<img width="700" src="imgs/DW/Monsters/@MonsterKind.ToString()/@MonsterKind.ToString() (@i).jpg" />
+				}
+			</div>
+		</div>
+	</div>
+}
+@code 
+{
+	public MonsterKinds MonsterKind { get; set; } = MonsterKinds.NotSet;
+
+	private string Tittle {
+		get
+		{
+			return MonsterKind switch
+			{
+				MonsterKinds.pantano => "Pantanos",
+				MonsterKinds.cavernas => "Cavernas",
+				MonsterKinds.nomuerto => "Legiones de muertos vivientes",
+				MonsterKinds.BosqueOscuro => "El oscuro bosque",
+				MonsterKinds.Horda => "Hordas voraces",
+				MonsterKinds.Experimentos => "Experimentos perversos",
+				MonsterKinds.Profundidades => "Profundidades insondables",
+				MonsterKinds.Planares => "Poderes planares",
+				MonsterKinds.Gentes => "Gentes del reino",
+				_ => "Not set"
+			};
+		}
+	}
+
+	private int Amount {
+		get {
+			return MonsterKind switch
+			{
+				MonsterKinds.pantano => 20,
+				MonsterKinds.cavernas => 19,
+				MonsterKinds.nomuerto => 18,
+				MonsterKinds.BosqueOscuro => 17,
+				MonsterKinds.Horda => 19,
+				MonsterKinds.Experimentos => 15,
+				MonsterKinds.Profundidades => 13,
+				MonsterKinds.Planares => 13,
+				MonsterKinds.Gentes => 18,
+				_ => 0
+			};
+		}
+	}
+
+}

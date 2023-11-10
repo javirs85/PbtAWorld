@@ -197,20 +197,26 @@ public static class DWExtesions
 			_ => "Unknown DWStat"
 		};
 	}
-
-	public static string ToImagePath(this DiceTypes dice)
+	public static string ToLONG_UI(this DWStats stat)
 	{
-		return dice switch
+		return stat switch
 		{
-			DiceTypes.d4 => "d4.svg",
-			DiceTypes.d6 => "d6.svg",
-			DiceTypes.d8 => "d8.svg",
-			DiceTypes.d10 => "d10.svg",
-			DiceTypes.d12 => "d12.svg",
-			DiceTypes.d20 => "d20.svg",
-			_ => "error"
+			DWStats.DW_NotSet => "NotSet",
+			DWStats.DW_STR => "fuerza",
+			DWStats.DW_DEX => "destreza",
+			DWStats.DW_CON => "constitución",
+			DWStats.DW_INT => "inteligencia",
+			DWStats.DW_WIS => "sabiduría",
+			DWStats.DW_CHA => "carisma",
+			DWStats.DW_DorS => "FUE o DES",
+			DWStats.DW_CON_Plus2 => "CON+2",
+			DWStats.DW_DEXCONWIS => "DES CON o SAB",
+			DWStats.DW_PlusZero => "+0",
+			DWStats.DW_CHOSE => "Elije",
+			_ => "Nada"
 		};
 	}
+
 
 	public static string ToUI(this DWClasses clas)
 	{

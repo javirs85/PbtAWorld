@@ -239,7 +239,7 @@
 	[Parameter] public DinoMove Move { get; set; } = new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set" };
 	[Parameter] public bool StartsOpen { get; set; } = false;
 	[Parameter] public bool AllowMultipleSelection { get; set; } = false;
-	[Parameter] public RollReport<DinoMoveIDs, DinoStates>? LastRoll { get; set; }
+	[Parameter] public IRollReport LastRoll { get; set; }
 	[Parameter] public DinoCharacter Player { get; set; }
 
 	bool SelectedByDefault => Move.ForClass != DinoClasses.NotSet && Move.IsAdvancedMove == false;
@@ -254,6 +254,6 @@
 		base.OnParametersSet();
 	}
 
-	private bool ItsMeLastRoller => LastRoll is not null && LastRoll.Roller == Player.Name && LastRoll.MoveId == Move.ID;
+	private bool ItsMeLastRoller => LastRoll is not null && LastRoll.Roller == Player.Name && LastRoll.GetID<DinoMoveIDs>() == Move.ID;
 
 }
