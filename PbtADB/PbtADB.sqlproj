@@ -80,6 +80,7 @@
     <Build Include="dbo\StoredProcedures\Character\spCharacter_Delete.sql" />
     <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_GetCampaign.sql" />
     <Build Include="dbo\StoredProcedures\Character\spCharacter_GetSerializedDateForPlayer.sql" />
+    <Build Include="dbo\StoredProcedures\Character\spCharacter_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\StoredProcedures\Script.PostDeployment.sql" />

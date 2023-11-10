@@ -114,6 +114,11 @@ public class DataBaseController : IDataBaseController
 	{
 		await CharactersDB.InsertNewCharacter(GameID, CampaignID, serializedData, Name, classCode, CharacterID);
 	}
+
+	public async Task StoreChangesinCharacter(Guid CharacterID, string newName, string serializedData)
+	{
+		await CharactersDB.UpadteCharacter(CharacterID, newName, serializedData);
+	}
 }
 
 

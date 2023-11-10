@@ -8,17 +8,79 @@ namespace DinoIsland;
 public class DinoCharacter : PbtACharacter
 {
 
-	public DinoCharacter() { }
+	public DinoGameController Game;
+	public DinoCharacter(DinoGameController _game)
+	{
+		Game = _game;
+	}
+	protected override void InitInternal()
+	{
+		InitClass();
+	}
+
+	public DinoCharacter() 
+	{
+	}
 
 
-    public string Wound1 { get; set; } = string.Empty;
-	public string Wound2 { get; set; } = string.Empty;
+	private string _w1;
+	public string Wound1
+	{
+		get { return _w1; }
+		set { 
+			if(_w1 != value)
+			{
+				_w1 = value;
+				StoreChangeOnBD($"{Name} recivió su primera herida: {value}");
+			}
+		}
+	}
+	private string _w2;
+	public string Wound2
+	{
+		get { return _w2; }
+		set
+		{
+			if (_w2 != value)
+			{
+				_w2 = value;
+				StoreChangeOnBD($"{Name} recivió su segunda herida: {value}");
+			}
+		}
+	}
+	private bool _isdown;
 
-	public bool IsDown { get; set; } = false;
+	public bool IsDown
+	{
+		get { return _isdown; }
+		set 
+		{
+			if (_isdown != value)
+			{
+				_isdown = value;
+				if(_isdown)
+					StoreChangeOnBD($"{Name} ha caído");
+				else
+				StoreChangeOnBD($"{Name} ha vuelto de entre los muertos");
+			}
+		}
+	}
+
+
 
 	public List<string> Gear { get; set; } = new List<string>();
-	
-	public string Rumor { get; set; } = "Sin rumores de momento";
+
+	public string Rumor { 
+		get => rumor; 
+		set
+		{
+			if(rumor != value)
+			{
+				rumor = value;
+				StoreChangeOnBD();
+			}
+		}
+	}
 	public bool IsRumorSet => Rumor != "Sin rumores de momento";
 
 	public List<string> Stories { get;set; } = new List<string>();
@@ -83,26 +145,71 @@ public class DinoCharacter : PbtACharacter
 		throw new Exception("stat is not a DinoState");
 	}
 
+	public async Task StoreChangeOnBD(string message = "")
+	{
+		if(Game is not null)
+			await Game.StoreChangesOnCharacter(this, message);
+	}
+
 	public DinoClasses Class
 	{
 		get { return _class; }
 		set {
 			_class = value;
-			InitClass();
+		}
+	}
+
+	private int _clever;
+	private int fit = 0;
+	private int steady = 0;
+	private string behavior = "Personalidad";
+	private string looks = "Aspecto";
+	private string rumor = "Sin rumores de momento";
+
+	public int Clever
+	{
+		get { return _clever; }
+		set 
+		{ 
+			if( _clever != value )
+			{
+				_clever = value;
+				StoreChangeOnBD($"{Name} cambió su Inteligencia a {value}");
+			}
 		}
 	}
 
 
-	public int Clever { get; set; } = 0;
-	public int Fit { get; set; } = 0;
-	public int Steady { get; set; } = 0;
+	public int Fit { 
+		get => fit; 
+		set
+		{
+			if (fit != value)
+			{
+				fit = value;
+				StoreChangeOnBD($"{Name} cambió su forma física a {value}");
+			}
+		}
+	}
 
+	public int Steady { 
+		get => steady;
+		set
+		{
+			if (steady != value)
+			{
+				steady = value;
+				StoreChangeOnBD($"{Name} cambió su forma física a {value}");
+			}
+		}
+	}
 	public List<DinoMoveIDs> AllPurchasedMoves { get; set; } = new List<DinoMoveIDs>();
 
-	public void PurchaseMove(DinoMove move)
+	public async Task PurchaseMove(DinoMove move)
 	{
 		if(!AllPurchasedMoves.Contains(move.ID))	
 			AllPurchasedMoves.Add(move.ID);
+		await StoreChangeOnBD($"{Name} adquirió {move.Tittle}");
 	}
 
 	private void InitClass()
@@ -247,7 +354,17 @@ public class DinoCharacter : PbtACharacter
 		_ => throw new NotImplementedException()
 	};
 
-	public string Looks { get; set; } = "Aspecto";
+	public string Looks { 
+		get => looks;
+		set
+		{
+			if (looks != value)
+			{
+				looks = value;
+				StoreChangeOnBD($"{Name} cambió su apaciencia a {value}");
+			}
+		}
+	}
 	public List<string> LooksOtions => Class switch
 	{
 		DinoClasses.Doctor => new List<string> { "Aspecto", "Elegante", "Todavía con uniforme", "Ropa de diseño" },
@@ -260,7 +377,16 @@ public class DinoCharacter : PbtACharacter
 		DinoClasses.Master => new List<string> { "" },
 		_ => throw new NotImplementedException()
 	};
-	public string Behavior { get; set; } = "Personalidad";
+	public string Behavior { 
+		get => behavior;
+		set {
+			if (behavior != value)
+			{
+				behavior = value;
+				StoreChangeOnBD($"{Name} cambió su comportamineto a {value}");
+			}
+		}
+	}
 	public List<string> BehaviorOptions => Class switch
 	{
 		DinoClasses.Doctor => new List<string> { "Personalidad", "Controlado", "Autoritaria", "Agotada" },

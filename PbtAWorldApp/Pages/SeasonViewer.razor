@@ -3,6 +3,8 @@
 @inject DataBaseController Meta;
 @inject NavigationManager nav;
 @inject DinoCharacter DinoCharacter;
+@inject DinoGameController DinoGame;
+
 @inject IToastService Toaster;
 
 <PageTitle>Seleccione su personaje</PageTitle>
@@ -207,10 +209,11 @@
 
 	private async Task CreateNewDinoCharacter(DinoClasses c)
 	{
-		DinoCharacter newCharacter = new DinoCharacter();
+		DinoCharacter newCharacter = new DinoCharacter(DinoGame);
 		newCharacter.ID = Guid.NewGuid();
 		newCharacter.Name = NewCharacterName;
 		newCharacter.Class = c;
+		newCharacter.Init();
 		if(Meta.SelectedGame is not null && Meta.SelectedSeason is not null)
 			await Meta.InsertNewCharacter(
 				(byte)Meta.SelectedGame, 

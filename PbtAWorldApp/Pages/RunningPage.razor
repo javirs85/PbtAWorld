@@ -1,6 +1,7 @@
 ﻿@page "/Running/{SelectedGameString}/{SelectedCharacterID:guid}"
 @inject NavigationManager nav
 @inject DataBaseController Meta
+@inject DinoGameController DinoGame
 
 <PbtaWorldRazonCommonComponents.LastRollOverlay/>
 
@@ -39,6 +40,7 @@ else if(SelectedGame == AvailableGames.DW)
 		if (localGameId == AvailableGames.DI)
 		{
 			DinoPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoCharacter>(data);
+			DinoPlayer.Game = DinoGame;
 			Meta.SelectedPlayer = DinoPlayer;
 		}
 		else if(localGameId == AvailableGames.DW)

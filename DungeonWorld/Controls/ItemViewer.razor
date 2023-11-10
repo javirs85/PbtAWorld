@@ -104,9 +104,9 @@
 	private async Task EditFinished(string? details = null)
 	{
 		if(details is null)
-			await Game.StoreChangesOn(Player, $"Cambió {Item.Name}");
+			await Game.StoreChangesOnCharacter(Player, $"Cambió {Item.Name}");
 		else
-			await Game.StoreChangesOn(Player, details);	
+			await Game.StoreChangesOnCharacter(Player, details);
 	}
 
 	private async Task BoxClicked(int i)

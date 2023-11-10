@@ -91,8 +91,8 @@
 
 	private async Task EditFinished()
 	{
-		await UpdateUI.InvokeAsync();
-		await Game.StoreChangesOn(Player, $"Modificó {Stat.ToUI()} ({StatValueString})");
+		//await UpdateUI.InvokeAsync();
+		//await Game.StoreChangesOnCharacter(Player, $"Modificó {Stat.ToUI()} ({StatValueString})");
 	}
 
 	private DWMovementIDs RawMovement{
@@ -134,7 +134,7 @@
 				if (Stat == DWStats.DW_WIS) Player.WIS = StatValue;
 				if (Stat == DWStats.DW_CHA) Player.CHA = StatValue;
 
-				Task.Run(async () => await Game.StoreChangesOn(Player, $"Modificó {Stat.ToUI()} ({StatValueString})"));
+				Task.Run(async () => await Game.StoreChangesOnCharacter(Player, $"Modificó {Stat.ToUI()} ({StatValueString})"));
 			}catch
 			{
 				StatValue = temp;

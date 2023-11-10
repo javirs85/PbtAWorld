@@ -17,4 +17,5 @@ public interface IDataBaseController
 	Task LoadAllSessionsOfSelectedGame();
 	Task LoadPlayerNamesForSeason(Season season);
 	Task StoreSeasonAsNewSeason(Season newSeason);
+	Task StoreChangesinCharacter(Guid CharacterID, string newName, string serializedData);
 }

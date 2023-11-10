@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -15,6 +16,7 @@ public class GameControllerBase<TIDPack, TStatsPack>
 	public GameControllerBase(MovesServiceBase moves, IDataBaseController DB)
     {
 		this.moves = moves;
+		this.DB = DB;
 	}
 
 	public event EventHandler OnUIUpdate;
@@ -32,6 +34,8 @@ public class GameControllerBase<TIDPack, TStatsPack>
 	public IRollReport LastRoll;
 
 	public List<PbtACharacter> Players = new();
+
+	public IDataBaseController DB { get; }
 
 	public void RollRaw(Guid PlayerID, List<DiceTypes> dices)
 	{
@@ -118,5 +122,10 @@ public class GameControllerBase<TIDPack, TStatsPack>
 			Players.Add(player);
 			RequestUpdateToUIOnClients();
 		}
+	}
+
+	public virtual Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
+	{
+		throw new Exception("StoreChangesOnCharacter MUST be virtualized on derived GameController class");
 	}
 }

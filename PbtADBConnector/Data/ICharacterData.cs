@@ -8,5 +8,6 @@ namespace PbtADBConnector.Data
 		Task<IEnumerable<PlayerSummary>> GetAllCharactersOfSeason(Guid guid);
 		Task InsertNewCharacter(byte GameID, Guid CampaignID, string serializedData, string Name, int classCode, Guid CharacterID);
 		Task<string> GetSerializedDateForPlayer(Guid guid);
+		Task UpadteCharacter(Guid CharacterID, string newName, string newSerializedData);
 	}
 }

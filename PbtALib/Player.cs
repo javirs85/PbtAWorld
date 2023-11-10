@@ -29,6 +29,17 @@ public class PbtACharacter
 
 	public string SerializedData { get; set; } = string.Empty;
 
+	public void Init() {
+		InitInternal();
+		IsInitialized = true;
+	}
+	public bool IsInitialized { get; set; } = false;
+
+	protected virtual void InitInternal()
+	{
+		throw new Exception("Init internal at PbtACharacter MUST be overriden");
+	}
+
 }
 
 

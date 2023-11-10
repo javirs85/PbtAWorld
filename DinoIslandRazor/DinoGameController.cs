@@ -1,11 +1,11 @@
 ﻿using PbtADBConnector;
 using PbtALib;
+using System.ComponentModel;
 
 namespace DinoIsland;
 
 public class DinoGameController : GameControllerBase<DinoMoveIDs, DinoStates>
 {
-	DataBaseController DB;
 	public DinoGameController(DinoMovesService moves, DataBaseController _db) : base(moves, _db)
 	{
 		LastRoll = new DinoRollReport(moves);
@@ -100,5 +100,16 @@ public class DinoGameController : GameControllerBase<DinoMoveIDs, DinoStates>
 			if(item is not null) MapTokens.Remove(item);
 		}
 		RequestUpdateToUIOnClients();
+	}
+
+	public override async Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
+	{
+		if (ch is DinoCharacter)
+		{
+			var character = (DinoCharacter)ch;
+			await DB.StoreChangesinCharacter(character.ID, character.Name, System.Text.Json.JsonSerializer.Serialize(character));
+		}
+		else
+			throw new Exception("tried to store a character that is not DinoCharacter from DInoGameController");
 	}
 }

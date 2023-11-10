@@ -212,12 +212,12 @@
 		if (Player.ClassMovments.Contains(sub.ID))
 		{
 			Player.ClassMovments.Remove(sub.ID);
-			await DWGameController.StoreChangesOn(Player, "quitó " + sub.Tittle);
+			await DWGameController.StoreChangesOnCharacter(Player, "quitó " + sub.Tittle);
 		}
 		else
 		{
 			Player.ClassMovments.Add(sub.ID);
-			await DWGameController.StoreChangesOn(Player, "añadió " + sub.Tittle);
+			await DWGameController.StoreChangesOnCharacter(Player, "añadió " + sub.Tittle);
 		}
 	}
 

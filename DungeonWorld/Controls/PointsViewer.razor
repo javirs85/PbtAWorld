@@ -1,4 +1,6 @@
-﻿
+﻿@inject DWGameController Game
+
+
 <div class="d-flex gap-1 align-items-center">
 	<div style="@(NonFixedWidth? "" : "width:100px;") text-align:right  @(isEditing ? "display: none !important;" : "" )" @onclick=StartEdit @onclick:stopPropagation>@(points.Tittle + ":")</div>
 	<div class="d-flex" style="@(!isEditing ? "display: none !important;" : "")">
@@ -46,6 +48,6 @@
 
 	private async Task Store(string details)
 	{
-		// await Game.StoreChangesOn(Player, details);
+		 await Game.StoreChangesOnCharacter(Player, details);
 	}
 }

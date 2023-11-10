@@ -60,6 +60,9 @@ public class CharacterData : ICharacterData
 			Guid = CharacterID
 		});
 
+	public Task UpadteCharacter(Guid CharacterID, string newName, string newSerializedData) =>
+		_db.SaveData("dbo.spCharacter_Update", new {Guid = CharacterID, newName = newName, SerializedData = newSerializedData });
+
 	public Task<IEnumerable<PlayerSummary>> GetAllCharactersOfSeason(Guid guid) =>
 		_db.LoadData<PlayerSummary, dynamic>("dbo.spCharacter_GetAllCharactersInSeason", 
 			new { SesionID = guid });
