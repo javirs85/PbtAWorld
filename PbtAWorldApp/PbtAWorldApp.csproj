@@ -13,10 +13,7 @@
     <ProjectReference Include="..\PbtADBConnector\PbtADBConnector.csproj" />
     <ProjectReference Include="..\PbtAWorldConnectivity\PbtAWorldConnectivity.csproj" />
     <ProjectReference Include="..\PbtALib\PbtALib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\imgs\Icons\" />
+    <ProjectReference Include="..\UrbanShadows\UrbanShadows.csproj" />
   </ItemGroup>
 
 

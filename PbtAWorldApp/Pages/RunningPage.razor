@@ -2,6 +2,8 @@
 @inject NavigationManager nav
 @inject DataBaseController Meta
 @inject DinoGameController DinoGame
+@inject USMovesService USMoves
+@using UrbanShadows
 
 <PbtaWorldRazonCommonComponents.LastRollOverlay/>
 
@@ -13,6 +15,10 @@ else if(SelectedGame == AvailableGames.DW)
 {
 	<DungeonWorld.Pages.DWPlayerSheet Player="DWPlayer" />
 }
+else if(SelectedGame == AvailableGames.US)
+{
+	<UrbanShadows.Pages.USRunningPage Player="USPlayer" />
+}
 
 @code {
 	[Parameter] public string SelectedGameString { get; set; } = "NotSet";
@@ -20,6 +26,7 @@ else if(SelectedGame == AvailableGames.DW)
 
 	DinoCharacter DinoPlayer;
 	DungeonWorld.DWCharacter DWPlayer;
+	UrbanShadows.USCharacterSheet USPlayer;
 
 	AvailableGames SelectedGame = AvailableGames.NotSet;
 
@@ -47,6 +54,12 @@ else if(SelectedGame == AvailableGames.DW)
 		{
 			DWPlayer = System.Text.Json.JsonSerializer.Deserialize<DungeonWorld.DWCharacter>(data);
 			Meta.SelectedPlayer = DWPlayer;
+		}
+		else if(localGameId == AvailableGames.US)
+		{
+			USPlayer = System.Text.Json.JsonSerializer.Deserialize<UrbanShadows.USCharacterSheet>(data);
+			USPlayer.GetInitialMovesIDsByArchetype(USMoves);
+			Meta.SelectedPlayer = USPlayer;
 		}
 
 		//we perform the update in the UI

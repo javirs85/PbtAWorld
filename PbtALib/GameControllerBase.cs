@@ -25,6 +25,7 @@ public class GameControllerBase<TIDPack, TStatsPack>
 	public event EventHandler<PbtAImage> OnMasterShowsImage;
 	public event EventHandler<PNJ> OnMasterShowsPNJ;
 
+	public PbtACharacter GetCharacterByID(Guid id) => Players?.Find(x => x.ID == id) ?? new PbtACharacter { Name = "Character not found" };
 	public void RequestUpdateToUIOnClients() => OnUIUpdate?.Invoke(this, new EventArgs());
 	public void ShowToastOnAllClients(string msg) => NewInfoToast?.Invoke(this, msg);
 	public void ShowImageToAllPlayers(PbtAImage img) => OnMasterShowsImage?.Invoke(this, img);

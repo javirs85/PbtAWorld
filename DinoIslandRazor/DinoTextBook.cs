@@ -1119,30 +1119,3 @@ public class ExtinctionEvent
 
 }
 
-public class MasterMove
-{
-	public string Tittle = string.Empty;
-	public HowOftenUsed HowOften = HowOftenUsed.NeverUsed;
-
-	public MasterMove(string txt) => Tittle = txt;
-
-	public void Use()
-	{
-		if (HowOften == HowOftenUsed.NeverUsed) HowOften = HowOftenUsed.FewUses;
-		else if (HowOften == HowOftenUsed.FewUses) HowOften = HowOftenUsed.LotsOfUses;
-		else if (HowOften == HowOftenUsed.LotsOfUses) HowOften = HowOftenUsed.ToMuch;
-		else if (HowOften == HowOftenUsed.ToMuch) HowOften = HowOftenUsed.NeverUsed;
-	}
-
-	public int Order
-	{
-		get
-		{
-			if (HowOften == HowOftenUsed.NeverUsed) return 0;
-			else if (HowOften == HowOftenUsed.FewUses) return 1;
-			else if (HowOften == HowOftenUsed.LotsOfUses) return 2;
-			else return 3;
-		}
-	}
-
-}

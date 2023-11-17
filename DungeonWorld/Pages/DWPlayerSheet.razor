@@ -93,17 +93,17 @@ else
 					</div>
 					<div class="d-flex flex-column w-100">
 						<div class="d-flex align-items-center gap-1">
-							<RedCheckBox Style="Controls.RedCheckBox.Styles.Transparent"
+							<RedCheckBox Style="RedCheckBox.Styles.Transparent"
 								Value=Player.IsWeak Clicked="@(async()=>{Player.IsWeak = !Player.IsWeak; await EditFinish($"Cambió débil {Player.IsWeak}");})"/>
 							<div>Débil: desventaja en FUE y DES</div>
 						</div>
 						<div class="d-flex align-items-center gap-1">
-							<RedCheckBox Style="Controls.RedCheckBox.Styles.Transparent"
+							<RedCheckBox Style="RedCheckBox.Styles.Transparent"
 								Value=Player.IsStun Clicked="@(async()=>{Player.IsStun = !Player.IsStun; await EditFinish($"Cambió Aturdido {Player.IsStun}");})" />
 							<div>Aturdido: desventaja en INT y SAB</div>
 						</div>
 						<div class="d-flex align-items-center gap-1">
-							<RedCheckBox Style="Controls.RedCheckBox.Styles.Transparent"
+							<RedCheckBox Style="RedCheckBox.Styles.Transparent"
 								Value=Player.IsMiserable Clicked="@(async()=>{Player.IsMiserable = !Player.IsMiserable; await EditFinish($"Cambió miserable {Player.IsMiserable}");})" />
 							<div>Miserable: desventaja en CON y CAR</div>
 						</div>
@@ -173,7 +173,7 @@ else
 							@for(int i = 0; i<Player.MaxLoad; ++i)
 							{
 								<RedCheckBox
-									Style="@(Player.Load > Player.MaxLoad ? Controls.RedCheckBox.Styles.RED : Controls.RedCheckBox.Styles.Diamond)"
+									Style="@(Player.Load > Player.MaxLoad ? RedCheckBox.Styles.RED : RedCheckBox.Styles.Diamond)"
 									Value=@(i < Player.Load)
 								/>
 							}

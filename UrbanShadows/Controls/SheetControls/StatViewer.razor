@@ -1,0 +1,155 @@
+﻿@inject USGameController Game
+
+<div class="PbtASystemContainer StatViewer @(IsCircle?"StatViewerCircle":"") @(IsTick?"CircleTick":"")" 
+	@onclick=OpenFullScreenModal
+	 @onclick:preventDefault=true>
+	<div class="prevent-select">@ValueString</div>
+	<div class="prevent-select">@Attr.ToUI()</div>
+	@if (IsCircle)
+	{
+		<div class="d-flex gap-1">
+			<div class="Balloon @((Status>0)?"FilledIn":"")"></div>
+			<div class="Balloon @((Status>1)?"FilledIn":"")"></div>
+			<div class="Balloon @((Status>2)?"FilledIn":"")"></div>
+		</div>
+	}
+</div>
+
+<div class="FullScreenModal @(IsShowingFullScreenModal?"":"HideModal")" @onclick=CloseFullScreenModal>
+	<div class="CloseButton"></div>
+	<div class="ModalBody" style="height: 300px; width:260px;" @onclick:stopPropagation=true>
+		<div class="d-flex flex-column align-items-center justify-content-start h-100">
+			<div class="pt-3" style="color:white; font-size:22px; font-weight:bold;">@Attr.ToUI()</div>
+			<div class="flex-grow-1 d-flex flex-column justify-content-center">
+				<div class="d-flex justify-content-center align-items-center gap-2">
+					<img src="imgs/Icons/Down.svg" @onclick=AttrMinus/>
+					<div style="font-size: 30px; font-weight:bold;">@ValueString</div>
+					<img src="imgs/Icons/Up.svg" @onclick=AttrPlus />
+				</div>
+				@if (IsCircle)
+				{
+					<div class="d-flex justify-content-center p-2 pb-3 gap-3">
+						<img src="imgs/Icons/Big@(Status>0?"Filled":"Empty")Ball.svg" @onclick=@(async _ => await StatusClicked(1)) />
+						<img src="imgs/Icons/Big@(Status>1?"Filled":"Empty")Ball.svg" @onclick=@(async _ => await StatusClicked(2)) />
+						<img src="imgs/Icons/Big@(Status>2?"Filled":"Empty")Ball.svg" @onclick=@(async _ => await StatusClicked(3)) />
+					</div>
+					<button class="btn btn-outline-light" style="border-radius:50px;" @onclick=@(async _=>{await ToggleCircleTick();})>
+						@(IsTick ? "Desmarcar" : "Marcar") círculo
+					</button>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+@code {
+	[Parameter] public USAttributes Attr { get; set; }
+	[Parameter] public USCharacterSheet Player { get; set; }
+	[Parameter] public EventCallback UpdateRequested { get; set; }
+
+	protected override void OnParametersSet()
+	{
+		UpdateValues();
+	}
+
+	private string ValueString
+	{
+		get
+		{
+			if (Value > 0) return "+" + Value.ToString();
+			else return Value.ToString();
+		}
+	}
+
+	bool IsShowingFullScreenModal = false;
+	void CloseFullScreenModal(){
+		IsShowingFullScreenModal = false;
+		UpdateRequested.InvokeAsync();
+	}
+	void OpenFullScreenModal() => IsShowingFullScreenModal = true;
+
+
+	private int Value = 0;
+	private int Status = 0;
+
+	private bool IsTick
+	{
+		get
+		{
+			if (!IsCircle) return false;
+			if (Attr == USAttributes.Mortality) return Player.IsMortalisTick;
+			if (Attr == USAttributes.Night) return Player.IsNightTick;
+			if (Attr == USAttributes.Power) return Player.IsPowerTick;
+			if (Attr == USAttributes.Veil) return Player.IsVeilTick;
+			else return false;
+		}
+	}
+
+	private bool IsCircle {
+		get
+		{
+			List<USAttributes> list = new List<USAttributes> 
+			{
+				USAttributes.Mortality,
+				USAttributes.Night,
+				USAttributes.Power,
+				USAttributes.Veil 
+			};
+
+			return list.Contains(Attr);
+		}	
+	}
+
+	async Task ToggleCircleTick()
+	{
+		CloseFullScreenModal();
+
+		if (Attr == USAttributes.Mortality)
+			Player.IsMortalisTick = !Player.IsMortalisTick;
+		if (Attr == USAttributes.Night)
+			Player.IsNightTick = !Player.IsNightTick;
+		if (Attr == USAttributes.Power)
+			Player.IsPowerTick = !Player.IsPowerTick;
+		if (Attr == USAttributes.Veil)
+			Player.IsVeilTick = !Player.IsVeilTick;
+
+		await Game.StoreCharacter(Player);
+	}
+
+	async Task AttrMinus()
+	{
+		var val = Player.GetAttribute(Attr);
+		Player.SetAttribute(Attr, val - 1);
+
+		await Game.StoreCharacter(Player);
+		UpdateValues();
+	}
+	async Task AttrPlus()
+	{
+		var val = Player.GetAttribute(Attr);
+		Player.SetAttribute(Attr, val + 1);
+
+		await Game.StoreCharacter(Player);
+		UpdateValues();
+	}
+
+	async Task StatusClicked(int n)
+	{
+		if (Status >= n)
+			Status--;
+		else
+			Status++;
+
+		Player.SetStatusInCircle(Attr, Status);
+
+		await Game.StoreCharacter(Player);
+		UpdateValues();
+	}
+
+
+	void UpdateValues()
+	{
+		Value = Player.GetAttribute(Attr);
+		Status = Player.GetStatusInCircle(Attr);
+	}
+
+}

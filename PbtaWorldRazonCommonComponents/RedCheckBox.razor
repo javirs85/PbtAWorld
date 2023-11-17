@@ -20,6 +20,11 @@
 	{
 		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckBoxTransparent" src="imgs/US/CircularEmpty.png" />
 	}
+	else if(Style == Styles.bloodSplat)
+	{
+		<!--img @onclick=InternalClick @onclick:stopPropagation=true class="CheckboxGrayBorder" src="imgs/US/CircularEmpty.png" /-->
+		<div class="CheckboxGrayBorder"></div>
+	}
 }
 else
 {
@@ -51,10 +56,14 @@ else
 			src="imgs/US/DiamondFull.png"
 		/>
 	}
+	else if (Style == Styles.bloodSplat)
+	{
+		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckboxGrayBorder" src="imgs/US/BloodSplat.png" />
+	}
 }
 
 @code {
-	public enum Styles {White, Transparent, Diamond,  DiamondGray, Circular, RED};
+	public enum Styles {White, Transparent, Diamond,  DiamondGray, Circular, RED, bloodSplat};
 
 	[Parameter] public bool Value { get; set; } = false;
 	[Parameter] public EventCallback Clicked { get; set; }
