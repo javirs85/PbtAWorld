@@ -5,7 +5,9 @@
 @inject NavigationManager Navigation
 @inject USGameController Game
 @inject USMovesService Moves
+@inject MoveSelector.MoveSelectorService  MSelector
 
+<MoveSelector />
 <EditForm Model="Player">
 	<div class="BigContainer d-flex">
 		<div class="LeftColumn">
@@ -183,7 +185,7 @@
 						}
 						@if(CurrentFocusDetail == FocusOnDetailed.nowhere)
 						{
-							<div class="RoundedGrayButton">
+							<div class="RoundedGrayButton" @onclick=SelectPlaybookMoves>
 								Cambiar movimientos de @Player.Archetype.ToUI() 
 							</div>							
 						}
@@ -204,8 +206,8 @@
 						}
 						@if (CurrentFocusDetail == FocusOnDetailed.nowhere)
 						{
-							<div class="RoundedGrayButton">
-								Cambiar movimientos de @Player.Archetype.ToUI() 
+							<div class="RoundedGrayButton" @onclick=SelectNewCorruptionMove>
+								Cambiar movimientos de Corrupción 
 							</div>
 						}
 					</div>
@@ -480,6 +482,143 @@
 			CurrentFocus = FocusOn.thirdColumn;
 		else
 			CurrentFocus = FocusOn.nowhere;
+	}
+
+	private async Task SelectPlaybookMoves()
+	{
+		List<MoveSelector.MovesPack> options = new();
+		MoveSelector.MovesPack firstOption = new();
+		firstOption.Title = Player.Archetype.ToUI();
+		foreach (var m in Moves.AllMovements.Where(
+			x => x.Archetipe == Player.Archetype &&
+			x.TypeOfMovement == MovementTypes.ArchetipeMovement))
+		{
+			MoveSelector.MovesPackItem item = new();
+			if (Player.SelectedArchetypeMoves.Contains(m.ID))
+				item.IsAlreadySelected = true;
+			else
+				item.IsAlreadySelected = false;
+
+			item.move = m;
+			firstOption.Moves.Add(item);
+		}
+		options.Add(firstOption);
+
+		foreach (AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		{
+			if (arc == Player.Archetype) continue;
+			if (arc == AvailableArchetypes.All) continue;
+			if (arc == AvailableArchetypes.NotSet) continue;
+
+			firstOption = new();
+			firstOption.Title = arc.ToUI();
+			foreach (var m in Moves.AllMovements.Where(
+				x => x.Archetipe == arc &&
+				x.TypeOfMovement == MovementTypes.ArchetipeMovement))
+			{
+				MoveSelector.MovesPackItem item = new();
+				if (Player.SelectedArchetypeMoves.Contains(m.ID))
+					item.IsAlreadySelected = true;
+				else
+					item.IsAlreadySelected = false;
+
+				item.move = m;
+				firstOption.Moves.Add(item);
+			}
+
+			options.Add(firstOption);
+		}
+
+
+		await MSelector.StartSelection(options);
+
+		Player.SelectedArchetypeMoves.Clear();
+		PlaybookMovesOnScreen.Clear();
+
+		foreach (var option in options)
+		{
+			foreach (var move in option.Moves)
+			{
+				if (move.IsAlreadySelected)
+				{
+					var m = move.move as USMove;
+					Player.SelectedArchetypeMoves.Add(m.ID);
+					PlaybookMovesOnScreen.Add(m);
+				}
+
+			}
+		}
+
+		StateHasChanged();
+	}
+
+	private async Task SelectNewCorruptionMove()
+	{
+		List<MoveSelector.MovesPack> options = new();
+
+		MoveSelector.MovesPack firstOption = new();
+		firstOption.Title = Player.Archetype.ToUI();
+		foreach (var m in Moves.AllMovements.Where(
+			x=>x.Archetipe == Player.Archetype && 
+			x.TypeOfMovement == MovementTypes.CorruptionMovement))
+		{
+			MoveSelector.MovesPackItem item = new();
+			if (Player.SelectedCorruptionMoves.Contains(m.ID))
+				item.IsAlreadySelected = true;
+			else
+				item.IsAlreadySelected = false;
+
+			item.move = m;
+			firstOption.Moves.Add(item);
+		}
+		options.Add(firstOption);
+
+		foreach(AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		{
+			if(arc == Player.Archetype) continue;
+			if(arc == AvailableArchetypes.All) continue;
+			if (arc == AvailableArchetypes.NotSet) continue;
+
+			firstOption = new();
+			firstOption.Title = arc.ToUI();
+			foreach (var m in Moves.AllMovements.Where(
+				x => x.Archetipe == arc &&
+				x.TypeOfMovement == MovementTypes.CorruptionMovement))
+			{
+				MoveSelector.MovesPackItem item = new();
+				if (Player.SelectedCorruptionMoves.Contains(m.ID))
+					item.IsAlreadySelected = true;
+				else
+					item.IsAlreadySelected = false;
+
+				item.move = m;
+				firstOption.Moves.Add(item);
+			}
+
+			options.Add(firstOption);
+		}
+
+
+		await MSelector.StartSelection(options);
+
+		Player.SelectedCorruptionMoves.Clear();
+		CorruptionMovesOnScreen.Clear();
+
+		foreach(var option in options)
+		{
+			foreach (var move in option.Moves)
+			{
+				if (move.IsAlreadySelected)
+				{
+					var m = move.move as USMove;
+					Player.SelectedCorruptionMoves.Add(m.ID);
+					CorruptionMovesOnScreen.Add(m);
+				}
+				
+			}
+		}
+
+		StateHasChanged();
 	}
 
 	private bool IsThisMoveSelected(USMove mov) => SelectedMovement == mov;

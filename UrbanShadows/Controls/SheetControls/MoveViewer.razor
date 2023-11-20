@@ -1,4 +1,5 @@
-﻿@inject USGameController Game
+﻿@using PbtALib;
+@inject USGameController Game
 @inject USMovesService Moves
 @inject IToastService Toaster
 
@@ -268,6 +269,7 @@
 	[Parameter] public bool MasterView { get; set; } = false;
 	[Parameter] public int MasterRolledValue { get; set; }
 	[Parameter] public USCharacterSheet Player { get; set; }
+	[Parameter] public IMove? imove { get; set; } = null;
 	USMove Move;
 
 	string rollNumber
@@ -292,7 +294,14 @@
 
 	protected override void OnParametersSet()
 	{
-		Move = Moves.AllMovements.Find(x => x.ID == ID);
+		if (imove is not null)
+			Move = (USMove)imove;
+		else
+		{
+			Move = Moves.AllMovements.Find(x => x.ID == ID);
+		}
+
+		
 		if (Move is null)
 		{
 			Toaster.ShowError($"The move {ID} is not in the DB");
