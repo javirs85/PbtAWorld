@@ -13,5 +13,16 @@ public class DWRollReport : RollReport<DWMovementIDs, DWStats>
     {
         
     }
-    public override string StatString => Stat.ToLONG_UI();
+
+    private string _statstring = string.Empty;
+
+	public override string StatString { 
+        get { 
+            if(_statstring == string.Empty)
+                return Stat.ToLONG_UI(); 
+            return _statstring;
+        }
+        set { _statstring = value; } 
+    }
+
 }

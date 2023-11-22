@@ -1,0 +1,113 @@
+﻿@using PbtALib;
+@inject MoveSelectorService MSService
+
+@if (IsShown)
+{
+    <div class="FullScreenModal" @onclick=Exit>
+        <div class="CloseButton" >
+            <i class="bi bi-x-lg"></i>
+        </div>
+        <div class="ModalBody" @onclick:stopPropagation>
+            @for(int i=0;i<MSService.Packs.Count;++i)
+            {
+                <div class="MovePack accordion-item">
+                    <h2 class="accordion-header" id="">
+                        <button class="accordion-button"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="@("#collapse"+string.Concat(MSService.Packs[i].Title.Where(c => !char.IsWhiteSpace(c))))">
+                            <h4>@MSService.Packs[i].Title</h4>
+                        </button>
+                    </h2>
+
+                    <div id="@("collapse"+string.Concat(MSService.Packs[i].Title.Where(c => !char.IsWhiteSpace(c))))" class="accordion-collapse collapse @(i == 0?"show":"")">
+                        <div class="accordion-body">
+                            @foreach (var m in MSService.Packs[i].Moves)
+                            {
+                                <div>
+                                    <SimpleMoveViewer Move="m.move" @bind-IsCurrentlySelected=m.IsAlreadySelected />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="testing"></div>
+}
+
+
+@code {
+    private bool _isShown;
+
+    public bool IsShown
+    {
+        get { return _isShown; }
+        set { if (_isShown != value)
+            {
+                _isShown = value;
+                Update();
+            }
+        }
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        MSService.Show += (o,e) => IsShown = true;
+        MSService.Hide += (o, e) => IsShown = false;
+    }
+
+    private void Update() => InvokeAsync(() => { StateHasChanged(); });
+
+
+    public class MoveSelectorService
+    {
+        public event EventHandler Show;
+        public event EventHandler Hide;
+
+        public List<MovesPack> Packs { get; set; } = new();
+
+        private TaskCompletionSource tcs = new();
+
+        public async Task StartSelection(List<MovesPack> _packs)
+        {
+            Packs = _packs;
+
+            tcs = new TaskCompletionSource();
+            Show?.Invoke(this, EventArgs.Empty);
+
+            await tcs.Task;
+        }
+
+
+        public void Finished()
+        {
+            Hide?.Invoke(this, EventArgs.Empty);
+            tcs.SetResult();
+        }
+    }
+
+    public void Exit() => MSService.Finished();
+
+    public class MovesPack
+    {
+        public string Title { get; set; } = string.Empty;
+        public List<MovesPackItem> Moves { get; set; } = new();
+    }
+    public class MovesPackItem
+    {
+        public IMove move { get; set; }
+        public bool IsAlreadySelected = false;
+        public MovesPackItem(IMove mov, bool _isAlreadySelected = false)
+        {
+            IsAlreadySelected = _isAlreadySelected;
+            move = mov;
+        }
+        public MovesPackItem() { }
+    }
+}

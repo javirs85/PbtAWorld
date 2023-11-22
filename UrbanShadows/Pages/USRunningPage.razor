@@ -1,0 +1,817 @@
+﻿@using PbtALib;
+@using UrbanShadows.Controls
+@using UrbanShadows.Pages
+@using static PbtaWorldRazonCommonComponents.CharacterSelector;
+@using static PbtaWorldRazonCommonComponents.LastRollOverlay;
+
+@inject IToastService Toaster;
+@inject NavigationManager Navigation
+@inject USGameController Game
+@inject USMovesService Moves
+@inject MoveSelector.MoveSelectorService  MSelector
+@inject LastRollViewerService LastRollViewerService
+@inject CharacterSelectorService CharacterSelectorService
+
+<MoveSelector />
+<EditForm Model="Player">
+	<div class="BigContainer d-flex">
+		<div class="LeftColumn">
+			<div class="LeftColumnHeader">
+				<div class="HeaderInner">
+					<div>@Player.Name</div>
+					<div>-</div>
+					<div>@Player.Archetype.ToUI()</div>
+					<img src="imgs/US/UpgradeButton.svg" class="UpgradeButton" @onclick=ShowCircleAdvances/>
+				</div>
+			</div>
+			<div class="STATS d-flex flex-column">
+				<div class="d-flex">
+					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Blood" Player="Player" UpdateRequested="Update"/></div>
+					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Heart" Player="Player" UpdateRequested="Update" /></div>
+					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Mind" Player="Player" UpdateRequested="Update" /></div>
+					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Soul" Player="Player" UpdateRequested="Update" /></div>
+				</div>
+				<div class="d-flex">
+					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Mortality" Player="Player" UpdateRequested="Update" /></div>
+					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Night" Player="Player" UpdateRequested="Update" /></div>
+					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Power" Player="Player" UpdateRequested="Update" /></div>
+					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Veil" Player="Player" UpdateRequested="Update" /></div>
+				</div>
+			</div>
+			@if (Player.IsNightTick == true && Player.IsMortalisTick == true && Player.IsPowerTick == true && Player.IsVeilTick == true)
+			{
+				<div class="w-100 p-2 d-flex justify-content-center" style="background: #360b0b;">
+					<div class="RoundButton IntegratedRed">
+						Obtener mejora
+					</div>
+				</div>
+			}
+			<div class="CORRUPCION d-flex flex-column CorruptionArea Darker">
+				<div class="LeftColumnTittle">CORRUPCIÓN</div>
+				<div style="font-size:14px; text-align:center;">@Player.CorruptionMoveDetail</div>
+				<div class="flex-grow-1 d-flex justify-content-around align-items-center gap-3">
+					<img src="imgs/Icons/Skull_@(Player.Corruption >= 1?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(1)) />
+					<img src="imgs/Icons/Skull_@(Player.Corruption >= 2?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(2)) />
+					<img src="imgs/Icons/Skull_@(Player.Corruption >= 3?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(3)) />
+					<img src="imgs/Icons/Skull_@(Player.Corruption >= 4?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(4)) />
+					<img src="imgs/Icons/Skull_@(Player.Corruption >= 5?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(5)) />
+					<img src="imgs/US/UpgradeButton.svg" class="UpgradeButton" @onclick=ShowCorruptionAdvances/>
+				</div>
+			</div>
+			<div class="DAÑO d-flex flex-column justify-content-center px-4">
+				<div class="LeftColumnTittle  d-flex justify-content-center">DAÑO</div>
+				<div class="d-flex gap-2">
+					<div class="d-flex flex-column flex-grow-1 gap-1 DamageArea Darker">
+						<div class="WoundsContainer Soft">
+							<div class="d-flex w-100 justify-content-around">
+								<div class="Wound SoftInner @(Player.Damage > 0?"WoundMark":"")" @onclick=@(_ => WoundClicked(1))></div>
+							</div>
+							<InputText @bind-Value="WoundsLightText" style="background: #252323; color: white; border: none; outline:none;" />
+						</div>
+						<div class="WoundsContainer Mid">
+							<div class="d-flex w-100 justify-content-around">
+								<div class="Wound MidInner @(Player.Damage > 1?"WoundMark":"")" @onclick=@(_ => WoundClicked(2))></div>
+								<div class="Wound MidInner @(Player.Damage > 2?"WoundMark":"")" @onclick=@(_ => WoundClicked(3))></div>
+							</div>
+							<InputText @bind-Value="WoundsMidText"
+							@onchange=@(()=>{Game?.StoreChangesOnCharacter(Player,"Cambió el detalle de sus herídas.");})  
+								style="background: #252323; color: white; border: none; outline:none;" />
+						</div>
+						<div class="WoundsContainer Hard">
+							<div class="d-flex w-100 justify-content-around">
+								<div class="Wound HardInner @(Player.Damage > 3?"WoundMark":"")" @onclick=@(_ => WoundClicked(4))></div>
+								<div class="Wound HardInner @(Player.Damage > 4?"WoundMark":"")" @onclick=@(_ => WoundClicked(5))></div>
+							</div>
+							<InputText @bind-Value="WoundsHardText" style="background: #252323; color: white; border: none; outline:none;" />
+						</div>
+					</div>
+					<div class="ArmorContainer">
+						<div><InputText @bind-Value="ArmorString" style="width: 40px; border:none;  text-align:center;  outline:none; background:transparent;" /></div>
+					</div>
+				</div>
+			</div>
+			<div class="SEQUELAS d-flex flex-column mt-4">
+				<div class="LeftColumnTittle w-100 d-flex justify-content-center mb-1">CICATRICES</div>
+				<div class="d-flex flex-column gap-0 px-5" style="color: #bfbfbf;">
+					<div class="d-flex gap-1">
+						<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
+						Value=Player.IsBloodScarUsed
+						Clicked="@(async ()=>{await ToggleScar(USAttributes.Blood);})"
+						/>
+						Destrozado (-1 Sangre)
+					</div>
+					<div class="d-flex gap-1">
+						<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
+						Value=Player.IsHeartScarUsed
+						Clicked="@(async ()=>{await ToggleScar(USAttributes.Heart);})"
+						/>
+						Descorazonado (-1 Corazón)
+					</div>
+					<div class="d-flex gap-1">
+						<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
+						Value=Player.IsMindScarUsed
+						Clicked="@(async ()=>{await ToggleScar(USAttributes.Mind);})"
+						/>
+						Deshecho (-1 Mente)
+					</div>
+					<div class="d-flex gap-1">
+						<RedCheckBox 
+						Style="RedCheckBox.Styles.bloodSplat"
+						Value=Player.IsSoulScarUsed
+						Clicked="@(async ()=>{await ToggleScar(USAttributes.Soul);})"
+						/>
+						Quebrado (-1 Espíritu)
+					</div>
+				</div>
+			</div>
+			<div class="EQUIPO d-flex flex-column mt-4 flex-grow-1">
+				<div class="LeftColumnTittle w-100 d-flex justify-content-center mb-1">EQUIPO</div>
+				<div class="d-flex flex-grow-1 p-3 pt-0">
+					<InputTextArea class="form-control" @bind-Value="EquipeText" style="flex-grow: 1; background: #130202; color:#bfbfbf; outline:none; border:1px solid #4E1212; border-radius:4px;" />
+				</div>
+			</div>
+		</div>
+		<div class="InnerColumn ms-2" style="@(CurrentFocus==FocusOn.firstColumn?"flex:2!important;":"flex:1!important")">
+			<div class="InnerColumnPack BasicMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;"
+				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+					Movimientos básicos
+				</div>
+				
+					<div class="InnerColumContent">
+						@foreach (var m in BasicMovesOnScreen)
+						{
+							<MoveViewer ID="m.ID" 
+								Player=Player 
+								IsSelected=false 
+								Clicked=@(_ => Select(m, FocusOnDetailed.Basic)) 
+								ForceUpdate="Update" />
+						}
+				</div>
+				
+			</div>
+			<div class="InnerColumnPack CircleMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;"
+				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+					Movimientos de círculo
+				</div>
+				@if (CurrentFocusDetail != FocusOnDetailed.Basic)
+				{
+					<div class="InnerColumContent">
+						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionMovement))
+						{
+							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Circle)) ForceUpdate="Update" />
+						}
+				</div>
+				}
+			</div>
+			<div class="InnerColumnPack Deuda">
+				<div class="InnerColumnHeader" style="cursor: pointer;"
+				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+					Movimientos de deuda
+				</div>
+				@if (CurrentFocusDetail != FocusOnDetailed.Basic && CurrentFocusDetail != FocusOnDetailed.Circle)
+				{
+					<div class="InnerColumContent">
+						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DebtMovements))
+						{
+							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.DebtMoves)) ForceUpdate="Update" />
+						}
+					</div>
+				}
+			</div>
+		</div>
+		<div class="InnerColumn" style="@(CurrentFocus==FocusOn.secondColumn?"flex:2!important;":"flex:1!important")">
+			<div class="InnerColumnPack PlayBookMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;"
+					@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+					Movimientos de @Player.Archetype.ToUI()
+				</div>
+				
+				<div class="InnerColumContent">
+					@foreach (var m in PlaybookMovesOnScreen)
+					{
+						<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Playbook)) ForceUpdate="Update" />
+					}
+					<div class="RoundedGrayButton" @onclick=SelectPlaybookMoves>
+						Cambiar movimientos de @Player.Archetype.ToUI() 
+					</div>							
+					
+				</div>
+				
+			</div>
+			<div class="InnerColumnPack CorruptionMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;"
+				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+					Movimientos de Corrupción
+				</div>
+				@if (CurrentFocusDetail != FocusOnDetailed.Playbook)
+				{
+					<div class="InnerColumContent">
+						@foreach (var m in CorruptionMovesOnScreen)
+						{
+							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Corruption)) ForceUpdate="Update" />
+						}
+						<div class="RoundedGrayButton" @onclick=SelectNewCorruptionMove>
+							Cambiar movimientos de Corrupción 
+						</div>
+						
+					</div>
+				}
+			</div>
+			<div class="InnerColumnPack EspecialesPlaybook">
+				<div class="InnerColumnHeader" style="cursor: pointer;"
+					@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+					Movimientos especiales de @Player.Archetype.ToUI()
+				</div>
+				@if (CurrentFocusDetail == FocusOnDetailed.nowhere || CurrentFocus == FocusOn.firstColumn || CurrentFocusDetail == FocusOnDetailed.Unique)
+				{
+					<div class="InnerColumContent">
+						@foreach (var m in UniqueMovesOnScreen)
+						{
+							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Unique)) ForceUpdate="Update" />
+						}
+					</div>
+				}
+			</div>
+			<div class="InnerColumnPack DramaMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;"
+				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+					Movimientos de drama
+				</div>
+				@if (CurrentFocusDetail == FocusOnDetailed.nowhere || CurrentFocus == FocusOn.firstColumn || CurrentFocusDetail == FocusOnDetailed.Drama)
+				{
+					<div class="InnerColumContent">
+						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DramaticMovement && x.Archetipe == Player.Archetype))
+						{
+							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Drama)) ForceUpdate="Update" />
+						}
+					</div>
+				}
+			</div>
+		</div>
+		<div class="InnerColumn" style="@(CurrentFocus==FocusOn.thirdColumn?"flex:2!important;":"flex:1!important")">
+			<div class="PLAYBOOK UNIQUES InnerColumnPack">
+				<div class="InnerColumnHeader">@Player.ArchetypeUniqueTittle1</div>
+				<div class="InnerColumContent">
+					<InputTextArea class="form-control"  style="outline:none; border: none; background: black; color:white;"
+					@bind-Value=Unique1Screen />
+				</div>
+				<div>
+					<div class="RoundedGrayButton" 
+						data-bs-toggle="collapse" 
+						data-bs-target="#Unique1original" @onclick=ToggleThridColumn>
+						mostrar texto original
+					</div>
+					<div id="Unique1original" class="collapse">
+						<DecodedString Value="@Player.ArchetypeUniqueBody1" />
+					</div>
+				</div>
+			</div>
+			@if (!string.IsNullOrEmpty(Player.ArchetypeUniqueTittle2))
+			{
+				<div class="InnerColumnPack">
+					<div class="InnerColumnHeader">@Player.ArchetypeUniqueTittle2</div>
+					<div class="InnerColumContent">
+						<InputTextArea class="form-control" 
+						style="outline:none; border: none; background: black; color:white;" 
+						@bind-Value=Unique2Screen />
+					</div>
+					<div>
+						<div class="RoundedGrayButton"
+							 data-bs-toggle="collapse"
+							 data-bs-target="#Unique2original">
+							mostrar texto original
+						</div>
+						<div id="Unique2original" class="collapse">
+							<DecodedString Value="@Player.ArchetypeUniqueBody2" />
+						</div>
+					</div>
+				</div>
+			}	
+			<div class="DEBTS InnerColumnPack">
+				<div class="InnerColumnHeader">Deudas</div>
+				<div class="InnerColumContent">
+					<span>Se me debe:</span>
+					@foreach(var deb in Game.AllDebts.Where(x=>x.ReceivingID == Player.ID))
+					{
+						<DebtViewer Debt="deb" ForceUpdateUI="Update" />
+					}
+					<span>Debo:</span>
+					@foreach (var deb in Game.AllDebts.Where(x => x.PayingID == Player.ID))
+					{
+						<DebtViewer Debt="deb" ForceUpdateUI="Update" />
+					}
+				</div>
+			</div>
+		</div>
+		<div class="RightColumn">
+			<div class="RightColumnButton" @onclick=@(async ()=>{await SelectCharacterFromCast();})><i class="bi bi-people-fill"></i></div>
+		</div>
+	</div>
+</EditForm>
+
+<!--Modals-->
+<!-- Circle Upgrades Modal -->
+<div class="FullScreenModal d-flex flex-column justify-content-center @(IsShowingAdvances?"":"HideModal")" @onclick=HideCircleAdvances>
+	<div class="CloseButton"></div>
+	<div class="ModalBody Darker" style="" @onclick:stopPropagation=true>
+		<div class="d-flex align-items-center justify-content-center gap-5">
+			<div class="d-flex flex-column gap-2">
+				<div class="pt-1" style="font-size:16px; font-weight:bold; margin-left:-10px;">
+					Avances normales
+				</div>
+				@foreach (var advance in Player.AdvancesNormal)
+				{
+					<div @onclick=@(async _ => {await ToggleAdvance(advance, KindsOfAdvance.Normal);})>
+						<AdvanceViewer Advance=advance />
+					</div>
+				}
+			</div>
+			<div class="d-flex flex-column gap-2">
+				<div class="pt-3 d-flex flex-column" style="font-size:16px; font-weight:bold; margin-left:-10px;">
+					<div>Avances extra</div>
+					<div style="font-weight: normal; font-size: 14px; margin-top: -7px; margin-bottom: 3px;">
+						(después de 5 normales)
+					</div>
+				</div>
+				@foreach (var advance in Player.AdvancesExtra)
+				{
+					<div @onclick=@(async _ => {await ToggleAdvance(advance, KindsOfAdvance.Extra);})>
+						<AdvanceViewer Advance=advance />
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Corruption Upgrades Modal -->
+<div class="FullScreenModal d-flex flex-column justify-content-center @(IsShowingCorruptionAdvances?"":"HideModal")" @onclick=HideCorruptionAdvances>
+	<div class="CloseButton"></div>
+	<div class="ModalBody" @onclick:stopPropagation=true>
+		<div class="d-flex flex-column align-items-center justify-content-start mb-3 w-100 h-100">
+			<div class="py-1 pb-4" style="font-size:16px; font-weight:bold;">Avances de corrupción</div>
+			<div class="flex-grow-1 d-flex flex-column justify-content-center w-100 gap-4">
+				@foreach (var advance in Player.AdvancesCorruptions)
+				{
+					<div @onclick=@(async _ => {await ToggleAdvance(advance, KindsOfAdvance.Corruption);})>
+						<AdvanceViewer Advance=advance />
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- MoveViewer Modal -->
+<div class="FullScreenModal d-flex flex-column justify-content-center @(IsShowingOneMove?"":"HideModal")" @onclick=HideMoveViewer>
+	<div class="CloseButton"></div>
+	<div class="ModalBody" style="height:80%; width:80%; background:transparent; border:none;">
+		<div class="d-flex flex-column align-items-center justify-content-start mt-5 w-100 h-100">
+			<div class="flex-grow-1 d-flex flex-column justify-content-center w-100 gap-4" style="max-width:800px;" @onclick:stopPropagation=true>
+				@if (SelectedMovement is not null)
+				{
+					<MoveViewer ID=SelectedMovement.ID Player="Player" IsSelected=true FinishedRolling="HideMoveViewer" />
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	USMove? SelectedMovement = null;
+	private List<USMove> BasicMovesOnScreen = new();
+	private List<USMove> PlaybookMovesOnScreen = new();
+	private List<USMove> UniqueMovesOnScreen = new();
+	private List<USMove> CorruptionMovesOnScreen = new();
+
+	private enum FocusOn { nowhere, firstColumn, secondColumn, thirdColumn }
+	private enum FocusOnDetailed {nowhere, Basic, Circle, Drama, Playbook, Corruption,Unique, DebtMoves}
+	private FocusOn CurrentFocus = FocusOn.nowhere;
+	private FocusOnDetailed CurrentFocusDetail = FocusOnDetailed.nowhere;
+
+	private bool IsShowingAdvances = false;
+
+	public string Unique1Screen
+	{
+		get { return Player.ArchetypeUniqueBody1UserText; }
+		set 
+		{
+			if (Player.ArchetypeUniqueBody1UserText == value) return;
+			Player.ArchetypeUniqueBody1UserText = value;
+			Game.StoreChangesOnCharacter(Player, "actualizó sus detalles de libreto");
+		}
+	}
+	public string Unique2Screen
+	{
+		get { return Player.ArchetypeUniqueBody2UserText; }
+		set
+		{
+			if (Player.ArchetypeUniqueBody2UserText == value) return;
+			Player.ArchetypeUniqueBody2UserText = value;
+			Game.StoreChangesOnCharacter(Player, "actualizó sus detalles de libreto");
+		}
+	}
+	private string WoundsLightText
+	{
+		get => Player.WoundsSoftDescription;
+		set
+		{
+			if(value != Player.WoundsSoftDescription)
+			{
+				Player.WoundsSoftDescription = value;
+				Game?.StoreChangesOnCharacter(Player, "heridas: "+value);
+			}
+		}
+	}
+	private string WoundsMidText
+	{
+		get => Player.WoundsMedDescription;
+		set
+		{
+			if (value != Player.WoundsMedDescription)
+			{
+				Player.WoundsMedDescription = value;
+				Game?.StoreChangesOnCharacter(Player, "heridas: " + value);
+			}
+		}
+	}
+	private string WoundsHardText
+	{
+		get => Player.WoundsHighDescription;
+		set
+		{
+			if (value != Player.WoundsHighDescription)
+			{
+				Player.WoundsHighDescription = value;
+				Game?.StoreChangesOnCharacter(Player, "heridas: " + value);
+			}
+		}
+	}
+	private string EquipeText
+	{
+		get => Player.Equipe;
+		set
+		{
+			if (value != Player.Equipe)
+			{
+				Player.Equipe = value;
+				Game?.StoreChangesOnCharacter(Player, "Equipo: " + Player.Equipe);
+			}
+		}
+	}
+
+	[Parameter] public USCharacterSheet Player { get; set; }
+	protected async override void OnParametersSet()
+	{
+		if (Player is null) Player = new(Moves);
+
+		Game.NewInfoToast -= ShowInfo;
+		Game.NewInfoToast += ShowInfo;
+
+		Game.OnNewRoll -= ShowLastRoll;
+		Game.OnNewRoll += ShowLastRoll;
+
+		Game.AllDebts.Clear();
+		Game.Players.Add(Player);
+		Game.AllDebts.Add(new Debt
+		{
+			ID = Guid.NewGuid(),
+			Amount =1,
+			PayingID = this.Player.ID,
+			ReceivingID = this.Player.ID,
+			Reason = "Because this is Sparta"
+		});
+
+		ChargeListsOnScreen();
+		CharacterSelectorService.SetPeople(Game.People);
+	}
+
+	private async Task SelectCharacterFromCast()
+	{
+		var ch = await CharacterSelectorService.StartSelection();
+	}
+
+	private void ShowLastRoll(object? sender, IRollReport report)
+	{
+		LastRollViewerService.Show(report);
+		InvokeAsync(() => { StateHasChanged(); });
+	}
+
+	private void ShowInfo(object? sender, string msg) => Toaster.ShowInfo(msg);
+
+	private void ChargeListsOnScreen()
+	{
+
+		PlaybookMovesOnScreen.Clear();
+		UniqueMovesOnScreen.Clear();
+		BasicMovesOnScreen.Clear();
+		CorruptionMovesOnScreen.Clear();
+
+		foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.BasicMovements))
+			BasicMovesOnScreen.Add(m);
+
+		foreach (var m in Player.SelectedArchetypeMoves)
+		{
+			PlaybookMovesOnScreen.Add((USMove)Moves.GetMovement(m));
+		}
+
+		foreach (var m in from mov in Moves.AllMovements
+								where
+								mov.TypeOfMovement == MovementTypes.UniqueMove &&
+								mov.Archetipe == Player.Archetype
+								select mov.ID)
+		{
+			UniqueMovesOnScreen.Add((USMove)Moves.GetMovement(m));
+		}
+
+		var lio = (USMove)Moves.GetMovement(USMoveIDs.B_LiberarPoder, Player.Archetype);
+		lio.TypeOfMovement = MovementTypes.BasicMovements;
+		lio.PreCondition.Options = new List<string>();
+
+		if (Player.LIOs is null || Player.LIOs.Count == 0)
+		{
+			Player.LIOs = (from l in Moves.AllLio where l.Archetype == Player.Archetype select l.ID).ToList();
+			//await Game.StoreChangesOnCharacter(Player);
+		}
+
+		foreach (var hab in Player.LIOs)
+		{
+			lio.PreCondition.Options.Add(Moves.AllLio.Find(x => x.ID == hab)?.Text ?? "");
+		}
+
+		if (BasicMovesOnScreen.Find(x => x.ID == USMoveIDs.B_LiberarPoder) is null)
+			BasicMovesOnScreen.Add(lio);
+
+		foreach (var upgraded in Player.UpgradedMoves)
+		{
+			var m = PlaybookMovesOnScreen.Find(x => x.ID == upgraded);
+			if (m is not null) m.IsImproved = true;
+		}
+
+		foreach (var m in Player.SelectedCorruptionMoves)
+		{
+			CorruptionMovesOnScreen.Add((USMove)Moves.GetMovement(m));
+		}
+	}
+	private void Update(){
+		ChargeListsOnScreen();
+		InvokeAsync(()=> { StateHasChanged(); });
+	}
+
+	private void ToggleThridColumn(){
+		SelectedMovement = null;
+
+		if (CurrentFocus != FocusOn.thirdColumn)
+			CurrentFocus = FocusOn.thirdColumn;
+		else
+			CurrentFocus = FocusOn.nowhere;
+	}
+
+	private async Task SelectPlaybookMoves()
+	{
+		List<MoveSelector.MovesPack> options = new();
+		MoveSelector.MovesPack firstOption = new();
+		firstOption.Title = Player.Archetype.ToUI();
+		foreach (var m in Moves.AllMovements.Where(
+			x => x.Archetipe == Player.Archetype &&
+			x.TypeOfMovement == MovementTypes.ArchetipeMovement))
+		{
+			MoveSelector.MovesPackItem item = new();
+			if (Player.SelectedArchetypeMoves.Contains(m.ID))
+				item.IsAlreadySelected = true;
+			else
+				item.IsAlreadySelected = false;
+
+			item.move = m;
+			firstOption.Moves.Add(item);
+		}
+		options.Add(firstOption);
+
+		foreach (AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		{
+			if (arc == Player.Archetype) continue;
+			if (arc == AvailableArchetypes.All) continue;
+			if (arc == AvailableArchetypes.NotSet) continue;
+
+			firstOption = new();
+			firstOption.Title = arc.ToUI();
+			foreach (var m in Moves.AllMovements.Where(
+				x => x.Archetipe == arc &&
+				x.TypeOfMovement == MovementTypes.ArchetipeMovement))
+			{
+				MoveSelector.MovesPackItem item = new();
+				if (Player.SelectedArchetypeMoves.Contains(m.ID))
+					item.IsAlreadySelected = true;
+				else
+					item.IsAlreadySelected = false;
+
+				item.move = m;
+				firstOption.Moves.Add(item);
+			}
+
+			options.Add(firstOption);
+		}
+
+
+		await MSelector.StartSelection(options);
+
+		Player.SelectedArchetypeMoves.Clear();
+		PlaybookMovesOnScreen.Clear();
+
+		foreach (var option in options)
+		{
+			foreach (var move in option.Moves)
+			{
+				if (move.IsAlreadySelected)
+				{
+					var m = move.move as USMove;
+					Player.SelectedArchetypeMoves.Add(m.ID);
+					PlaybookMovesOnScreen.Add(m);
+				}
+
+			}
+		}
+
+		await Game.StoreChangesOnCharacter(Player, "Actualizó sus movimientos de libreto");
+		StateHasChanged();
+	}
+
+	private async Task SelectNewCorruptionMove()
+	{
+		List<MoveSelector.MovesPack> options = new();
+
+		MoveSelector.MovesPack firstOption = new();
+		firstOption.Title = Player.Archetype.ToUI();
+		foreach (var m in Moves.AllMovements.Where(
+			x=>x.Archetipe == Player.Archetype && 
+			x.TypeOfMovement == MovementTypes.CorruptionMovement))
+		{
+			MoveSelector.MovesPackItem item = new();
+			if (Player.SelectedCorruptionMoves.Contains(m.ID))
+				item.IsAlreadySelected = true;
+			else
+				item.IsAlreadySelected = false;
+
+			item.move = m;
+			firstOption.Moves.Add(item);
+		}
+		options.Add(firstOption);
+
+		foreach(AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		{
+			if(arc == Player.Archetype) continue;
+			if(arc == AvailableArchetypes.All) continue;
+			if (arc == AvailableArchetypes.NotSet) continue;
+
+			firstOption = new();
+			firstOption.Title = arc.ToUI();
+			foreach (var m in Moves.AllMovements.Where(
+				x => x.Archetipe == arc &&
+				x.TypeOfMovement == MovementTypes.CorruptionMovement))
+			{
+				MoveSelector.MovesPackItem item = new();
+				if (Player.SelectedCorruptionMoves.Contains(m.ID))
+					item.IsAlreadySelected = true;
+				else
+					item.IsAlreadySelected = false;
+
+				item.move = m;
+				firstOption.Moves.Add(item);
+			}
+
+			options.Add(firstOption);
+		}
+
+
+		await MSelector.StartSelection(options);
+
+		Player.SelectedCorruptionMoves.Clear();
+		CorruptionMovesOnScreen.Clear();
+
+		foreach(var option in options)
+		{
+			foreach (var move in option.Moves)
+			{
+				if (move.IsAlreadySelected)
+				{
+					var m = move.move as USMove;
+					Player.SelectedCorruptionMoves.Add(m.ID);
+					CorruptionMovesOnScreen.Add(m);
+				}
+
+			}
+		}
+
+		await Game.StoreChangesOnCharacter(Player, "Actualizó sus movimientos de corrupción");
+		StateHasChanged();
+	}
+
+	private bool IsThisMoveSelected(USMove mov) => SelectedMovement == mov;
+	private void Select(USMove mov, FocusOnDetailed focus = FocusOnDetailed.nowhere)
+	{
+		// CurrentFocusDetail = focus;
+
+		// if (CurrentFocusDetail == FocusOnDetailed.Basic || CurrentFocusDetail == FocusOnDetailed.Circle || CurrentFocusDetail == FocusOnDetailed.DebtMoves)
+		// 	CurrentFocus = FocusOn.firstColumn;
+
+		// else if (CurrentFocusDetail == FocusOnDetailed.Unique || CurrentFocusDetail == FocusOnDetailed.Drama)
+		// 	CurrentFocus = FocusOn.secondColumn;
+
+		// else if (CurrentFocusDetail == FocusOnDetailed.nowhere)
+		// 	CurrentFocus = FocusOn.nowhere;
+		// else
+		// 	CurrentFocus = FocusOn.secondColumn;
+
+
+		// if (mov == SelectedMovement){
+		// 	SelectedMovement = null;
+		// 	CurrentFocusDetail = FocusOnDetailed.nowhere;
+		// 	CurrentFocus = FocusOn.nowhere;
+		// }
+		// else{
+		// 	SelectedMovement = mov;
+		// }
+		SelectedMovement = mov;
+		ShowMoveViewer();
+	}
+
+	private string ArmorString
+	{
+		get{ return Player.Armor.ToString(); }
+		set
+		{
+			var oldValue = Player.Armor;
+			var canparse = int.TryParse(value,out oldValue);
+			if (canparse)
+			{
+				Player.Armor = oldValue;
+				Game.StoreChangesOnCharacter(Player, "Actualizó su armadura a: " + Player.Armor);
+			}
+		}
+	}
+
+	private async Task CorruptionClicked(int n)
+	{
+		if (n > Player.Corruption) Player.Corruption++;
+		else Player.Corruption--;
+
+		await Game.StoreChangesOnCharacter(Player, "Actualizó marcó su corrupción a: "+n);
+	}
+
+	private async Task WoundClicked(int n)
+	{
+		if (n > Player.Damage) Player.Damage++;
+		else Player.Damage--;
+
+		await Game.StoreChangesOnCharacter(Player, "Modificó sus heridas");
+	}
+
+	async Task ToggleScar(USAttributes attribute)
+	{
+		var now = Player.GetScar(attribute);
+		Player.SetScar(attribute, !now);
+
+		await Game.StoreChangesOnCharacter(Player, "Ha marcado cicatriz, ajustado sus atributos y limpiado las heridas");
+	}
+
+	void ShowCircleAdvances() => IsShowingAdvances = true;
+	void HideCircleAdvances() => IsShowingAdvances = false;
+	private bool IsShowingCorruptionAdvances = false;
+	void ShowCorruptionAdvances() => IsShowingCorruptionAdvances = true;
+	void HideCorruptionAdvances() => IsShowingCorruptionAdvances = false;
+	private bool IsShowingOneMove = false;
+	void ShowMoveViewer() => IsShowingOneMove = true;
+	void HideMoveViewer() => IsShowingOneMove = false;
+
+	async Task ToggleAdvance(Advance adv, KindsOfAdvance kind)
+	{
+
+		if (kind == KindsOfAdvance.Normal)
+		{
+			adv.IsUsed = !adv.IsUsed;
+			Player.AdvancesNormalBools[adv.ID] = adv.IsUsed;
+		}
+		else if (kind == KindsOfAdvance.Extra)
+		{
+			int count = Player.AdvancesNormalBools.Count(x => x == true);
+			if (count < 5)
+				Toaster.ShowError("No puedes marcar un avance extra hasta que hayas hecho al menos 5 avances normales");
+			else
+			{
+				adv.IsUsed = !adv.IsUsed;
+				Player.AdvancesExtraBools[adv.ID] = adv.IsUsed;
+			}
+		}
+		else if (kind == KindsOfAdvance.Corruption)
+		{
+			adv.IsUsed = !adv.IsUsed;
+			Player.AdvancesCorruptionBools[adv.ID] = adv.IsUsed;
+			Player.Corruption = 0;
+		}
+
+		await Game.StoreChangesOnCharacter(Player, "Usó "+adv.Text);
+	}
+}

@@ -8,7 +8,12 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace PbtALib;
 
-public class PNJ
+public class ICharacter
+{
+	public string Name { get; set; }
+}
+
+public class PNJ : ICharacter
 {
 	public string Name { get; set; } = string.Empty;
 	public PbtAImage Image { get; set; } = new();

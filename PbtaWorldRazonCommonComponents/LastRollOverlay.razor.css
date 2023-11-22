@@ -58,12 +58,19 @@
 .FloatinCover {
     position: fixed;
     top: 10px;
-    left: 10px;
     z-index: 11;
     background: black;
     border-radius: 9px;
+    border: 3px solid #f5f5f5;
     padding: 20px;
-    box-shadow: 2px 2px 6px #000000a3;
+    box-shadow: 0 0 7px 4px #f3f3f3;
+}
+
+.FloatinCoverUS{
+    right: 10px;
+}
+FloatingCoverDefault {
+    left: 10px;
 }
 
 .RawRollerDice {

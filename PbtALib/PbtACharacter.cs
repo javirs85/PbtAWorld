@@ -1,6 +1,6 @@
 ﻿namespace PbtALib;
 
-public class PbtACharacter
+public class PbtACharacter : ICharacter
 {
 	public event EventHandler UpdateUI;
 	public void OnUpdateUI()=>UpdateUI?.Invoke(this, EventArgs.Empty);
@@ -13,9 +13,14 @@ public class PbtACharacter
 		set { _id = value; }
 	}
 
+	public bool IsDead { get; set; } = false;
+	public bool IsNPC { get; set; } = true;
+
 	public byte EncodedClass { get; set; }
 
 	private string _name = "Escoge un nombre";
+
+	public virtual object Duplicate(object Character) { throw new NotImplementedException(); }
 
 	public string Name
 	{

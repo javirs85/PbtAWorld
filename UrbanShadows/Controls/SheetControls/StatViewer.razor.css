@@ -1,0 +1,89 @@
+﻿.PbtASystemContainer {
+    --Darker: #1C1E20;
+    --Middle: #24262B;
+    --Lighter: #2E3138;
+    --HoverLight: #5e5a5a;
+    color: white;
+    font-family: Roboto;
+    font-weight:bold;
+}
+
+.FullScreenModal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: rgba(0,0,0,0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    pointer-events: all;
+    transition: opacity 250ms ease;
+}
+
+.HideModal {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ModalBody {
+    width: 75%;
+    display: flex;
+    background: var(--Darker);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: black;
+    border: 1px solid gray;
+}
+
+.CloseButton{
+    position:fixed;
+    right:10px;
+    top:10px;
+    width:30px;
+    height:30px;
+    background-image:url('imgs/Icons/Close.svg');
+    cursor:pointer;
+}
+
+.prevent-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+.CircleTick {
+    background: #360B0B;
+}
+
+.StatViewer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    height: 80px;
+    justify-content: center;
+}
+
+.StatViewerCircle {
+    padding-top: 9px;
+    justify-content: start;
+}
+
+.Balloon {
+    opacity: 0.5;
+    border: 1px solid white;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+}
+
+.FilledIn{
+    background: white;
+}

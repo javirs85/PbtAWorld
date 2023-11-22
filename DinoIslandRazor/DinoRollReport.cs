@@ -13,5 +13,18 @@ public class DinoRollReport : RollReport<DinoMoveIDs, DinoStates>
     {
 
     }
-    public override string StatString => GetStat<DinoStates>().ToUIString();
+
+    private string _statstring = string.Empty;
+    public override string StatString {
+        get
+        {   
+           return  GetStat<DinoStates>().ToUIString(); 
+        }
+        set
+        {
+            _statstring = value;
+        }
+       
+    }
+
 }

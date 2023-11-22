@@ -1,0 +1,86 @@
+﻿@inject USGameController Game
+
+@if (!IsEditing)
+{
+	<div class="PbtASystemContainer DebtContainer">
+		<div class="FirstColumn d-flex flex-column">
+			<div class="TheOther" @onclick=ChooseCharacter>@TheOtherName</div>
+			<div class="Amount d-flex justify-content-center" @onclick=AddOneToDebt>@Debt.Amount</div>
+		</div>
+		<div class="DebtMain flex-grow-1" @onclick=@(()=>{IsEditing = true;})>
+			@Debt.Reason
+		</div>
+		<div class="ClossingButton" @onclick=RemoveOneDebt>
+			<i class="bi bi-x-lg"/>
+		</div>
+	</div>
+}
+else
+{
+}
+
+@code {
+	[Inject] IToastService Toaster { get; set; }
+	/*[Inject] CharacterSelectionService Selector { get; set; }*/
+
+	private bool IsEditing = false;
+
+	public enum PayingMode {ToPay, ToBePaid};
+
+	[Parameter] public Debt Debt { get; set; } = new();
+	[Parameter] public PayingMode Mode { get; set; } = PayingMode.ToPay;
+	[Parameter] public EventCallback ForceUpdateUI { get;set; }
+
+	string TheOtherName
+	{
+		get
+		{
+			if(Mode == PayingMode.ToPay){
+				var nova = Game.Players.Find(x => x.Name.Contains("Nova"));
+				var ch = Game.GetCharacterByID(Debt.ReceivingID);
+				if (ch.Name.Contains("Character not found"))
+					return $"NO: {ch.ID.ToString()}";
+				else
+					return Game.GetCharacterByID(Debt.ReceivingID).Name;
+			}
+			else
+				return Game.GetCharacterByID(Debt.PayingID).Name;
+		}
+	}
+
+	private async Task ChooseCharacter()
+	{
+		/*var ch = await Selector.SelectViaSelector();
+		if (Mode == PayingMode.ToPay)
+			Debt.ReceivingID = ch.ID;
+		else
+			Debt.PayingID = ch.ID;
+
+		await Game.StoreDebt(Debt);
+		//await Data.ForceDataRefresh();
+		StateHasChanged();
+		*/
+	}
+	private async Task AddOneToDebt()
+	{
+		Debt.Amount++;
+		await Game.StoreDebt(Debt);
+		//await Data.ForceDataRefresh();
+		StateHasChanged();
+	}
+
+	private async Task RemoveOneDebt()
+	{
+		Debt.Amount--;
+		if (Debt.Amount <= 0)
+		{
+			await Game.DeleteDebt(Debt);
+		}
+		else
+			await Game.StoreDebt(Debt);
+
+		//await Data.ForceDataRefresh();
+		StateHasChanged();
+		await ForceUpdateUI.InvokeAsync();
+	}
+}

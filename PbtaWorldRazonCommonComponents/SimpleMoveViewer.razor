@@ -1,0 +1,126 @@
+﻿@using PbtALib;
+
+<div class="MoveContainer accordion-item" @onclick:stopPropagation>
+	<h2 class="accordion-header d-flex" id="">
+		@if(IsCurrentlySelected)
+		{
+			<i class="bi bi-check2-square fs-3 pe-2" style="cursor:pointer; margin-top:-2px; margin-left:-2px;" @onclick=Toggle></i>
+		}
+		else
+		{
+			<i class="bi fs-4 bi-square pe-2" style="cursor:pointer;" @onclick=Toggle></i>
+		}
+		<button class="accordion-button collapsed movetitle"
+				type="button"
+				data-bs-toggle="collapse"
+				data-bs-target="@("#collapsing"+string.Concat(Move.IDText.Where(c => !char.IsWhiteSpace(c))))">
+			@Move.Tittle
+		</button>
+	</h2>
+	<div class="MoveBody accordion-collapse collapse" id=@("collapsing"+Move.IDText+string.Concat(Move.IDText.Where(c => !char.IsWhiteSpace(c))))>
+
+		<div class="accordion-body">
+			<DecodedString Value="@Move.PreCondition.MainText" />
+			@if (Move.PreCondition.Options != null)
+			{
+				<ul class="mt-1">
+					@foreach (var item in Move.PreCondition.Options)
+					{
+						<li><DecodedString Value="@item" /></li>
+					}
+				</ul>
+			}
+			@if (Move.ConsequencesOn79 != null)
+			{
+				<div class="">
+					<DecodedString Value="@Move.ConsequencesOn79.MainText" />
+					@if (Move.ConsequencesOn79.Options != null)
+					{
+						<ul class="mt-1">
+							@foreach (var item in Move.ConsequencesOn79.Options)
+							{
+								<li><DecodedString Value="@item" /></li>
+							}
+						</ul>
+					}
+				</div>
+			}
+			@if (Move.ConsequencesOn10 != null)
+			{
+				<div class="">
+					<DecodedString Value="@Move.ConsequencesOn10.MainText" />
+					@if (Move.ConsequencesOn10.Options != null)
+					{
+						<ul class="mt-1">
+							@foreach (var item in Move.ConsequencesOn10.Options)
+							{
+								<li><DecodedString Value="@item" /></li>
+							}
+						</ul>
+					}
+				</div>
+			}
+			@if (Move.ConsequencesOn6 != null)
+			{
+				<div class="">
+					<DecodedString Value="@Move.ConsequencesOn6.MainText" />
+					@if (Move.ConsequencesOn6.Options != null)
+					{
+						<ul class="mt-1">
+							@foreach (var item in Move.ConsequencesOn6.Options)
+							{
+								<li><DecodedString Value="@item" /></li>
+							}
+						</ul>
+					}
+				</div>
+			}
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public IMove Move { get; set; }
+	[Parameter] public EventCallback<bool> IsCurrentlySelectedChanged { get; set; }
+	private bool _value = false;
+	[Parameter]
+	public bool IsCurrentlySelected
+	{
+		get => _value;
+		set
+		{
+			if (_value == value) return;
+			_value = value;
+			IsCurrentlySelectedChanged.InvokeAsync(value);
+		}
+	}
+
+	[Parameter] public ColorSchemes ColorScheme { get; set; } = ColorSchemes.Default;
+
+	public enum ColorSchemes {Default}
+
+	private void Toggle()
+	{
+		IsCurrentlySelected = !IsCurrentlySelected;
+	}
+
+	private bool _isOpen;
+
+	public bool IsOpened
+	{
+		get { return _isOpen; }
+		set { 
+			if(_isOpen != value)
+			{
+				_isOpen = value;
+				Update();
+			}
+		}
+	}
+
+
+	public void Close() => IsOpened = false;
+	public void Open() => IsOpened = true;
+
+	private void Update() => InvokeAsync(() => { StateHasChanged(); });
+}

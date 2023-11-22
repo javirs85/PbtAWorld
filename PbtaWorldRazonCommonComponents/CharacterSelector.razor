@@ -1,0 +1,76 @@
+﻿@using PbtALib;
+@inject CharacterSelectorService CSService
+
+@if (IsOnScreen)
+{
+    <div class="FullScreenModal" @onclick=Hide>
+        <div class="ModalBody" @onclick:stopPropagation>
+            @if (CSService.Campaign is not null && CSService.Campaign.Circles.Count > 1)
+            {
+                <div class="CirclesPackContainer">
+                    @foreach (var c in CSService.Campaign.Circles)
+                    {
+                        <div class="CircleContainer">
+                            <div>@c.Name</div>
+                            @foreach(var f in c.Factions)
+                            {
+                                <div class="FactionContainer">
+                                    @foreach(var p in f.Members)
+                                    {
+                                        <div class="Character" @onclick=@(()=>{CSService.Select(p);})>
+                                            @p.Name
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }            
+        </div>
+    </div>
+}
+
+@code {
+    private bool IsOnScreen = false;
+    private ICharacter? SelectedCharacter = null;
+
+    protected override void OnParametersSet()
+    {
+        CSService.Show += (p, e) => { IsOnScreen = true; StateHasChanged(); };
+        CSService.Hide += (p, e) => { IsOnScreen = false; };
+    }
+
+    private void Hide()
+    {
+        IsOnScreen = false; StateHasChanged();
+    }
+
+    private void Show()
+    {
+        IsOnScreen = true; StateHasChanged();
+    }
+
+    public class CharacterSelectorService
+    {
+        public event EventHandler Show;
+        public event EventHandler Hide;
+
+        public IPeopleCast? Campaign = null;
+        public void SetPeople(IPeopleCast _people) => Campaign = _people;
+
+        TaskCompletionSource<ICharacter> tcs = new();
+
+        public async Task<ICharacter> StartSelection()
+        {
+            Show.Invoke(this, EventArgs.Empty);
+            return await tcs.Task;
+        }
+
+        public void Select(ICharacter character)
+        {
+            Hide.Invoke(this, EventArgs.Empty);
+            tcs.SetResult(character);
+        }
+    }
+}
