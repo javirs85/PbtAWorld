@@ -53,7 +53,14 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 			{
 				new PbtALib.Faction
 				{
-					Name = "Autónomos en Velo"
+					Name = "Autónomos en Velo",
+					Members =new List<ICharacter>
+					{
+						new PNJ {Name = "amparo"},
+						new PNJ {Name = "lolo"},
+						new PNJ {Name = "sergio"},
+						new PNJ {Name = "john"},
+					}
 				}
 			}
 		});
