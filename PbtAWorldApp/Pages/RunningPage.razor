@@ -37,6 +37,7 @@ else if(SelectedGame == AvailableGames.DW)
 		data = await Meta.CharactersDB.GetSerializedDateForPlayer(SelectedCharacterID);
 
 
+
 		if (localGameId == AvailableGames.DI)
 		{
 			DinoPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoCharacter>(data);
