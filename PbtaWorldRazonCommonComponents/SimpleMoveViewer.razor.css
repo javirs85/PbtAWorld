@@ -1,0 +1,15 @@
+﻿.MoveContainer {
+    background: black;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #676767;
+}
+
+.MoveBody {
+    margin-bottom:10px;
+}
+
+.movetitle{
+    font-weight:bold;
+    opacity: 0.5;
+}

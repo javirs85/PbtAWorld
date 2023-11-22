@@ -1,0 +1,96 @@
+﻿@inject USGameController Game
+@inject NavigationManager Navigation
+
+<div class="d-flex flex-column w-100">
+	<div class ="d-flex flex-column gap-5 PbtASystemContainer Outer" style="padding:10px;">
+		<div class="PhoneMenuHeader">
+			@foreach(Circles circle in Enum.GetValues(typeof(Circles)))
+			{
+				@if(circle != Circles.NotSet)
+				{
+					<div class="PhoneMenuHeaderButton @((Player.CurrentCircle == circle)?"PhoneMenuHeaderButtonSelected":"")"
+							@onclick=@(()=>{CircleSelected(circle);})>
+							@circle.ToString()
+					</div>
+				}
+			}
+		</div>
+		@foreach(var faction in Game.AllFactions.Where(x=>x.Circle == Player.CurrentCircle))
+		{
+			<div class="PhoneMenuFactionBox">
+				<div class="PhoneMenuFactionHeader" @onclick=@(async ()=>{ await FactionSelected.InvokeAsync(faction);})>
+					<div>
+					@faction.Name
+						@if (faction.Status == FactionStatuses.Menguando)
+						{
+							<img src="imgs/Icons/DownCircle.svg" width="20" class="ms-1"/>
+						}
+						else if (faction.Status == FactionStatuses.Creciendo)
+						{
+							<img src="imgs/Icons/UpCircle.svg" width="20" class="ms-1" />
+						}
+						else
+						{
+							<img src="imgs/Icons/EqualCircle.svg" width="20" class="ms-1"	/>
+						}
+					</div>
+					<div class="PhoneAddButton" @onclick=@(async ()=>{ await CreatePlayerAtFaction(faction);}) @onclick:stopPropagation=true>
+						+
+					</div>
+				</div>
+				@foreach (var ch in Game.GetMembersOfFaction(faction))
+				{
+					<div class="PhoneMenuItemButton @IsSelected(ch)"  @onclick=@(()=>{CharacterSelected.InvokeAsync(ch);})>
+						@ch.Name
+					</div>
+				}
+			</div>
+		}
+		<div class="PhoneAddFactionButton" @onclick=CreateFaction @onclick:stopPropagation=true>
+			Añadir nueva facción
+		</div>
+	</div>
+</div>
+
+@code {
+
+	[Parameter] public EventCallback<USCharacterSheet> CharacterSelected { get; set; }
+	[Parameter] public EventCallback<Faction> FactionSelected { get; set; }
+	[Parameter] public EventCallback ForceUpdate { get; set; }
+	[Parameter] public USCharacterSheet Player { get; set; }
+
+	protected async override void OnAfterRender(bool firstRender)
+	{
+		if(firstRender)
+		{
+			//DB.CharacterChanged += CharacterChanged;
+		}
+	}
+
+	private string IsSelected(USCharacterSheet ch)
+	{
+		if (Player == ch)
+			return "Selected";
+		return "";
+	}
+
+	private void CharacterChanged(object? sender, USCharacterSheet ch) => StateHasChanged();
+	private void StateChanged(object? sender, EventArgs e) => StateHasChanged();
+
+	private void CircleSelected(Circles circle)
+	{
+		Player.CurrentCircle = circle;
+	}
+
+	async Task CreatePlayerAtFaction(Faction fac)
+	{
+		var ch = await Game.CreatePlayerAtFaction(fac);
+		await CharacterSelected.InvokeAsync(ch);
+	}
+
+	async Task CreateFaction()
+	{
+		await Game.CreateNewFactionAtSelectedCircle(Player.CurrentCircle);
+		StateHasChanged();
+	}
+}

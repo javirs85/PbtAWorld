@@ -13,6 +13,8 @@ public class GameControllerBase<TIDPack, TStatsPack>
 	private readonly MovesServiceBase moves;
 	private Random random = new Random();
 
+	public IPeopleCast People;
+
 	public GameControllerBase(MovesServiceBase moves, IDataBaseController DB)
     {
 		this.moves = moves;
@@ -25,6 +27,7 @@ public class GameControllerBase<TIDPack, TStatsPack>
 	public event EventHandler<PbtAImage> OnMasterShowsImage;
 	public event EventHandler<PNJ> OnMasterShowsPNJ;
 
+	public PbtACharacter GetCharacterByID(Guid id) => Players?.Find(x => x.ID == id) ?? new PbtACharacter { Name = "Character not found" };
 	public void RequestUpdateToUIOnClients() => OnUIUpdate?.Invoke(this, new EventArgs());
 	public void ShowToastOnAllClients(string msg) => NewInfoToast?.Invoke(this, msg);
 	public void ShowImageToAllPlayers(PbtAImage img) => OnMasterShowsImage?.Invoke(this, img);
@@ -73,7 +76,7 @@ public class GameControllerBase<TIDPack, TStatsPack>
 		}
 	}
 
-	public void Roll(Guid PlayerID, TStatsPack stat, TIDPack moveID, int hardcodedBonus, RollTypes rtype = RollTypes.Roll_Simple)
+	public void Roll(Guid PlayerID, TStatsPack stat, TIDPack moveID, int hardcodedBonus, RollTypes rtype = RollTypes.Roll_Simple, string hardcodedRolledStatName = "")
 	{
 		var player = Players.Find(x => x.ID == PlayerID);
 		if (player is not null)
@@ -110,6 +113,9 @@ public class GameControllerBase<TIDPack, TStatsPack>
 			LastRoll.Roller = player.Name;
 			LastRoll.SetID(moveID);
 			LastRoll.SetStat(stat);
+
+			if(hardcodedRolledStatName != "")
+				LastRoll.StatString = hardcodedRolledStatName;
 		}
 
 		OnNewRoll?.Invoke(this, LastRoll);

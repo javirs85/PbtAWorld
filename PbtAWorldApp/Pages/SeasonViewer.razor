@@ -1,9 +1,11 @@
 ﻿@page "/SeasonViewer/{SelectedSeasonID:guid}"
 @using DungeonWorld;
+@using UrbanShadows;
 @inject DataBaseController Meta;
 @inject NavigationManager nav;
 @inject DinoCharacter DinoCharacter;
 @inject DinoGameController DinoGame;
+@inject USMovesService Moves;
 
 @inject IToastService Toaster;
 
@@ -118,6 +120,16 @@
 						}
 					}
 				}
+				else if (Meta.SelectedGame == AvailableGames.US)
+				{
+					@foreach (UrbanShadows.AvailableArchetypes c in Enum.GetValues(typeof(UrbanShadows.AvailableArchetypes)))
+					{
+						@if (c != UrbanShadows.AvailableArchetypes.NotSet && c != AvailableArchetypes.All)
+						{
+							<div class="btn btn-primary" @onclick=@(async ()=>{await CreateNewUSCharacter(c);})>@c.ToUI()</div>
+						}
+					}
+				}
 
 			</div>
 		}
@@ -165,6 +177,10 @@
 		else if (Meta.SelectedGame == AvailableGames.DW)
 		{
 			return DWExtesions.ToUI((DWClasses)classID);
+		}
+		else if(Meta.SelectedGame == AvailableGames.US)
+		{
+			return ((AvailableArchetypes)classID).ToUI();
 		}
 		else
 			return "Wrong SelectedGame at FromClassIDToUI";
@@ -243,6 +259,27 @@
 				System.Text.Json.JsonSerializer.Serialize(newCharacter),
 				newCharacter.Name,
 				(byte)newCharacter.Profession,
+				newCharacter.ID);
+
+		NewCharacterName = "Nombre";
+		IsLoadingFromDB = true;
+		await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
+		IsLoadingFromDB = false;
+	}
+	private async Task CreateNewUSCharacter(UrbanShadows.AvailableArchetypes c)
+	{
+		USCharacterSheet newCharacter = new USCharacterSheet(Moves);
+		newCharacter.ID = Guid.NewGuid();
+		newCharacter.Name = NewCharacterName;
+		newCharacter.Archetype = c;
+
+		if (Meta.SelectedGame is not null && Meta.SelectedSeason is not null)
+			await Meta.InsertNewCharacter(
+				(byte)Meta.SelectedGame,
+				Meta.SelectedSeason.CampaignGuid,
+				System.Text.Json.JsonSerializer.Serialize(newCharacter),
+				newCharacter.Name,
+				(byte)newCharacter.Archetype,
 				newCharacter.ID);
 
 		NewCharacterName = "Nombre";

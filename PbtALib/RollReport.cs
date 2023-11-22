@@ -19,7 +19,7 @@ public interface IRollReport
 	int bonus { get; set; }
 	int Total { get; set; }
 	string MoveTittle { get; }
-	string StatString { get; }
+	string StatString { get; set; }
 	void SetID<T>(T id);
 	T GetID<T>();
 	void SetStat<T>(T id);
@@ -75,7 +75,7 @@ public abstract class RollReport<T_ID, T_Stats> : IRollReport
 			return Moves?.GetMovement<T_ID>(MoveId).Tittle ?? $"Cannot find move's tittle {MoveId} @ RollReport::MoveTittle";
 		}
 	}
-	public abstract string StatString { get; }
+	public abstract string StatString { get; set; }
 	public bool IsRaw { get; set; } = false;
 	public List<Tuple<DiceTypes, int>> Dices { get; set; } = new();
 

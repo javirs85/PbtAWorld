@@ -1,5 +1,6 @@
 ﻿@page "/SeasonSelection/{SelectedGameString}"
 @using DungeonWorld;
+@using UrbanShadows;
 @inject DataBaseController Meta;
 @inject NavigationManager nav;
 
@@ -86,6 +87,10 @@
 		else if (Meta.SelectedGame == AvailableGames.DW)
 		{
 			return DWExtesions.ToUI((DWClasses)classID);
+		}
+		else if (Meta.SelectedGame == AvailableGames.US)
+		{
+			return ((AvailableArchetypes)classID).ToUI();
 		}
 		else
 			return "Wrong SelectedGame at FromClassIDToUI";

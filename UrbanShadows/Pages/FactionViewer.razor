@@ -1,0 +1,125 @@
+﻿@using PbtASystem.Services;
+@using PbtaWorldRazonCommonComponents
+@inject IToastService Toaster;
+@inject USMovesService Moves;
+@inject USGameController Game;
+@inject ConfirmationModalService Confirm;
+
+<div class="flex-grow-1 col">
+	<div class="d-flex flex-column">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12 p-0">
+					@if (Faction is not null)
+					{
+						<div class="d-flex align-items-center justify-content-between">
+							<div class="d-block d-md-none" @onclick=UnSelect>
+								<img src="imgs/Icons/Back.svg" class="EditButton" @onclick=UnSelect/>
+							</div>
+							<div class="Title">
+								@Faction.Name
+							</div>
+							<img src="imgs/Icons/Edit.svg" class="EditButton" @onclick=RequestEdit />
+						</div>
+
+						<div class="d-flex gap-2">
+							<div class="SubTitle">
+								@Faction.Kind (@CurrentCircle.ToString())
+							</div>
+							<div>
+								@if (Faction.Status == FactionStatuses.Menguando)
+								{
+									<img src="imgs/Icons/DownCircle.svg" width="40"  />
+								}
+								else if (Faction.Status == FactionStatuses.Creciendo)
+								{
+									<img src="imgs/Icons/UpCircle.svg" width="40"/>
+								}
+								else
+								{
+									<img src="imgs/Icons/EqualCircle.svg" width="40"/>
+								}
+							</div>
+						</div>
+
+						<div class="d-flex flex-column mt-4">
+							<div class="d-flex gap-2">
+								Fuerza:@Faction.Strength
+								<Track @bind-Value="@Faction.StrengthTemp"/>
+							</div>
+							<div class="Explanation"> @Faction.StrengthExplanation</div>
+						</div>
+						<div class="d-flex flex-column mt-3">
+							<div class="d-flex gap-2">
+								Tamaño:@Faction.Size
+								<Track @bind-Value="@Faction.SizeTemp" />
+							</div>
+							<div class="Explanation"> @Faction.SizeExplanation</div>
+						</div>
+
+						<div class="Entry">
+							<div class="EntryTitlte">Trabajando en ...</div>
+							<div class="EntryBody"> <DecodedString Value=@Faction.CurrentlyWorkingOn /> </div>
+						</div>
+						<div class="Entry">
+							<div class="EntryTitlte">Descripción</div>
+							<div class="EntryBody"> <DecodedString Value=@Faction.Description /> </div>
+						</div>
+						<div class="Entry">
+							<div class="EntryTitlte">Assets</div>
+							<div class="EntryBody"> <DecodedString Value=@Faction.Assets /> </div>
+						</div>
+						@if (/*Auth.IsMaster*/true)
+						{
+							<div class="Entry">
+								<div class="EntryTitlte">Master seeds</div>
+								<div class="EntryBody"> <DecodedString Value=@Faction.MasterSeeds /> </div>
+							</div>
+						}
+						else
+						{
+							<div>Las notas para el master han sido deshabilitadas</div>
+						}
+
+						<div class="Pack Darker d-flex flex-column gap-2 p-2 mt-2">
+							<div class="PackHeader">Movimientos de facciones:</div>
+							@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionPhaseCityMove))
+							{
+								
+								<MoveViewer ID="m.ID" IsSelected=@(m == SelectedMovement) Clicked=@(_=>{Select(m);}) />
+							}
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter] public EventCallback UnSelected { get; set; }
+	[Parameter] public EventCallback EditRequested { get; set; }
+	[Parameter] public Faction Faction { get; set; }
+	[Parameter] public Circles CurrentCircle { get; set; }
+
+	private USMove? SelectedMovement;
+
+	private void Select(USMove mov)
+	{
+		if (mov == SelectedMovement)
+			SelectedMovement = null;
+		else
+			SelectedMovement = mov;
+	}
+
+	private async Task UnSelect()
+	{
+		await UnSelected.InvokeAsync();
+	}
+
+	private async Task RequestEdit()
+	{
+		await EditRequested.InvokeAsync();	
+	}
+}
