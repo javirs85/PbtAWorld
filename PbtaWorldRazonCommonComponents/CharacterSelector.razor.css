@@ -39,14 +39,49 @@
 }
 
 .CirclesPackContainer{
-
+    width:100%;
+    display:flex;
+    gap:15px;
 }
-.CircleContainer{
-
+.CircleContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background: #222235;
+    border-radius: 4px;
+    padding: 10px;
 }
-.FactionContainer{
-
+.CircleContainerHeader{
+    opacity: 0.5;
+    text-align: center;
 }
-.Character{
-
+.FactionContainer {
+    border: 1px solid #5151a7;
+    border-radius: 4px;
+}
+.FactionContainerHeader {
+    background: #3a4171;
+    padding: 5px;
+    border-radius: 2px 2px 0 0;
+}
+.FactionContainerBody {
+    background: #282b3b;
+    padding: 5px;
+}
+.Character {
+    padding-left:10px;
+    cursor:pointer;
+}
+    .Character:hover {
+        background: #464b6b;
+        border-radius: 4px;
+    }
+.button{
+    width:100%;
+    text-align:center;
+    opacity:0.5;
+    cursor:pointer;
+}
+.button:hover{
+    opacity:1;
 }

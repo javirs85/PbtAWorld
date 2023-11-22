@@ -15,7 +15,6 @@ public class ICharacter
 
 public class PNJ : ICharacter
 {
-	public string Name { get; set; } = string.Empty;
 	public PbtAImage Image { get; set; } = new();
 	public string Goal { get; set; } = string.Empty;
 	public string CanOffer { get; set; } = string.Empty;
