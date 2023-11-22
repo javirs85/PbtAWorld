@@ -1,6 +1,6 @@
 ﻿namespace PbtALib;
 
-public class PbtACharacter
+public class PbtACharacter : ICharacter
 {
 	public event EventHandler UpdateUI;
 	public void OnUpdateUI()=>UpdateUI?.Invoke(this, EventArgs.Empty);

@@ -112,7 +112,7 @@
 		if (Attr == USAttributes.Veil)
 			Player.IsVeilTick = !Player.IsVeilTick;
 
-		await Game.StoreCharacter(Player);
+		await Game.StoreChangesOnCharacter(Player, $"cambió {Attr}");
 	}
 
 	async Task AttrMinus()
@@ -120,7 +120,7 @@
 		var val = Player.GetAttribute(Attr);
 		Player.SetAttribute(Attr, val - 1);
 
-		await Game.StoreCharacter(Player);
+		await Game.StoreChangesOnCharacter(Player, $"{Attr.ToUI()}: {val-1}");
 		UpdateValues();
 	}
 	async Task AttrPlus()
@@ -128,7 +128,7 @@
 		var val = Player.GetAttribute(Attr);
 		Player.SetAttribute(Attr, val + 1);
 
-		await Game.StoreCharacter(Player);
+		await Game.StoreChangesOnCharacter(Player, $"{Attr.ToUI()}: {val + 1}");
 		UpdateValues();
 	}
 
@@ -141,7 +141,7 @@
 
 		Player.SetStatusInCircle(Attr, Status);
 
-		await Game.StoreCharacter(Player);
+		await Game.StoreChangesOnCharacter(Player, $"cambio su estatus en {Attr.ToUI()}: {Status}");
 		UpdateValues();
 	}
 

@@ -3,7 +3,7 @@
 
 @if(service.IsVisible)
 {
-	<div class="FloatinCover">
+	<div class="FloatinCover @FloatinCoverClass">
 		@if(service.LastRoll is not null && service.LastRoll.IsRaw == false)
 		{
 			<div @onclick=service.Hide
@@ -34,25 +34,23 @@
 					<div class="d-flex align-items-center gap-2">
 						@if(service.LastRoll.RollType == RollTypes.Roll_Disadvantage)
 						{
-							<div class="dice">@service.LastRoll.d1</div>							
-						}
-						else
-						{
-							<div class="dice crossed">@service.LastRoll.d1</div>
-						}
-						<span> + </span>
-						<div class="dice">@service.LastRoll.d2</div> +
-						@if (service.LastRoll.RollType == RollTypes.Roll_Advantage)
-						{
-							<div class="dice">@service.LastRoll.d3</div>
-							<span> + </span>
-						}
-						else if (service.LastRoll.RollType == RollTypes.Roll_Disadvantage)
-						{
+							<div class="dice">@service.LastRoll.d1</div><span> + </span>
+							<div class="dice">@service.LastRoll.d2</div><span> + </span>
 							<div class="dice crossed">@service.LastRoll.d3</div>
-							<span> + </span>
 						}
-						
+						else if(service.LastRoll.RollType == RollTypes.Roll_Simple)
+						{
+							<div class="dice">@service.LastRoll.d1</div><span> + </span>
+							<div class="dice">@service.LastRoll.d2</div>
+						}
+						else if(service.LastRoll.RollType == RollTypes.Roll_Advantage)
+						{
+							<div class="dice crossed">@service.LastRoll.d1</div> <span> + </span>
+							<div class="dice">@service.LastRoll.d2</div> <span> + </span>
+							<div class="dice">@service.LastRoll.d3</div>
+						}
+
+						<span> + </span>
 						<div class="dice rounded-circle" style="border-style: none; background: #ffffff2e;">
 							@service.LastRoll.bonus
 						</div>
@@ -89,9 +87,21 @@
 }
 
 @code {
+	private AvailableGames Game  = AvailableGames.NotSet;
+	private string FloatinCoverClass
+	{
+		get {
+			if (Game == AvailableGames.US)
+				return "FloatinCoverUS";
+			else
+				return "FloatingCoverDefault";
+		}
+	}
+
 	protected override void OnParametersSet()
 	{
 		service.UpdateNeeded += (o, e) => { InvokeAsync(() => { StateHasChanged(); }); };
+		service.SetGame += (o, game) => { Game = game; StateHasChanged(); };
 	}
 
 	private string DamageBackgroundColor
@@ -122,8 +132,11 @@
 	public class LastRollViewerService
 	{
 		public event EventHandler UpdateNeeded;
+		public event EventHandler<AvailableGames> SetGame;
 		public bool IsVisible = false;
 		public IRollReport LastRoll { get; set; }
+
+		public void SetGameMode(AvailableGames Game) => SetGame?.Invoke(this, Game);
 
 		public void Show(IRollReport roll)
 		{

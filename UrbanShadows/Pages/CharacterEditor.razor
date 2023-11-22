@@ -148,14 +148,14 @@
 
 	private async Task Submit()
 	{
-		await Game.StoreCharacter(Player);
+		await Game.StoreChangesOnCharacter(Player, "");
 		await Exit.InvokeAsync();
 	}
 
 	private async Task Dismiss()
 	{
 		Player = Backup;
-		await Game.StoreCharacter(Player);
+		await Game.StoreChangesOnCharacter(Player, "");
 		await Exit.InvokeAsync();
 	}
 }

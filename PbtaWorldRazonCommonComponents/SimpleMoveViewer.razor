@@ -13,11 +13,12 @@
 		<button class="accordion-button collapsed movetitle"
 				type="button"
 				data-bs-toggle="collapse"
-				data-bs-target="@("#collapse"+Move.IDText)">
+				data-bs-target="@("#collapsing"+string.Concat(Move.IDText.Where(c => !char.IsWhiteSpace(c))))">
 			@Move.Tittle
 		</button>
 	</h2>
-	<div class="MoveBody accordion-collapse collapse" id=@("collapse"+Move.IDText)>
+	<div class="MoveBody accordion-collapse collapse" id=@("collapsing"+Move.IDText+string.Concat(Move.IDText.Where(c => !char.IsWhiteSpace(c))))>
+
 		<div class="accordion-body">
 			<DecodedString Value="@Move.PreCondition.MainText" />
 			@if (Move.PreCondition.Options != null)

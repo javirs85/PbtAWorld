@@ -56,10 +56,10 @@
 				}
 				else
 				{
-					@foreach (var lio in Move.PreCondition.Options)
+					@foreach (var lio in Player.LIOs /*Move.PreCondition.Options*/)
 					{
 						<div class="LIOBox">
-							@lio
+							@Moves.AllLio.Find(x=>x.ID == lio)?.Text
 						</div>
 					}
 					<div class="d-flex justify-content-center w-100">
@@ -270,6 +270,7 @@
 	[Parameter] public int MasterRolledValue { get; set; }
 	[Parameter] public USCharacterSheet Player { get; set; }
 	[Parameter] public IMove? imove { get; set; } = null;
+	[Parameter] public EventCallback FinishedRolling { get; set; }
 	USMove Move;
 
 	string rollNumber
@@ -301,7 +302,7 @@
 			Move = Moves.AllMovements.Find(x => x.ID == ID);
 		}
 
-		
+
 		if (Move is null)
 		{
 			Toaster.ShowError($"The move {ID} is not in the DB");
@@ -353,7 +354,7 @@
 			Player.LIOs.Remove(lioId);
 		else
 			Player.LIOs.Add(lioId);
-		await Game.StoreCharacter(Player);
+		await Game.StoreChangesOnCharacter(Player, "actualizó sus poderes de dejarlo salir");
 		await ForceUpdate.InvokeAsync();
 	}
 
@@ -364,7 +365,7 @@
 		{
 			Move.IsImproved = true;
 			Player.UpgradedMoves.Add(Move.ID);
-			await Game.StoreCharacter(Player);
+			await Game.StoreChangesOnCharacter(Player, "añadió movimientos avanzados");
 			CloseFullScreenModal();
 		}
 	}
@@ -375,7 +376,7 @@
 		{
 			Move.IsImproved = false;
 			Player.UpgradedMoves.Remove(Move.ID);
-			await Game.StoreCharacter(Player);
+			await Game.StoreChangesOnCharacter(Player, "eliminó movimientos avanzados");
 			CloseFullScreenModal();
 		}
 	}
@@ -396,6 +397,8 @@
 			CloseCircleSelectionModal();
 			bonus = Player.GetAttribute(circle);
 			rollText = circle.ToUI();
+
+			Game.Roll(Player.ID, circle, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
 		}
 		else if(Move.Roll == USAttributes.Status)
 		{
@@ -404,22 +407,17 @@
 			CloseCircleSelectionModal();
 			bonus = Player.GetStatusInCircle(circle);
 			rollText = "estatus en "+circle.ToUI();
+			Game.Roll(Player.ID, circle, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
 		}
 		else
 		{
 			bonus = Player.GetAttribute(Move.Roll);
 			rollText = Move.Roll.ToUI();
+			Game.Roll(Player.ID, Move.Roll, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
 		}
 
 		int total = d1 + d2 + bonus;
-
-		/*await Messaging.SendMessage(new RollMessage
-			{
-				MoveID = Move.ID,
-				RollValue = total,
-				Message = $"{d1} + {d2} +{rollText}({bonus})"
-			});
-			*/
+		await FinishedRolling.InvokeAsync();
 	}
 
 	bool IsShowingCircleSelectionModal = false;

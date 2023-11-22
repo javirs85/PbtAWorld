@@ -202,3 +202,21 @@
     display: none!important;
     pointer-events: none;
 }
+
+.RightColumnButton{
+    font-size:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:black;
+    border-radius: 4px;
+    margin:10px;
+    margin-left:20px;
+    aspect-ratio: 1/1;
+    color:white;
+    opacity: 0.5;
+    cursor: pointer;
+}
+.RightColumnButton:hover{
+    opacity: 1;
+}

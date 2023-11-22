@@ -8,5 +8,17 @@ public class USRollReport : RollReport<USMoveIDs, USAttributes>
 	{
 
 	}
-	public override string StatString => Stat.ToUI();
+	private string _statstring =string.Empty;
+
+	public override string StatString
+	{
+		get { 
+			if(_statstring == string.Empty)	
+				return Stat.ToUI();
+			else
+				return _statstring;		
+		}
+		set { _statstring = value; }
+	}
+
 }

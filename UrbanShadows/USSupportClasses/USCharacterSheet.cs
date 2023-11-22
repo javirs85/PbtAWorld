@@ -342,6 +342,8 @@ public class USCharacterSheet : PbtACharacter
 		}
 	}
 
+	public void ConnectoToMovesService(USMovesService _moves) => Moves = _moves;
+
 	public void GetInitialMovesIDsByArchetype(USMovesService _moves)
 	{
 		Moves = _moves;
@@ -393,6 +395,9 @@ public class USCharacterSheet : PbtACharacter
 		}
 
 		if (isScar) Damage = 0;
+		WoundsHighDescription = "";
+		WoundsMedDescription = "";
+		WoundsSoftDescription = "";
 	}
 	public bool GetScar(USAttributes attribute)
 	{

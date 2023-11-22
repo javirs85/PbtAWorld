@@ -1,11 +1,20 @@
 ﻿@page "/Running/{SelectedGameString}/{SelectedCharacterID:guid}"
+@using PbtaWorldRazonCommonComponents
+@using UrbanShadows
+@using static PbtaWorldRazonCommonComponents.CharacterSelector;
+@using static PbtaWorldRazonCommonComponents.LastRollOverlay;
+
 @inject NavigationManager nav
 @inject DataBaseController Meta
 @inject DinoGameController DinoGame
+@inject USGameController USGame
 @inject USMovesService USMoves
-@using UrbanShadows
+@inject LastRollViewerService LastRollViewerService
+@inject CharacterSelectorService CharacterSelectorService
+
 
 <PbtaWorldRazonCommonComponents.LastRollOverlay/>
+<CharacterSelector/>
 
 @if(SelectedGame == AvailableGames.DI)
 {
@@ -58,9 +67,14 @@ else if(SelectedGame == AvailableGames.US)
 		else if(localGameId == AvailableGames.US)
 		{
 			USPlayer = System.Text.Json.JsonSerializer.Deserialize<UrbanShadows.USCharacterSheet>(data);
-			USPlayer.GetInitialMovesIDsByArchetype(USMoves);
+			USPlayer.ConnectoToMovesService(USMoves);
+			CharacterSelectorService.Campaign = USGame.People;
+			//USPlayer.GetInitialMovesIDsByArchetype(USMoves);
 			Meta.SelectedPlayer = USPlayer;
 		}
+
+
+		LastRollViewerService.SetGameMode(localGameId);
 
 		//we perform the update in the UI
 		SelectedGame = localGameId;
