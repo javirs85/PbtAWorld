@@ -1,5 +1,6 @@
 ﻿using PbtADBConnector.DbAccess;
 using PbtALib;
+using PbtALib.ifaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ public class SeasonData : ISeasonsData
 	}
 
 	public Task DeleteSeason(Guid id) =>
-		_db.SaveData("dbo.spCampaigns_DeleteCampaign", new { Guid = id });
+		_db.SaveData("dbo.TestCamp_DeleteCampaign", new { Guid = id });
 
 	public Task<IEnumerable<Season>> GetAllSeasonsOfGame(AvailableGames game)
 	{
@@ -26,16 +27,16 @@ public class SeasonData : ISeasonsData
 	}
 
 	public async Task<Season?> GetSeason(Guid SeasonID) =>
-		(await _db.LoadData<Season, dynamic>("dbo.spCampaigns_GetCampaign", new { SeasonID = SeasonID })).FirstOrDefault();
+		(await _db.LoadData<Season, dynamic>("dbo.TestCamp_GetCampaign", new { SeasonID = SeasonID })).FirstOrDefault();
 
-public Task<IEnumerable<Season>> GetAllSeasonsOfGame(byte gamecode) =>
-		_db.LoadData<Season, dynamic>("dbo.spCampaigns_GetCampaignsOfGame", new { GameID = gamecode });
+	public Task<IEnumerable<Season>> GetAllSeasonsOfGame(byte gamecode) =>
+		_db.LoadData<Season, dynamic>("dbo.TestCamp_GetCampaignsOfGame", new { GameID = gamecode });
 
 	public Task InsertSeason(Season season) =>
-		_db.SaveData("dbo.spCampaigns_AddCampaign", new { season.CampaignGuid, season.Name, season.GameID });
+		_db.SaveData("dbo.TestCamp_AddCampaign", new { season.CampaignGuid, season.Name, season.GameID });
 
 	public Task UpdateSeason(Season season) =>
-		_db.SaveData("dbo.spCampaigns_Update", new { season.CampaignGuid, season.Name, season.GameID });
+		_db.SaveData("dbo.TestCamp_Update", new { season.CampaignGuid, season.Name, season.GameID });
 }
 
 public class CharacterData : ICharacterData
@@ -47,10 +48,10 @@ public class CharacterData : ICharacterData
 	}
 
 	public async Task<string> GetSerializedDateForPlayer(Guid guid) =>
-		(await _db.LoadData<string, dynamic>("dbo.spCharacter_GetSerializedDateForPlayer", new { Guid = guid })).FirstOrDefault();
+		(await _db.LoadData<string, dynamic>("dbo.TestChar_GetSerializedDateForPlayer", new { Guid = guid })).FirstOrDefault();
 
 	public Task InsertNewCharacter(byte GameID, Guid CampaignID, string serializedData, string Name, int classCode, Guid CharacterID) =>
-		_db.SaveData("dbo.spCharacter_Insert", new
+		_db.SaveData("dbo.TestChar_Insert", new
 		{
 			GameID = GameID,
 			CampaignID = CampaignID,
@@ -61,14 +62,15 @@ public class CharacterData : ICharacterData
 		});
 
 	public Task UpadteCharacter(Guid CharacterID, string newName, string newSerializedData) =>
-		_db.SaveData("dbo.spCharacter_Update", new {Guid = CharacterID, newName = newName, SerializedData = newSerializedData });
+		_db.SaveData("dbo.TestChar_Update", new {Guid = CharacterID, newName = newName, SerializedData = newSerializedData });
+
+	public Task DeleteCharacter(ICharacter p) =>
+		_db.SaveData("dbo.TestChar_Delete", new { Guid = p.ID });
 
 	public Task<IEnumerable<PlayerSummary>> GetAllCharactersOfSeason(Guid guid) =>
-		_db.LoadData<PlayerSummary, dynamic>("dbo.spCharacter_GetAllCharactersInSeason", 
+		_db.LoadData<PlayerSummary, dynamic>("dbo.TestChar_GetAllCharactersInSeason",
 			new { SesionID = guid });
-
-	public Task DeleteCharacter(PbtACharacter p) =>
-		_db.SaveData("dbo.spCharacter_Delete", new { Guid = p.ID });
+		
 }
 
 

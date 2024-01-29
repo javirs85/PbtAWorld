@@ -1,7 +1,10 @@
-﻿using PbtALib;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PbtADBConnector.Data;
-
+namespace PbtALib.ifaces;
 
 public interface ISeasonsData
 {

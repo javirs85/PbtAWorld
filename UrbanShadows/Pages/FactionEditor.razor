@@ -117,9 +117,9 @@
 
 @code {
 	[Parameter] public EventCallback Exit { get; set; }
-	[Parameter] public Faction Faction { get; set; }
+	[Parameter] public USFaction Faction { get; set; }
 
-	Faction Backup = new();
+	USFaction Backup = new();
 
 	protected async override Task OnParametersSetAsync()
 	{

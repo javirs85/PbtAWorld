@@ -5,7 +5,7 @@
 @using static PbtaWorldRazonCommonComponents.LastRollOverlay;
 
 @inject NavigationManager nav
-@inject DataBaseController Meta
+@inject IDataBaseController Meta
 @inject DinoGameController DinoGame
 @inject USGameController USGame
 @inject USMovesService USMoves
@@ -39,8 +39,11 @@ else if(SelectedGame == AvailableGames.US)
 
 	AvailableGames SelectedGame = AvailableGames.NotSet;
 
+	private bool AlreadySet = false;
 	protected override async Task OnParametersSetAsync()
 	{
+		if (AlreadySet) return;
+		
 		//we need a local version so the Pages in the html does not get set until the player is deserialized
 		AvailableGames localGameId;
 		bool isOk = Enum.TryParse(SelectedGameString, out localGameId);
@@ -67,10 +70,22 @@ else if(SelectedGame == AvailableGames.US)
 		else if(localGameId == AvailableGames.US)
 		{
 			USPlayer = System.Text.Json.JsonSerializer.Deserialize<UrbanShadows.USCharacterSheet>(data);
-			USPlayer.ConnectoToMovesService(USMoves);
+			USPlayer?.ConnectoToMovesService(USMoves);
 			CharacterSelectorService.Campaign = USGame.People;
-			//USPlayer.GetInitialMovesIDsByArchetype(USMoves);
 			Meta.SelectedPlayer = USPlayer;
+			foreach(var p in Meta.SelectedSeason.Players)
+			{
+				var str = await Meta.CharactersDB.GetSerializedDateForPlayer(p.ID);
+				var usp = System.Text.Json.JsonSerializer.Deserialize<UrbanShadows.USCharacterSheet>(str);
+				if(usp.Archetype == AvailableArchetypes.NotSet)
+					usp.Archetype = (AvailableArchetypes)Enum.ToObject(typeof(AvailableArchetypes), usp.EncodedClass);
+				USGame.Players.Add(usp);
+				usp.IsNPC = false;
+				var circle = USGame.People.Circles.Find(x => x.Name == usp.Circle.ToString());
+				if (circle is not null)
+					circle.DefaultFaction.Members.Add(usp);
+			}
+			AlreadySet = true;
 		}
 
 

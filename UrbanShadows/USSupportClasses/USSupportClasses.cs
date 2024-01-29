@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PbtALib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,23 @@ using System.Threading.Tasks;
 
 namespace UrbanShadows;
 
+public class USPeople : People
+{
+    public USPeople(IDataBaseController _db) : base(_db)
+    {
+        Circles.Clear();
+        Circles.Add(new Circle(UrbanShadows.Circles.Mortalis.ToString(), new USFaction { Name = "Autónomos en Mortales" }));
+        Circles.Add(new Circle(UrbanShadows.Circles.Noche.ToString(), new USFaction { Name = "Autónomos en Noche" }));
+        Circles.Add(new Circle(UrbanShadows.Circles.Poder.ToString(), new USFaction { Name = "Autónomos en Poder" }));
+        Circles.Add(new Circle(UrbanShadows.Circles.Velo.ToString(), new USFaction { Name = "Autónomos en Velo" }));
+    }
+    public override IPbtAFaction AddNewFactionToCircle(Circle c)
+    {
+        USFaction faction = new USFaction();
+		c.Factions.Add(faction);
+		return faction;
+    }
+}
 public class Rumor
 {
 	public int ID { get; set; }

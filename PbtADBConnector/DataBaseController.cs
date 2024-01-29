@@ -1,12 +1,13 @@
 ﻿using PbtADBConnector.Data;
 using PbtALib;
+using PbtALib.ifaces;
 
 namespace PbtADBConnector;
 
 public class DataBaseController : IDataBaseController
 {
-	public readonly ISeasonsData SeasonsDB;
-	public readonly ICharacterData CharactersDB;
+	public ISeasonsData SeasonsDB { get; set; }
+	public ICharacterData CharactersDB { get; set; }
 
 	public DataBaseController(ISeasonsData _seasons, ICharacterData _characters)
 	{
@@ -18,7 +19,7 @@ public class DataBaseController : IDataBaseController
 
 	public AvailableGames? SelectedGame { get; set; } = null;
 	public Season? SelectedSeason { get; set; } = null;
-	public PbtACharacter? SelectedPlayer { get; set; } = null;
+	public ICharacter? SelectedPlayer { get; set; } = null;
 	public IEnumerable<Season> Seasons { get; set; } = Enumerable.Empty<Season>();
 
 	public string SelectedGameCover

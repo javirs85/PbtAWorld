@@ -1,8 +1,8 @@
-﻿CREATE PROCEDURE [dbo].[spUser_Insert]
+﻿CREATE PROCEDURE [dbo].[TestUsr_Insert]
 	@FirstName nvarchar(50),
 	@LastName nvarchar(50)
 AS
 begin
-	insert into dbo.[User] (FirstName, LastName)
+	insert into dbo.TestUsr (FirstName, LastName)
 	values (@FirstName, @LastName);
 end

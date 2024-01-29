@@ -79,6 +79,7 @@
 	{
 		if(SelectedAnchorPoint is not null)
 		{
+			SelectedAnchorPoint.Action = MapActions.Remove;
 			Game.UpdateMap(SelectedAnchorPoint);
 			await offcanvas.HideAsync();
 		}

@@ -1,8 +1,8 @@
-﻿CREATE PROCEDURE [dbo].[spUser_Get]
+﻿CREATE PROCEDURE [dbo].[TestUsr_Get]
 	@Id int
 AS
 begin
 	select Id, FirstName, LastName
-	from dbo.[User]
+	from dbo.TestUsr
 	where Id = @Id
 end

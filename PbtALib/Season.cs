@@ -11,7 +11,7 @@ public class Season
 	public Guid CampaignGuid { get; set; }
 	public AvailableGames GameID { get; set; } = AvailableGames.NotSet;
 	public string Name { get; set; } = string.Empty;
-	public List<PbtACharacter> Players { get; set; } = new();
+	public List<ICharacter> Players { get; set; } = new();
 	public List<Chapter> Chapters { get; set; } = new();
 }
 

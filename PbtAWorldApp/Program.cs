@@ -15,6 +15,7 @@ using static PbtaWorldRazonCommonComponents.LastRollOverlay;
 using UrbanShadows;
 using PbtaWorldRazonCommonComponents;
 using static PbtaWorldRazonCommonComponents.CharacterSelector;
+using PbtALib.ifaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,7 @@ builder.Services.AddRazorPages().AddApplicationPart(typeof(DungeonWorld.Pages.DW
 
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredToast();
-builder.Services.AddSingleton<DataBaseController>();
+builder.Services.AddSingleton<IDataBaseController, DataBaseController>();
 builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddSingleton<DWMovesService>();
 builder.Services.AddSingleton<USMovesService>();
@@ -41,7 +42,7 @@ builder.Services.AddSingleton<CharacterSelectorService>();
 builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
-builder.Services.AddSingleton<PbtADBConnector.Data.ISeasonsData ,  SeasonData>();
+builder.Services.AddSingleton<ISeasonsData ,  SeasonData>();
 builder.Services.AddSingleton<ICharacterData, CharacterData>();
 
 

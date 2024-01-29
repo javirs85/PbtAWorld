@@ -8,10 +8,8 @@ using PbtALib;
 namespace UrbanShadows;
 
 
-public class Faction
+public class USFaction : IPbtAFaction
 {
-	public Guid ID { get; set; }
-	public string Name { get; set; } = "Nombre";
 	public string Description { get; set; } = "descripción";
 	public string Kind { get; set; } = "Tipo";
 	public string Assets { get; set; } = "Assets";
@@ -68,12 +66,23 @@ public class Faction
 	[JsonIgnore]
 	public List<MasterMove> GenericFactionMovements
 	{
-		get { return Faction.GetGenericFactionMovements; }
+		get { return USFaction.GetGenericFactionMovements; }
 	}
 
-	public Faction Duplicate()
+	public Guid ID { get; set; } = Guid.NewGuid();
+	public string Name { get; set; } = string.Empty;
+	public List<ICharacter> Members { get; set; } = new();
+
+	public void DeleteCharacter(ICharacter ch)
+	{
+		var c = Members.Find(x => x.Name == ch.Name);
+		if (c is not null)
+			Members.Remove(c);
+	}
+
+	public USFaction Duplicate()
 	{
 		string str = System.Text.Json.JsonSerializer.Serialize(this);
-		return System.Text.Json.JsonSerializer.Deserialize<Faction>(str);
+		return System.Text.Json.JsonSerializer.Deserialize<USFaction>(str);
 	}
 }

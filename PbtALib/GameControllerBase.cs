@@ -27,7 +27,17 @@ public class GameControllerBase<TIDPack, TStatsPack>
 	public event EventHandler<PbtAImage> OnMasterShowsImage;
 	public event EventHandler<PNJ> OnMasterShowsPNJ;
 
-	public PbtACharacter GetCharacterByID(Guid id) => Players?.Find(x => x.ID == id) ?? new PbtACharacter { Name = "Character not found" };
+	public ICharacter GetCharacterByID(Guid id)
+	{
+		var p = Players?.Find(x => x.ID == id);
+		if (p is not null) return p;
+
+		var ch = People.GetCharacterByID(id);
+		if (ch is not null) return ch;
+
+		return new PNJ { Name = "Character not found" };
+	}
+
 	public void RequestUpdateToUIOnClients() => OnUIUpdate?.Invoke(this, new EventArgs());
 	public void ShowToastOnAllClients(string msg) => NewInfoToast?.Invoke(this, msg);
 	public void ShowImageToAllPlayers(PbtAImage img) => OnMasterShowsImage?.Invoke(this, img);
@@ -36,7 +46,13 @@ public class GameControllerBase<TIDPack, TStatsPack>
 
 	public IRollReport LastRoll;
 
-	public List<PbtACharacter> Players = new();
+	private List<PbtACharacter> _players = new();
+
+	public List<PbtACharacter> Players
+	{
+		get { return _players; }
+		set { _players = value; }
+	}
 
 	public IDataBaseController DB { get; }
 
@@ -126,9 +142,12 @@ public class GameControllerBase<TIDPack, TStatsPack>
 		if (Players.Find(x => x.ID == player.ID) is null)
 		{
 			Players.Add(player);
+			AddPlayerToPeople(player);
 			RequestUpdateToUIOnClients();
 		}
 	}
+
+	public virtual void AddPlayerToPeople(PbtACharacter ch) { }
 
 	public virtual Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
 	{

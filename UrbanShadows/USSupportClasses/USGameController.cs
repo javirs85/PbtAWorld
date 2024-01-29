@@ -1,70 +1,43 @@
 ﻿using PbtADBConnector;
 using PbtALib;
+using System;
 
 namespace UrbanShadows;
 
 public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttributes>
 {
 	public List<Debt> AllDebts = new();
-	public List<Faction> AllFactions { get; set; } = new();
-	public USGameController(USMovesService moves, DataBaseController _db) : base(moves, _db)
+	public List<USFaction> AllFactions { get; set; } = new();
+	public USGameController(USMovesService moves, IDataBaseController _db) : base(moves, _db)
 	{
 		LastRoll = new USRollReport(moves);
 
-		People = new People();
-		People.Circles.Clear();
-		People.Circles.Add(new Circle
-		{
-			Name = "Mortalis",
-			Factions = new List<PbtALib.Faction>
-			{
-				new PbtALib.Faction
-				{
-					Name = "Autónomos en Mortales"
-				}
-			}
-		});
-		People.Circles.Add(new Circle
-		{
-			Name = "Noche",
-			Factions = new List<PbtALib.Faction>
-			{
-				new PbtALib.Faction
-				{
-					Name = "Autónomos en Noche"
-				}
-			}
-		});
-		People.Circles.Add(new Circle
-		{
-			Name = "Poder",
-			Factions = new List<PbtALib.Faction>
-			{
-				new PbtALib.Faction
-				{
-					Name = "Autónomos en poder"
-				}
-			}
-		});
-		People.Circles.Add(new Circle
-		{
-			Name = "Velo",
-			Factions = new List<PbtALib.Faction>
-			{
-				new PbtALib.Faction
-				{
-					Name = "Autónomos en Velo",
-					Members =new List<ICharacter>
-					{
-						new PNJ {Name = "amparo"},
-						new PNJ {Name = "lolo"},
-						new PNJ {Name = "sergio"},
-						new PNJ {Name = "john"},
-					}
-				}
-			}
-		});
+		People = new USPeople(_db);
 
+		USFaction f = new USFaction
+		{
+			Name = "Invierno",
+			Members = new List<ICharacter>
+			{
+				new PNJ {Name = "amparo", ID = Guid.NewGuid()},
+				new PNJ {Name = "lolo", ID = Guid.NewGuid()},
+				new PNJ {Name = "sergio", ID = Guid.NewGuid()},
+				new PNJ {Name = "john", ID = Guid.NewGuid()},
+			}
+		};
+		People.Circles[3].Factions.Add(f);
+    }
+
+	public override void AddPlayerToPeople(PbtACharacter ch) { 
+		if(ch is USCharacterSheet)
+		{
+			var usc = ch as USCharacterSheet;
+			var c = People.Circles.Find(x => x.Name == usc.Circle.ToString());
+			if(c != null)
+			{
+				c.DefaultFaction.Members.Add(usc);
+			}
+		}
 	}
 
 	public override async Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
@@ -97,11 +70,11 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 		RequestUpdateToUIOnClients();
 	}
 
-	public async Task StoreFaction(Faction fac) { throw new NotImplementedException(); }
+	public async Task StoreFaction(USFaction fac) { throw new NotImplementedException(); }
 	public async Task<USCharacterSheet> DeleteCharacter(USCharacterSheet ch) { throw new NotImplementedException(); }
 	public async Task<string> getImageBase64Async(Guid Id) { throw new NotImplementedException(); }
-	public async Task<USCharacterSheet> CreatePlayerAtFaction(Faction fac) { throw new NotImplementedException(); }
+	public async Task<USCharacterSheet> CreatePlayerAtFaction(USFaction fac) { throw new NotImplementedException(); }
 	public async Task CreateNewFactionAtSelectedCircle(Circles c) { throw new NotImplementedException(); }
-	public List<USCharacterSheet> GetMembersOfFaction(Faction fac) { throw new NotImplementedException(); }
+	public List<USCharacterSheet> GetMembersOfFaction(USFaction fac) { throw new NotImplementedException(); }
 	public async Task StoreImageBase64(string Data64, Guid CharacterID) { throw new NotImplementedException(); }
 }

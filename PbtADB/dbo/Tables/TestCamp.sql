@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Campaign]
+﻿CREATE TABLE [dbo].TestCamp
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
     [Name] NCHAR(50) NOT NULL, 

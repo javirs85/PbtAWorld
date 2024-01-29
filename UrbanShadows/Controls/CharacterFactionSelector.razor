@@ -55,7 +55,7 @@
 @code {
 
 	[Parameter] public EventCallback<USCharacterSheet> CharacterSelected { get; set; }
-	[Parameter] public EventCallback<Faction> FactionSelected { get; set; }
+	[Parameter] public EventCallback<USFaction> FactionSelected { get; set; }
 	[Parameter] public EventCallback ForceUpdate { get; set; }
 	[Parameter] public USCharacterSheet Player { get; set; }
 
@@ -82,7 +82,7 @@
 		Player.CurrentCircle = circle;
 	}
 
-	async Task CreatePlayerAtFaction(Faction fac)
+	async Task CreatePlayerAtFaction(USFaction fac)
 	{
 		var ch = await Game.CreatePlayerAtFaction(fac);
 		await CharacterSelected.InvokeAsync(ch);

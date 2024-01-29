@@ -1,7 +1,7 @@
 ﻿@page "/SeasonViewer/{SelectedSeasonID:guid}"
 @using DungeonWorld;
 @using UrbanShadows;
-@inject DataBaseController Meta;
+@inject IDataBaseController Meta;
 @inject NavigationManager nav;
 @inject DinoCharacter DinoCharacter;
 @inject DinoGameController DinoGame;
@@ -211,7 +211,7 @@
 		}
 	}
 
-	private async Task SelectPlayer(PbtACharacter p)
+	private async Task SelectPlayer(ICharacter p)
 	{
 		IsShowingNewCharacterTools = false;
 		IsShowingTools = false;
@@ -272,6 +272,7 @@
 		newCharacter.ID = Guid.NewGuid();
 		newCharacter.Name = NewCharacterName;
 		newCharacter.Archetype = c;
+		
 
 		if (Meta.SelectedGame is not null && Meta.SelectedSeason is not null)
 			await Meta.InsertNewCharacter(

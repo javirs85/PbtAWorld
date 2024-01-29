@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spCharacter_Insert]
+﻿CREATE PROCEDURE [dbo].[TestChar_Insert]
 	@GameID tinyint,
 	@CampaignID UNIQUEIDENTIFIER,
 	@SerializedData text,
@@ -7,6 +7,6 @@
 	@Guid UNIQUEIDENTIFIER
 AS
 begin
-	insert into dbo.[Character]([Guid], GameID, CampaignID, SerializedData, [Name], ClassCode)
+	insert into dbo.TestChar([Guid], GameID, CampaignID, SerializedData, [Name], ClassCode)
 	values (@Guid, @GameID, @CampaignID,@SerializedData,@Name,@ClassCode)
 end

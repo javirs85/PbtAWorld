@@ -19,11 +19,22 @@ public class SqlDataAccess : ISqlDataAccess
 		U parameters,
 		string connectionId = "Default")
 	{
-		using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));
-		return await connection.QueryAsync<T>(
-			storedProcedure,
-			parameters,
-			commandType: CommandType.StoredProcedure);
+		
+		try
+		{	
+			using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));
+			var r = await connection.QueryAsync<T>(
+				storedProcedure,
+				parameters,
+				commandType: CommandType.StoredProcedure);
+			return r;
+		}
+		catch (Exception e) 
+		{
+
+			throw;
+		}
+		
 	}
 
 	public async Task SaveData<T>(
