@@ -59,31 +59,29 @@
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
     <Folder Include="dbo\StoredProcedures" />
-    <Folder Include="dbo\StoredProcedures\Campaign" />
-    <Folder Include="dbo\StoredProcedures\Character" />
+    <Folder Include="dbo\StoredProcedures\Test" />
+    <Folder Include="dbo\StoredProcedures\Test\Character" />
+    <Folder Include="dbo\StoredProcedures\Test\Campaign" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\User.sql" />
-    <Build Include="dbo\StoredProcedures\spUser_GetAll.sql" />
-    <Build Include="dbo\StoredProcedures\spUser_Get.sql" />
-    <Build Include="dbo\StoredProcedures\spUser_Delete.sql" />
-    <Build Include="dbo\StoredProcedures\spUser_Insert.sql" />
-    <Build Include="dbo\StoredProcedures\spUser_Update.sql" />
-    <Build Include="dbo\Tables\Campaign.sql" />
-    <Build Include="dbo\Tables\Character.sql" />
-    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_GetCampaignsOfGame.sql" />
-    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_AddCampaign.sql" />
-    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_DeleteCampaign.sql" />
-    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_Update.sql" />
-    <Build Include="dbo\StoredProcedures\Character\spCharacter_Insert.sql" />
-    <Build Include="dbo\StoredProcedures\Character\spCharacter_GetAllCharactersInSeason.sql" />
-    <Build Include="dbo\StoredProcedures\Character\spCharacter_Delete.sql" />
-    <Build Include="dbo\StoredProcedures\Campaign\spCampaigns_GetCampaign.sql" />
-    <Build Include="dbo\StoredProcedures\Character\spCharacter_GetSerializedDateForPlayer.sql" />
-    <Build Include="dbo\StoredProcedures\Character\spCharacter_Update.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <PostDeploy Include="dbo\StoredProcedures\Script.PostDeployment.sql" />
+    <Build Include="dbo\Tables\TestUsr.sql" />
+    <Build Include="dbo\Tables\TestCamp.sql" />
+    <Build Include="dbo\Tables\TestChar.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Character\TestChar_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Character\TestChar_GetAllCharactersInSeason.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Character\TestChar_GetSerializedDateForPlayer.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Character\TestChar_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Character\TestChar_Update.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Campaign\TestCamp_AddCampaign.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Campaign\TestCamp_DeleteCampaign.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Campaign\TestCamp_GetCampaign.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Campaign\TestCamp_GetCampaignsOfGame.sql" />
+    <Build Include="dbo\StoredProcedures\Test\Campaign\TestCamp_Update.sql" />
+    <Build Include="dbo\StoredProcedures\Test\TestUsr_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\Test\TestUsr_Get.sql" />
+    <Build Include="dbo\StoredProcedures\Test\TestUsr_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\Test\TestUsr_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\Test\TestUsr_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PbtADB_Gtec.publish.xml" />

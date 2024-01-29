@@ -1,8 +1,8 @@
-﻿CREATE PROCEDURE [dbo].[spCampaigns_GetCampaign]
+﻿CREATE PROCEDURE [dbo].[TestCamp_GetCampaign]
 	@SeasonID UNIQUEIDENTIFIER
 AS
 begin
 	select GameID, CampaignGuid, [Name]
-	from dbo.Campaign
+	from dbo.TestCamp
 	where CampaignGuid = @SeasonID
 end

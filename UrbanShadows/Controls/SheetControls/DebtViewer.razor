@@ -1,4 +1,6 @@
-﻿@inject USGameController Game
+﻿@using static PbtaWorldRazonCommonComponents.CharacterSelector;
+@inject USGameController Game
+@inject CharacterSelectorService Selector
 
 @if (!IsEditing)
 {
@@ -36,7 +38,6 @@ else
 		get
 		{
 			if(Mode == PayingMode.ToPay){
-				var nova = Game.Players.Find(x => x.Name.Contains("Nova"));
 				var ch = Game.GetCharacterByID(Debt.ReceivingID);
 				if (ch.Name.Contains("Character not found"))
 					return $"NO: {ch.ID.ToString()}";
@@ -50,16 +51,14 @@ else
 
 	private async Task ChooseCharacter()
 	{
-		/*var ch = await Selector.SelectViaSelector();
+		var ch = await Selector.StartSelection();
 		if (Mode == PayingMode.ToPay)
 			Debt.ReceivingID = ch.ID;
 		else
 			Debt.PayingID = ch.ID;
 
 		await Game.StoreDebt(Debt);
-		//await Data.ForceDataRefresh();
 		StateHasChanged();
-		*/
 	}
 	private async Task AddOneToDebt()
 	{

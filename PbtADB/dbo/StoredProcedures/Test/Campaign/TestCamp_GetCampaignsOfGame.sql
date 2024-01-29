@@ -1,8 +1,8 @@
-﻿CREATE PROCEDURE [dbo].[spCampaigns_GetCampaignsOfGame]
+﻿CREATE PROCEDURE [dbo].[TestCamp_GetCampaignsOfGame]
 	@GameID tinyint
 AS
 begin
 	select GameID, CampaignGuid, [Name]
-	from dbo.Campaign
+	from dbo.TestCamp
 	where GameID = @GameID
 end

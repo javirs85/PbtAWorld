@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Character]
+﻿CREATE TABLE [dbo].TestChar
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
     [GameID] TINYINT NOT NULL, 

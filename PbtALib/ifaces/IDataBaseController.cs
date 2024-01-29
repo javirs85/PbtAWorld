@@ -1,11 +1,16 @@
-﻿namespace PbtALib;
+﻿using PbtALib.ifaces;
+
+namespace PbtALib;
 
 public interface IDataBaseController
 {
+	ISeasonsData SeasonsDB { get; set; }
+	ICharacterData CharactersDB { get; set; }
+
 	IEnumerable<Season> Seasons { get; set; }
 	AvailableGames? SelectedGame { get; set; }
 	string SelectedGameCover { get; }
-	PbtACharacter? SelectedPlayer { get; set; }
+	ICharacter? SelectedPlayer { get; set; }
 	Season? SelectedSeason { get; set; }
 
 	event EventHandler OnUpdateRequested;

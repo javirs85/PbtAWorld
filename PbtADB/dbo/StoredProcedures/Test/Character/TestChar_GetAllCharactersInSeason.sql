@@ -1,8 +1,8 @@
-﻿CREATE PROCEDURE [dbo].[spCharacter_GetAllCharactersInSeason]
+﻿CREATE PROCEDURE [dbo].[TestChar_GetAllCharactersInSeason]
 	@SesionID UNIQUEIDENTIFIER
 AS
 begin
 	Select GameID, CampaignID,[Name], ClassCode, [Guid]
-	from dbo.Character
+	from dbo.TestChar
 	where CampaignID = @SesionID
 end

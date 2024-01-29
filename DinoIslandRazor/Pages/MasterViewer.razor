@@ -445,7 +445,7 @@
 								{
 									<div class="d-flex">
 										<div class="PNJInList SmallPnJ"
-											 style="background-image: url(@pnj.Image.src);">
+											 style="background-image: url(@pnj.Image);">
 											<span class="PNJName">@pnj.Name</span>
 										</div>
 										<div>
@@ -472,7 +472,7 @@
 										{
 											<div class="PNJInList" 
 												@onclick=@(()=>{SelecetedPnj = p;}) 
-												style="background-image: url(@p.Image.src); cursor: pointer;">
+												style="background-image: url(@p.Image); cursor: pointer;">
 												<span class="PNJName">@p.Name</span>
 											</div>
 										}
@@ -481,7 +481,7 @@
 										@if(SelecetedPnj is not null)
 										{
 											<div class="PNJInList"
-												 style="background-image: url(@SelecetedPnj.Image.src)">
+												 style="background-image: url(@SelecetedPnj.Image)">
 												<span class="PNJName">@SelecetedPnj.Name</span>
 											</div>
 

@@ -12,7 +12,7 @@ namespace DungeonWorld;
 public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>
 {
 	
-	public DWGameController(DWMovesService moves, DataBaseController _db) : base(moves, _db)
+	public DWGameController(DWMovesService moves, IDataBaseController _db) : base(moves, _db)
 	{
 		LastRoll = new DWRollReport(moves);
 	}

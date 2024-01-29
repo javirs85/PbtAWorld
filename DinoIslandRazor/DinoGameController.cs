@@ -6,7 +6,7 @@ namespace DinoIsland;
 
 public class DinoGameController : GameControllerBase<DinoMoveIDs, DinoStates>
 {
-	public DinoGameController(DinoMovesService moves, DataBaseController _db) : base(moves, _db)
+	public DinoGameController(DinoMovesService moves, IDataBaseController _db) : base(moves, _db)
 	{
 		LastRoll = new DinoRollReport(moves);
 	}
