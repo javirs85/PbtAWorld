@@ -100,9 +100,11 @@
 
 	protected override void OnParametersSet()
 	{
-		service.UpdateNeeded += (o, e) => { InvokeAsync(() => { StateHasChanged(); }); };
-		service.SetGame += (o, game) => { InvokeAsync(() => { Game = game; StateHasChanged(); }); };
+		service.UpdateNeeded += (o, e) => { Update(); };
+		service.SetGame += (o, game) => { Game = game; Update(); };
 	}
+
+	private void Update() => InvokeAsync(() => { StateHasChanged(); });
 
 	private string DamageBackgroundColor
 	{
