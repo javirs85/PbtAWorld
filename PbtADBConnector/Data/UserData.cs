@@ -11,11 +11,16 @@ namespace PbtADBConnector.Data;
 
 public class SeasonData : ISeasonsData
 {
-	private readonly ISqlDataAccess _db;
+	private ISqlDataAccess _db;
+	public event EventHandler<Exception> OnNewSeasonDataError;
 	public SeasonData(ISqlDataAccess db)
 	{
 		_db = db;
+		_db.OnNewSQLError -= PropagateError;
+		_db.OnNewSQLError += PropagateError;
 	}
+
+	void PropagateError(object? sender, Exception e) => OnNewSeasonDataError(sender, e);
 
 	public Task DeleteSeason(Guid id) =>
 		_db.SaveData("dbo.TestCamp_DeleteCampaign", new { Guid = id });
@@ -42,9 +47,12 @@ public class SeasonData : ISeasonsData
 public class CharacterData : ICharacterData
 {
 	private readonly ISqlDataAccess _db;
+	public event EventHandler<Exception> OnNewError;
 	public CharacterData(ISqlDataAccess db)
 	{
 		_db = db;
+		_db.OnNewSQLError -= OnNewError;
+		_db.OnNewSQLError += OnNewError;
 	}
 
 	public async Task<string> GetSerializedDateForPlayer(Guid guid) =>

@@ -265,7 +265,7 @@
 		{
 			throw new Exception("Player has not been assigned to movement viewer");
 		}
-		if(Movement is DWMove)
+		if(Movement is DWMove && Movement.HasRoll())
 		{
 			var DWMove = Movement as DWMove;
 			DWGameController.Roll(Player.ID, DWMove.Roll, DWMove.ID, Player.GetBonus(DWMove.Roll) , rType);

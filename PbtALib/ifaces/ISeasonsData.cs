@@ -8,6 +8,7 @@ namespace PbtALib.ifaces;
 
 public interface ISeasonsData
 {
+	event EventHandler<Exception> OnNewSeasonDataError;
 	Task DeleteSeason(Guid id);
 	Task<Season?> GetSeason(Guid id);
 	Task<IEnumerable<Season>> GetAllSeasonsOfGame(AvailableGames game);

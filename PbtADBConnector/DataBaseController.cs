@@ -6,6 +6,7 @@ namespace PbtADBConnector;
 
 public class DataBaseController : IDataBaseController
 {
+	public event EventHandler<Exception> OnNewDataBaseError;
 	public ISeasonsData SeasonsDB { get; set; }
 	public ICharacterData CharactersDB { get; set; }
 
@@ -13,7 +14,13 @@ public class DataBaseController : IDataBaseController
 	{
 		SeasonsDB = _seasons;
 		CharactersDB = _characters;
+		SeasonsDB.OnNewSeasonDataError -= PropagateError;
+		SeasonsDB.OnNewSeasonDataError += PropagateError;
+		CharactersDB.OnNewError -= PropagateError;
+		CharactersDB.OnNewError += PropagateError;
 	}
+
+	void PropagateError(object? sender, Exception e) => OnNewDataBaseError(sender, e);
 
 	public event EventHandler OnUpdateRequested;
 

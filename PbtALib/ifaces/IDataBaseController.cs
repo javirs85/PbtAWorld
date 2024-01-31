@@ -4,6 +4,8 @@ namespace PbtALib;
 
 public interface IDataBaseController
 {
+	event EventHandler<Exception> OnNewDataBaseError;
+
 	ISeasonsData SeasonsDB { get; set; }
 	ICharacterData CharactersDB { get; set; }
 

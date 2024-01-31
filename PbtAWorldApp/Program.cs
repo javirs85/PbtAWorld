@@ -27,6 +27,9 @@ builder.Services.AddRazorPages().AddApplicationPart(typeof(DungeonWorld.Pages.DW
 
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredToast();
+builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddSingleton<ISeasonsData, SeasonData>();
+builder.Services.AddSingleton<ICharacterData, CharacterData>();
 builder.Services.AddSingleton<IDataBaseController, DataBaseController>();
 builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddSingleton<DWMovesService>();
@@ -41,9 +44,6 @@ builder.Services.AddSingleton<MoveSelector.MoveSelectorService>();
 builder.Services.AddSingleton<CharacterSelectorService>();
 builder.Services.AddBlazorBootstrap();
 
-builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
-builder.Services.AddSingleton<ISeasonsData ,  SeasonData>();
-builder.Services.AddSingleton<ICharacterData, CharacterData>();
 
 
 builder.Services.AddAuthentication("Cookies")

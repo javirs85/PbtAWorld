@@ -3,6 +3,7 @@ namespace PbtALib;
 
 public interface ICharacterData
 {
+	event EventHandler<Exception> OnNewError;
 	Task DeleteCharacter(ICharacter p);
 	Task<IEnumerable<PlayerSummary>> GetAllCharactersOfSeason(Guid guid);
 	Task InsertNewCharacter(byte GameID, Guid CampaignID, string serializedData, string Name, int classCode, Guid CharacterID);

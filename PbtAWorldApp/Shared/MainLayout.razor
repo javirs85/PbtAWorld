@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject IDataBaseController _db;
+@inject IToastService toaster;
 
 <PageTitle>PbtAWorldApp</PageTitle>
 
@@ -10,3 +12,18 @@
         @Body
     </main>
 </div>
+
+@code{
+    protected override void OnParametersSet()
+    {
+        _db.OnNewDataBaseError -= ShowError;
+        _db.OnNewDataBaseError += ShowError;
+    }
+
+    void ShowError(object? sender, Exception ex)
+    {
+        toaster.ShowError(ex.Message);
+        if (ex.InnerException is not null) toaster.ShowError(ex.InnerException.Message);
+    }
+
+}

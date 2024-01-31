@@ -234,8 +234,8 @@ public class DWCharacter : PbtALib.PbtACharacter
 							Title = "Pueblo que sólo conoce la guerra",
 							Movements = new List<string>
 							{
-								"Cuando *evalúes por primera vez** a un enemigo o aliado, pregúntale al DJ 1:\r\n• ¿Cuál es el mayor peligro que representan?\r\n• ¿Cómo son débiles o vulnerables?",
-								"Cuando *sorprendes a un enemigo con un arma pequeña oculta**, gasta 1 uso de Cosas\r\ny obtén ventaja en tu primera tirada contra ellos.\r\n"
+								"Cuando *evalúes por primera vez** a un enemigo o aliado, pregúntale al DJ 1:\r\n• ¿Cuál es el mayor peligro que representan?\r\n• ¿En que forma son débiles o vulnerables?",
+								"Cuando *sorprendes a un enemigo con un arma pequeña oculta**, gasta 1 uso de Cosas y obtén ventaja en tu primera tirada contra ellos.\r\n"
 							},
 							InitialQuestions = new List<string>
 							{
@@ -887,6 +887,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 		if(clas is not null)
 			this.Profession = (DWClasses)clas;
 
+		Tracks.Add(new Points { Tittle = "Experiencia", Value = 0 });
 		Tracks.Add(new Points { Tittle = "Defender", Value = 0 });
 		
 		switch (this.Profession)
