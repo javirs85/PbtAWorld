@@ -325,8 +325,8 @@ public class DWMovesService : MovesServiceBase
 				Tittle = "Recuperarse",
 				PreCondition = new Consequences
 				{
-					MainText="Cuando *te tomas el tiempo para recuperar el aliento y cuidar a lo que te aqueja**, gasta 1 uso de Suministros y recupera 5 PG. No puedes beneficiarte de este movimiento de nuevo hasta que recibas más daño.\r\n\r\nCuando *atiendes a una debilidad o a una problemática herida**, explica cómo. El DJ dirá si se cura o debes hacer algo más (Desafiar el Peligro, gastar Suministros, encontrar __, Hacer campamento, etc.)"
-				}
+					MainText="Cuando *te tomas el tiempo para recuperar el aliento y cuidar de lo que te aqueja**, gasta 1 uso de Suministros y recupera 5 PG. No puedes beneficiarte de este movimiento de nuevo hasta que recibas más daño.\r\n\r\nCuando *atiendes a una debilidad o a una herida problemática**, explica cómo. El DJ dirá si se cura o debes hacer algo más (Desafiar el Peligro, gastar Suministros, encontrar __, *Levantar campamento**, etc.)"
+                }
 			},
 			new DWMove (DWMovementIDs.DW_Camp, DWStats.DW_None)
 			{
@@ -605,20 +605,20 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Apetitos hercúleos",
 				PreCondition = new Consequences{
-					MainText = "Escoge dos: \r\nRespuestas, Venganza sangrienta, Conflicto y destrucción, Descubrimiento y asombro, Placeres mortales, Superioridad sobre los demás, Riquezas y gloria,\r\n añadelo a tu descipción.\r\n Cuando haces un movimiento en busca de tu apetitos, tira 1d6+1d8 en lugar de 2d6. Si el d6 es la más alta del par, el DJ agregará una complicación relacionada con sus actividades descuidadas. \r\n En caso de ventaja o desventaja duplica el d6. \r\n\r\nElige Músculos poderosos o Gracia de pantera de las avanzadas"
-				}
+					MainText = "Escoge dos: \r\nRespuestas, Venganza sangrienta, Conflicto y destrucción, Descubrimiento y asombro, Placeres mortales, Superioridad sobre los demás, Riquezas y gloria,\r\n añádelo a tu descripción.\r\n\r\n Cuando haces un movimiento en busca de tu apetitos, tira 1d6+1d8 en lugar de 2d6. Si el d6 es > que el d8, el DJ agregará una complicación relacionada con sus actividades irresponsables. \r\n En caso de ventaja o desventaja duplica el d6."
+                }
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Formidable, DWStats.DW_None)
 			{
 				Tittle = "Formidable",
 				PreCondition = new Consequences{
-					MainText = "Cuando te lanzas a la batalla con arrojo, obtienes puntos igual a tu CON. Cuando dejes de pelear pierdes los puntos. Mientras peleas, gasta puntos 1 por 1 para:",
+					MainText = "Cuando te lanzas a la batalla con arrojo, obtienes puntos igual a tu CON. Cuando dejes de pelear, dudes, o muestres cobardía, pierdes los puntos. Mientras peleas, gasta puntos 1 por 1 para:",
 					Options = new List<string>
 					{
-						"hacer retroceder enemigos débiles",
-						"enemigo digno te tratarán como una amenaza",
-						"Aliados de un enemigo muerto consternados"
-					}
+						"hacer retroceder a un enemigo débil con solo mirarlo a los ojos",
+						"Retar a un enemigo digno, él te tratarán como la mayor amenaza en el campo de batalla",
+                        "Haz sonar tu bárbaro aullido al derribar a un enemigo; sus aliados están impresionados, asustados o consternados y actúan en consecuencia"
+                    }
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Forastero, DWStats.DW_None)
@@ -630,9 +630,9 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_UpperHand, DWStats.DW_None)
 			{
-				Tittle = "Mano superior",
+				Tittle = "Mirar a la muerte a los ojos",
 				PreCondition = new Consequences{
-					MainText = "Cuando tomas tu último aliento, tienes ventaja."
+					MainText = "Cuando *tomas tu último aliento**, tienes ventaja."
 				},
 				ConsequencesOn79 = new Consequences
 				{
@@ -679,7 +679,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Instintos Salvajes",
 				PreCondition = new Consequences{
-					MainText = "Cuando *disciernes la realidad**, siempre puedes preguntar “¿Qué debo tener en cuenta?” gratis, incluso en un 6-."
+					MainText = "Cuando *disciernes la realidad**, siempre puedes preguntar “¿A qué debería estar atento?” gratis, incluso en un 6-."
 				}
 			},
 
@@ -907,10 +907,10 @@ public class DWMovesService : MovesServiceBase
 					MainText = "lo lanzas, pero eliges 1:",
 					Options = new List<string>
 					{
-						"una penalización de -1 para lanzar un hechizo",
+						"Explícanos como la realidad se retuerce y marca -1 (acumulativo) para *lanzar un hechizo**",
 						"Pierdes el hechizo después de lanzarlo",
 						"Pierdes un favor",
-						"Llamas atención no deseada o pones en un lugar",
+						"Llamas atención no deseada o pones en peligro",
 					}
 				}
 			},
@@ -1460,37 +1460,37 @@ public class DWMovesService : MovesServiceBase
 					{
 						ID = DWMovementIDs.DW_Wizard_Spells_Enchant,
 						Tittle = "Encantar",
-						Description = "te tratan como a un amigo hasta que demuestres lo contrario o sufran daños"
+						Description = "Míralos a los ojos,te tratarán como a un amigo hasta que demuestres lo contrario o sufran daños"
 					},
 					new SubMovement
 					{
 						ID = DWMovementIDs.DW_Wizard_Spells_Spirits,
 						Tittle = "Contactar con espíritus",
-						Description = "Un espíritu que está obligado a responder con veracidad cualquier pregunta que le formules"
+						Description = "Un espíritu se manifestará ante ti, está obligado a responder con veracidad a una pregunta que le formules"
 					},
 					new SubMovement
 					{
 						ID = DWMovementIDs.DW_Wizard_Spells_Invisible,
 						Tittle = "Invisibilidad",
-						Description = "Toca a alguien; ¡son invisibles! Dura hasta que atacan o lanzas un hechizo"
+						Description = "Toca a alguien; ¡son invisibles! Dura hasta que atacan o lanzas algún hechizo"
 					},
 					new SubMovement
 					{
 						ID = DWMovementIDs.DW_Wizard_Spells_Misil,
 						Tittle = "Misil Mágico",
-						Description = "2d4 a objetivo que puedas ver"
+						Description = "2d4 a un objetivo que puedas ver"
 					},
 					new SubMovement
 					{
 						ID = DWMovementIDs.DW_Wizard_Spells_Mimic,
 						Tittle = "Mímica",
-						Description = "Tomas la apariencia de alguien que tocas. Pierdes poderes de mago mientras dura"
+						Description = "Tomas la apariencia de alguien a quien tocas. Pierdes poderes de mago mientras dure el efecto"
 					},
 					new SubMovement
 					{
 						ID = DWMovementIDs.DW_Wizard_Spells_Telepathy,
 						Tittle = "Telepatía",
-						Description = "compartes sus sentimientos y puedes hablar de mente a mente. -1 para realizar otros hechizos"
+						Description = "Toca a alguien, compartes sus sentimientos y puedes hablar de mente a mente. -1 para realizar otros hechizos mientras dure el efecto"
 					}
 				}
 			},
@@ -1505,17 +1505,17 @@ public class DWMovesService : MovesServiceBase
 					MainText = "lo lanzas, pero eliges 1:",
 					Options = new List<string>
 					{
-						"una penalización de -1 para lanzar un hechizo",
-						"Pierdes el hechizo después de lanzarlo",
-						"Llamas atención no deseada o pones en un lugar",
-					}
+                        "Explícanos como la realidad se retuerce y marca -1 (acumulativo) para *lanzar un hechizo**",
+                        "Pierdes el hechizo después de lanzarlo",
+                        "Llamas atención no deseada o pones en peligro",
+                    }
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Wizard_PrepareSpell, DWStats.DW_None)
 			{
 				Tittle = "Preparar hechizos",
 				PreCondition = new Consequences{
-					MainText = "Cuando *ppasas una hora o más tranquilamente estudiando tu libro de hechizos**:",
+					MainText = "Cuando *pasas una hora o más tranquilamente estudiando tu libro de hechizos**:",
 					Options = new List<string>
 					{
 						"Eliminar cualquier penalización por lanzar un hechizo",

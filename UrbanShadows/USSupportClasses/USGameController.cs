@@ -28,17 +28,17 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 		People.Circles[3].Factions.Add(f);
     }
 
-	public override void AddPlayerToPeople(PbtACharacter ch) { 
-		if(ch is USCharacterSheet)
-		{
-			var usc = ch as USCharacterSheet;
-			var c = People.Circles.Find(x => x.Name == usc.Circle.ToString());
-			if(c != null)
-			{
-				c.DefaultFaction.Members.Add(usc);
-			}
-		}
-	}
+	//public override void AddPlayerToPeople(PbtACharacter ch) { 
+	//	if(ch is USCharacterSheet)
+	//	{
+	//		var usc = ch as USCharacterSheet;
+	//		var c = People.Circles.Find(x => x.Name == usc.Circle.ToString());
+	//		if(c != null)
+	//		{
+	//			c.DefaultFaction.Members.Add(usc);
+	//		}
+	//	}
+	//}
 
 	public override async Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
 	{

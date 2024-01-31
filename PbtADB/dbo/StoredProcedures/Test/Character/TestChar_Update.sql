@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[TestCharr_Update]
+﻿CREATE PROCEDURE [dbo].[TestChar_Update]
 	@Guid UNIQUEIDENTIFIER,
 	@newName nvarchar(50),
 	@SerializedData text

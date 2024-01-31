@@ -8,6 +8,7 @@ namespace PbtADBConnector.DbAccess;
 public class SqlDataAccess : ISqlDataAccess
 {
 	private readonly IConfiguration _config;
+	public event EventHandler<Exception> OnNewSQLError;
 
 	public SqlDataAccess(IConfiguration config)
 	{
@@ -29,9 +30,10 @@ public class SqlDataAccess : ISqlDataAccess
 				commandType: CommandType.StoredProcedure);
 			return r;
 		}
-		catch (Exception e) 
+		catch (Exception ex) 
 		{
-
+			OnNewSQLError?.Invoke(this, ex);
+			return Enumerable.Empty<T>();
 			throw;
 		}
 		
@@ -42,7 +44,16 @@ public class SqlDataAccess : ISqlDataAccess
 		T parameters,
 		string connectionId = "Default")
 	{
-		using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));
-		await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+		try
+		{
+			using IDbConnection connection = new SqlConnection(_config.GetConnectionString(connectionId));
+			await connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+		}
+		catch (Exception ex)
+		{
+			OnNewSQLError?.Invoke(this, ex);
+			throw;
+		}
+		
 	}
 }
