@@ -4,7 +4,89 @@
 @if(service.IsVisible)
 {
 	<div class="FloatinCover @FloatinCoverClass">
-		@if(service.LastRoll is not null && service.LastRoll.IsRaw == false)
+		@if(service.LastRoll.RollType == RollTypes.JustShowMoveWithNoRoll)
+		{
+			@if(service.Movement is not null)
+			{
+				<div class="MovementContent" style="color: white;">
+					<div class="MovementHeader">@service.Movement.Tittle</div>
+					@if (service.Movement.PreCondition != null && service.Movement.PreCondition.MainText != "")
+					{
+						<DecodedString Value=@service.Movement.PreCondition.MainText />
+					}
+					@if (service.Movement.PreCondition.Options != null && service.Movement.PreCondition.Options.Count > 0)
+					{
+						<ul>
+							@foreach (var entry in service.Movement.PreCondition.Options)
+							{
+								<li><DecodedString Value="@entry" /></li>
+							}
+						</ul>
+					}
+					@if (service.Movement.ConsequencesOn6 != null && service.Movement.ConsequencesOn6.MainText != "")
+					{
+						<div class="d-flex mb-2">
+							<div>
+								<span class="MovementRangeMarker">@("<6"):</span>
+							</div/> 
+							<div>
+								@service.Movement.ConsequencesOn6.MainText
+								@if (service.Movement.ConsequencesOn6.Options != null && service.Movement.ConsequencesOn6.Options.Count > 0)
+								{
+									<ul>
+										@foreach (var entry in service.Movement.ConsequencesOn6.Options)
+										{
+											<li><DecodedString Value="@entry" /></li>
+										}
+									</ul>
+								}
+							</div>
+						</div>
+					}
+					@if ( service.Movement.ConsequencesOn79 != null &&  service.Movement.ConsequencesOn79.MainText != "")
+					{
+						<div class="d-flex mb-2">
+							<div>
+								<span class="MovementRangeMarker">7-9:</span>
+							</div/> 
+							<div>
+								@service.Movement.ConsequencesOn79.MainText
+								@if ( service.Movement.ConsequencesOn79.Options != null &&  service.Movement.ConsequencesOn79.Options.Count > 0)
+								{
+									<ul>
+										@foreach (var entry in  service.Movement.ConsequencesOn79.Options)
+										{
+											<li><DecodedString Value="@entry" /></li>
+										}
+									</ul>
+								}
+							</div>
+						</div>
+					}
+					@if ( service.Movement.ConsequencesOn10 != null &&  service.Movement.ConsequencesOn10.MainText != "")
+					{
+						<div class="d-flex">
+							<div>
+								<span class="MovementRangeMarker">>10:</span>
+							</div/> 
+							<div>
+								@service.Movement.ConsequencesOn10.MainText
+								@if ( service.Movement.ConsequencesOn10.Options != null &&  service.Movement.ConsequencesOn10.Options.Count > 0)
+								{
+									<ul>
+										@foreach (var entry in  service.Movement.ConsequencesOn10.Options)
+										{
+											<li><DecodedString Value="@entry" /></li>
+										}
+									</ul>
+								}
+							</div>
+						</div>
+					}
+				</div>
+			}
+		}
+		else if(service.LastRoll is not null && service.LastRoll.IsRaw == false)
 		{
 			<div @onclick=service.Hide
 				 class="LastRollHeader">
@@ -137,12 +219,14 @@
 		public event EventHandler<AvailableGames> SetGame;
 		public bool IsVisible = false;
 		public IRollReport LastRoll { get; set; }
+		public IMove? Movement = null;
 
 		public void SetGameMode(AvailableGames Game) => SetGame?.Invoke(this, Game);
 
 		public void Show(IRollReport roll)
 		{
 			LastRoll = roll;
+			Movement = roll.Movement;
 			IsVisible = true;
 			UpdateNeeded?.Invoke(this, EventArgs.Empty);
 		} 

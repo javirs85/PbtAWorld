@@ -76,7 +76,7 @@ public class DinoGameController : GameControllerBase<DinoMoveIDs, DinoStates>
 		var player = Players.Find(x => x.ID == PlayerID) as DinoCharacter;
 		if (player is not null)
 		{
-			base.Roll(PlayerID, Roll, Move.ID, player.GetBonus(Roll), RollTypes.Roll_Simple);
+			base.Roll(PlayerID, Move, Roll, Move.ID, player.GetBonus(Roll), RollTypes.Roll_Simple);
 		}
 		else
 			ShowToastOnAllClients("player with id " + PlayerID + "cannot be found");

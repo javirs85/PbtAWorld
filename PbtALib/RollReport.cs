@@ -8,7 +8,9 @@ namespace PbtALib;
 
 public interface IRollReport
 {
+	IMove? Movement { get; set; }
 	bool IsRaw { get; set; }
+	bool IsNoRolMove { get; set; }
 	List<Tuple<DiceTypes, int>> Dices { get; set; }
 	string Roller { get; set; }
 	RollTypes RollType { get; set; }
@@ -77,6 +79,8 @@ public abstract class RollReport<T_ID, T_Stats> : IRollReport
 	}
 	public abstract string StatString { get; set; }
 	public bool IsRaw { get; set; } = false;
+	public IMove? Movement { get; set; } = null;
+	public bool IsNoRolMove { get; set; } 
 	public List<Tuple<DiceTypes, int>> Dices { get; set; } = new();
 
 	public void SetID<T>(T id)

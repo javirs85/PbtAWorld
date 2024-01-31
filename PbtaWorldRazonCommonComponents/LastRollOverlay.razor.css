@@ -100,3 +100,25 @@ FloatingCoverDefault {
     font-family: monospace;
     font-size: 36px;
 }
+
+.MovementContent {
+    border-left: 3px solid red;
+    padding: 5px;
+    margin: 10px;
+    margin-top: 0;
+}
+
+    .MovementContent span {
+        font-weight: bold;
+        margin-right: 10px;
+        white-space: nowrap;
+    }
+
+.MovementHeader {
+    font-family: 'Alegreya SC', serif;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 5px;
+}
