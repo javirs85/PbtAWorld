@@ -16,6 +16,7 @@ using UrbanShadows;
 using PbtaWorldRazonCommonComponents;
 using static PbtaWorldRazonCommonComponents.CharacterSelector;
 using PbtALib.ifaces;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddSingleton<LastRollViewerService>();
 builder.Services.AddScoped<DinoCharacter>();
 builder.Services.AddSingleton<MoveSelector.MoveSelectorService>();
 builder.Services.AddSingleton<CharacterSelectorService>();
+builder.Services.AddSingleton<VTTService>();
 builder.Services.AddBlazorBootstrap();
 
 

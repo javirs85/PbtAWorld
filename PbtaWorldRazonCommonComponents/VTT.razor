@@ -1,0 +1,83 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using PbtALib;
+@using PbtaWorldRazonCommonComponents;
+@inject VTTService service;
+
+<div class="FullScreenModal VTT justify-content-center @(service.IsVisible?"":"HideModal")"
+@onclick=service.Hide
+		@onclick:stopPropagation=true>
+	<div class="d-flex d-flex align-items-center justify-content-center w-100 h-100  w-100 h-100">
+		<div class="CloseButton"></div>
+		<div class="ModalBody d-flex flex-column p-0" @onclick:stopPropagation=true>
+			<div class="VTTContainer" @onmousedown=Click @oncontextmenu=Unselect @oncontextmenu:preventDefault @oncontextmenu:stopPropagation>
+				<img src="/imgs/VTT/farm.jpg" width="1495" height="762"/>
+				<div class="VTTMain">
+					@foreach (var t in service.Tokens)
+					{
+						<div class="VTTToken @(SelectedToken is not null && SelectedToken.Guid == t.Guid?"Selected":"")"
+							 style="
+							top:@(t.Y+"px"); left:@(t.X+"px"); 
+							background-position-x:@(t.ImgX+"px"); 
+							background-position-y:@(t.ImgY+"px");"></div>
+					}
+					<div class="MasterSelector">
+						<EditForm Model="this" class="d-flex gap-1">
+							<InputSelect class="form-select" @bind-Value=MasterSelection>
+								@foreach(var v in Enum.GetValues(typeof(VTTTokens)))
+								{
+									<option value="@v">@v</option>
+								}
+							</InputSelect>
+							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection);})>+</button>
+						</EditForm>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>
+
+@code {
+
+	protected override void OnParametersSet()
+	{
+		service.UpdateUI -= Update;
+		service.UpdateUI += Update;
+	}
+
+	VTTTokens MasterSelection = VTTTokens.Black1;
+
+	Token? SelectedToken = null;
+
+	private void Unselect(MouseEventArgs e) 
+	{
+		
+	}
+
+	private void Click(MouseEventArgs e)
+	{
+		if(e.Button == 2)
+		{
+			SelectedToken = null;
+		}
+		else
+		{
+			if (SelectedToken is null)
+			{
+				var t = service.SelectToken(e.OffsetX, e.OffsetY);
+				if (t is not null && t != SelectedToken)
+					SelectedToken = t;
+			}
+			else
+			{
+				service.MoveToken(SelectedToken, e.OffsetX, e.OffsetY);
+			}
+		}
+	}
+
+
+	private void Update(object? sender, EventArgs e)
+	{
+		InvokeAsync(StateHasChanged);
+	}
+}

@@ -121,4 +121,9 @@
     </Content>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="wwwroot\imgs\VTT\" />
+  </ItemGroup>
+
 </Project>

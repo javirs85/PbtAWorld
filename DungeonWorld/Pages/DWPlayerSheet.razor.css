@@ -374,3 +374,19 @@ input {
 
 }
 
+.SectionButton {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0000003e;
+    opacity: 0.5;
+    font-weight:bold;
+}
+.SectionButton:hover{
+    opacity:1;
+}

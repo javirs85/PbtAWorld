@@ -6,6 +6,10 @@
 @inject IToastService Toaster
 @inject DWMovesService Moves
 @inject LastRollViewerService LastRollViewer
+@inject VTTService VTT
+@inject IDataBaseController Meta;
+
+<VTT />
 
 @if (false)
 {
@@ -181,13 +185,9 @@ else
 						</div>
 						<textarea class="SmallThingsTextArea" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
 						<div class="Separator"></div>
-						<div class="PaperSheetSubTittle w-100">Agenda</div>
-						<div class="d-flex flex-column w-100 ps-3" style="font-family: 'Roboto'; font-size: 12px;">
-							<div>
-								Representar un personaje atractivo<br/>
-								Interactuar con el mundo ficticio<br />
-								Jugar para descubrir qué sucede
-							</div>
+						<div class="PaperSheetSubTittle w-100">Secciones</div>
+						<div class="d-flex w-100 ps-3" style="font-family: 'Roboto'; font-size: 12px;">
+							<div class="SectionButton" @onclick=VTT.Show>VTT</div>
 						</div>
 
 					</div>
@@ -269,6 +269,11 @@ else
 						</div>
 						<div class="PaperSheetSubTittle w-100">PRINCIPIOS</div>
 						<div class="d-flex flex-column ps-2" style="font-family: 'Roboto'; font-size: 12px;">
+							<div class="fw-bold pb-1">
+								Representar un personaje atractivo<br />
+								Interactuar con el mundo ficticio<br />
+								Jugar para descubrir qué sucede
+							</div>
 							<div>
 								Comenzar y terminar en la ficción<br/>
 								Mostrarnos lo que es importante para ti<br/>
@@ -474,6 +479,8 @@ else
 
 		Game.OnNewRoll -= ShowRoll;
 		Game.OnNewRoll += ShowRoll;
+
+		VTT.Players = Game.Players;
 
 		Player.UpdateUI += (o, e) =>
 		{

@@ -24,6 +24,19 @@ public enum DiceTypes
 	d4, d6, d8, d10, d12, d20
 }
 
+public enum VTTTokens
+{
+	WhiteLady1,WhiteLady2, WhiteLady3,
+	WhiteMale1, WhiteMale2, WhiteMale3,
+	BoxGray, BoxRed,BoxBlue,
+	Black1, Black2,Black3, Black4,Black5, Black6, Black7, Black8, BlackBoss,
+	Red1, Red2, Red3, Red4, Red5, Red6,Red7,Red8,RedBoss,
+	Blue1, Blue2, Blue3, Blue4, Blue5, Blue6, Blue7, Blue8, BlueBoss,
+	Green1, Green2, Green3, Green4, Green5, Green6,Green7, Green8,GreenBoss,
+	Barbarian, Bard, Cleric, Druid, Ranger, Fighter, Thief, Mage, Paladin, Wielder,
+	Gold, RedPotion,GreenPotion
+}
+
 public static class UIExtensions
 {
 
