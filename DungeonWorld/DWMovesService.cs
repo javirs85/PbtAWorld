@@ -822,7 +822,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Adv_SilverTonge, DWStats.DW_None)
 			{
-				Tittle = "Alma de la fiesta",
+				Tittle = "Lengua de plata",
 				PreCondition = new Consequences{
 					MainText = "Cuando usas palabras para evitar sospechas o problemas, tira +CAR"
 				},

@@ -8,20 +8,53 @@
     background-image: url(imgs/DW/PaperTexture.png);
     height: 100%;
     width: 755px;
-    min-width: 755px;
-    max-width: 755px;
+   
     filter: drop-shadow(0 0 5px #000);
+    position:relative;
+    transition: all 0.3s linear;
+    overflow:hidden;
 }
+    .PaperSheet.FullPaper {
+        min-width: 755px !important;
+        max-width: 755px !important;
+    }
+    .PaperSheet.JustLeft {
+        max-width: 350px !important;
+        min-width: 350px !important;
+    }
+    .PaperSheet.NoPaper {
+        max-width: 20px !important;
+        min-width: 20px !important;
+    }
 
-.PaperFirstColumn {
-    width: 347px;
-    max-width: 347px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-    padding: 0 15px;
+.ChangeSizeButton {
+    border: 1px solid black;
+    border-right: none;
+    padding: 10px 0;
+    border-radius: 5px 0 0 5px;
+    background: #00000010;
+    opacity: 0.5;
+    cursor: pointer;
+    z-index:100;
 }
+    .ChangeSizeButton:hover{
+        opacity:1;
+    }
+    .ChangeSizeButton.Centered {
+        position: absolute;
+        top: 50%;
+        right: 0;
+    }
+
+    .PaperFirstColumn {
+        width: 347px;
+        max-width: 347px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        padding: 0 15px;
+    }
 
 .comment {
     font-family: Roboto;
