@@ -17,6 +17,10 @@ public class ICharacter
     public string Goal { get; set; } = string.Empty;
     public string CanOffer { get; set; } = string.Empty;
 	public int EncodedClass { get; set; }
+	public virtual int HP { get; set; }
+	public int MaxHP { get; set; }
+	public string ClassString { get; set; } = string.Empty;
+
 }
 
 public class PNJ : ICharacter

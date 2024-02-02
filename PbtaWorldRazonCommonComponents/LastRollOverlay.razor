@@ -3,7 +3,7 @@
 
 @if(service.IsVisible)
 {
-	<div class="FloatinCover @FloatinCoverClass">
+	<div class="FloatinCover @FloatinCoverClass" @onclick=service.Hide>
 		@if(service.LastRoll.RollType == RollTypes.JustShowMoveWithNoRoll)
 		{
 			@if(service.Movement is not null)

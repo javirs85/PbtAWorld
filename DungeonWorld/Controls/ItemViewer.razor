@@ -31,7 +31,7 @@
 	}
 	@if(Item.IsAmunitionWeapon== false &&  Item.Uses != -1)
 	{
-		<div class="d-flex align-items-center">
+		<div class="d-flex align-items-center ps-1">
 			@if(ShowFirstUses)
 			{
 				<RedCheckBox Style="RedCheckBox.Styles.Circular" Value=IsFirstUseDone Clicked=@(async() =>{await BoxClicked(1);}) />

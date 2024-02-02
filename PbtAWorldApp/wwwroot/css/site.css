@@ -18,7 +18,7 @@ html, body {
     min-height: 100%;
 }
 html {
-    background-image: url(../imgs/bigBack.png) ;
+    background-image: url(/imgs/bigBack.png) ;
 }
 
 body{

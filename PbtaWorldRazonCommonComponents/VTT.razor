@@ -2,25 +2,31 @@
 @using PbtALib;
 @using PbtaWorldRazonCommonComponents;
 @inject VTTService service;
+@inject VTTLocalManagerService VTTViewer
 
-<div class="FullScreenModal VTT justify-content-center @(service.IsVisible?"":"HideModal")"
-@onclick=service.Hide
+<div class="VTT justify-content-center"
+		@onclick=VTTViewer.Hide
 		@onclick:stopPropagation=true>
-	<div class="d-flex d-flex align-items-center justify-content-center w-100 h-100  w-100 h-100">
-		<div class="CloseButton"></div>
-		<div class="ModalBody d-flex flex-column p-0" @onclick:stopPropagation=true>
-			<div class="VTTContainer" @onmousedown=Click @oncontextmenu=Unselect @oncontextmenu:preventDefault @oncontextmenu:stopPropagation>
-				<img src="/imgs/VTT/farm.jpg" width="1495" height="762"/>
-				<div class="VTTMain">
-					@foreach (var t in service.Tokens)
-					{
-						<div class="VTTToken @(SelectedToken is not null && SelectedToken.Guid == t.Guid?"Selected":"")"
-							 style="
-							top:@(t.Y+"px"); left:@(t.X+"px"); 
-							background-position-x:@(t.ImgX+"px"); 
-							background-position-y:@(t.ImgY+"px");"></div>
-					}
-					<div class="MasterSelector">
+	<div class="d-flex d-flex align-items-center justify-content-center w-100 h-100"  @onclick:stopPropagation=true>
+		<div class="VTTContainer" @onmousedown=Click @oncontextmenu=Unselect @oncontextmenu:preventDefault @oncontextmenu:stopPropagation>
+			<img src="/imgs/VTT/farm.jpg" width="1495" height="762"/>
+			<div class="VTTMain">
+				@foreach (var t in service.Tokens)
+				{
+					<div class="VTTToken @(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")"
+							style="
+						top:@(t.Y+"px"); left:@(t.X+"px"); 
+						background-position-x:@(t.ImgX+"px"); 
+						background-position-y:@(t.ImgY+"px");">
+						<div class="LifeContainer">
+							<div class="LifeBar" style="width:@(t.PercentageLife)%; background:@(t.LifeBarColor);"></div>
+						</div>
+						<div class="NameContainer">@t.Character?.Name</div>
+					</div>
+				}
+				@if(VTTViewer.IsMaster)
+				{
+					<div class="MasterSelector d-flex gap-1" @onclick:stopPropagation>
 						<EditForm Model="this" class="d-flex gap-1">
 							<InputSelect class="form-select" @bind-Value=MasterSelection>
 								@foreach(var v in Enum.GetValues(typeof(VTTTokens)))
@@ -28,10 +34,20 @@
 									<option value="@v">@v</option>
 								}
 							</InputSelect>
-							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection);})>+</button>
+							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection);})><i class="bi bi-plus"></i></button>
 						</EditForm>
+						@if (VTTViewer.SelectedToken is not null)
+						{
+							<EditForm Model="VTTViewer.SelectedToken">
+								<label>Max HP</label>
+								<InputNumber @bind-Value=@VTTViewer.SelectedToken.maxHP style="width:40px;" />
+								<label>HP</label>
+								<InputNumber @bind-Value=@VTTViewer.SelectedToken.HP style="width:40px;" />
+							</EditForm>
+						}						
 					</div>
-				</div>
+				}
+					
 			</div>
 		</div>
 	</div>	
@@ -43,34 +59,46 @@
 	{
 		service.UpdateUI -= Update;
 		service.UpdateUI += Update;
+		VTTViewer.UpdateUI -= Update;
+		VTTViewer.UpdateUI += Update;
 	}
+
+	
 
 	VTTTokens MasterSelection = VTTTokens.Black1;
 
-	Token? SelectedToken = null;
+
+	
 
 	private void Unselect(MouseEventArgs e) 
 	{
-		
+
 	}
 
 	private void Click(MouseEventArgs e)
 	{
 		if(e.Button == 2)
 		{
-			SelectedToken = null;
+			VTTViewer.SelectedToken = null;
 		}
 		else
 		{
-			if (SelectedToken is null)
+			if (VTTViewer.SelectedToken is null)
 			{
+				if(e.OffsetY > 25)
+				{
+
+				}
 				var t = service.SelectToken(e.OffsetX, e.OffsetY);
-				if (t is not null && t != SelectedToken)
-					SelectedToken = t;
+				if (t is not null && t != VTTViewer.SelectedToken)
+					VTTViewer.SelectedToken = t;
 			}
 			else
 			{
-				service.MoveToken(SelectedToken, e.OffsetX, e.OffsetY);
+				if (e.OffsetY > 40)
+				{
+					service.MoveToken(VTTViewer.SelectedToken, e.OffsetX, e.OffsetY);
+				}
 			}
 		}
 	}

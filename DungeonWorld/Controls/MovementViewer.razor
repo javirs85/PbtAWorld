@@ -3,7 +3,9 @@
 
 @if(!HideEverything)
 {
-	<div class="MovementViewerMain @((IsLastMasterBox)? Movement.HowOften.ToString() : "")" @onclick=HeaderClicked @onclick:stopPropagation>
+	<div class="MovementViewerMain @((IsLastMasterBox)? Movement.HowOften.ToString() : "")" 
+		@onclick=HeaderClicked @onclick:stopPropagation
+		style="@(IsVTT?"flex-grow:0":"")">
 		<div class="MovementHeader" >
 			@MovementHeader
 			<div class="buttonsBox d-flex gap-2 align-items-center px-2">
@@ -189,6 +191,7 @@
 	[Parameter] public bool IsLastMasterBox { get; set; } = false;
 	[Parameter] public int? RollResult { get; set; } = null;
 	[Parameter] public DWCharacter? Player { get; set; } = null;
+	[Parameter] public bool IsVTT { get; set; } = false;
 
 	bool HideEverything = false;
 

@@ -3,6 +3,8 @@ using PbtALib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,28 +13,19 @@ namespace PbtaWorldRazonCommonComponents;
 public class VTTService
 {
 	public event EventHandler UpdateUI;
+	public event EventHandler<Guid> StoreChangesInCharacterSheet;
 	public List<Token> Tokens = new();
-
-    public VTTService()
-    {
-        Tokens.Add(new Token { ID = VTTTokens.Paladin, X=100, Y= 100});
-        Tokens.Add(new Token { ID = VTTTokens.Thief, X=300, Y= 300});
-    }
-
-    private bool _isIvisible;
-
-	public bool IsVisible
+	
+	public void StartForPlayer(PbtACharacter character)
 	{
-		get { return _isIvisible; }
-		set 
+		if(Tokens.Find(x=>x.Guid == character.ID) == null) 
 		{
-			if(_isIvisible != value)
-			{
-				_isIvisible = value;
-				Update();
-			}			
+			var t = new Token { Character = character, X = 100, Y = 100 };
+			Tokens.Add(t);
+			t.StoreChangesInCharacterSheet += StoreChangesInCharacterSheet;
 		}
 	}
+
 	public void Clicked(MouseEventArgs e)
 	{
 		var ClickX = e.OffsetX;
@@ -87,24 +80,108 @@ public class VTTService
 	public List<PbtACharacter> Players { get; set; } = new();
 	public string ImageName { get; set; } = "farm.jpg";
 
-	public void Show()
-	{
-		IsVisible = true;
-	}
-
-	public void Hide()
-	{
-		IsVisible = false;
-	}
 }
 
 public class Token
 {
 	public VTTTokens ID = VTTTokens.Barbarian;
 	public static int BasicSize = 60;
-	public Guid Guid { get; set; }
+	private Guid _id; 
+	private int _hp;
+	private int _maxHp;
 
-    public Token()
+	public event EventHandler<Guid> StoreChangesInCharacterSheet;
+
+
+
+	public Guid Guid
+	{
+		get 
+		{
+			if (_character is not null) return _character.ID;
+			else return _id;
+		}
+		set
+		{
+			if (_character is not null) _character.ID = value;
+			else _id = value;
+		}
+	}
+	public int HP {
+		get
+		{
+			if (_character is not null) return _character.HP;
+			else return _hp;
+		}
+		set
+		{
+			if (_character is not null) { 
+				_character.HP = value;
+				StoreChangesInCharacterSheet?.Invoke(this, _character.ID);
+			}
+			else _hp = value;
+		}
+	}
+	public int maxHP
+	{
+		get
+		{
+			if (_character is not null) return _character.MaxHP;
+			else return _maxHp;
+		}
+		set
+		{
+			if (_character is not null) _character.MaxHP = value;
+			else _maxHp = value;
+		}
+	}
+
+	PbtACharacter? _character;
+	public PbtACharacter? Character { 
+		get => _character;
+		set
+		{
+			if(value is not null && value != _character)
+			{
+				_character = value;
+				if(!string.IsNullOrEmpty(_character.ClassString))
+				{
+					var str = _character.ClassString;
+					if (str == "DW_Barbarian") ID = VTTTokens.Barbarian;
+					else if (str == "DW_Bard") ID = VTTTokens.Bard;
+					else if (str == "DW_Cleric") ID = VTTTokens.Cleric;
+					else if (str == "DW_Druid") ID = VTTTokens.Druid;
+					else if (str == "DW_Explorer") ID = VTTTokens.Ranger;
+					else if (str == "DW_Fighter") ID = VTTTokens.Fighter;
+					else if (str == "DW_Thief") ID = VTTTokens.Thief;
+					else if (str == "DW_Mage") ID = VTTTokens.Mage;
+					else if (str == "DW_Paladin") ID = VTTTokens.Paladin;
+					else if (str == "DW_Wielder") ID = VTTTokens.Wielder;
+				}
+			}
+		}
+	}
+
+	public int PercentageLife
+	{
+		get
+		{
+			return int.Min(100, (int)((float)HP * 100.0 / (float)maxHP));
+		}
+	}
+
+	public string LifeBarColor
+	{
+		get
+		{
+			if (PercentageLife <= 25) return "red";
+			else if (PercentageLife <= 50) return "orange";
+			else if (PercentageLife <= 75) return "yellow";
+			else return "green";
+		}		
+	}
+
+	public Token()
     {
         Guid = Guid.NewGuid();
     }
