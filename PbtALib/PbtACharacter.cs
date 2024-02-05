@@ -3,7 +3,10 @@
 public class PbtACharacter : ICharacter
 {
 	public event EventHandler UpdateUI;
+	public event EventHandler UpdateVTT;
+
 	public void OnUpdateUI()=>UpdateUI?.Invoke(this, EventArgs.Empty);
+	public void OnVTTUpdate()=>UpdateVTT?.Invoke(this, EventArgs.Empty);
 
 	public bool IsDead { get; set; } = false;
 	public bool IsNPC { get; set; } = true;

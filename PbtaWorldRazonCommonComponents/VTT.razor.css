@@ -4,7 +4,7 @@
     height:100%;
     flex-grow:1;
     position:relative;
-    overflow:auto;
+    overflow:hidden;
 }
 
 .VTTMain {

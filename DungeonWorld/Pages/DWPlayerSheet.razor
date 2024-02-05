@@ -28,6 +28,8 @@ else
 			<VTT />
 			<div class="PaperBack d-flex flex-column gap-1 p-2 align-items-center"
 				style=" overflow-y:auto;
+						width:400px;
+						min-width:400px;
 						border-left: 1px solid black; 
 						z-index:101;
 						box-shadow: 0 0 5px black; ">
@@ -550,6 +552,7 @@ else
 				AvancedClassMovements.Add(m);
 		}
 
+		VTTMoves.Clear();
 		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_DefyDanger));
 		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_DiscernReality));
 		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_IHaveWhatINeed));

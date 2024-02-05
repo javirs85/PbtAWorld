@@ -4,11 +4,19 @@
 @inject VTTService service;
 @inject VTTLocalManagerService VTTViewer
 
-<div class="VTT justify-content-center"
+<div class="VTT justify-content-center flex-grow-1"
+		style="overflow:auto;"
 		@onclick=VTTViewer.Hide
 		@onclick:stopPropagation=true>
 	<div class="d-flex d-flex align-items-center justify-content-center w-100 h-100"  @onclick:stopPropagation=true>
-		<div class="VTTContainer" @onmousedown=Click @oncontextmenu=Unselect @oncontextmenu:preventDefault @oncontextmenu:stopPropagation>
+		<div class="VTTContainer"
+			 style="position:absolute; top:@(MapPosY+"px"); left:@(MapPosX+"px");"
+			@onmousedown=Click 
+			@onmousemove=Drag 
+			@onmouseup=UnClick
+			@onmouseleave=Exit
+			@oncontextmenu:preventDefault 
+			@oncontextmenu:stopPropagation>
 			<img src="/imgs/VTT/farm.jpg" width="1495" height="762"/>
 			<div class="VTTMain">
 				@foreach (var t in service.Tokens)
@@ -63,12 +71,12 @@
 		VTTViewer.UpdateUI += Update;
 	}
 
-	
-
 	VTTTokens MasterSelection = VTTTokens.Black1;
+	private bool IsMoving = false;
+	private double MapPosX = 0;
+	private double MapPosY = 0;
 
 
-	
 
 	private void Unselect(MouseEventArgs e) 
 	{
@@ -77,31 +85,37 @@
 
 	private void Click(MouseEventArgs e)
 	{
-		if(e.Button == 2)
+		if(e.OffsetY > 40)
 		{
-			VTTViewer.SelectedToken = null;
-		}
-		else
-		{
-			if (VTTViewer.SelectedToken is null)
+			if(e.Button == 0)
 			{
-				if(e.OffsetY > 25)
-				{
-
-				}
 				var t = service.SelectToken(e.OffsetX, e.OffsetY);
 				if (t is not null && t != VTTViewer.SelectedToken)
 					VTTViewer.SelectedToken = t;
-			}
-			else
-			{
-				if (e.OffsetY > 40)
+				else
 				{
-					service.MoveToken(VTTViewer.SelectedToken, e.OffsetX, e.OffsetY);
+					IsMoving = true;
 				}
+			}
+			else if(e.Button == 2)
+			{
+				service.MoveToken(VTTViewer.SelectedToken, e.OffsetX, e.OffsetY);
 			}
 		}
 	}
+
+	private void Drag(MouseEventArgs e)
+	{
+		if(IsMoving)
+		{
+			MapPosX += e.MovementX;
+			MapPosY += e.MovementY;
+		}
+	}
+
+	private void UnClick() => IsMoving = false;
+	private void Exit() => IsMoving = false;
+
 
 
 	private void Update(object? sender, EventArgs e)

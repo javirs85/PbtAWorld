@@ -23,8 +23,11 @@ public class VTTService
 			var t = new Token { Character = character, X = 100, Y = 100 };
 			Tokens.Add(t);
 			t.StoreChangesInCharacterSheet += StoreChangesInCharacterSheet;
+			character.UpdateVTT += Update;
 		}
 	}
+
+	
 
 	public void Clicked(MouseEventArgs e)
 	{
@@ -75,6 +78,7 @@ public class VTTService
 	}
 
 	void Update()=> UpdateUI?.Invoke(this, EventArgs.Empty);
+	void Update(object? sender, EventArgs e)=> Update();
 
 
 	public List<PbtACharacter> Players { get; set; } = new();
@@ -91,8 +95,6 @@ public class Token
 	private int _maxHp;
 
 	public event EventHandler<Guid> StoreChangesInCharacterSheet;
-
-
 
 	public Guid Guid
 	{
@@ -186,7 +188,8 @@ public class Token
         Guid = Guid.NewGuid();
     }
 
-    public int ImgX
+
+	public int ImgX
 	{
 		get
 		{

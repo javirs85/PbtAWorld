@@ -32,8 +32,9 @@ public class DWCharacter : PbtALib.PbtACharacter
 		get => _hp;
 		set
 		{
-			if(value != _hp) _hp = value;
+			if(value != _hp) _hp = Math.Min(value, MaxHP); 
 			OnUpdateUI();
+			OnVTTUpdate();
 		}
 	}
 
