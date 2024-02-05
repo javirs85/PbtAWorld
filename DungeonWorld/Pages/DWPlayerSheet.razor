@@ -28,74 +28,85 @@ else
 			<VTT />
 			<div class="PaperBack d-flex flex-column gap-1 p-2 align-items-center"
 				style=" overflow-y:auto;
-						width:400px;
-						min-width:400px;
+						transition: width 0.2s linear;
+						width:@VttPaperWidth;
+						min-width:@VttPaperWidth;
 						border-left: 1px solid black; 
 						z-index:101;
 						box-shadow: 0 0 5px black; ">
-				<div class="d-flex flex-column">
-					<div class="d-flex align-items-center">
-						<StatViewer Player="Player" Stat=DWStats.DW_STR UpdateUI="StateHasChanged" />
-						<StatViewer Player="Player" Stat=DWStats.DW_DEX />
-						<StatViewer Player="Player" Stat=DWStats.DW_CON />
-					</div>
-					<div class="d-flex">
-						<StatViewer Player="Player" Stat=DWStats.DW_INT />
-						<StatViewer Player="Player" Stat=DWStats.DW_WIS />
-						<StatViewer Player="Player" Stat=DWStats.DW_CHA />
-					</div>
-				</div>
-				<div class="d-flex w-100 justify-content-center">
-							<div class="ArmorOuter">
-								<div class="ArmorTittle">Armadura</div>
-								<input @bind=Player.Armor @onfocusout=@(async()=>{await EditFinish("Armadura = "+Player.Armor);}) />
-							</div>
-							<div class="HealthOuter">
-								<div class="d-flex">
-									<input @bind=Player.HP @onfocusout=@(async ()=>{ await EditFinish($"Actualizó sus PG a {Player.HP}");}) />
-									<div>/@Player.MaxHP</div>
-								</div>
-							</div>
-							<div class="DamageOuter" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);})>
-								<div>Daño</div>
-								<div class="DamageBox">
-									<div class="DamageOptions d-flex flex-column" 
-									@onclick:stopPropagation
-									@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
-									@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;})
-									style="@(IsShowingDamageOptions?"display:flex;":"display:none!important;")">
-										<div class="d-flex">
-											<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Disadvantage);}) style="background: #ff000036;" />
-											<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);}) />
-											<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Advantage);}) style="    background: #0cb53836;" />
-										</div>
-										<div class="d-flex">
-											<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_DisadvantagePlus1d6);}) style="background: #ff000036;">+1d6</div>
-											<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_SimplePlus1d6);})>+1d6</div>
-											<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_AdvantagePlus1d6);}) style="background: #0cb53836;">+1d6</div>
-										</div>
-									</div>
-									<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")"
-									class="DamageBoxImage"
-									@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
-									@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;}) />
-								</div>
-							</div>
-						</div>
 
-				@foreach(var m in ClassMovements)
-				{
-					<MovementViewer Player="Player" Movement="@m" IsVTT=true />
-				}
-				<div class="m-2"></div>
-				@foreach (var m in AvancedClassMovements)
-				{
-					<MovementViewer Player="Player" Movement="@m" IsVTT=true />
-				}
-				<div class="m-2"></div>
-				@foreach (var m in VTTMoves)
-				{
-					<MovementViewer Player="Player" Movement="@m" IsVTT=true />
+				<div class="ToggleButton" @onclick="@(()=>{IsShowingVTT = false;})"
+					 style="right:@(VttPaperWidth=="400px"?"20":"10")px;">
+					<i class="bi bi-x-lg"></i>
+				</div>
+				<div class="ToggleButton" @onclick="ToggleVTTPaper" style=" top:56px; right:@(VttPaperWidth=="400px"?"20":"10")px;">
+					<i class="bi bi-arrow-left-right"></i>
+				</div>
+				@if (VttPaperWidth == "400px") { 
+					<div class="d-flex flex-column">
+						<div class="d-flex align-items-center">
+							<StatViewer Player="Player" Stat=DWStats.DW_STR UpdateUI="StateHasChanged" />
+							<StatViewer Player="Player" Stat=DWStats.DW_DEX />
+							<StatViewer Player="Player" Stat=DWStats.DW_CON />
+						</div>
+						<div class="d-flex">
+							<StatViewer Player="Player" Stat=DWStats.DW_INT />
+							<StatViewer Player="Player" Stat=DWStats.DW_WIS />
+							<StatViewer Player="Player" Stat=DWStats.DW_CHA />
+						</div>
+					</div>
+					<div class="d-flex w-100 justify-content-center">
+								<div class="ArmorOuter">
+									<div class="ArmorTittle">Armadura</div>
+									<input @bind=Player.Armor @onfocusout=@(async()=>{await EditFinish("Armadura = "+Player.Armor);}) />
+								</div>
+								<div class="HealthOuter">
+									<div class="d-flex">
+										<input @bind=Player.HP @onfocusout=@(async ()=>{ await EditFinish($"Actualizó sus PG a {Player.HP}");}) />
+										<div>/@Player.MaxHP</div>
+									</div>
+								</div>
+								<div class="DamageOuter" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);})>
+									<div>Daño</div>
+									<div class="DamageBox">
+										<div class="DamageOptions d-flex flex-column" 
+										@onclick:stopPropagation
+										@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
+										@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;})
+										style="@(IsShowingDamageOptions?"display:flex;":"display:none!important;")">
+											<div class="d-flex">
+												<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Disadvantage);}) style="background: #ff000036;" />
+												<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);}) />
+												<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Advantage);}) style="    background: #0cb53836;" />
+											</div>
+											<div class="d-flex">
+												<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_DisadvantagePlus1d6);}) style="background: #ff000036;">+1d6</div>
+												<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_SimplePlus1d6);})>+1d6</div>
+												<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_AdvantagePlus1d6);}) style="background: #0cb53836;">+1d6</div>
+											</div>
+										</div>
+										<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")"
+										class="DamageBoxImage"
+										@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
+										@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;}) />
+									</div>
+								</div>
+							</div>
+
+					@foreach(var m in ClassMovements)
+					{
+						<MovementViewer Player="Player" Movement="@m" IsVTT=true />
+					}
+					<div class="m-2"></div>
+					@foreach (var m in AvancedClassMovements)
+					{
+						<MovementViewer Player="Player" Movement="@m" IsVTT=true />
+					}
+					<div class="m-2"></div>
+					@foreach (var m in VTTMoves)
+					{
+						<MovementViewer Player="Player" Movement="@m" IsVTT=true />
+					}
 				}
 			</div>
 		</div>
@@ -261,9 +272,9 @@ else
 							}						
 							<div class="Separator"></div>
 						</div>
-						<textarea class="SmallThingsTextArea" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
+						<!--<textarea class="SmallThingsTextArea" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
 						<div class="Separator"></div>
-						<div class="PaperSheetSubTittle w-100">Secciones</div>
+						<div class="PaperSheetSubTittle w-100">Secciones</div>-->
 						<div class="d-flex w-100 ps-3" style="font-family: 'Roboto'; font-size: 12px;">
 							<div class="SectionButton" @onclick=@(()=>{VTT.StartForPlayer(Player); VTTViewer.Show(Player); IsShowingVTT=true;})>VTT</div>
 							<div class="SectionButton" @onclick=@(()=>{VTTViewer.IsMaster = true; VTTViewer.Show(); IsShowingVTT = true;})>Master</div>
@@ -488,6 +499,13 @@ else
 	private List<IMove> ClassMovements = new();
 	private List<IMove> AvancedClassMovements = new();
 	private List<IMove> VTTMoves = new();
+
+	private string VttPaperWidth = "400px";
+	private void ToggleVTTPaper()
+	{
+		if (VttPaperWidth == "400px") VttPaperWidth = "60px";
+		else VttPaperWidth = "400px";
+	}
 
 	enum PaperSize {JustLeft, NoPaper, FullPaper};
 	PaperSize CurrentPapereSize = PaperSize.FullPaper;

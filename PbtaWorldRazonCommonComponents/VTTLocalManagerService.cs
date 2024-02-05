@@ -39,7 +39,7 @@ public class VTTLocalManagerService
 	{
 		IsVisible = true;
 		IsMaster = false;
-		SelectedToken = service.Tokens.Find(x => x.Character.ID == Char.ID);
+		SelectedToken = service.Tokens.Find(x => x.Character?.ID == Char.ID);
 	}
 	public void Hide()
 	{

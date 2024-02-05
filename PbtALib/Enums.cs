@@ -34,7 +34,12 @@ public enum VTTTokens
 	Blue1, Blue2, Blue3, Blue4, Blue5, Blue6, Blue7, Blue8, BlueBoss,
 	Green1, Green2, Green3, Green4, Green5, Green6,Green7, Green8,GreenBoss,
 	Barbarian, Bard, Cleric, Druid, Ranger, Fighter, Thief, Mage, Paladin, Wielder,
-	Gold, RedPotion,GreenPotion
+	Gold, RedPotion,GreenPotion, FogOfWar
+}
+
+public enum TokenStatus
+{
+	Normal, Dead, Hidden, Poisoned, InFlame
 }
 
 public static class UIExtensions

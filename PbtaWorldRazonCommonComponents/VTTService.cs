@@ -15,6 +15,10 @@ public class VTTService
 	public event EventHandler UpdateUI;
 	public event EventHandler<Guid> StoreChangesInCharacterSheet;
 	public List<Token> Tokens = new();
+	public bool IsOpen = false;
+
+	public enum VTTMaps { farm, Bandit1, Swamp };
+	public VTTMaps CurrentMap = VTTMaps.farm;
 	
 	public void StartForPlayer(PbtACharacter character)
 	{
@@ -45,7 +49,7 @@ public class VTTService
 		double minDist = 100000;
 		Token? SelectedToken = null;
 
-		foreach(var t in Tokens)
+		foreach(var t in Tokens.Where(x=>x.ID != VTTTokens.FogOfWar))
 		{
 			var d =  Math.Abs(t.X - x) + Math.Abs(t.Y - y);
 			if (d < minDist)
@@ -58,11 +62,22 @@ public class VTTService
 			}
 		}
 
+		if(SelectedToken == null)
+		{
+			foreach(var fog in Tokens.Where(x=>x.ID == VTTTokens.FogOfWar))
+			{
+				if (x > fog.X && x <= fog.X + fog.FowWidth && y > fog.Y && y <= fog.Y + fog.FowHeight)
+					return fog;
+			}
+		}
+
 		return SelectedToken;
 	}
 
 	public void MoveToken(Token t,double X, double Y)
 	{
+		if (t == null) return;
+
 		var token = Tokens.Find(x=>x.Guid == t.Guid);
 		if(token != null)
 		{
@@ -72,9 +87,20 @@ public class VTTService
 		Update();
 	}
 
-	public void AddToken(VTTTokens t)
+	public void DeleteToken(Token t)
 	{
-		Tokens.Add( new Token { ID = t, X = 50, Y = 50});
+		Tokens.Remove(t);
+		Update();
+	}
+
+	public Token AddToken(VTTTokens TokenType)
+	{
+		var t = new Token { ID = TokenType, X = 50, Y = 50, Status = TokenStatus.Hidden };
+		t.UpdateNeeeded -= Update;
+		t.UpdateNeeeded += Update;
+		Tokens.Add(t);
+
+		return t;
 	}
 
 	void Update()=> UpdateUI?.Invoke(this, EventArgs.Empty);
@@ -89,6 +115,18 @@ public class VTTService
 public class Token
 {
 	public VTTTokens ID = VTTTokens.Barbarian;
+	private TokenStatus _status = TokenStatus.Normal;
+	public event EventHandler UpdateNeeeded;
+
+	public TokenStatus Status
+	{
+		get { return _status; }
+		set { 
+			_status = value; 
+			UpdateNeeeded?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
 	public static int BasicSize = 60;
 	private Guid _id; 
 	private int _hp;
@@ -122,6 +160,7 @@ public class Token
 				StoreChangesInCharacterSheet?.Invoke(this, _character.ID);
 			}
 			else _hp = value;
+			UpdateNeeeded?.Invoke(this, EventArgs.Empty);
 		}
 	}
 	public int maxHP
@@ -133,8 +172,15 @@ public class Token
 		}
 		set
 		{
-			if (_character is not null) _character.MaxHP = value;
-			else _maxHp = value;
+			if (_character is not null)
+			{
+				_character.MaxHP = value;
+			}
+			else
+			{
+				_maxHp = value;
+				_hp = value;
+			}
 		}
 	}
 
@@ -338,4 +384,7 @@ public class Token
 
 	public int X;
 	public int Y;
+
+	public int FowWidth;
+	public int FowHeight;
 }

@@ -8,53 +8,101 @@
 		style="overflow:auto;"
 		@onclick=VTTViewer.Hide
 		@onclick:stopPropagation=true>
-	<div class="d-flex d-flex align-items-center justify-content-center w-100 h-100"  @onclick:stopPropagation=true>
+	<div class="d-flex d-flex align-items-center justify-content-center w-100 h-100" style="overflow:hidden; background:#000000a4;"  @onclick:stopPropagation=true>
+		@if (VTTViewer.IsMaster)
+		{
+			<div class="MasterSelector align-items-center d-flex gap-1" @onclick:stopPropagation>
+				<div class="d-flex gap-1 flex-grow-1">
+					<EditForm Model="this" class="d-flex gap-1">
+						<InputSelect class="form-select" @bind-Value=MasterSelection>
+							@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
+							{
+								<option value="@v">@v</option>
+							}
+						</InputSelect>
+						<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection); VTTViewer.SelectedToken = service.Tokens.Last();})><i class="bi bi-plus"></i></button>
+					</EditForm>
+					@if (VTTViewer.SelectedToken is not null)
+					{
+						<EditForm Model="VTTViewer.SelectedToken" class="d-flex align-items-center">
+							<label>Max HP</label>
+							<InputNumber @bind-Value=@VTTViewer.SelectedToken.maxHP style="width:40px;" />
+							@if (VTTViewer.SelectedToken.ID == VTTTokens.FogOfWar || VTTViewer.SelectedToken.maxHP != 0)
+							{
+								<label>HP</label>
+								<InputNumber @bind-Value=@VTTViewer.SelectedToken.HP style="width:40px;" />
+								<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Status>
+									@foreach (var v in Enum.GetValues(typeof(TokenStatus)))
+									{
+										<option value="@v">@v</option>
+									}
+								</InputSelect>
+							}
+						</EditForm>
+						<button class="btn btn-danger" @onclick=DeleteToken>Delete</button>
+					}
+					<EditForm Model="service" class="ms-2 d-flex gap-1">
+						<button class="btn btn-dark" @onclick=ToggleFOGCreationMode>@(IsCreatingFogOfWar?"Stop FOG":"FOG")</button>
+						<InputSelect class="form-select" @bind-Value=service.CurrentMap>
+							@foreach (var v in Enum.GetValues(typeof(VTTService.VTTMaps)))
+							{
+								<option value="@v">@v</option>
+							}
+						</InputSelect>
+					</EditForm>
+				</div>
+			</div>
+		}
 		<div class="VTTContainer"
-			 style="position:absolute; top:@(MapPosY+"px"); left:@(MapPosX+"px");"
+			 style=" top:@(MapPosY+"px"); left:@(MapPosX+"px");"
 			@onmousedown=Click 
 			@onmousemove=Drag 
 			@onmouseup=UnClick
 			@onmouseleave=Exit
 			@oncontextmenu:preventDefault 
 			@oncontextmenu:stopPropagation>
-			<img src="/imgs/VTT/farm.jpg" width="1495" height="762"/>
+			<img id="Map" src="@MapURL"/>
 			<div class="VTTMain">
 				@foreach (var t in service.Tokens)
 				{
-					<div class="VTTToken @(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")"
-							style="
-						top:@(t.Y+"px"); left:@(t.X+"px"); 
-						background-position-x:@(t.ImgX+"px"); 
-						background-position-y:@(t.ImgY+"px");">
-						<div class="LifeContainer">
-							<div class="LifeBar" style="width:@(t.PercentageLife)%; background:@(t.LifeBarColor);"></div>
+					@if(t.ID == VTTTokens.FogOfWar)
+					{
+						<div class="FOW 
+								@(VTTViewer.IsMaster?"FOWMaster":"FOWPlayer")
+								@(t.Status == TokenStatus.Hidden?"FOWHidden":"")" 
+								style="
+									@(VTTViewer.SelectedToken == t?"border:1px solid red;":"")
+									top:@(t.Y+"px"); 
+									left:@(t.X+"px");
+									width:@(t.FowWidth+"px");
+									height:@(t.FowHeight+"px");">
 						</div>
-						<div class="NameContainer">@t.Character?.Name</div>
-					</div>
+					}
+					else
+					{
+						<div class="VTTToken 
+							@(VTTViewer.IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
+							@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")"
+							style="
+							top:@(t.Y+"px"); left:@(t.X+"px"); 
+							background-position-x:@(t.ImgX+"px"); 
+							background-position-y:@(t.ImgY+"px");">
+							<div class="TokenStatus @(VTTViewer.IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
+								@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")">
+							</div>
+							@if(t.Status != TokenStatus.Dead)
+							{
+								<div class="LifeContainer">
+									<div class="LifeBar" style="width:@(t.PercentageLife)%; background:@(t.LifeBarColor);"></div>
+								</div>
+							}					
+						
+							<div class="NameContainer">@t.Character?.Name</div>
+						</div>
+					}
+					
 				}
-				@if(VTTViewer.IsMaster)
-				{
-					<div class="MasterSelector d-flex gap-1" @onclick:stopPropagation>
-						<EditForm Model="this" class="d-flex gap-1">
-							<InputSelect class="form-select" @bind-Value=MasterSelection>
-								@foreach(var v in Enum.GetValues(typeof(VTTTokens)))
-								{
-									<option value="@v">@v</option>
-								}
-							</InputSelect>
-							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection);})><i class="bi bi-plus"></i></button>
-						</EditForm>
-						@if (VTTViewer.SelectedToken is not null)
-						{
-							<EditForm Model="VTTViewer.SelectedToken">
-								<label>Max HP</label>
-								<InputNumber @bind-Value=@VTTViewer.SelectedToken.maxHP style="width:40px;" />
-								<label>HP</label>
-								<InputNumber @bind-Value=@VTTViewer.SelectedToken.HP style="width:40px;" />
-							</EditForm>
-						}						
-					</div>
-				}
+				
 					
 			</div>
 		</div>
@@ -71,36 +119,83 @@
 		VTTViewer.UpdateUI += Update;
 	}
 
+	string MapURL
+	{
+		get
+		{
+			var url = "_content/PbtaWorldRazonCommonComponents/imgs/Maps/";
+			var img = service.CurrentMap switch
+			{
+				VTTService.VTTMaps.farm => "farm.jpg",
+				VTTService.VTTMaps.Bandit1 => "Bandit1.jpg",
+				VTTService.VTTMaps.Swamp => "Swamp.jpg",
+				_ => ""
+			};
+
+			return url + img;
+		}
+	}
+
+	//placeholder for the combobox
 	VTTTokens MasterSelection = VTTTokens.Black1;
+
 	private bool IsMoving = false;
+	private bool IsCreatingFogOfWar = false;
+	private enum FogOfWarCreationSteps {Start, Size, Finish}
+	private FogOfWarCreationSteps FOWStep = FogOfWarCreationSteps.Start;
+	private Token CurrentlyCreatingFOW = new Token();
+	private bool IsCreatingFogOgWarIni = true;
 	private double MapPosX = 0;
 	private double MapPosY = 0;
-
-
-
-	private void Unselect(MouseEventArgs e) 
-	{
-
-	}
 
 	private void Click(MouseEventArgs e)
 	{
 		if(e.OffsetY > 40)
 		{
-			if(e.Button == 0)
+			if(IsCreatingFogOfWar)
 			{
-				var t = service.SelectToken(e.OffsetX, e.OffsetY);
-				if (t is not null && t != VTTViewer.SelectedToken)
-					VTTViewer.SelectedToken = t;
-				else
+				if(e.Button == 0)
 				{
-					IsMoving = true;
+					if(FOWStep == FogOfWarCreationSteps.Start)
+					{
+						CurrentlyCreatingFOW = service.AddToken(VTTTokens.FogOfWar);
+						CurrentlyCreatingFOW.X = (int)e.OffsetX;
+						CurrentlyCreatingFOW.Y = (int)e.OffsetY;
+						CurrentlyCreatingFOW.Status = TokenStatus.Normal;
+
+						FOWStep = FogOfWarCreationSteps.Size;
+					}
+					else if(FOWStep == FogOfWarCreationSteps.Size)
+					{
+						FOWStep = FogOfWarCreationSteps.Start;
+						IsCreatingFogOfWar = false;
+					}
 				}
 			}
-			else if(e.Button == 2)
+			else
 			{
-				service.MoveToken(VTTViewer.SelectedToken, e.OffsetX, e.OffsetY);
-			}
+				if (e.Button == 0)
+				{
+					if (VTTViewer.IsMaster)
+					{
+						var t = service.SelectToken(e.OffsetX, e.OffsetY);
+						if (t is not null && t != VTTViewer.SelectedToken)
+							VTTViewer.SelectedToken = t;
+						else
+						{
+							IsMoving = true;
+						}
+					}
+					else
+						IsMoving = true;
+
+				}
+				else if (e.Button == 2)
+				{
+					if (service.SelectToken != null)
+						service.MoveToken(VTTViewer.SelectedToken, e.OffsetX, e.OffsetY);
+				}
+			}			
 		}
 	}
 
@@ -111,6 +206,22 @@
 			MapPosX += e.MovementX;
 			MapPosY += e.MovementY;
 		}
+		else if (IsCreatingFogOfWar)
+		{
+			if(FOWStep == FogOfWarCreationSteps.Size)
+			{
+				CurrentlyCreatingFOW.FowWidth = ((int)e.OffsetX)- CurrentlyCreatingFOW.X ;
+				CurrentlyCreatingFOW.FowHeight = ((int)e.OffsetY)-CurrentlyCreatingFOW.Y;
+			}
+		}
+	}
+
+	void ToggleFOGCreationMode() => IsCreatingFogOfWar = !IsCreatingFogOfWar;
+
+	private void DeleteToken()
+	{
+		if(VTTViewer.SelectedToken is not null)
+			service.DeleteToken(VTTViewer.SelectedToken);
 	}
 
 	private void UnClick() => IsMoving = false;

@@ -3,7 +3,7 @@
 
 @if(!HideEverything)
 {
-	<div class="MovementViewerMain @((IsLastMasterBox)? Movement.HowOften.ToString() : "")" 
+	<div class="MovementViewerMain @(IsVTT?"w-100":"") @((IsLastMasterBox)? Movement.HowOften.ToString() : "")" 
 		@onclick=HeaderClicked @onclick:stopPropagation
 		style="@(IsVTT?"flex-grow:0":"")">
 		<div class="MovementHeader" >
