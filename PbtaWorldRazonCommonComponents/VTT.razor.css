@@ -37,20 +37,32 @@
 }
     .VTTToken.Selected {
         box-shadow: 0px 0px 11px 8px rgb(114 197 245);
-        z-index:10;
+        z-index:1;
+    }
+    
+
+.Prop {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    transform:translate(-50%,-50%);
+}
+    .Prop.Selected {
+        border: 1px solid red;
     }
 
 .MasterSelector {
     position: absolute;
     top: 0;
     left: 0;
-    background: #00000043;
+    background: #0000009e;
     align-items: center;
     width: 100%;
     color: white;
     font-weight: bold;
-    padding-left:10px;
-    z-index:10;
+    padding-left: 10px;
+    z-index: 10;
+    padding-right: 400px;
 }
 .LifeContainer{
     width:60px;
@@ -122,18 +134,40 @@
 .FOW {
     position: absolute;
     background: black;
-    box-shadow: black 0 0 10px;
+    box-shadow: black 0 0 16px 3px;
     z-index:10;
     pointer-events: none;
 }
 .FOWMaster{
     z-index:0;
+    opacity: 1;
+    background:#16135673;
+    border: 5px solid grey;
 }
 
-.FOWMaster.FOWHidden{
-    opacity:0.5;
-}
+    .FOWMaster.FOWHidden {
+        opacity: 1;
+        background: #0000004c;
+        border: 2px solid white;
+    }
 
 .FOWPlayer.FOWHidden{
     opacity: 0;
+}
+
+.Round{
+    border-radius: 2000px;
+}
+
+.propSelectionItem{
+    border: 1px solid #ff040438;
+    cursor:pointer;
+}
+.propSelectionItem:hover{
+    border: 1px solid red;
+    background:black;
+}
+
+.PropTools{
+    position:absolute;
 }

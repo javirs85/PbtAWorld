@@ -12,45 +12,91 @@
 		@if (VTTViewer.IsMaster)
 		{
 			<div class="MasterSelector align-items-center d-flex gap-1" @onclick:stopPropagation>
-				<div class="d-flex gap-1 flex-grow-1">
-					<EditForm Model="this" class="d-flex gap-1">
-						<InputSelect class="form-select" @bind-Value=MasterSelection>
-							@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
-							{
-								<option value="@v">@v</option>
-							}
-						</InputSelect>
-						<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection); VTTViewer.SelectedToken = service.Tokens.Last();})><i class="bi bi-plus"></i></button>
-					</EditForm>
-					@if (VTTViewer.SelectedToken is not null)
-					{
-						<EditForm Model="VTTViewer.SelectedToken" class="d-flex align-items-center">
-							<label>Max HP</label>
-							<InputNumber @bind-Value=@VTTViewer.SelectedToken.maxHP style="width:40px;" />
-							@if (VTTViewer.SelectedToken.ID == VTTTokens.FogOfWar || VTTViewer.SelectedToken.maxHP != 0)
-							{
-								<label>HP</label>
-								<InputNumber @bind-Value=@VTTViewer.SelectedToken.HP style="width:40px;" />
-								<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Status>
-									@foreach (var v in Enum.GetValues(typeof(TokenStatus)))
-									{
-										<option value="@v">@v</option>
-									}
-								</InputSelect>
-							}
+				<div class="d-flex flex-column flex-grow-1">
+					<div class="d-flex gap-1">
+						<EditForm Model="this" class="d-flex gap-1">
+							<InputSelect class="form-select" @bind-Value=MasterSelection>
+								@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
+								{
+									<option value="@v">@v</option>
+								}
+							</InputSelect>
+							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection); VTTViewer.SelectedToken = service.Tokens.Last();})><i class="bi bi-plus"></i></button>
 						</EditForm>
-						<button class="btn btn-danger" @onclick=DeleteToken>Delete</button>
+						@if (VTTViewer.SelectedToken is not null)
+						{
+							<EditForm Model="VTTViewer.SelectedToken" class="d-flex align-items-center">
+								<label>Max HP</label>
+								<InputNumber @bind-Value=@VTTViewer.SelectedToken.maxHP style="width:40px;" />
+								@if (VTTViewer.SelectedToken.maxHP != 0)
+								{
+									<label>HP</label>
+									<InputNumber @bind-Value=@VTTViewer.SelectedToken.HP style="width:40px;" />
+									<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Status>
+										@foreach (var v in Enum.GetValues(typeof(TokenStatus)))
+										{
+											<option value="@v">@v</option>
+										}
+									</InputSelect>
+								}
+								
+							</EditForm>
+							<button class="btn btn-danger" @onclick=DeleteToken>Delete</button>
+						}
+						<button class="btn btn-dark" @onclick=@(()=>{Show(ShowingOptions.FOG);})>FOG</button>
+						<button class="btn btn-success" @onclick=@(()=>{Show(ShowingOptions.props);})>Props</button>
+						<button class="btn btn-secondary" @onclick=@(()=>{Show(ShowingOptions.dungeon);})>Dungeon</button>
+
+						<EditForm Model="service" class="ms-2 d-flex gap-1">
+							
+							<InputSelect class="form-select" @bind-Value=service.CurrentMap>
+								@foreach (var v in Enum.GetValues(typeof(VTTService.VTTMaps)))
+								{
+									<option value="@v">@v</option>
+								}
+							</InputSelect>
+						</EditForm>
+						
+					</div>
+					@if (CurrentlyShowing == ShowingOptions.FOG)
+					{
+						<div class="d-flex gap-1">
+							<button class="btn btn-dark" @onclick=ToggleFOGCreationMode>@(IsCreatingFogOfWar ? "Stop FOG" : "Start FOG")</button>
+							<button class="btn btn-info" @onclick=TogleFOWShape>Toggle shape</button>
+							<button class="btn btn-danger" @onclick=service.GenerateFOWJSON>GenerateJson</button>
+							<button class="btn btn-danger" @onclick=service.LoadFOW>LoadJson</button>
+						</div>
 					}
-					<EditForm Model="service" class="ms-2 d-flex gap-1">
-						<button class="btn btn-dark" @onclick=ToggleFOGCreationMode>@(IsCreatingFogOfWar?"Stop FOG":"FOG")</button>
-						<InputSelect class="form-select" @bind-Value=service.CurrentMap>
-							@foreach (var v in Enum.GetValues(typeof(VTTService.VTTMaps)))
+					else if (CurrentlyShowing == ShowingOptions.props)
+					{
+						<div class="d-flex gap-1 align-items-center" style="overflow:auto; max-width: calc(100vw - 400px);">
+							@foreach(var t in Enum.GetValues(typeof(VTTTokens)))
 							{
-								<option value="@v">@v</option>
+								@if(((VTTTokens)t).IsForest())
+								{
+									<div class="propSelectionItem" @onclick=@(()=>{service.AddPropToMap((VTTTokens)t); VTTViewer.SelectedToken = service.Props.Last();})>
+										<img src="@(GetPropUrl((VTTTokens)t))" />
+									</div>
+								}
 							}
-						</InputSelect>
-					</EditForm>
+						</div>
+					}
+					else if (CurrentlyShowing == ShowingOptions.dungeon)
+					{
+						<div class="d-flex gap-1 align-items-center" style="overflow:auto; max-width: calc(100vw - 400px);">
+							@foreach (var t in Enum.GetValues(typeof(VTTTokens)))
+							{
+								@if (!((VTTTokens)t).IsForest())
+								{
+									<div class="propSelectionItem" @onclick=@(()=>{service.AddPropToMap((VTTTokens)t); VTTViewer.SelectedToken = service.Props.Last();})>
+										<img src="@(GetPropUrl((VTTTokens)t))" />
+									</div>
+								}
+							}
+						</div>
+					}
 				</div>
+				<div style="width: 400px;"></div>
 			</div>
 		}
 		<div class="VTTContainer"
@@ -68,6 +114,7 @@
 					@if(t.ID == VTTTokens.FogOfWar)
 					{
 						<div class="FOW 
+								@(t.IsRound?"Round":"")
 								@(VTTViewer.IsMaster?"FOWMaster":"FOWPlayer")
 								@(t.Status == TokenStatus.Hidden?"FOWHidden":"")" 
 								style="
@@ -84,9 +131,9 @@
 							@(VTTViewer.IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
 							@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")"
 							style="
-							top:@(t.Y+"px"); left:@(t.X+"px"); 
-							background-position-x:@(t.ImgX+"px"); 
-							background-position-y:@(t.ImgY+"px");">
+								top:@(t.Y+"px"); left:@(t.X+"px"); 
+								background-position-x:@(t.ImgX+"px"); 
+								background-position-y:@(t.ImgY+"px");">
 							<div class="TokenStatus @(VTTViewer.IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
 								@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")">
 							</div>
@@ -100,7 +147,28 @@
 							<div class="NameContainer">@t.Character?.Name</div>
 						</div>
 					}
-					
+				}
+				@foreach (var p in service.Props)
+				{
+					<div class="Prop
+							@(VTTViewer.IsMaster?"Master_"+p.Status.ToString():"Player_"+p.Status.ToString())
+							@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == p.Guid?"Selected":"")"
+						 style="top:@(p.Y+"px"); left:@(p.X+"px"); transform:rotate(@(p.rotation+"deg"))">
+						 <img src="@p.imgURL" alt="prop"/>
+						@if(VTTViewer.SelectedToken == p)
+						{
+							<div class="PropTools">
+								<button class="btn btn-danger" @onclick=@(()=>{service.DeleteProp(p); VTTViewer.SelectedToken = null;})><i class="bi bi-trash3"></i></button>
+								<button class="btn btn-primary" @onclick=@(()=>{((Prop)p).RotateRight();})><i class="bi bi-arrow-clockwise"></i></button>
+								@if(p.IsDoor)
+								{
+									<button class="btn btn-success" @onclick=@(()=>{((Prop)p).OpenDoor();})><i class="bi bi-door-open"></i></button>
+									<button class="btn btn-info" @onclick=@(()=>{((Prop)p).CloseDoor();})><i class="bi bi-door=closed-fill"></i></button>
+									<button class="btn btn-black" @onclick=@(()=>{((Prop)p).GateDoor();})><i class="bi bi-bank"></i></button>
+								}								
+							</div>
+						}
+					</div>
 				}
 				
 					
@@ -129,12 +197,16 @@
 				VTTService.VTTMaps.farm => "farm.jpg",
 				VTTService.VTTMaps.Bandit1 => "Bandit1.jpg",
 				VTTService.VTTMaps.Swamp => "Swamp.jpg",
+				VTTService.VTTMaps.UDTBasic => "UDT.png",
+				VTTService.VTTMaps.UDT_Forest => "UDT_Forest.png",
 				_ => ""
 			};
 
 			return url + img;
 		}
 	}
+
+	private string GetPropUrl(VTTTokens t) => t.GetPropURL();
 
 	//placeholder for the combobox
 	VTTTokens MasterSelection = VTTTokens.Black1;
@@ -147,6 +219,11 @@
 	private bool IsCreatingFogOgWarIni = true;
 	private double MapPosX = 0;
 	private double MapPosY = 0;
+
+	private bool IsShowingFOGOptions = false;
+
+	enum ShowingOptions {nothing, FOG, props, dungeon};
+	ShowingOptions CurrentlyShowing = ShowingOptions.nothing;
 
 	private void Click(MouseEventArgs e)
 	{
@@ -222,6 +299,16 @@
 	{
 		if(VTTViewer.SelectedToken is not null)
 			service.DeleteToken(VTTViewer.SelectedToken);
+	}
+
+	private void Show(ShowingOptions o)
+	{
+		CurrentlyShowing = o;
+	}
+
+	public void TogleFOWShape()
+	{
+		VTTViewer.SelectedToken.IsRound = !VTTViewer.SelectedToken.IsRound;
 	}
 
 	private void UnClick() => IsMoving = false;

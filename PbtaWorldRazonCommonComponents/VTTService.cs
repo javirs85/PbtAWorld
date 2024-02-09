@@ -2,10 +2,12 @@
 using PbtALib;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PbtaWorldRazonCommonComponents;
@@ -15,9 +17,10 @@ public class VTTService
 	public event EventHandler UpdateUI;
 	public event EventHandler<Guid> StoreChangesInCharacterSheet;
 	public List<Token> Tokens = new();
+	public List<Prop> Props = new();
 	public bool IsOpen = false;
 
-	public enum VTTMaps { farm, Bandit1, Swamp };
+	public enum VTTMaps { farm, Bandit1, Swamp, UDTBasic, UDT_Forest};
 	public VTTMaps CurrentMap = VTTMaps.farm;
 	
 	public void StartForPlayer(PbtACharacter character)
@@ -32,18 +35,6 @@ public class VTTService
 	}
 
 	
-
-	public void Clicked(MouseEventArgs e)
-	{
-		var ClickX = e.OffsetX;
-		var ClickY = e.OffsetY;
-		var t = Tokens[0];
-		t.X = (int)ClickX - Token.BasicSize / 2;
-		t.Y = (int)ClickY - Token.BasicSize / 2;
-
-		Update();
-	}
-
 	public Token? SelectToken(double x, double y)
 	{
 		double minDist = 100000;
@@ -71,6 +62,22 @@ public class VTTService
 			}
 		}
 
+		if(SelectedToken == null)
+		{
+			foreach(var prop in Props)
+			{
+				var d = Math.Abs(prop.X - x) + Math.Abs(prop.Y - y);
+				if (d < minDist)
+				{
+					if (d < 500)
+					{
+						minDist = d;
+						SelectedToken = prop;
+					}
+				}
+			}
+		}
+
 		return SelectedToken;
 	}
 
@@ -84,12 +91,27 @@ public class VTTService
 			token.X = (int)X - Token.BasicSize / 2;
 			token.Y = (int)Y - Token.BasicSize / 2;
 		}
+		else
+		{
+			var prop = Props.Find(x => x.Guid == t.Guid);
+			if(prop is not null)
+			{
+				prop.X = (int)X;
+				prop.Y = (int)Y;
+			}
+		}
 		Update();
 	}
 
 	public void DeleteToken(Token t)
 	{
 		Tokens.Remove(t);
+		Update();
+	}
+
+	public void DeleteProp(Prop p)
+	{
+		Props.Remove(p);
 		Update();
 	}
 
@@ -110,11 +132,45 @@ public class VTTService
 	public List<PbtACharacter> Players { get; set; } = new();
 	public string ImageName { get; set; } = "farm.jpg";
 
+	public void GenerateFOWJSON()
+	{
+		var FOWs = from t in Tokens where t.ID == VTTTokens.FogOfWar select t;
+		string str = System.Text.Json.JsonSerializer.Serialize(FOWs);
+		//return str;
+	}
+
+	public void AddPropToMap(VTTTokens t)
+	{
+		var p = new Prop { VTTProp = t, X = 750, Y = 750 };
+		Props.Add(p);
+		p.UpdateNeeeded -= Update;
+		p.UpdateNeeeded += Update;
+		Update();
+	}
+
+	public void LoadFOW()
+	{
+
+		string str = "";
+		if (CurrentMap == VTTMaps.Swamp)
+			str = "[{\"ID\":58,\"Status\":0,\"Guid\":\"10665f66-cd9a-4d87-9215-2235c760ca28\",\"HP\":0,\"maxHP\":0,\"IsRound\":true,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":190,\"Y\":131,\"FowWidth\":288,\"FowHeight\":268},{\"ID\":58,\"Status\":0,\"Guid\":\"b51bd3f9-388f-4409-858f-8c0493fdc9db\",\"HP\":0,\"maxHP\":0,\"IsRound\":true,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":1050,\"Y\":256,\"FowWidth\":317,\"FowHeight\":328},{\"ID\":58,\"Status\":0,\"Guid\":\"1c52cdb2-c6af-4d12-8f4d-4205db885078\",\"HP\":0,\"maxHP\":0,\"IsRound\":true,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":761,\"Y\":1046,\"FowWidth\":276,\"FowHeight\":275},{\"ID\":58,\"Status\":0,\"Guid\":\"af5c1567-7b3c-450d-9c40-3c00854a4ebb\",\"HP\":0,\"maxHP\":0,\"IsRound\":true,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":215,\"Y\":1472,\"FowWidth\":285,\"FowHeight\":271}]";
+		else if (CurrentMap == VTTMaps.Bandit1)
+			str = "[{\"ID\":58,\"Status\":0,\"Guid\":\"3372466a-9550-466e-a58e-b4eac49b4f06\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":1052,\"Y\":15,\"FowWidth\":320,\"FowHeight\":283},{\"ID\":58,\"Status\":0,\"Guid\":\"63c0300d-c666-4b0c-a538-f5016e27f39b\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":185,\"Y\":452,\"FowWidth\":493,\"FowHeight\":404},{\"ID\":58,\"Status\":0,\"Guid\":\"adc6e318-327f-4c55-aaae-1399119ff529\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":743,\"Y\":371,\"FowWidth\":753,\"FowHeight\":396},{\"ID\":58,\"Status\":0,\"Guid\":\"dbd76659-c29d-4dc9-a3c3-8c661ccca5f4\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":203,\"Y\":889,\"FowWidth\":609,\"FowHeight\":197},{\"ID\":58,\"Status\":0,\"Guid\":\"d848bcb9-1243-4962-b490-06aeddd681cc\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":610,\"Y\":1087,\"FowWidth\":208,\"FowHeight\":140},{\"ID\":58,\"Status\":0,\"Guid\":\"f7be5574-0f59-4f3b-a31d-e1271d89c83b\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":475,\"Y\":1087,\"FowWidth\":137,\"FowHeight\":139},{\"ID\":58,\"Status\":0,\"Guid\":\"e0362d5c-a2f5-4178-b12b-2bba7a6cfcea\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":338,\"Y\":1094,\"FowWidth\":134,\"FowHeight\":268},{\"ID\":58,\"Status\":0,\"Guid\":\"5257fa55-03aa-4009-956b-3d78a6c57cc7\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":818,\"Y\":812,\"FowWidth\":203,\"FowHeight\":483},{\"ID\":58,\"Status\":0,\"Guid\":\"09fd2354-a2b1-4189-9cfe-51c3edf8d1b9\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":1023,\"Y\":816,\"FowWidth\":207,\"FowHeight\":205},{\"ID\":58,\"Status\":0,\"Guid\":\"595e907b-ac0f-4668-9d42-762ccce01b67\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":1023,\"Y\":1023,\"FowWidth\":207,\"FowHeight\":66},{\"ID\":58,\"Status\":0,\"Guid\":\"177805b8-6023-4037-a8f5-f787ab7339d1\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":1023,\"Y\":1090,\"FowWidth\":205,\"FowHeight\":73},{\"ID\":58,\"Status\":0,\"Guid\":\"67c78166-7906-43e2-aaf3-6091c66a13e5\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":18,\"Y\":699,\"FowWidth\":308,\"FowHeight\":846},{\"ID\":58,\"Status\":0,\"Guid\":\"777265fe-aad3-412a-bda0-ed65201da425\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":469,\"Y\":1230,\"FowWidth\":212,\"FowHeight\":273},{\"ID\":58,\"Status\":0,\"Guid\":\"ce8e2bd0-cf22-47b7-b145-665938dadb7b\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":403,\"Y\":1362,\"FowWidth\":61,\"FowHeight\":139},{\"ID\":58,\"Status\":0,\"Guid\":\"2d3bcdfd-4018-4220-9d29-5c5163709ebc\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":685,\"Y\":1233,\"FowWidth\":124,\"FowHeight\":271},{\"ID\":58,\"Status\":0,\"Guid\":\"6b00d6c8-b002-4c19-bcd6-bc3e3b9b3e5e\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":818,\"Y\":1298,\"FowWidth\":132,\"FowHeight\":333},{\"ID\":58,\"Status\":0,\"Guid\":\"594fbc3b-808a-4a9d-a3df-1adb0792d811\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":959,\"Y\":1428,\"FowWidth\":203,\"FowHeight\":552},{\"ID\":58,\"Status\":0,\"Guid\":\"b4391c45-818f-4b3e-bed3-d3889bd7d9de\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":886,\"Y\":1637,\"FowWidth\":81,\"FowHeight\":344},{\"ID\":58,\"Status\":0,\"Guid\":\"7dfd158c-260f-4600-865e-a9a93b5d5701\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":473,\"Y\":1633,\"FowWidth\":407,\"FowHeight\":349},{\"ID\":58,\"Status\":0,\"Guid\":\"4ed92c84-ce39-4a0d-afb7-5523fdb23880\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":5,\"Y\":1544,\"FowWidth\":409,\"FowHeight\":227},{\"ID\":58,\"Status\":0,\"Guid\":\"6a9b4e24-4f0d-465c-8683-c8d8c95072d5\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":1,\"Y\":1773,\"FowWidth\":485,\"FowHeight\":474},{\"ID\":58,\"Status\":0,\"Guid\":\"cec78558-f1e2-4839-a784-1209bc363c2a\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":487,\"Y\":1982,\"FowWidth\":546,\"FowHeight\":199},{\"ID\":58,\"Status\":0,\"Guid\":\"6fc17bc0-7971-406a-89b1-b7938b979f00\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":1237,\"Y\":776,\"FowWidth\":256,\"FowHeight\":623},{\"ID\":58,\"Status\":0,\"Guid\":\"ae9c2d89-00c1-4d36-9482-98ae34528601\",\"HP\":0,\"maxHP\":0,\"IsRound\":false,\"Character\":null,\"ImgX\":0,\"ImgY\":0,\"X\":1024,\"Y\":1170,\"FowWidth\":216,\"FowHeight\":248}]";
+		else
+			return;
+
+		List<Token> fows = System.Text.Json.JsonSerializer.Deserialize<List<Token>>(str);
+		foreach (var t in fows)
+			Tokens.Add(t);
+
+		Update();
+	}
+
 }
 
 public class Token
 {
-	public VTTTokens ID = VTTTokens.Barbarian;
+	public VTTTokens ID { get; set; } = VTTTokens.Barbarian;
 	private TokenStatus _status = TokenStatus.Normal;
 	public event EventHandler UpdateNeeeded;
 
@@ -184,6 +240,8 @@ public class Token
 		}
 	}
 
+	public bool IsRound { get; set; } = false;
+
 	PbtACharacter? _character;
 	public PbtACharacter? Character { 
 		get => _character;
@@ -210,6 +268,7 @@ public class Token
 		}
 	}
 
+	[JsonIgnore]
 	public int PercentageLife
 	{
 		get
@@ -218,6 +277,7 @@ public class Token
 		}
 	}
 
+	[JsonIgnore]
 	public string LifeBarColor
 	{
 		get
@@ -382,9 +442,96 @@ public class Token
 		}
 	}
 
-	public int X;
-	public int Y;
+	public int X { get; set; }
+	public int Y { get; set; }
 
-	public int FowWidth;
-	public int FowHeight;
+	public int FowWidth { get; set; }
+	public int FowHeight { get; set; }	
 }
+
+
+public class Prop : Token
+{
+	private TokenStatus _status = TokenStatus.Normal;
+	private VTTTokens _vtttoken;
+	public VTTTokens VTTProp
+	{
+		get
+		{
+			return _vtttoken;
+		}
+		set
+		{
+			_vtttoken = value;
+			if (_vtttoken == VTTTokens.Door_Big || _vtttoken == VTTTokens.Door_Round || _vtttoken == VTTTokens.Door_Square || _vtttoken == VTTTokens.DoorSmall)
+			{
+				DoorState = DoorStates.Open;
+			}
+			else
+				DoorState = DoorStates.NotADoor;
+		}
+	}
+	public string imgURL
+	{
+		get
+		{
+			string path = "";
+
+			if (VTTProp.IsForest())
+				path = "_content/PbtaWorldRazonCommonComponents/imgs/Maps/Props/";
+			else
+				path = "_content/PbtaWorldRazonCommonComponents/imgs/Maps/DungeonProps/";
+
+			if (VTTProp == VTTTokens.Door_Square)
+			{
+				if (DoorState == DoorStates.Open) path += "Door_Square_Open";
+				else if (DoorState == DoorStates.Wood) path += "Door_Square_Closed_Door";
+				else path += "Door_Square_Closed_Gated";
+			}
+			else if (VTTProp == VTTTokens.Door_Round)
+			{
+				if (DoorState == DoorStates.Open) path += "Door_Round_Opened";
+				else if (DoorState == DoorStates.Wood) path += "Door_Round_Closed_Wood";
+				else path += "Door_Round_Closed_Gated";
+			}
+			else if (VTTProp == VTTTokens.DoorSmall)
+			{
+				if (DoorState == DoorStates.Open) path += "Door_Small_Opened";
+				else if (DoorState == DoorStates.Wood) path += "Door_Small_Gated";
+				else path += "Door_Small_Gated";
+			}
+			else if (VTTProp == VTTTokens.Door_Big)
+			{
+				if (DoorState == DoorStates.Open) path += "Door_BIG_Open";
+				else if (DoorState == DoorStates.Wood) path += "Door_BIG_Closed";
+				else path += "Door_BIG_Gated";
+			}
+			else if (VTTProp == VTTTokens.Chest)
+			{
+				if (DoorState == DoorStates.Open) path += "Chest_Opened";
+				else if (DoorState == DoorStates.Wood) path += "Chest_Closed";
+				else path += "Chest_Closed";
+			}
+			else
+				path += VTTProp.ToString();
+
+			path += ".png";
+
+			return path;
+		}
+	}
+	public int rotation { get; set; } = 0;
+	public bool IsDoor => DoorState != DoorStates.NotADoor;
+	public enum DoorStates { NotADoor, Open, Wood, Gate };
+	public DoorStates DoorState { get; set; } = DoorStates.NotADoor;
+	public void RotateRight()
+	{
+		rotation += 90;
+		if (rotation >= 360) rotation -= 360;
+	}
+
+	public void OpenDoor() => DoorState = DoorStates.Open;
+	public void CloseDoor() => DoorState = DoorStates.Wood;
+	public void GateDoor() => DoorState = DoorStates.Gate;
+}
+

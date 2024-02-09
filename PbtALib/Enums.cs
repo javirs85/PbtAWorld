@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PbtALib;
 
@@ -34,7 +35,42 @@ public enum VTTTokens
 	Blue1, Blue2, Blue3, Blue4, Blue5, Blue6, Blue7, Blue8, BlueBoss,
 	Green1, Green2, Green3, Green4, Green5, Green6,Green7, Green8,GreenBoss,
 	Barbarian, Bard, Cleric, Druid, Ranger, Fighter, Thief, Mage, Paladin, Wielder,
-	Gold, RedPotion,GreenPotion, FogOfWar
+	Gold, RedPotion,GreenPotion, FogOfWar, Bultos, Bush1, Bush2, Bush3, Bush4, BushMini1, BushMini2, BushMini3, Firepit,
+	FirepitOff, Outcrop, Rock1, Rock2, Rock3, Rock4, Stomp1, Stomp2, Tent, Tent2, Tent3,
+	Tree1, Tree2, Corner, Door_Round, Door_Square, DoorSmall, PilarRound, PilarSquare, Door_Big,
+	Chest, Throne, Crate_Small, Barrel, Storage, Statue_Hands, Statue_Shield, Stairs
+}
+
+
+public static class ExtensionsEnum
+{
+	public static bool IsProp(this VTTTokens t)
+	{
+		List<VTTTokens> props = new List<VTTTokens> {
+			VTTTokens.Bultos,VTTTokens.Bush1,VTTTokens.Bush2, VTTTokens.Bush3, VTTTokens.Bush4,VTTTokens.BushMini1, VTTTokens.BushMini2,VTTTokens.BushMini3,VTTTokens.Firepit,
+			VTTTokens.FirepitOff,VTTTokens.Outcrop,VTTTokens.Rock1, VTTTokens.Rock2,VTTTokens.Rock3,VTTTokens.Rock4,VTTTokens.Stomp1,VTTTokens.Stomp2,VTTTokens.Tent,VTTTokens.Tent2,VTTTokens.Tent3,
+			VTTTokens.Tree1,VTTTokens.Tree2, VTTTokens.Door_Big
+		};
+		return props.Contains(t);
+	}
+
+	public static bool IsForest(this VTTTokens t)
+	{
+		List<VTTTokens> props = new List<VTTTokens> {
+			VTTTokens.Bultos,VTTTokens.Bush1,VTTTokens.Bush2, VTTTokens.Bush3, VTTTokens.Bush4,VTTTokens.BushMini1, VTTTokens.BushMini2,VTTTokens.BushMini3,VTTTokens.Firepit,
+			VTTTokens.FirepitOff,VTTTokens.Outcrop,VTTTokens.Rock1, VTTTokens.Rock2,VTTTokens.Rock3,VTTTokens.Rock4,VTTTokens.Stomp1,VTTTokens.Stomp2,VTTTokens.Tent,VTTTokens.Tent2,VTTTokens.Tent3,
+			VTTTokens.Tree1,VTTTokens.Tree2
+		};
+		return props.Contains(t);
+	}
+
+	public static string GetPropURL(this VTTTokens t)
+	{
+		if (t.IsProp())
+			return "_content/PbtaWorldRazonCommonComponents/imgs/Maps/Props/" + t.ToString() + ".png";
+
+		return "";
+	}
 }
 
 public enum TokenStatus
