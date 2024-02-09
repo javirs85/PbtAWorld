@@ -1,6 +1,8 @@
 ﻿using PbtALib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -185,7 +187,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Parlamentar",
 				PreCondition = new Consequences{
-					MainText = "Cuando presionas o atraes a un PNJ, di lo que quieres que hagan (o no hagan). sí tienen razón para resistir, tira +CAR. En el caso de ser un PJ, con un 7-9 elije una de la lista, con 10+ las dos, ",
+					MainText = "Cuando presionas (amenaza, implora, avergüenza, suplica, motiva...) o atraes (seduce, soborna, tienta...) a un PNJ, di lo que quieres que hagan (o no hagan). Sí tienen razón para resistir, tira +CAR. En el caso de ser un PJ, con un 7-9 elije una de la lista, con 10+ las dos, ",
 					Options = new List<string>
 					{
 						"ÉL obtiene 1 XP si hace lo que tú quieres",
@@ -199,7 +201,20 @@ public class DWMovesService : MovesServiceBase
 				},
 				ConsequencesOn10 = new Consequences
 				{
-					MainText = "Para PNJ: hacen lo que quieres o revelan la forma más fácil de convencerlos (que no necesariamente sea facil, Parlamentar no es control mental)."
+					MainText = "Para PNJ: hacen lo que quieres o revelan dos formas de convencerlos (que no necesariamente sean fáciles, Parlamentar no es control mental). Ejemplos de cosas que pueden convencer serán:",
+					Options = new List<string>
+					{
+						"Una promesa/un juramento/un voto",
+						"Una oportunidad de hacerlo de forma segura/libre/discreta",
+						"Apaciguar o apelar a su ego/honor/conciencia/miedos",
+						"Un engaño convincente",
+						"Una oferta mejor/justa/excesiva",
+						"Ayudarles/hacerlo con ellos",
+						"Violencia (o una amenaza creíble de violencia)",
+						"Algo que quieren o necesitan",
+						"Garantía/prueba/colaboración concretas",
+						"Presión/permiso/ayuda de ____"
+					}
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Supplies, DWStats.DW_None)

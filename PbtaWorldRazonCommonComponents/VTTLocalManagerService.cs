@@ -41,10 +41,14 @@ public class VTTLocalManagerService
 		IsMaster = false;
 		SelectedToken = service.Tokens.Find(x => x.Character?.ID == Char.ID);
 	}
+
+	public event EventHandler CloseRequested;
+
 	public void Hide()
 	{
 		IsVisible = false;
 		Update();
+		CloseRequested?.Invoke(this, EventArgs.Empty);
 	}
 
 	void Update() => UpdateUI?.Invoke(this, EventArgs.Empty);

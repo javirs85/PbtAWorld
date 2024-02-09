@@ -63,14 +63,16 @@ public static class ExtensionsEnum
 		};
 		return props.Contains(t);
 	}
-
-	public static string GetPropURL(this VTTTokens t)
+	public static bool IsDungeonProp(this VTTTokens t)
 	{
-		if (t.IsProp())
-			return "_content/PbtaWorldRazonCommonComponents/imgs/Maps/Props/" + t.ToString() + ".png";
-
-		return "";
+		List<VTTTokens> props = new List<VTTTokens> {
+			VTTTokens.Barrel, VTTTokens.Chest, VTTTokens.Corner, VTTTokens.Crate_Small, VTTTokens.DoorSmall, VTTTokens.Door_Big,
+			VTTTokens.Door_Round, VTTTokens.Door_Square, VTTTokens.PilarRound, VTTTokens.PilarSquare, VTTTokens.Stairs,
+			VTTTokens.Statue_Hands, VTTTokens.Statue_Shield, VTTTokens.Storage, VTTTokens.Throne
+		};
+		return props.Contains(t);
 	}
+
 }
 
 public enum TokenStatus

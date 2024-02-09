@@ -223,6 +223,12 @@
 
 		public void SetGameMode(AvailableGames Game) => SetGame?.Invoke(this, Game);
 
+		public void Show()
+		{
+			if (LastRoll is not null)
+				Show(LastRoll);
+	}
+
 		public void Show(IRollReport roll)
 		{
 			LastRoll = roll;

@@ -22,7 +22,15 @@
 }
 else if(SelectedGame == AvailableGames.DW)
 {
-	<DungeonWorld.Pages.DWPlayerSheet Player="DWPlayer" />
+	@if(DWPlayer.Profession == DungeonWorld.DWClasses.DW_Master)
+	{
+		<DungeonWorld.Pages.MasterDW />
+	}
+	else
+	{
+		<DungeonWorld.Pages.DWPlayerSheet Player="DWPlayer" />
+	}
+	
 }
 else if(SelectedGame == AvailableGames.US)
 {

@@ -21,8 +21,20 @@ public class VTTService
 	public bool IsOpen = false;
 
 	public enum VTTMaps { farm, Bandit1, Swamp, UDTBasic, UDT_Forest};
-	public VTTMaps CurrentMap = VTTMaps.farm;
-	
+
+	private VTTMaps _currentMap;
+
+	public VTTMaps CurrentMap
+	{
+		get { return _currentMap; }
+		set { 
+			if(_currentMap == value ) return;
+			_currentMap = value;
+			Update();
+		}
+	}
+
+
 	public void StartForPlayer(PbtACharacter character)
 	{
 		if(Tokens.Find(x=>x.Guid == character.ID) == null) 
@@ -69,7 +81,7 @@ public class VTTService
 				var d = Math.Abs(prop.X - x) + Math.Abs(prop.Y - y);
 				if (d < minDist)
 				{
-					if (d < 500)
+					if (d < 250)
 					{
 						minDist = d;
 						SelectedToken = prop;
@@ -141,7 +153,7 @@ public class VTTService
 
 	public void AddPropToMap(VTTTokens t)
 	{
-		var p = new Prop { VTTProp = t, X = 750, Y = 750 };
+		var p = new Prop { ID = t, X = 750, Y = 750 };
 		Props.Add(p);
 		p.UpdateNeeeded -= Update;
 		p.UpdateNeeeded += Update;
@@ -150,6 +162,7 @@ public class VTTService
 
 	public void LoadFOW()
 	{
+		Tokens.RemoveAll(x=>x.ID == VTTTokens.FogOfWar);
 
 		string str = "";
 		if (CurrentMap == VTTMaps.Swamp)
@@ -170,9 +183,47 @@ public class VTTService
 
 public class Token
 {
-	public VTTTokens ID { get; set; } = VTTTokens.Barbarian;
+	private VTTTokens _id;
+
+	public VTTTokens ID
+	{
+		get { return _id; }
+		set { 
+			if( _id == value ) return;
+			_id = value;
+			UpdateNeeeded?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
+
 	private TokenStatus _status = TokenStatus.Normal;
 	public event EventHandler UpdateNeeeded;
+
+	public enum Sizes { human, troll, dragon}
+
+	private Sizes _size = Sizes.human;
+	public Sizes Size
+	{
+		get
+		{
+			return _size;
+		}
+		set
+		{
+			_size = value;
+			UpdateNeeeded?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
+	public int SizePixels
+	{
+		get
+		{
+			if (Size == Sizes.human) return 60;
+			else if (Size == Sizes.troll) return 107;
+			else return 213;
+		}
+	}
 
 	public TokenStatus Status
 	{
@@ -184,7 +235,7 @@ public class Token
 	}
 
 	public static int BasicSize = 60;
-	private Guid _id; 
+	private Guid _guid; 
 	private int _hp;
 	private int _maxHp;
 
@@ -195,12 +246,12 @@ public class Token
 		get 
 		{
 			if (_character is not null) return _character.ID;
-			else return _id;
+			else return _guid;
 		}
 		set
 		{
 			if (_character is not null) _character.ID = value;
-			else _id = value;
+			else _guid = value;
 		}
 	}
 	public int HP {
@@ -301,69 +352,69 @@ public class Token
 		{
 			return ID switch
 			{
-				VTTTokens.WhiteLady1 => -BasicSize * 0,
-				VTTTokens.WhiteLady2 => -BasicSize * 1,
-				VTTTokens.WhiteLady3 => -BasicSize * 2,
-				VTTTokens.WhiteMale1 => -BasicSize * 3,
-				VTTTokens.WhiteMale2 => -BasicSize * 4,
-				VTTTokens.WhiteMale3 => -BasicSize * 5,
-				VTTTokens.BoxGray => -BasicSize * 6,
-				VTTTokens.BoxRed => -BasicSize * 0,
-				VTTTokens.BoxBlue => -BasicSize * 1,
-				VTTTokens.Black1 => -BasicSize * 2,
-				VTTTokens.Black2 => -BasicSize * 3,
-				VTTTokens.Black3 => -BasicSize * 4,
-				VTTTokens.Black4 => -BasicSize * 5,
-				VTTTokens.Black5 => -BasicSize * 6,
-				VTTTokens.Black6 => -BasicSize * 0,
-				VTTTokens.Black7 => -BasicSize * 1,
-				VTTTokens.Black8 => -BasicSize * 2,
-				VTTTokens.BlackBoss => -BasicSize * 3,
+				VTTTokens.WhiteLady1 => -SizePixels * 0,
+				VTTTokens.WhiteLady2 => -SizePixels * 1,
+				VTTTokens.WhiteLady3 => -SizePixels * 2,
+				VTTTokens.WhiteMale1 => -SizePixels * 3,
+				VTTTokens.WhiteMale2 => -SizePixels * 4,
+				VTTTokens.WhiteMale3 => -SizePixels * 5,
+				VTTTokens.BoxGray => -SizePixels * 6,
+				VTTTokens.BoxRed => -SizePixels * 0,
+				VTTTokens.BoxBlue => -SizePixels * 1,
+				VTTTokens.Black1 => -SizePixels * 2,
+				VTTTokens.Black2 => -SizePixels * 3,
+				VTTTokens.Black3 => -SizePixels * 4,
+				VTTTokens.Black4 => -SizePixels * 5,
+				VTTTokens.Black5 => -SizePixels * 6,
+				VTTTokens.Black6 => -SizePixels * 0,
+				VTTTokens.Black7 => -SizePixels * 1,
+				VTTTokens.Black8 => -SizePixels * 2,
+				VTTTokens.BlackBoss => -SizePixels * 3,
 
-				VTTTokens.Red8 => -BasicSize * 5,
-				VTTTokens.Red7 => -BasicSize * 6,
-				VTTTokens.Red6 => -BasicSize * 0,
-				VTTTokens.Red5 => -BasicSize * 1,
-				VTTTokens.Red4 => -BasicSize * 2,
-				VTTTokens.Red3 => -BasicSize * 3,
-				VTTTokens.Red2 => -BasicSize * 4,
-				VTTTokens.Red1 => -BasicSize * 5,
-				VTTTokens.RedBoss => -BasicSize * 6,
+				VTTTokens.Red8 => -SizePixels * 5,
+				VTTTokens.Red7 => -SizePixels * 6,
+				VTTTokens.Red6 => -SizePixels * 0,
+				VTTTokens.Red5 => -SizePixels * 1,
+				VTTTokens.Red4 => -SizePixels * 2,
+				VTTTokens.Red3 => -SizePixels * 3,
+				VTTTokens.Red2 => -SizePixels * 4,
+				VTTTokens.Red1 => -SizePixels * 5,
+				VTTTokens.RedBoss => -SizePixels * 6,
 
-				VTTTokens.Green1 => -BasicSize * 1,
-				VTTTokens.Green2 => -BasicSize * 2,
-				VTTTokens.Green3 => -BasicSize * 3,
-				VTTTokens.Green4 => -BasicSize * 4,
-				VTTTokens.Green5 => -BasicSize * 5,
-				VTTTokens.Green6 => -BasicSize * 6,
-				VTTTokens.Green7 => -BasicSize * 0,
-				VTTTokens.Green8 => -BasicSize * 1,
-				VTTTokens.GreenBoss => -BasicSize * 2,
-				VTTTokens.Cleric => -BasicSize * 3,
-				VTTTokens.Druid => -BasicSize * 4,
-				VTTTokens.Barbarian => -BasicSize * 5,
-				//VTTTokens.Green6 => -BasicSize * 6,
-				VTTTokens.Paladin => -BasicSize * 0,
-				VTTTokens.Ranger => -BasicSize * 1,
-				VTTTokens.Thief => -BasicSize * 2,
-				VTTTokens.Fighter => -BasicSize * 3,
-				VTTTokens.Bard => -BasicSize * 4,
-				VTTTokens.Mage => -BasicSize * 5,
-				VTTTokens.Wielder => -BasicSize * 6,
-				//VTTTokens.Paladin => -BasicSize * 0,
-				VTTTokens.Blue8 => -BasicSize * 1,
-				VTTTokens.Blue7 => -BasicSize * 2,
-				VTTTokens.Blue6 => -BasicSize * 3,
-				VTTTokens.Blue5 => -BasicSize * 4,
-				VTTTokens.Blue4 => -BasicSize * 5,
-				VTTTokens.Blue3 => -BasicSize * 6,
-				VTTTokens.Blue2 => -BasicSize * 0,
-				VTTTokens.Blue1 => -BasicSize * 1,
-				VTTTokens.BlueBoss => -BasicSize * 2,
-				//VTTTokens.Blue6 => -BasicSize * 3,
-				VTTTokens.Gold => -BasicSize * 4,
-				VTTTokens.RedPotion => -BasicSize * 5,
-				VTTTokens.GreenPotion => -BasicSize * 6,
+				VTTTokens.Green1 => -SizePixels * 1,
+				VTTTokens.Green2 => -SizePixels * 2,
+				VTTTokens.Green3 => -SizePixels * 3,
+				VTTTokens.Green4 => -SizePixels * 4,
+				VTTTokens.Green5 => -SizePixels * 5,
+				VTTTokens.Green6 => -SizePixels * 6,
+				VTTTokens.Green7 => -SizePixels * 0,
+				VTTTokens.Green8 => -SizePixels * 1,
+				VTTTokens.GreenBoss => -SizePixels * 2,
+				VTTTokens.Cleric => -SizePixels * 3,
+				VTTTokens.Druid => -SizePixels * 4,
+				VTTTokens.Barbarian => -SizePixels * 5,
+				//VTTTokens.Green6 => -SizePixels * 6,
+				VTTTokens.Paladin => -SizePixels * 0,
+				VTTTokens.Ranger => -SizePixels * 1,
+				VTTTokens.Thief => -SizePixels * 2,
+				VTTTokens.Fighter => -SizePixels * 3,
+				VTTTokens.Bard => -SizePixels * 4,
+				VTTTokens.Mage => -SizePixels * 5,
+				VTTTokens.Wielder => -SizePixels * 6,
+				//VTTTokens.Paladin => -SizePixels * 0,
+				VTTTokens.Blue8 => -SizePixels * 1,
+				VTTTokens.Blue7 => -SizePixels * 2,
+				VTTTokens.Blue6 => -SizePixels * 3,
+				VTTTokens.Blue5 => -SizePixels * 4,
+				VTTTokens.Blue4 => -SizePixels * 5,
+				VTTTokens.Blue3 => -SizePixels * 6,
+				VTTTokens.Blue2 => -SizePixels * 0,
+				VTTTokens.Blue1 => -SizePixels * 1,
+				VTTTokens.BlueBoss => -SizePixels * 2,
+				//VTTTokens.Blue6 => -SizePixels * 3,
+				VTTTokens.Gold => -SizePixels * 4,
+				VTTTokens.RedPotion => -SizePixels * 5,
+				VTTTokens.GreenPotion => -SizePixels * 6,
 				_ => 0
 			};
 		}
@@ -374,69 +425,69 @@ public class Token
 		{
 			return ID switch
 			{
-				VTTTokens.WhiteLady1 => -BasicSize * 0,
-				VTTTokens.WhiteLady2 => -BasicSize * 0,
-				VTTTokens.WhiteLady3 => -BasicSize * 0,
-				VTTTokens.WhiteMale1 => -BasicSize * 0,
-				VTTTokens.WhiteMale2 => -BasicSize * 0,
-				VTTTokens.WhiteMale3 => -BasicSize * 0,
-				VTTTokens.BoxGray => -BasicSize * 0,
-				VTTTokens.BoxRed => -BasicSize * 1,
-				VTTTokens.BoxBlue => -BasicSize * 1,
-				VTTTokens.Black1 => -BasicSize * 1,
-				VTTTokens.Black2 => -BasicSize * 1,
-				VTTTokens.Black3 => -BasicSize * 1,
-				VTTTokens.Black4 => -BasicSize * 1,
-				VTTTokens.Black5 => -BasicSize * 1,
-				VTTTokens.Black6 => -BasicSize * 2,
-				VTTTokens.Black7 => -BasicSize * 2,
-				VTTTokens.Black8 => -BasicSize * 2,
-				VTTTokens.BlackBoss => -BasicSize * 2,
+				VTTTokens.WhiteLady1 => -SizePixels * 0,
+				VTTTokens.WhiteLady2 => -SizePixels * 0,
+				VTTTokens.WhiteLady3 => -SizePixels * 0,
+				VTTTokens.WhiteMale1 => -SizePixels * 0,
+				VTTTokens.WhiteMale2 => -SizePixels * 0,
+				VTTTokens.WhiteMale3 => -SizePixels * 0,
+				VTTTokens.BoxGray => -SizePixels * 0,
+				VTTTokens.BoxRed => -SizePixels * 1,
+				VTTTokens.BoxBlue => -SizePixels * 1,
+				VTTTokens.Black1 => -SizePixels * 1,
+				VTTTokens.Black2 => -SizePixels * 1,
+				VTTTokens.Black3 => -SizePixels * 1,
+				VTTTokens.Black4 => -SizePixels * 1,
+				VTTTokens.Black5 => -SizePixels * 1,
+				VTTTokens.Black6 => -SizePixels * 2,
+				VTTTokens.Black7 => -SizePixels * 2,
+				VTTTokens.Black8 => -SizePixels * 2,
+				VTTTokens.BlackBoss => -SizePixels * 2,
 
-				VTTTokens.Red8 => -BasicSize * 2,
-				VTTTokens.Red7 => -BasicSize * 2,
-				VTTTokens.Red6 => -BasicSize * 3,
-				VTTTokens.Red5 => -BasicSize * 3,
-				VTTTokens.Red4 => -BasicSize * 3,
-				VTTTokens.Red3 => -BasicSize * 3,
-				VTTTokens.Red2 => -BasicSize * 3,
-				VTTTokens.Red1 => -BasicSize * 3,
-				VTTTokens.RedBoss => -BasicSize * 3,
+				VTTTokens.Red8 => -SizePixels * 2,
+				VTTTokens.Red7 => -SizePixels * 2,
+				VTTTokens.Red6 => -SizePixels * 3,
+				VTTTokens.Red5 => -SizePixels * 3,
+				VTTTokens.Red4 => -SizePixels * 3,
+				VTTTokens.Red3 => -SizePixels * 3,
+				VTTTokens.Red2 => -SizePixels * 3,
+				VTTTokens.Red1 => -SizePixels * 3,
+				VTTTokens.RedBoss => -SizePixels * 3,
 
-				VTTTokens.Green1 => -BasicSize * 4,
-				VTTTokens.Green2 => -BasicSize * 4,
-				VTTTokens.Green3 => -BasicSize * 4,
-				VTTTokens.Green4 => -BasicSize * 4,
-				VTTTokens.Green5 => -BasicSize * 4,
-				VTTTokens.Green6 => -BasicSize * 4,
-				VTTTokens.Green7 => -BasicSize * 5,
-				VTTTokens.Green8 => -BasicSize * 5,
-				VTTTokens.GreenBoss => -BasicSize * 5,
-				VTTTokens.Cleric => -BasicSize * 5,
-				VTTTokens.Druid => -BasicSize * 5,
-				VTTTokens.Barbarian => -BasicSize * 5,
-				//VTTTokens.Green6 => -BasicSize * 6,
-				VTTTokens.Paladin => -BasicSize * 6,
-				VTTTokens.Ranger => -BasicSize * 6,
-				VTTTokens.Thief => -BasicSize * 6,
-				VTTTokens.Fighter => -BasicSize * 6,
-				VTTTokens.Bard => -BasicSize * 6,
-				VTTTokens.Mage => -BasicSize * 6,
-				VTTTokens.Wielder => -BasicSize * 6,
-				//VTTTokens.Paladin => -BasicSize * 0,
-				VTTTokens.Blue8 => -BasicSize * 7,
-				VTTTokens.Blue7 => -BasicSize * 7,
-				VTTTokens.Blue6 => -BasicSize * 7,
-				VTTTokens.Blue5 => -BasicSize * 7,
-				VTTTokens.Blue4 => -BasicSize * 7,
-				VTTTokens.Blue3 => -BasicSize * 7,
-				VTTTokens.Blue2 => -BasicSize * 8,
-				VTTTokens.Blue1 => -BasicSize * 8,
-				VTTTokens.BlueBoss => -BasicSize * 8,
-				//VTTTokens.Blue6 => -BasicSize * 3,
-				VTTTokens.Gold => -BasicSize * 8,
-				VTTTokens.RedPotion => -BasicSize * 8,
-				VTTTokens.GreenPotion => -BasicSize * 8,
+				VTTTokens.Green1 => -SizePixels * 4,
+				VTTTokens.Green2 => -SizePixels * 4,
+				VTTTokens.Green3 => -SizePixels * 4,
+				VTTTokens.Green4 => -SizePixels * 4,
+				VTTTokens.Green5 => -SizePixels * 4,
+				VTTTokens.Green6 => -SizePixels * 4,
+				VTTTokens.Green7 => -SizePixels * 5,
+				VTTTokens.Green8 => -SizePixels * 5,
+				VTTTokens.GreenBoss => -SizePixels * 5,
+				VTTTokens.Cleric => -SizePixels * 5,
+				VTTTokens.Druid => -SizePixels * 5,
+				VTTTokens.Barbarian => -SizePixels * 5,
+				//VTTTokens.Green6 => -SizePixels * 6,
+				VTTTokens.Paladin => -SizePixels * 6,
+				VTTTokens.Ranger => -SizePixels * 6,
+				VTTTokens.Thief => -SizePixels * 6,
+				VTTTokens.Fighter => -SizePixels * 6,
+				VTTTokens.Bard => -SizePixels * 6,
+				VTTTokens.Mage => -SizePixels * 6,
+				VTTTokens.Wielder => -SizePixels * 6,
+				//VTTTokens.Paladin => -SizePixels * 0,
+				VTTTokens.Blue8 => -SizePixels * 7,
+				VTTTokens.Blue7 => -SizePixels * 7,
+				VTTTokens.Blue6 => -SizePixels * 7,
+				VTTTokens.Blue5 => -SizePixels * 7,
+				VTTTokens.Blue4 => -SizePixels * 7,
+				VTTTokens.Blue3 => -SizePixels * 7,
+				VTTTokens.Blue2 => -SizePixels * 8,
+				VTTTokens.Blue1 => -SizePixels * 8,
+				VTTTokens.BlueBoss => -SizePixels * 8,
+				//VTTTokens.Blue6 => -SizePixels * 3,
+				VTTTokens.Gold => -SizePixels * 8,
+				VTTTokens.RedPotion => -SizePixels * 8,
+				VTTTokens.GreenPotion => -SizePixels * 8,
 				_ => 0
 			};
 		}
@@ -453,67 +504,71 @@ public class Token
 public class Prop : Token
 {
 	private TokenStatus _status = TokenStatus.Normal;
-	private VTTTokens _vtttoken;
-	public VTTTokens VTTProp
+	private VTTTokens _id;
+	public new VTTTokens ID
 	{
 		get
 		{
-			return _vtttoken;
+			return _id;
 		}
 		set
 		{
-			_vtttoken = value;
-			if (_vtttoken == VTTTokens.Door_Big || _vtttoken == VTTTokens.Door_Round || _vtttoken == VTTTokens.Door_Square || _vtttoken == VTTTokens.DoorSmall)
+			_id = value;
+			if (_id == VTTTokens.Door_Big || _id == VTTTokens.Door_Round || _id == VTTTokens.Door_Square || 
+				_id == VTTTokens.DoorSmall)
 			{
 				DoorState = DoorStates.Open;
 			}
+			else if(_id == VTTTokens.Chest)
+				DoorState = DoorStates.Gate;
 			else
 				DoorState = DoorStates.NotADoor;
 		}
 	}
+	public static string GetImagePath(VTTTokens t) => new Prop { ID = t }.imgURL;
 	public string imgURL
 	{
 		get
 		{
 			string path = "";
 
-			if (VTTProp.IsForest())
+			if (ID.IsForest())
 				path = "_content/PbtaWorldRazonCommonComponents/imgs/Maps/Props/";
 			else
 				path = "_content/PbtaWorldRazonCommonComponents/imgs/Maps/DungeonProps/";
 
-			if (VTTProp == VTTTokens.Door_Square)
+			if (ID == VTTTokens.Door_Square)
 			{
 				if (DoorState == DoorStates.Open) path += "Door_Square_Open";
 				else if (DoorState == DoorStates.Wood) path += "Door_Square_Closed_Door";
 				else path += "Door_Square_Closed_Gated";
 			}
-			else if (VTTProp == VTTTokens.Door_Round)
+			else if (ID == VTTTokens.Door_Round)
 			{
 				if (DoorState == DoorStates.Open) path += "Door_Round_Opened";
 				else if (DoorState == DoorStates.Wood) path += "Door_Round_Closed_Wood";
 				else path += "Door_Round_Closed_Gated";
 			}
-			else if (VTTProp == VTTTokens.DoorSmall)
+			else if (ID == VTTTokens.DoorSmall)
 			{
 				if (DoorState == DoorStates.Open) path += "Door_Small_Opened";
 				else if (DoorState == DoorStates.Wood) path += "Door_Small_Gated";
 				else path += "Door_Small_Gated";
 			}
-			else if (VTTProp == VTTTokens.Door_Big)
+			else if (ID == VTTTokens.Door_Big)
 			{
 				if (DoorState == DoorStates.Open) path += "Door_BIG_Open";
 				else if (DoorState == DoorStates.Wood) path += "Door_BIG_Closed";
 				else path += "Door_BIG_Gated";
 			}
-			else if (VTTProp == VTTTokens.Chest)
+			else if (ID == VTTTokens.Chest)
 			{
 				if (DoorState == DoorStates.Open) path += "Chest_Opened";
 				else if (DoorState == DoorStates.Wood) path += "Chest_Closed";
 				else path += "Chest_Closed";
 			}
 			else
-				path += VTTProp.ToString();
+				path += ID.ToString();
 
 			path += ".png";
 

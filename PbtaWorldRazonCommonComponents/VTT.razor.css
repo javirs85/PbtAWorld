@@ -170,4 +170,15 @@
 
 .PropTools{
     position:absolute;
+    pointer-events:all;
 }
+
+    .PropTools.Token {
+        pointer-events: none;
+        margin-top: 60px;
+        pointer-events: all;
+        transform:translateX(-50%);
+    }
+    .PropTools.Token button{
+       
+    }
