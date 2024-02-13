@@ -1,10 +1,10 @@
 ﻿@using PbtALib
 @using static PbtALib.BaseTextBook
 
-<div style="position: relative; cursor:pointer; background: #11111111; padding:5px; cursor:pointer; border:1px solid gray; border-radius:4px; @(IsMouseOver?"background: #11111144;":"")"
+<div class="TagContainer @Color" style="@(Width!=0?$"width: {Width}px;":"")"
 	@onmouseenter=@(()=>{IsMouseOver = true;}) 
 	@onmouseleave=@(()=>{IsMouseOver = false;})>
-	<div class="@(IsMouseOver?"":"visually-hidden")" style="position:absolute; min-width:220px; top:-50px; z-index: 100; background:#111; color:white; border-radius:5px; padding: 10px;">
+	<div class="TagInner @(IsMouseOver?"":"visually-hidden")">
 		@Tag?.Description
 	</div>
 	@Tag?.Tittle
@@ -12,7 +12,11 @@
 
 @code {
 	[Parameter] public TagIDs ID { get; set; } = TagIDs.NotSet;
+	[Parameter] public TagColors Color { get; set; } = TagColors.Black;
 	[Parameter] public Tag? Tag { get; set; } = null;
+	[Parameter] public float Width { get; set; } = 0;
+
+	public enum TagColors {Green, Red, Orange, Blue, Black};
 
 	bool IsMouseOver = false;
 

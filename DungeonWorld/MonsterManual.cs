@@ -26,7 +26,7 @@ public class MonsterManual
 					Size = TagIDs.Grande,
 					MaxHP = 10, CurrentHP = 10,
 					Armor = 3,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Acaparador },
+					Tags = new List<TagIDs> { TagIDs.Acaparador },
 					Special = new List<string> { "Excavador" },
 					Instinct = "Socavar",
 					Definition = "Una armadura de placas parecida a la piel y grandes mandíbulas aplastantes son problemáticas. Un estómago lleno de ácido que puede hacer un agujero en un muro de piedra los empeora aún más. Serían bastante malos si tuvieran el tamaño adecuado de un insecto, pero estas cosas tienen el descaro de ser tan largas como cualquier caballo. ¡Simplemente no es natural! ¿Qué bueno que tienden a quedarse en un solo lugar? Es fácil para ti decirlo: no tienes un ankheg viviendo debajo de tu campo de maíz.",
@@ -41,7 +41,8 @@ public class MonsterManual
 						new AttackDef {
 							AttackName = "Mordisco",
 							Dices = new List<DiceTypes> { DiceTypes.d8 },
-							Bonus = +1
+							Bonus = +1,
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Alcance}
 						}
 					}
 				},
@@ -52,7 +53,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño,
 					MaxHP = 7, CurrentHP = 7,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Escabroso },
+					Tags = new List<TagIDs> {},
 					Instinct = "Devorar",
 					Definition = "¿Quién no ha visto una rata antes? Es como esa, pero desagradable y grande y ya no te tiene miedo. Tal vez esta sea prima de aquella que atrapaste en una trampa o la que mataste con un cuchillo en esa taberna sucia en Darrow. Tal vez esté buscando un poco de venganza rata. ",
 					Moves = new List<MasterMove>
@@ -65,7 +66,8 @@ public class MonsterManual
 						new AttackDef {
 							AttackName = "Roer",
 							Dices = new List<DiceTypes> { DiceTypes.d6 },
-							Piercing = 1
+							Piercing = 1,
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Escabroso}
 						}
 					}
 				},
@@ -73,10 +75,10 @@ public class MonsterManual
 				{
 					Name = "Estrangulador",
 					Organization = TagIDs.Solitario,
-					Size = TagIDs.Pequeño | TagIDs.Inteligente, // Combinación de tags Stealthy e Intelligent
+					Size = TagIDs.Pequeño, // Combinación de tags Stealthy e Intelligent
 					MaxHP = 15, CurrentHP = 15,
 					Armor = 2,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Sigiloso, TagIDs.Inteligente },
+					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Inteligente },
 					Special = new List<string> { "Flexible" },
 					Instinct = "Negar la luz",
 					Definition = "Algunos dicen que estas criaturas descendieron de la familia de un mago cruel que las obligó a vivir sus vidas bajo tierra. Dicen que sus experimentos lo llevaron a temer al sol y pasaron las eras mientras descendía a la no-vida, arrastrando a su gente con él. Estas cosas se asemejan a los hombres, de alguna manera. Cabeza, cuatro extremidades y todo eso. Solo que su piel está húmeda y gomosa y sus brazos son largos y dedos agarradores. Odian toda vida que lleve el olor del toque del sol, como era de esperar. La envidia, arraigada desde hace mucho tiempo, es difícil de sacudir.",
@@ -90,7 +92,8 @@ public class MonsterManual
 						new AttackDef
 						{
 							AttackName = "Estrangular",
-							Dices = new List<DiceTypes> { DiceTypes.d10 }
+							Dices = new List<DiceTypes> { DiceTypes.d10 },
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Alcance}
 						}
 					}
 				},
@@ -101,7 +104,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño,
 					MaxHP = 12, CurrentHP = 12,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Sigiloso },
+					Tags = new List<TagIDs> { TagIDs.Sigiloso },
 					Special = new List<string> { "Parece una capa" },
 					Instinct = "Envolver",
 					Definition = "No te pongas esa capa, Gareth. No lo hagas. No sabes de dónde ha venido. Te lo digo, no es buena. ¡Mira! ¡Se movió! No estoy loco, Gareth, ¡se movió! ¡No lo hagas! ¡No! ¡GARETH!",
@@ -115,7 +118,8 @@ public class MonsterManual
 						{
 							AttackName = "Estrangular",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
-							IgnoresArmor = true
+							IgnoresArmor = true,
+							Tags= new List<TagIDs>{TagIDs.Cerca}
 						}
 					}
 				},
@@ -126,7 +130,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño,
 					MaxHP = 7, CurrentHP = 7,
 					Armor = 2,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Organizado },
+					Tags = new List<TagIDs> { TagIDs.Organizado },
 					Instinct = "Defender",
 					Definition = "Durante siglos, los hombres creyeron que todos los enanos eran masculinos y que todos eran de esta estirpe: guerreros estoicos y orgullosos. Armados con hacha y vistiendo armadura. Enanos fornidos, barbudos y hambrientos de batalla que los empujarían, una y otra vez, fuera de sus minas y túneles con ferocidad. Solo demuestra cuánto saben los hombres sobre las razas más antiguas. Estos individuos son simplemente una vanguardia, y valientemente cumplen con su deber de proteger las riquezas del reino enano. Gánate su confianza y tendrás un aliado de por vida. Gánate su ira y es probable que no te arrepientas durante mucho tiempo.",
 					Moves = new List<MasterMove>
@@ -139,7 +143,8 @@ public class MonsterManual
 						new AttackDef
 						{
 							AttackName = "Hacha",
-							Dices = new List<DiceTypes> { DiceTypes.d6 }
+							Dices = new List<DiceTypes> { DiceTypes.d6 },
+							Tags= new List<TagIDs>{TagIDs.Cerca}
 						}
 					}
 				},
@@ -150,7 +155,7 @@ public class MonsterManual
 					Size = TagIDs.Enorme,
 					MaxHP = 27, CurrentHP = 27,
 					Armor = 4,
-					Tags = new List<TagIDs> { TagIDs.Alcance, TagIDs.Contundente },
+					Tags = new List<TagIDs> {  },
 					Special = new List<string> { "Hecho de piedra" },
 					Instinct = "Mostrar la fuerza de la tierra",
 					Definition = "Nuestro chamán dice que todas las cosas del mundo tienen un espíritu. Piedras, árboles, un arroyo. Ahora que he visto la tierra agitarse bajo mis pies y los puños de piedra golpear a mis amigos hasta dejarlos medio muertos, me gustaría creer en ese viejo loco. El que vi era enorme, ¡tan grande como una casa! Surgió hirviente de un derrumbe de rocas de la nada y tenía una voz como una avalancha. Ahora rindo mis respetos, con razón. Instinto: Mostrar la fuerza de la tierra",
@@ -165,7 +170,8 @@ public class MonsterManual
 						{
 							AttackName = "Aplastar",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
-							Bonus = 5
+							Bonus = 5,
+							Tags= new List<TagIDs>{TagIDs.Alcance, TagIDs.Contundente}
 						}
 					}
 				},
@@ -176,7 +182,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño,
 					MaxHP = 3, CurrentHP = 3,
 					Armor = 3,
-					Tags = new List<TagIDs> { TagIDs.Cerca },
+					Tags = new List<TagIDs> { },
 					Special = new List<string> { "Lleno de llamas" },
 					Instinct = "Inflamar",
 					Definition = "¡Scarabaeus pyractomena! Qué criatura tan encantadora. ¿Ves cómo su caparazón brilla a la luz de nuestras antorchas? No te acerques demasiado ahora, son temperamentales, ya ves. El fuego en sus entrañas no es solo metafórico, no. Observa cómo incito a la bestia. ¡Ajá! ¡Un chorro de llamas! Inesperado, ¿verdad? Una de estas criaturas sola, si surge desde abajo, puede ser una molestia infernal para una granja o aldea. ¿Un enjambre entero? Hay una razón por la que lo llaman una conflagración de escarabajos de fuego. Instinto: Inflamar",
@@ -192,7 +198,8 @@ public class MonsterManual
 						{
 							AttackName = "Llamaradas",
 							Dices = new List<DiceTypes> { DiceTypes.d6 },
-							IgnoresArmor = true
+							IgnoresArmor = true,
+							Tags= new List<TagIDs>{TagIDs.Cerca}
 						}
 					}
 				},
@@ -200,10 +207,10 @@ public class MonsterManual
 				{
 					Name = "Gárgola",
 					Organization = TagIDs.Horda,
-					Size = TagIDs.Cerca,
+					Size = TagIDs.Pequeño,
 					MaxHP = 3, CurrentHP = 3,
 					Armor = 2,
-					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Acaparador, TagIDs.Cerca },
+					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Acaparador },
 					Special = new List<string> { "Alas" },
 					Instinct = "Guardar",
 					Definition = "Es algo triste, en realidad. Guardianes criados por magos del pasado sin más castillos que proteger. La tarea sagrada de sus ancestros, transmitida en su sangre, los lleva a encontrar un lugar, principalmente ruinas, pero a veces una cueva, colina o acantilado de montaña, y protegerlo como si sus amos aún vivieran debajo. Son famosos por encontrar objetos de valor enterrados bajo la tierra, sin embargo. Encuentra uno de estos reptiles alados y encontrarás un tesoro cercano. Solo ten cuidado, son difíciles de ver y tienden a moverse en grupos. Instinto: Guardar",
@@ -218,7 +225,8 @@ public class MonsterManual
 						new AttackDef
 						{
 							AttackName = "Garra",
-							Dices = new List<DiceTypes> { DiceTypes.d6 }
+							Dices = new List<DiceTypes> { DiceTypes.d6 },
+							Tags= new List<TagIDs>{TagIDs.Cerca}
 						}
 					}
 				},
@@ -229,7 +237,7 @@ public class MonsterManual
 					Size = TagIDs.Grande, // Combinación de tags Grande, Sigiloso y Amorphous
 					MaxHP = 20, CurrentHP = 20,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.tocar, TagIDs.Sigiloso, TagIDs.Amorfo }, // Cambiado a Manual en lugar de Hand
+					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Amorfo }, // Cambiado a Manual en lugar de Hand
 					Special = new List<string> { "Transparente" },
 					Instinct = "Limpiar",
 					Definition = "¿Cuántos últimos pensamientos de aventureros fueron 'extraño, este túnel parece más limpio que la mayoría'? Demasiados, y todo por esta amenaza transparente. Una gran masa ácida que se expande para llenar una pequeña cámara o pasillo y luego se desliza, muy lentamente, devorando todo a su paso. No puede comer piedra ni metal y a menudo los tendrá flotando en su masa gelatinosa. Blech. Instinto: Limpiar",
@@ -245,7 +253,8 @@ public class MonsterManual
 							AttackName = "Engullir",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
 							Bonus = +1,
-							IgnoresArmor = true
+							IgnoresArmor = true,
+							Tags= new List<TagIDs>{TagIDs.tocar}
 						}
 					}
 				},
@@ -256,7 +265,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño,
 					MaxHP = 3, CurrentHP = 3,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Organizado }, // Añadido Cerca y Alcance a la lista de Tags
+					Tags = new List<TagIDs> {TagIDs.Organizado }, // Añadido Cerca y Alcance a la lista de Tags
 					Special = new List<string>(),
 					Instinct = "Multiplicarse",
 					Definition = "Nadie parece saber de dónde vinieron estas cosas. Los elfos dicen que son culpa de los enanos, desenterrados de un lugar oculto bajo la tierra. Los enanos dicen que son hijos malos de los elfos, llevados al nacer y criados en la oscuridad. La verdad del asunto es que los goblins siempre han estado aquí y estarán aquí una vez que todas las razas civilizadas hayan caído y desaparecido. Los goblins nunca desaparecen. Simplemente hay demasiados malditos. Instinto: Multiplicarse",
@@ -271,7 +280,8 @@ public class MonsterManual
 						new AttackDef
 						{
 							AttackName = "Lanza",
-							Dices = new List<DiceTypes> { DiceTypes.d6 }
+							Dices = new List<DiceTypes> { DiceTypes.d6 },
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Alcance}
 						}
 					}
 				},
@@ -282,7 +292,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño, // Combinación de tags Pequeño, Mágico, Inteligente y Organizado
 					MaxHP = 12, CurrentHP = 12,
 					Armor = 0,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Lejos, TagIDs.Magico, TagIDs.Inteligente, TagIDs.Organizado }, // Movidos a la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Magico, TagIDs.Inteligente, TagIDs.Organizado }, // Movidos a la lista de Tags
 					Special = new List<string>(),
 					Instinct = "Aprovechar el poder más allá de su estatura",
 					Definition = "Oh señor, ¿quién les enseñó magia? Instinto: Aprovechar el poder más allá de su estatura",
@@ -299,7 +309,8 @@ public class MonsterManual
 							AttackName = "Orbe de Ácido",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
 							Bonus = +1,
-							IgnoresArmor = true
+							IgnoresArmor = true,
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Lejos}
 						}
 					}
 				},
@@ -311,7 +322,7 @@ public class MonsterManual
 					Size = TagIDs.Grande,
 					MaxHP = 14, CurrentHP = 14,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Inteligente, TagIDs.Organizado, TagIDs.Alcance, TagIDs.Contundente },
+					Tags = new List<TagIDs> { TagIDs.Inteligente, TagIDs.Organizado },
 					Special = new List<string>(),
 					Instinct = "Recuperar",
 					Definition = "Habitan bajo la tierra porque ya no pertenecen más a la superficie. Una raza inmortal de poderosos titanes huyó de las llanuras y montañas en eras pasadas, expulsados por los hombres y sus héroes. Dejados para esperar en la oscuridad, el odio y la ira calentados por las piscinas de lava en lo más profundo. Se dice que un terremoto es el llanto de nacimiento de un goliath. Algún día recuperarán lo que es suyo.",
@@ -326,7 +337,8 @@ public class MonsterManual
 						{
 							AttackName = "Maza",
 							Dices = new List<DiceTypes> { DiceTypes.d8 },
-							Bonus = +7
+							Bonus = +7,
+							Tags= new List<TagIDs>{TagIDs.Alcance, TagIDs.Contundente}
 						}
 					}
 				},
@@ -338,7 +350,7 @@ public class MonsterManual
 					Size = TagIDs.Grande,
 					MaxHP = 20, CurrentHP = 20,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Contundente },
+					Tags = new List<TagIDs> {  },
 					Special = new List<string> { "Fiebre de Suciedad" },
 					Instinct = "Contaminar",
 					Definition = "El canto de apareamiento del otyugh es un grito horrible y estridente que suena como una mezcla entre un elefante muriendo y un buitre demasiado entusiasta. El otyugh pasa gran parte de su tiempo parcialmente sumergido en agua sucia y prefiere comer basura sobre cualquier otra comida. Como resultado, a menudo crece gordo y fuerte con los despojos de orcos, goblins y otros subhumanos que viven en cuevas. Sin embargo, acércate demasiado y tendrás uno de sus tentáculos barbados arrastrándote hacia esa mandíbula húmeda y llena de dientes de sierra. Si escapas con vida, será mejor que vayas a un médico, o tu victoria puede ser de corta duración.",
@@ -353,7 +365,8 @@ public class MonsterManual
 						{
 							AttackName = "Tentáculos",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
-							Bonus = +3
+							Bonus = +3,
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Alcance, TagIDs.Contundente}
 						}
 					}
 				},
@@ -365,7 +378,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño,
 					MaxHP = 3, CurrentHP = 3,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca },
+					Tags = new List<TagIDs> { },
 					Special = new List<string> { "Anfibio", "Tentáculos Paralizantes" }, // Agregado a la lista de Special Qualities
 					Instinct = "Comer",
 					Definition = "Los dioses que crearon esta cosa estaban jugando una broma cruel con la gente civilizada del mundo. El maggot-squid empuña una cara llena de tentáculos horribles y retorcidos que, si te tocan, se siente como ser golpeado por un rayo. Te paralizarán y te masticarán lentamente mientras estás indefenso. Lo mejor es no dejar que llegue a eso. Instinto: Comer",
@@ -378,7 +391,8 @@ public class MonsterManual
 						new AttackDef
 						{
 							AttackName = "Masticar",
-							Dices = new List<DiceTypes> { DiceTypes.d6 }
+							Dices = new List<DiceTypes> { DiceTypes.d6 },
+							Tags= new List<TagIDs>{TagIDs.Cerca}
 						}
 					}
 				},
@@ -386,10 +400,10 @@ public class MonsterManual
 				{
 					Name = "Purple Worm",
 					Organization = TagIDs.Solitario, // Solo un tag en Organización
-					Size = TagIDs.Grande, // Solo un tag en Size
+					Size = TagIDs.Enorme, // Solo un tag en Size
 					MaxHP = 20, CurrentHP = 20,
 					Armor = 2,
-					Tags = new List<TagIDs> { TagIDs.Alcance, TagIDs.Contundente }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> {  }, // Todos los tags adicionales en la lista de Tags
 					Special = new List<string> { "Excavador" }, // Agregado a la lista de Special Qualities
 					Instinct = "Consumir",
 					Definition = "¡Iä! ¡Iä! ¡El Gusano Púrpura! ¡Bendita sea su sagrada babosidad! Caminamos, indignos, en sus millas de túneles masivos. Somos solo sombras bajo su gloria violeta y devoradora. Meros acólitos, nosotros que esperamos algún día volver al gran abrazo de su mandíbula con dientes. ¡Que nos consuma! ¡Que devore nuestros hogares y aldeas para que podamos ser llevados! ¡Iä! ¡Iä! ¡El Gusano Púrpura! Instinto: Consumir",
@@ -404,7 +418,8 @@ public class MonsterManual
 						{
 							AttackName = "Mordisco",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
-							Bonus = +5
+							Bonus = +5,
+							Tags= new List<TagIDs>{TagIDs.Contundente, TagIDs.Alcance}
 						}
 					}
 				},
@@ -415,7 +430,7 @@ public class MonsterManual
 					Size = TagIDs.Grande, // Combinación de tags Grande, Sigiloso e Inteligente en Size
 					MaxHP = 16, CurrentHP = 16,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Sigiloso, TagIDs.Inteligente }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Inteligente }, // Todos los tags adicionales en la lista de Tags
 					Special = new List<string> { "Piel Similar a Roca" }, // Agregado a la lista de Special Qualities
 					Instinct = "Emboscar",
 					Definition = "La casualidad evolutiva ha creado un astuto depredador subterráneo. Disfrazado como una formación rocosa, más a menudo una estalactita o estalagmita, el roper espera a que su presa pase por allí. Cuando lo hace, ya sea una rata, un duende o un aventurero imprudente, una masa de tentáculos delgados y azotadores irrumpe desde la piel de la criatura. Cien latigazos en un abrir y cerrar de ojos y la presa aturdida es arrastrada hacia la boca del roper. Sorprendentemente efectivo para algo que parece una roca. Instinto: Emboscar",
@@ -431,7 +446,8 @@ public class MonsterManual
 						{
 							AttackName = "Mordisco",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
-							Bonus = +1
+							Bonus = +1,
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Alcance}
 						}
 					}
 				},
@@ -451,6 +467,16 @@ public class MonsterManual
 						new MasterMove("Excavar bajo la piel"),
 						new MasterMove("Poner huevos"),
 						new MasterMove("Irrumpir desde una criatura infectada")
+					},
+					Attacks = new List<AttackDef>
+					{
+						new AttackDef
+						{
+							AttackName = "Enterrarse",
+							Dices = new List<DiceTypes> { DiceTypes.d6 },
+							Bonus = +1,
+							Tags= new List<TagIDs>{TagIDs.tocar}
+						}
 					}
 				},
 				new Monster
@@ -460,7 +486,7 @@ public class MonsterManual
 					Size = TagIDs.Grande,
 					MaxHP = 16, CurrentHP = 16,
 					Armor = 3,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Astuto, TagIDs.Inteligente },
+					Tags = new List<TagIDs> { TagIDs.Astuto, TagIDs.Inteligente },
 					Special = new List<string> { "Excavador" },
 					Instinct = "Tejer redes (literal y metafóricamente)",
 					Definition = "Incluso las arañas tienen sus dioses, susurrados en telarañas con pequeños brazos rezando. Instinto: Tejer redes (literal y metafóricamente)",
@@ -475,7 +501,8 @@ public class MonsterManual
 						{
 							AttackName = "Mandíbulas",
 							Dices = new List<DiceTypes> { DiceTypes.d8 },
-							Bonus = +4
+							Bonus = +4,
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Alcance}
 						}
 					}
 				},
@@ -483,10 +510,10 @@ public class MonsterManual
 				{
 					Name = "Troglodyte",
 					Organization = TagIDs.Grupo, // Combinación de tags Grupo y Organizado en Organización
-					Size = TagIDs.tocar, // Solo un tag en Size
+					Size = TagIDs.Pequeño, // Solo un tag en Size
 					MaxHP = 10, CurrentHP = 10,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Organizado }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Organizado }, // Todos los tags adicionales en la lista de Tags
 					Instinct = "Acechar la civilización",
 					Definition = "Olvidados hace mucho tiempo, nuestros últimos ancestros restantes habitan en cuevas en las partes salvajes del mundo. Alejados por nuestras ciudades y pueblos, nuestras espadas de hierro y nuestro fuego, estos hombres-simio comen su carne cruda con manos con uñas afiladas y dientes dentados. Atacan a los pueblos de la frontera empuñando garrotes y en números abrumadores para apoderarse de ganado, herramientas y pobres prisioneros para arrastrarlos a las colinas. Conocidos por su ferocidad y su hedor, son una raza antigua y moribunda que todos preferiríamos olvidar que existe. Instinto: Acechar la civilización",
 					Moves = new List<MasterMove>
@@ -499,7 +526,8 @@ public class MonsterManual
 						new AttackDef
 						{
 							AttackName = "Garrote",
-							Dices = new List<DiceTypes> { DiceTypes.d8 }
+							Dices = new List<DiceTypes> { DiceTypes.d8 },
+							Tags= new List<TagIDs>{TagIDs.Cerca}
 						}
 					}
 				}
@@ -517,7 +545,7 @@ public class MonsterManual
 				{
 					Name = "Aboleth",
 					Organization = TagIDs.Grupo, // Solo un tag en Organización
-					Size = TagIDs.Grande, // Combinación de tags Grande e Inteligente en Size
+					Size = TagIDs.Enorme, // Combinación de tags Grande e Inteligente en Size
 					MaxHP = 18, CurrentHP = 18,
 					Armor = 0,
 					Tags = new List<TagIDs> { TagIDs.Inteligente }, // Todos los tags adicionales en la lista de Tags
