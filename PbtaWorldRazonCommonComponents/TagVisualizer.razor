@@ -1,0 +1,25 @@
+﻿@using PbtALib
+@using static PbtALib.BaseTextBook
+
+<div style="position: relative; cursor:pointer; background: #11111111; padding:5px; cursor:pointer; border:1px solid gray; border-radius:4px; @(IsMouseOver?"background: #11111144;":"")"
+	@onmouseenter=@(()=>{IsMouseOver = true;}) 
+	@onmouseleave=@(()=>{IsMouseOver = false;})>
+	<div class="@(IsMouseOver?"":"visually-hidden")" style="position:absolute; min-width:220px; top:-50px; z-index: 100; background:#111; color:white; border-radius:5px; padding: 10px;">
+		@Tag?.Description
+	</div>
+	@Tag?.Tittle
+</div>
+
+@code {
+	[Parameter] public TagIDs ID { get; set; } = TagIDs.NotSet;
+	[Parameter] public Tag? Tag { get; set; } = null;
+
+	bool IsMouseOver = false;
+
+	protected override void OnParametersSet()
+	{
+		if (Tag is null)
+			if (ID != TagIDs.NotSet)
+				Tag = PbtALib.BaseTextBook.AllTags.Find(x => x.ID == ID);
+	}
+}

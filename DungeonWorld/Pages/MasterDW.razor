@@ -56,6 +56,9 @@ else
 						}						
 					}
 				}
+				<div class="PlayersAreaHeaderTab @(SelectingEnemies?"Selected":"")" @onclick=TogglingSelectingEnemiesClicked>
+					<i class="bi text-danger bi-gitlab"></i>
+				</div>
 			</div>
 			<div class="d-flex flex-column flex-grow-1">
 				@if(SelectedCharacter is not null)
@@ -84,6 +87,60 @@ else
 					</div>
 					<div class="PlayersAreaFiller"></div>
 				}
+				else
+				{
+					
+						<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SelectEnemies">Elegir enemigo</button>
+					
+					<div class="PlayersAreaFiller"></div>
+				}
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="SelectEnemies" tabindex="-1">
+		<div class="modal-dialog modal-fullscreen" id="SelectEnemies">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="MonsterLocationSelection accordion" id="MonsterLocationSelector">
+						@foreach(var location in Game.Book.Monsters.AllMonsterPacks)
+						{
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button class="accordion-button collapsed"
+											style="border-color: none!important; outline:none!important; box-shadow:none!important;"
+											type="button" data-bs-toggle="collapse"
+											data-bs-target="#@FromNameToID(location.Name)">
+											@location.Name
+									</button>
+								</h2>
+								<div id="@FromNameToID(location.Name)" class="accordion-collapse collapse" data-bs-parent="#MonsterLocationSelector">
+									<div class="accordion-body">
+										@foreach(var m in location.Monsters)
+										{
+											<div class="MonsterCard">
+												<div class="MonsterCardTitle">@m.Name</div>
+												<div class="MonsterTagsContainer d-flex gap-1">
+													<TagVisualizer ID="m.Size"/>
+													<TagVisualizer ID="m.Organization"/>
+													@foreach(var t in m.Tags)
+													{
+														<TagVisualizer ID="t"/>
+													}
+												</div>
+											</div>
+											
+										}
+									</div>
+								</div>
+							</div>
+						}
+
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -91,6 +148,9 @@ else
 
 @code {
 	bool _ShowingVTT = false;
+	bool SelectingEnemies = false;
+	Monster? SelectedEnemy = null;
+	private DWCharacter? SelectedCharacter = null;
 
 
 	List<IMove> ClassMovements = new();
@@ -121,10 +181,10 @@ else
 		}
 	}
 
-	private DWCharacter? SelectedCharacter = null;
-	void SelectCharacter(DWCharacter c)
+	void SelectCharacter(DWCharacter c) 
 	{
 		SelectedCharacter = c;
+		SelectingEnemies = false;
 
 		ClassMovements.Clear();
 		foreach (var movID in SelectedCharacter.ClassMovments)
@@ -143,6 +203,18 @@ else
 
 	}
 
+	void TogglingSelectingEnemiesClicked()
+	{
+		if(SelectingEnemies)
+		{
+			SelectingEnemies = false;
+		}
+		else
+		{
+			SelectingEnemies = true;
+			SelectedCharacter = null;
+		}
+	}
 
-
+	string FromNameToID(string s) => String.Concat(s.Where(c => !Char.IsWhiteSpace(c)));
 }

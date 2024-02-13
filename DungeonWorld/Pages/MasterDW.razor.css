@@ -57,6 +57,9 @@
     flex-grow:1;
 }
 
-.GenericMoves {
+.MonsterCard {
     background: #a2b0a3;
+}
+.MonsterCardTitle{
+
 }

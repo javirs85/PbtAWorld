@@ -10,14 +10,15 @@ public class BaseTextBook
 {
 	public enum TagIDs
 	{
+		NotSet,
 		Aplicado, armadura1, armadura2, armadura3, incomodo, torpe, daño1, daño2, daño3, peligroso, Contundente, ignoraArmadura,
-		escabroso, penentrante1, penentrante2, penentrante3, preciso, lento, Cerca, lejos, Alcance, tocar,
+		Escabroso, penentrante1, penentrante2, penentrante3, preciso, lento, Cerca, Lejos, Alcance, tocar,
 		arcano, batallon, plaga, auge, artesania, suciedad, Divino, enano, elfico, intimo,
 		Magico,	Astuto,	Amorfo,	Organizado,	Inteligente, Acaparador, Sigiloso,	Aterrador,	Cauteloso,	Constructo,	Planar,
 		Horda, Grupo, Solitario, Minusculo, Pequeño, Grande, Enorme
 	}
 
-	public List<Tag> AllTags = new List<Tag> {
+	public static List<Tag> AllTags = new List<Tag> {
 		new Tag(BaseTextBook.TagIDs.Magico, "Mágico","Es mágico por naturaleza de principio a fin."),
 		new Tag(BaseTextBook.TagIDs.Astuto, "Astuto","Su principal peligro va más allá del simple choque de la batalla."),
 		new Tag(BaseTextBook.TagIDs.Amorfo, "Amorfo","Su anatomía y órganos son extraños e antinaturales."),
@@ -54,7 +55,7 @@ public class BaseTextBook
 		new Tag(BaseTextBook.TagIDs.peligroso, "Peligroso","Si lo utilizas sin tomar las precauciones adecuadas, espera consecuencias"),
 		new Tag(BaseTextBook.TagIDs.Contundente, "Contundente","cuando se usa como un arma, es capaz de derribar a alguien"),
 		new Tag(BaseTextBook.TagIDs.ignoraArmadura, "Ignora armadura","La armadura no se resta al daño realizado por este objeto"),
-		new Tag(BaseTextBook.TagIDs.escabroso, "Escabroso","Causa daño de una forma particularmente destructiva, destrozando personas y cosas"),
+		new Tag(BaseTextBook.TagIDs.Escabroso, "Escabroso","Causa daño de una forma particularmente destructiva, destrozando personas y cosas"),
 		new Tag(BaseTextBook.TagIDs.penentrante1, "Penetrante-1","Recude la armadura del defensor en -1"),
 		new Tag(BaseTextBook.TagIDs.penentrante2, "Penetrante-2","Recude la armadura del defensor en -2"),
 		new Tag(BaseTextBook.TagIDs.penentrante3, "Penetrante-3","Recude la armadura del defensor en -3"),
@@ -73,8 +74,8 @@ public class BaseTextBook
 		new Tag(BaseTextBook.TagIDs.enano, "Enano","mayormente poblado por enanos"),
 		new Tag(BaseTextBook.TagIDs.elfico, "Élfico","mayormente poblado por elfos"),
 
-		new Tag(BaseTextBook.TagIDs.Cerca, "cerca","Es útil para atacar a alguien a uno o dos pies más allá del alcance del brazo."),
-		new Tag(BaseTextBook.TagIDs.lejos, "Lejos","Es útil para disparar a distancia"),
+		new Tag(BaseTextBook.TagIDs.Cerca, "Cerca","Es útil para atacar a alguien a uno o dos pies más allá del alcance del brazo."),
+		new Tag(BaseTextBook.TagIDs.Lejos, "Lejos","Es útil para disparar a distancia"),
 		new Tag(BaseTextBook.TagIDs.Alcance, "Alcance","Útil para atacar a varios pies de distancia, hasta 10 (3m)"),
 		new Tag(BaseTextBook.TagIDs.tocar, "Tocar","Se puede usar para atacar a alguien a un brazo o menos de distancia"),
 		new Tag(BaseTextBook.TagIDs.intimo, "Íntimo","útil para atacar a alguien a quien puedes ver el blanco de los ojos"),		
