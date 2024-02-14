@@ -7,7 +7,7 @@
     margin: 5px;
     padding: 10px;
     display: flex;
-    max-width: 500px;
+    max-width: 580px;
 }
 
     .MonsterCard > div {
@@ -34,3 +34,38 @@
     background-position-x: right;
     background-position-y: bottom;
 }
+
+.Definition {
+    //height: 131px;
+    max-height: 131px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    border-bottom: 1px solid #536354;
+    transition: max-height linear 1s;
+}
+.Definition.Full{
+    height:auto;
+    max-height:1500px;
+}
+
+.DefinitionButton {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    top: -18px;
+    right: 9px;
+    z-index: 2;
+    border: 1px solid #586959;
+    background: #bec9bf;
+    padding: 5px;
+    border-radius: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    filter: drop-shadow(0px 2px 3px #000000AA);
+}
+    .DefinitionButton:hover {
+        filter: drop-shadow(0px 2px 1px #000000AA);
+    }

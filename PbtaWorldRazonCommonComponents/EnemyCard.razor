@@ -16,25 +16,30 @@
 
 			</div>
 			<div class="d-flex flex-column">
-				<div>@monster.Definition</div>
-				<div class="d-flex">
-					<strong style="width: 70px;">Instinto:</strong>
-					<div>@monster.Instinct</div>
+				<div class="Definition @(FullText?"Full":"")">
+					@monster.Definition
+					
 				</div>
+				<div style="position:relative;">
+					<div class="DefinitionButton" @onclick=@(()=>{FullText = !FullText;})><i class="bi bi-arrow-down-up"></i></div>
+					<div class="d-flex">
+						<strong style="width: 70px;">Instinto:</strong>
+						<div>@monster.Instinct</div>
+					</div>
 
-				<div class="d-flex">
-					<strong style="width: 70px;">Especial</strong>
-					<div class="d-flex flex-column">
-						@foreach (var s in monster.Special)
-						{
-							<div class="d-flex">
-								<div style="border-left:1px solid black; padding-left:5px; width:2px; height:10px;"></div>
-								@s
-							</div>
-						}
+					<div class="d-flex">
+						<strong style="width: 70px;">Especial</strong>
+						<div class="d-flex flex-column">
+							@foreach (var s in monster.Special)
+							{
+								<div class="d-flex align-items-center">
+									<div style="border-left:1px solid black; padding-left:5px; width:2px; height:10px;"></div>
+									@s
+								</div>
+							}
+						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -44,4 +49,6 @@
 
 @code {
 	[Parameter] public  Monster monster { get; set; } = new();
+
+	bool FullText = false;
 }

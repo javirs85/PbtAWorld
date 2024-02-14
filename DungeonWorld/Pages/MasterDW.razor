@@ -115,7 +115,7 @@ else
 								</h2>
 								<div id="@FromNameToID(location.Name)" class="accordion-collapse collapse" data-bs-parent="#MonsterLocationSelector">
 									<div class="accordion-body">
-										<div class="container-fluid">
+										<div class="d-flex flex-wrap">
 											@foreach(var m in location.Monsters)
 											{
 												<EnemyCard monster="m"/>

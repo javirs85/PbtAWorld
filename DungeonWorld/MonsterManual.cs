@@ -592,9 +592,9 @@ public class MonsterManual
 						{
 							AttackName = "Mordisco",
 							Dices = new List<DiceTypes> { DiceTypes.d12 },
-							Tags = new List<TagIDs> { TagIDs.Alcance, TagIDs.Contundente, TagIDs.Escabroso },
 							Bonus = +9,
 							Piercing = 4,
+							Tags = new List<TagIDs> { TagIDs.Alcance, TagIDs.Contundente, TagIDs.Escabroso }
 						}
 					}
 				},
@@ -619,6 +619,7 @@ public class MonsterManual
 						{
 							AttackName = "Toque Caótico",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
+							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance },
 							Piercing = 0 // No hay piercing en este ataque
 						}
 					}
@@ -630,7 +631,7 @@ public class MonsterManual
 					Size = TagIDs.Grande, // Combinación de tags Grande y Cauteloso en Size
 					MaxHP = 10, CurrentHP = 10,
 					Armor = 4,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Escabroso, TagIDs.Cauteloso }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Cauteloso }, // Todos los tags adicionales en la lista de Tags
 					Special = new List<string> { "Anfibio" }, // Agregado a la lista de Special Qualities
 					Instinct = "Dividir",
 					Definition = "Tu peor pesadilla de mariscos hecha realidad. Una especie de hombre cangrejo, maldito con inteligencia primordial y bendito con un par de garras afiladas como navajas. Cosas extrañas acechan en las pestilentes pozas en cavernas mejor olvidadas y el chuul es una de ellas. Si ves uno, tu mejor esperanza es una maza pesada para romper su caparazón y tal vez un poco de mantequilla de ajo. Mmmm. Instinto: Dividir",
@@ -646,7 +647,8 @@ public class MonsterManual
 							AttackName = "Garras",
 							Dices = new List<DiceTypes> { DiceTypes.d8 },
 							Bonus = +1,
-							Piercing = 3
+							Piercing = 3,
+							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Escabroso}
 						}
 					}
 				},
@@ -659,7 +661,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño, // Combinación de tags Inteligente y Organizado en Size
 					MaxHP = 6, CurrentHP = 6,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Inteligente, TagIDs.Organizado }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> {  TagIDs.Inteligente, TagIDs.Organizado }, // Todos los tags adicionales en la lista de Tags
 					Instinct = "Despreciar a las razas de la superficie",
 					Definition = "No fue tan simple como una guerra por religión o territorio. Ninguna disputa entre reinas llevó a la gran separación de los elfos. Fue tristeza. Fue la disminución misma del mundo por las razas menores. La gloria que todos los elfos habían construido se resquebrajaba y se volvía vidrio. Algunos, entonces, eligieron separarse del mundo; llenos de lágrimas, dieron la espalda a hombres y enanos. Sin embargo, hubo otros que fueron dominados por algo nuevo. Un sentimiento que ningún elfo había sentido antes. Rencor. El odio llenó a estos elfos, los retorció y se volvieron contra sus primos más débiles. Algunos todavía permanecen después de la gran exodus hacia abajo. Algunos se esconden entre nosotros con cuchillas envenenadas de araña, impartiendo esa extraña de las penas: la venganza élfica. Instinto: Despreciar a las razas de la superficie",
 					Moves = new List<MasterMove>
@@ -674,7 +676,8 @@ public class MonsterManual
 						{
 							AttackName = "Hoja Envenenada",
 							Dices = new List<DiceTypes> { DiceTypes.d8 },
-							Piercing = 1
+							Piercing = 1,
+							Tags = new List<TagIDs> { TagIDs.Cerca }
 						}
 					}
 				},
@@ -687,7 +690,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño, // Combinación de tags Inteligente y Organizado en Size
 					MaxHP = 6, CurrentHP = 6,
 					Armor = 2,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Inteligente, TagIDs.Organizado }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Inteligente, TagIDs.Organizado }, // Todos los tags adicionales en la lista de Tags
 					Instinct = "Castigar a los incrédulos",
 					Definition = "Los elfos oscuros perdieron la dulzura y la paz suave de sus brillantes primos hace siglos, pero no abandonaron la gracia. Se mueven con una rapidez y belleza que haría brotar una lágrima en el ojo de cualquier guerrero. En la oscuridad, practicaron. Una crueldad ha infectado su esgrima, una maldad que sale a la luz. Hojas con púas y látigos reemplazan las relucientes lanzas-estandarte de las batallas élficas en la superficie. Los maestros de la espada de los clanes elfos oscuros no buscan simplemente matar, sino castigar con cada golpe de sus cuchillas. Maldad y dolor son su moneda. Instinto: Castigar a los incrédulos",
 					Moves = new List<MasterMove>
@@ -702,7 +705,8 @@ public class MonsterManual
 							AttackName = "Hoja con Púas",
 							Dices = new List<DiceTypes> { DiceTypes.d8 },
 							Bonus = +2,
-							Piercing = 1
+							Piercing = 1,
+							Tags = new List<TagIDs> { TagIDs.Cerca }
 						}
 					}
 				},
@@ -713,7 +717,7 @@ public class MonsterManual
 					Size = TagIDs.Pequeño, // Combinación de tags Divino, Inteligente y Organizado en Size
 					MaxHP = 14, CurrentHP = 14,
 					Armor = 0,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Divino, TagIDs.Inteligente, TagIDs.Organizado }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Divino, TagIDs.Inteligente, TagIDs.Organizado }, // Todos los tags adicionales en la lista de Tags
 					Special = new List<string> { "Conexión Divina" }, // Agregado a la lista de Special Qualities
 					Instinct = "Transmitir la venganza divina",
 					Definition = "Los espíritus de los árboles y la dama del sol están lejos, muy lejos de casa en las profundidades donde habitan los elfos oscuros. Nuevos dioses fueron encontrados allí, esperando a que sus hijos regresaran. Dioses de las arañas, los bosques fúngicos y cosas que susurran en las cuevas prohibidas. Los elfos oscuros, siempre sintonizados con el mundo que los rodea, escucharon con intención odiosa a sus nuevos dioses y encontraron una nueva fuente de poder. El odio llama al odio y se hicieron sombrías alianzas. Incluso entre estas filas resentidas, la piedad encuentra una forma de expresarse. Instinto: Transmitir la venganza divina",
@@ -729,7 +733,8 @@ public class MonsterManual
 						{
 							AttackName = "Golpe Divino",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
-							Bonus = +2
+							Bonus = +2,
+							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance}
 						}
 					}
 				},
@@ -742,7 +747,7 @@ public class MonsterManual
 					Size = TagIDs.Grande, // Combinación de tags Grande, Aterrador y Acaparador en Size
 					MaxHP = 16, CurrentHP = 16,
 					Armor = 5,
-					Tags = new List<TagIDs> { TagIDs.Alcance, TagIDs.Escabroso, TagIDs.Aterrador, TagIDs.Cauteloso, TagIDs.Acaparador }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> {  TagIDs.Aterrador, TagIDs.Cauteloso, TagIDs.Acaparador }, // Todos los tags adicionales en la lista de Tags
 					Special = new List<string> { "Sangre Elemental", "Alas" }, // Agregado a la lista de Special Qualities
 					Instinct = "Gobernar",
 					Definition = "Son las cosas más grandes y terribles que este mundo jamás tendrá que ofrecer. Instinto: Gobernar",
@@ -758,7 +763,8 @@ public class MonsterManual
 						{
 							AttackName = "Mordisco",
 							Dices = new List<DiceTypes> { DiceTypes.d12 },
-							Piercing = 4
+							Piercing = 4,
+							Tags = new List<TagIDs> { TagIDs.Alcance, TagIDs.Escabroso }
 						}
 					}
 				},
@@ -771,7 +777,7 @@ public class MonsterManual
 					Size = TagIDs.Grande, // Solo un tag en Size
 					MaxHP = 16, CurrentHP = 16,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Contundente }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { }, // Todos los tags adicionales en la lista de Tags
 					Instinct = "Servir",
 					Definition = "Por sí mismo, el render es una fuerza de destrucción total. Enorme y coriáceo, con una mandíbula de dientes irrompibles y garras a juego, el render parece disfrutar poco más que desgarrar cosas. Piedra, carne o acero, poco importa. Sin embargo, el devorador gris rara vez se encuentra solo. Se vinculan con otras criaturas. Algunas al nacer, otras como criaturas completamente desarrolladas, y un devorador gris seguirá a su amo vinculado a donde quiera que vaya, llevándoles ofrendas de carne y protegiéndoles mientras duermen. Encontrar un render no vinculado significa riquezas seguras, si sobrevives para venderlo. Instinto: Servir",
 					Moves = new List<MasterMove>
@@ -785,7 +791,8 @@ public class MonsterManual
 							AttackName = "Garras Desgarradoras",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
 							Bonus = +3,
-							Piercing = 3
+							Piercing = 3,
+							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Contundente }
 						}
 					}
 				},
@@ -796,7 +803,7 @@ public class MonsterManual
 					Size = TagIDs.Inteligente, // Combinación de tags Inteligente, Organizado y Acaparador en Size
 					MaxHP = 7, CurrentHP = 7,
 					Armor = 4,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Organizado, TagIDs.Acaparador }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Organizado, TagIDs.Acaparador }, // Todos los tags adicionales en la lista de Tags
 					Special = new List<string> { "Sangre Ardiente" }, // Agregado a la lista de Special Qualities
 					Instinct = "Forjar",
 					Definition = "Con forma de enano e industrioso, los magmin se encuentran entre los habitantes más profundos del Mundo de las Mazmorras. Encontrados en ciudades de latón y obsidiana construidas más cerca del núcleo fundido del planeta, los magmin viven una vida dedicada a la artesanía, especialmente la relacionada con el fuego y los objetos mágicos relacionados. Malhumorados y extraños, rara vez se dignan a hablar con solicitantes que aparecen en sus puertas, incluso aquellos que de alguna manera han encontrado una manera de sobrevivir al calor infernal. Aun así, respetan poco más que un artículo finamente hecho y aprender a forjar de un artesano magmin significa desbloquear secretos desconocidos para los herreros de la superficie. Como muchas otras cosas, visitar a los magmin es un juego de riesgo y recompensa. Instinto: Forjar",
@@ -812,7 +819,8 @@ public class MonsterManual
 						{
 							AttackName = "Martillo Llameante",
 							Dices = new List<DiceTypes> { DiceTypes.d6 },
-							Bonus = +2
+							Bonus = +2,
+							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance }
 						}
 					}
 				},
@@ -825,7 +833,7 @@ public class MonsterManual
 					Size = TagIDs.Grande, // Solo un tag en Size
 					MaxHP = 16, CurrentHP = 16,
 					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> {  }, // Todos los tags adicionales en la lista de Tags
 					Special = new List<string> { "Sentido de dirección infalible" }, // Agregado a la lista de Special Qualities
 					Instinct = "Contener",
 					Definition = "\"Cabeza de un hombre, cuerpo de un toro. No, espera, tengo eso al revés. Es la cabeza de toro y el cuerpo de un hombre. ¿Pezuñas a veces? ¿Es así? Recuerdo que el viejo rey dijo algo sobre un laberinto. ¡Maldición! Sabes que no puedo pensar bajo esta presión. ¿Qué fue eso? ¡Oh dioses, creo que viene!\" Instinto: Contener",
@@ -840,7 +848,8 @@ public class MonsterManual
 						{
 							AttackName = "Hacha",
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
-							Bonus = +1
+							Bonus = +1,
+							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance }
 						}
 					}
 				},
@@ -853,7 +862,7 @@ public class MonsterManual
 					Size = TagIDs.Grande, // Solo un tag en Size
 					MaxHP = 12, CurrentHP = 12,
 					Armor = 2,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Organizado, TagIDs.Acaparador, TagIDs.Magico }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Organizado, TagIDs.Acaparador, TagIDs.Magico }, // Todos los tags adicionales en la lista de Tags
 					Instinct = "Liderar",
 					Definition = "Ambiciosos y territoriales por encima de casi todo, las nagas rara vez se encuentran sin un culto bien formado e insidioso de seguidores. Lo verás en muchas ciudades de montaña: un símbolo de serpiente garabateado en la pared de una taberna o una iglesia local quemada hasta el suelo. Gente desapareciendo en las minas. Hombres y mujeres que llevan la marca de la serpiente. En el núcleo de todo esto yace una naga: una antigua raza ahora caída en el olvido, aún pavoneándose con la cabeza de un hombre sobre su cuerpo enrollado de serpiente. Existen variaciones de estas criaturas según su linaje y su propósito original, pero todas son maestras manipuladoras y fuerzas mágicas a tener en cuenta. Instinto: Liderar",
 					Moves = new List<MasterMove>
@@ -867,7 +876,8 @@ public class MonsterManual
 						new AttackDef
 						{
 							AttackName = "Mordida",
-							Dices = new List<DiceTypes> { DiceTypes.d10 }
+							Dices = new List<DiceTypes> { DiceTypes.d10 },
+							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance }
 						}
 					}
 				},
@@ -878,7 +888,7 @@ public class MonsterManual
 					Size = TagIDs.Grande, // Combinación de tags Grande, Inteligente, Organizado y Planar en Size
 					MaxHP = 7, CurrentHP = 7,
 					Armor = 3,
-					Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Organizado, TagIDs.Planar }, // Todos los tags adicionales en la lista de Tags
+					Tags = new List<TagIDs> { TagIDs.Inteligente, TagIDs.Organizado, TagIDs.Planar }, // Todos los tags adicionales en la lista de Tags
 					Special = new List<string> { "Excavación" }, // Agregado a la lista de Special Qualities
 					Instinct = "Consumir en llamas",
 					Definition = "\"La excavación descubrió lo que los informes llamaban una puerta de basalto. Piedra negra tallada con runas fundidas. Cuando la desenterraron, los magos declararon que estaba inerte, pero evidencia adicional indica que fue una afirmación incorrecta. El equipo entero desapareció. Cuando llegamos, la puerta brillaba. Su luz llenaba toda la caverna. Podíamos ver desde la entrada que la zona se había llenado de estas criaturas, como hombres con piel roja y naranja, altos como un ogro pero con una cola de serpiente donde deberían estar sus piernas. También estaban vestidos, algunos tenían armaduras de cristal negro. Hablaban entre ellos en una lengua que sonaba como grasa en el fuego. Quería irme, pero el sargento no escuchó. Ya has leído lo que pasó después, señor. Sé que soy el único que regresó, pero lo que dije es verdad. La puerta está abierta, ahora. ¡Esto es solo el principio!\" Instinto: Consumir en llamas",
@@ -893,7 +903,8 @@ public class MonsterManual
 						{
 							AttackName = "Lanza Llameante",
 							Dices = new List<DiceTypes> { DiceTypes.d6 },
-							Bonus = +3
+							Bonus = +3,
+							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.tocar }
 						}
 					}
 				}
