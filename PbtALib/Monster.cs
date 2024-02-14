@@ -6,15 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using static PbtALib.BaseTextBook;
 
-namespace DungeonWorld;
+namespace PbtALib;
 
 public class Monster
 {
     public string Name { get; set; } = "Name not set";
-    /// <summary>
-    /// Only one tag, can only be TagIDs.Solitario, TagIDs.Horda, TagIDs.Grupo
-    /// </summary>
-    public TagIDs Organization { get; set; } = TagIDs.Solitario;
+	public string ID => String.Concat(Name.Where(c => !Char.IsWhiteSpace(c)));
+	/// <summary>
+	/// Only one tag, can only be TagIDs.Solitario, TagIDs.Horda, TagIDs.Grupo
+	/// </summary>
+	public TagIDs Organization { get; set; } = TagIDs.Solitario;
     /// <summary>
     /// Only One Tag, Can only be TagIDs.Pequeño, TagIDs.Minusculo, TagIDs.Grande, TagIDs.Enorme
     /// </summary>
@@ -42,8 +43,8 @@ public class Monster
     }
 
     public int CurrentHP { get; set; }
-	public string Definition { get; internal set; }
-	public string Instinct { get; internal set; }
+    public string Definition { get; set; } = string.Empty;
+	public string Instinct { get; set; } = string.Empty;
 }
 
 public class AttackDef

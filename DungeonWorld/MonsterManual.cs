@@ -99,7 +99,7 @@ public class MonsterManual
 				},
 				new Monster
 				{
-					Name = "Encubridor",
+					Name = "Manto",
 					Organization = TagIDs.Solitario,
 					Size = TagIDs.Pequeño,
 					MaxHP = 12, CurrentHP = 12,
@@ -1074,37 +1074,6 @@ public class MonsterManual
 							Dices = new List<DiceTypes> { DiceTypes.d10 },
 							Bonus = +3,
 							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Contundente }
-						}
-					}
-				},
-				new Monster
-				{
-					Name = "Ethereal Filcher",
-					Organization = TagIDs.Solitario, // Varios tags en Organización
-					Size = TagIDs.Pequeño, // Sin tag en Size, será TagIDs.Pequeño
-					MaxHP = 12,
-					CurrentHP = 12,
-					Armor = 1,
-					Tags = new List<TagIDs> { TagIDs.Astuto, TagIDs.Planar }, // Sin tags adicionales en la lista de Tags
-					Special = new List<string> { "Excavación" }, // Qualities
-					Instinct = "Robar",
-					Definition = "Las cosas desaparecen. Un calcetín, una cuchara de plata, los huesos de tu difunta madre. Culparemos a la criada, o a la mala suerte, o simplemente a un momento de olvido estúpido y seguimos adelante. Nunca llegamos a ver la verdadera causa de estos problemas. La criatura parecida a una araña con manos humanas y ojos tan azules como el profundo plano Etéreo del cual proviene la criatura. Nunca vemos el nido que hace con tejido plateado astral y objetos robados dispuestos en algún patrón loco. Nunca lo vemos reunir su colección de huesos de dedos de medio humano, robados de las manos de los durmientes. Tenemos suerte de esa manera.", // La expresión "Instinct: To steal" se mueve a su propia sección.
-					Moves = new List<MasterMove>
-					{
-						new MasterMove("Tomar algo importante para su guarida planar"),
-						new MasterMove("Retirarse al plano Etéreo"),
-						new MasterMove("Usar un objeto de su guarida")
-					},
-					Attacks = new List<AttackDef>
-					{
-						new AttackDef
-						{
-							AttackName = "Daga robada",
-							Dices = new List<DiceTypes> { DiceTypes.d8, DiceTypes.d8 },
-							Bonus = 0,
-							IgnoresArmor = false,
-							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance },
-							RollType = RollTypes.Roll_Disadvantage
 						}
 					}
 				},

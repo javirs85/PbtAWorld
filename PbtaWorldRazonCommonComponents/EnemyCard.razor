@@ -1,0 +1,47 @@
+﻿<div class="MonsterCard">
+	<div>
+		<div class=" d-flex flex-row flex-wrap gap-1">
+			<span class="MonsterCardTitle">@monster.Name</span>
+			<TagVisualizer ID="monster.Size" Color="TagVisualizer.TagColors.Red" Width="80" />
+			<TagVisualizer ID="monster.Organization" Color=TagVisualizer.TagColors.Green Width="80" />
+			@foreach (var t in monster.Tags)
+			{
+				<TagVisualizer ID="t" />
+			}
+		</div>
+		<div class="d-flex flex-column">
+			<div class="d-flex">
+				<div class="me-3"><strong>HP:</strong>@monster.MaxHP</div>
+				<div><strong>ARMOR:</strong>@monster.Armor</div>
+
+			</div>
+			<div class="d-flex flex-column">
+				<div>@monster.Definition</div>
+				<div class="d-flex">
+					<strong style="width: 70px;">Instinto:</strong>
+					<div>@monster.Instinct</div>
+				</div>
+
+				<div class="d-flex">
+					<strong style="width: 70px;">Especial</strong>
+					<div class="d-flex flex-column">
+						@foreach (var s in monster.Special)
+						{
+							<div class="d-flex">
+								<div style="border-left:1px solid black; padding-left:5px; width:2px; height:10px;"></div>
+								@s
+							</div>
+						}
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<div class="imgHolder" style="background-image:url(_content/DungeonWorld/imgs/DW/Monsters/Images/@(monster.ID).png); ">
+	</div>
+</div>
+
+@code {
+	[Parameter] public  Monster monster { get; set; } = new();
+}

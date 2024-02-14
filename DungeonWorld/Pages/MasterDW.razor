@@ -115,51 +115,12 @@ else
 								</h2>
 								<div id="@FromNameToID(location.Name)" class="accordion-collapse collapse" data-bs-parent="#MonsterLocationSelector">
 									<div class="accordion-body">
-										@foreach(var m in location.Monsters)
-										{
-											<div class="MonsterCard">
-												<div>
-													<div class=" d-flex flex-row flex-wrap gap-1">
-														<span class="MonsterCardTitle">@m.Name</span>
-														<TagVisualizer ID="m.Size" Color="TagVisualizer.TagColors.Red" Width="80" />
-														<TagVisualizer ID="m.Organization" Color=TagVisualizer.TagColors.Green Width="80" />
-														@foreach (var t in m.Tags)
-														{
-															<TagVisualizer ID="t" />
-														}
-													</div>
-													<div class="d-flex flex-column">
-														<div class="d-flex">
-															<div class="me-3"><strong>HP:</strong>@m.MaxHP</div>
-															<div><strong>ARMOR:</strong>@m.Armor</div>
-
-														</div>
-														<div class="d-flex flex-column">
-															<div>@m.Definition</div>
-															<div class="d-flex">
-																<strong style="width: 70px;">Instinto:</strong>
-																<div>@m.Instinct</div>
-															</div>
-
-															<div class="d-flex">
-																<strong style="width: 70px;">Especial</strong>
-																<div class="d-flex flex-column">
-																	@foreach (var s in m.Special)
-																	{
-																		<div class="d-flex">
-																			<div style ="border-left:1px solid black; padding-left:5px; width:2px; height:10px;"></div>
-																			@s
-																		</div>
-																	}
-																</div>
-															</div>
-
-														</div>
-													</div>
-												</div>
-												<div>img</div>
-											</div>
-										}
+										<div class="container-fluid">
+											@foreach(var m in location.Monsters)
+											{
+												<EnemyCard monster="m"/>
+											}
+										</div>
 									</div>
 								</div>
 							</div>

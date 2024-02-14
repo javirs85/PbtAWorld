@@ -57,28 +57,3 @@
     flex-grow:1;
 }
 
-.MonsterCard {
-    background: #a2b0a3;
-    display:flex;
-    border:1px solid black;
-    border-radius:5px;
-    margin:5px;
-    padding: 10px;
-    display:flex;
-}
-
-.MonsterCard>div{
-    flex:1;
-}
-    
-.MonsterCardTitle {
-    font-family: 'Julius Sans One';
-    font-weight: 600;
-    font-size:20px;
-}
-.MonsterTagsContainer{
-    font-family: 'Roboto';
-    font-weight:normal;
-    font-size:14px;
-    display:flex;
-}
