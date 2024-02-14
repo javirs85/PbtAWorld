@@ -24,7 +24,16 @@ public class Monster
     /// Attack must include its own tags, dices to roll, armor piercing capabilities and others
     /// </summary>
     public List<AttackDef> Attacks { get; set; } = new();
-    public AttackDef Attack=> Attacks?[0] ?? new AttackDef ();
+    public AttackDef? Attack 
+    { 
+        get
+        {
+            if (Attacks is not null && Attacks.Count > 0)
+                return Attacks[0];
+            else
+                return null;
+        } 
+    }
     public int Armor { get;set; }
     /// <summary>
     /// All other tags defining the monster that are not size or organization go here.
@@ -56,5 +65,23 @@ public class AttackDef
     public bool IgnoresArmor { get; set; }
     public List<TagIDs> Tags { get;set; } = new();
     public RollTypes RollType { get; set; } = RollTypes.Roll_Simple;
+    public string AttackDicesString
+    {
+        get
+        {
+            string result = string.Empty;
+            if (RollType == RollTypes.Roll_Disadvantage) result += "w";
+            else if (RollType == RollTypes.Roll_Advantage) result += "b";
+            foreach (var d in Dices)
+                result += d.ToString();
+
+            if (Bonus > 0) result += "+" + Bonus.ToString();
+            else if(Bonus < 0)result += Bonus.ToString();
+            if (Piercing > 0) result += " AP" + Piercing.ToString();
+            if (IgnoresArmor) result += " IA";
+
+            return result;
+        }
+    }
 }
 
