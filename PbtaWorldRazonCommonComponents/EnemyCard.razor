@@ -51,8 +51,15 @@
 				@monster.Armor
 			</div>
 		</div>
-		<div class="AttackSpace">
+		<div class="AttackSpace d-flex align-items-center">
 			@monster.Attack?.AttackDicesString
+			@if (monster.Attack is not null && monster.Attack?.Piercing != 0)
+			{
+				<div style="position:relative; width:20px;">
+					<i class="bi bi-shield" style="position: absolute; left:0"></i>
+					<div style="position: absolute; left:0">-@monster.Attack.Piercing</div>
+				</div>
+			}
 		</div>
 	</div>
 </div>
