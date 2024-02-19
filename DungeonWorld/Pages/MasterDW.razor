@@ -10,12 +10,17 @@
 {
 	<VTT />
 }
+else if(_showingSquareMap)
+{
+	<SquareMapViewer Map="Game.SquareMap" />
+}
 else
 {
 	<div class="MasterMain">
 		<div class="MasterMainColumn">
 			<div class="d-flex gap-1">
-				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT =true;})>VTT</button>
+				<button class="btn btn-primary" @onclick=@(()=>{_showingSquareMap = false; _ShowingVTT =true;})>VTT</button>
+				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})>Map</button>
 				<button class="btn btn-primary" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></button>
 			</div>
 			
@@ -139,6 +144,7 @@ else
 
 @code {
 	bool _ShowingVTT = false;
+	bool _showingSquareMap = false;
 	bool SelectingEnemies = false;
 	Monster? SelectedEnemy = null;
 	private DWCharacter? SelectedCharacter = null;

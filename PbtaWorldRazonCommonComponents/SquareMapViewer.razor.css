@@ -1,0 +1,68 @@
+.MapViewer{
+    display: flex;
+    flex-direction:column;
+    gap:10px;
+    margin: 20px;
+    overflow: auto;
+    padding:5px;
+}
+
+.MapRow {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.Tile {
+    width: 150px;
+    height: 150px;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 0 4px gray;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position:relative;
+}
+
+.empty {
+    background: whitesmoke;
+    color: transparent;
+    box-shadow: none;
+}
+.actionable {
+    cursor: pointer;
+    background: #e9efea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    color: #a3d7ac;
+}
+.initial {
+    background-image: url(https://inkarnate-api-as-production.s3.amazonaws.com/ao79glhjx4xugm86hbzp0ugiqxei);
+}
+.EditButton {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    color: #222339;
+    background: rgb(255 255 255 / 20%);
+    border-radius: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity:0.5;
+    cursor:pointer;
+}
+.EditButton:hover{
+    opacity:1;
+}
+.CelTitle {
+    background-color: #ffffff82;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

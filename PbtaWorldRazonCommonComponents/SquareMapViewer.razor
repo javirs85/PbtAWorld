@@ -1,0 +1,101 @@
+@using Microsoft.AspNetCore.Components.Forms
+
+@if(SelectedTile is not null)
+{
+    <div class="d-flex gap-2">
+        <div class="d-flex flex-column gap-1">
+            <Microsoft.AspNetCore.Components.Forms.EditForm Model="SelectedTile">
+                <Microsoft.AspNetCore.Components.Forms.InputText @bind-Value=@SelectedTile.Name />
+                <InputSelect @bind-Value=SelectedTile.Place>
+                    @foreach(var op in Enum.GetValues(typeof(SquareMapTile.GenericPlaces)))
+                    {
+                        <option value="@op">@op</option>
+                    }
+                </InputSelect>
+                <h2> Color Picker </h2>
+                <input type="color" name="favcolor" @bind="@NewColor" />
+                <button class="btn btn-primary" @onclick=Update>Update</button>
+            </Microsoft.AspNetCore.Components.Forms.EditForm>
+            <button class="btn btn-primary" @onclick=@(()=>{SelectedTile = null; StateHasChanged();})>Finish</button>
+        </div>
+        <div>
+            <div class="Tile @SelectedTile.Place.ToString()" style="background-color: @SelectedTile.Color;">
+                @SelectedTile.Place.ToString(), @SelectedTile.X, @SelectedTile.Y
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="MapViewer">
+        @foreach (var row in Map.Tiles)
+        {
+            <div class="MapRow">
+                @foreach (var cel in row)
+                {
+                    @if (IsActionable(cel))
+                    {
+                        <div class="Tile actionable" 
+                            
+                            @onclick=@(()=>{AddTile(cel.X, cel.Y);})>
+                            <i class="bi bi-plus-square"></i>
+                        </div>
+                    }
+                    else if (cel.Place == SquareMapTile.GenericPlaces.empty)
+                    {
+                        <div class="Tile @cel.Place.ToString()">
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="Tile @cel.Place.ToString()"
+                             style="background-color: @cel.Color; background-image: url(@cel.BackgroundImageUrl);"
+                             >
+                            <div class="CelTitle">@cel.Name</div>
+                            <div class="EditButton">
+                                <i class="bi bi-pencil" @onclick=@(()=>{Edit(cel);})></i>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public SquareMap Map { get; set; } = new();
+
+    bool IsEditing = false;
+    SquareMapTile? SelectedTile = null;
+    string NewColor = "";
+
+    bool IsActionable(SquareMapTile cel)
+    {
+        if (cel.Place != SquareMapTile.GenericPlaces.empty) return false;
+
+        int x= cel.X;
+        int y = cel.Y;
+        if (x >0 && Map.Tiles[x - 1][y].Place != SquareMapTile.GenericPlaces.empty) return true;
+        if (y >0 && Map.Tiles[x][y-1].Place != SquareMapTile.GenericPlaces.empty) return true;
+        if (x < Map.Tiles.Count-1 && Map.Tiles[x + 1][y].Place != SquareMapTile.GenericPlaces.empty) return true;
+        if (y < Map.Tiles[0].Count-1 && Map.Tiles[x][y+1].Place != SquareMapTile.GenericPlaces.empty) return true;
+        return false;
+    }
+
+    void AddTile(int X, int Y)
+    {
+        Map.Tiles[X][Y].Place = SquareMapTile.GenericPlaces.initial;
+    }
+
+    void Edit(SquareMapTile cell)
+    {
+        SelectedTile = cell;
+    }
+
+    void Update()
+    {
+        if(SelectedTile is not null) SelectedTile.Color = NewColor;
+        StateHasChanged();
+    }
+}

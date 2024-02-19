@@ -19,6 +19,8 @@ public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>
 
 	public DWTextBook Book = new DWTextBook();
 
+	public SquareMap SquareMap = new SquareMap();
+
 	public List<Monster> CurrentSceneEnemies = new List<Monster>();
 
 	public override async Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
