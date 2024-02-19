@@ -1149,7 +1149,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				MaxHP = 20;
 				Damage = DiceTypes.d10;
 				HP = MaxHP;
-				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Paladin_Eyes, DWMovementIDs.DW_Paladin_Grace, DWMovementIDs.DW_Paladin_Hurt, DWMovementIDs.DW_Paladin_NoFear, DWMovementIDs.DW_Paladin_Obliged });
+				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Paladin_Eyes, DWMovementIDs.DW_Fighter_Blind, DWMovementIDs.DW_Paladin_Grace, DWMovementIDs.DW_Paladin_Hurt, DWMovementIDs.DW_Paladin_NoFear, DWMovementIDs.DW_Paladin_Obliged });
 				MaxLoadBase = 6;
 				Equip = new Equipment()
 				{

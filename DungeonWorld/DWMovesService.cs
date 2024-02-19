@@ -1000,7 +1000,7 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Druid_ShapeShifter, DWStats.DW_CON)
 			{
-				Tittle = "Serenidad",
+				Tittle = "Cambia formas",
 				PreCondition = new Consequences{
 					MainText = "Cuando *tomas prestada la forma de una bestia natural, una nativa de tu tierra natal**, nómbrala y tira +CON:\r\n\r\nMientras estás en tu forma prestada, tienes su armadura innata, cualidades, etiquetas y habilidades, pero usa tus propias estadísticas (podrías ser un buey, y fuerte como un buey, pero tiras tu FUE para ver cómo manejas nesa fuerza).\r\n\r\nCuando actúas en contra de los instintos o la naturaleza de tu forma prestada, estás Desafiando el Peligro con SAB"
 				},
@@ -1668,7 +1668,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_NoFear, DWStats.DW_None)
 			{
-				Tittle = "ojos despejados",
+				Tittle = "Inmune al miedo",
 				PreCondition = new Consequences{
 					MainText = "Cuando tires para resistir o actuar a pesar del miedo, no tires; automáticamente tienes un 10+."
 				}
