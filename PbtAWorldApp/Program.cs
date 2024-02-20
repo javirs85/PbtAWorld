@@ -17,6 +17,7 @@ using PbtaWorldRazonCommonComponents;
 using static PbtaWorldRazonCommonComponents.CharacterSelector;
 using PbtALib.ifaces;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,11 @@ IWebHostEnvironment environment = builder.Environment;
 
 // Add services to the container.
 builder.Services.AddRazorPages().AddApplicationPart(typeof(DungeonWorld.Pages.DWPlayerSheet).Assembly);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.BrowserConsole()
+    .CreateLogger();
 
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredToast();

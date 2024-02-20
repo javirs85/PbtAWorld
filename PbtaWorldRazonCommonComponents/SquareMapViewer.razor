@@ -1,29 +1,44 @@
+@using Blazored.Toast.Services
 @using Microsoft.AspNetCore.Components.Forms
+@using System.Net.Http.Headers
+@using Serilog
+@inject IToastService Toaster
 
 @if(SelectedTile is not null)
 {
-    <div class="d-flex gap-2">
-        <div class="d-flex flex-column gap-1">
-            <Microsoft.AspNetCore.Components.Forms.EditForm Model="SelectedTile">
-                <Microsoft.AspNetCore.Components.Forms.InputText @bind-Value=@SelectedTile.Name />
-                <InputSelect @bind-Value=SelectedTile.Place>
-                    @foreach(var op in Enum.GetValues(typeof(SquareMapTile.GenericPlaces)))
-                    {
-                        <option value="@op">@op</option>
-                    }
-                </InputSelect>
-                <h2> Color Picker </h2>
-                <input type="color" name="favcolor" @bind="@NewColor" />
-                <button class="btn btn-primary" @onclick=Update>Update</button>
-            </Microsoft.AspNetCore.Components.Forms.EditForm>
-            <button class="btn btn-primary" @onclick=@(()=>{SelectedTile = null; StateHasChanged();})>Finish</button>
-        </div>
-        <div>
-            <div class="Tile @SelectedTile.Place.ToString()" style="background-color: @SelectedTile.Color;">
-                @SelectedTile.Place.ToString(), @SelectedTile.X, @SelectedTile.Y
+    <div class="d-flex flex-column gap-2">
+        <div class="d-flex gap-2">
+            <div class="d-flex flex-column gap-1">
+                <Microsoft.AspNetCore.Components.Forms.EditForm Model="SelectedTile">
+                    <Microsoft.AspNetCore.Components.Forms.InputText @bind-Value=@SelectedTile.Name />
+                    <InputSelect @bind-Value=SelectedTile.Place>
+                        @foreach (var op in Enum.GetValues(typeof(SquareMapTile.GenericPlaces)))
+                        {
+                            <option value="@op">@op</option>
+                        }
+                    </InputSelect>
+                    <h2> Color Picker </h2>
+                    <input type="color" name="favcolor" @bind="@NewColor" />
+                    <button class="btn btn-primary" @onclick=Update>Update</button>
+                    <InputFile OnChange="UploadFile" />
+                </Microsoft.AspNetCore.Components.Forms.EditForm>
+                <button class="btn btn-primary" @onclick=@(()=>{SelectedTile = null; StateHasChanged();})>Finish</button>
+            </div>
+            <div>
+                <div class="Tile @SelectedTile.Place.ToString()" style="background-color: @SelectedTile.Color; background-image:url(@SelectedTile.BackgroundImageUrl">
+                    <div class="CelTitle">@SelectedTile.Name</div>
+                </div>
             </div>
         </div>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach(var img in System.IO.Directory.GetFiles("./wwwroot/"+SquareMap.ImagesPath))
+            {
+                <div class="Tile Clickme" style="background-image:url(@RemoveRootPath(img));" @onclick=@(()=>{SetImage(img);})></div>
+            }
+            <div class="Tile Clickme" style="background-image:url(none);" @onclick=@(()=>{SetImage("none");})></div>
+        </div>
     </div>
+    
 }
 else
 {
@@ -93,9 +108,72 @@ else
         SelectedTile = cell;
     }
 
+    void SetImage(string path)
+    {
+        var name = System.IO.Path.GetFileName(path);
+        if(SelectedTile is not null)
+            SelectedTile.FileName = name;
+    }
+
+    string RemoveRootPath(string path)
+    {
+        try
+        {
+            return path.Remove(0, 11).Replace('\\','/');
+        }
+        catch (Exception ex)
+        {
+            Toaster.ShowError("RemoveRootPath: " + ex.Message);
+            return path;
+        }
+       
+    }
+
     void Update()
     {
         if(SelectedTile is not null) SelectedTile.Color = NewColor;
         StateHasChanged();
+    }
+
+    private List<IBrowserFile> loadedFiles = new();
+    private long maxFileSize = 1024 * 15;
+    private int maxAllowedFiles = 3;
+    private bool isLoading;
+    private string FilesPath = "";
+
+    private async IAsyncEnumerable<string> GetAllImagesFromDrive()
+    {
+        var names = System.IO.Directory.GetFiles(SquareMap.ImagesPath);
+        foreach(var name in names)
+        {
+            yield return name;
+        }
+    }
+
+    private async Task UploadFile(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        loadedFiles.Clear();
+
+        foreach (var browserFile in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                Log.Error($"{browserFile.Name} trying to load");
+                string newFilePath = $"./wwwroot/imgs/DW/SquareMap/{browserFile.Name}";
+                await using FileStream fs = new(newFilePath, FileMode.Create);
+                await browserFile.OpenReadStream().CopyToAsync(fs);
+                if (SelectedTile is not null) SelectedTile.FileName = browserFile.Name;
+                Log.Error($"{browserFile.Name} loaded successfully");
+            }
+            catch (Exception ex)
+            {
+                Toaster.ShowError($"{browserFile.Name}: {ex.Message}");
+                Log.Error("File: {@FileName} Error: {@Error}",
+                    browserFile.Name, ex.Message);
+            }
+        }
+
+        isLoading = false;
     }
 }
