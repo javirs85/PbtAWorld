@@ -22,7 +22,15 @@
 }
 else if(SelectedGame == AvailableGames.DW)
 {
-	<DungeonWorld.Pages.DWPlayerSheet Player="DWPlayer" />
+	@if(DWPlayer.Profession == DungeonWorld.DWClasses.DW_Master)
+	{
+		<DungeonWorld.Pages.MasterDW />
+	}
+	else
+	{
+		<DungeonWorld.Pages.DWPlayerSheet Player="DWPlayer" />
+	}
+	
 }
 else if(SelectedGame == AvailableGames.US)
 {
@@ -43,7 +51,7 @@ else if(SelectedGame == AvailableGames.US)
 	protected override async Task OnParametersSetAsync()
 	{
 		if (AlreadySet) return;
-		
+
 		//we need a local version so the Pages in the html does not get set until the player is deserialized
 		AvailableGames localGameId;
 		bool isOk = Enum.TryParse(SelectedGameString, out localGameId);
@@ -66,6 +74,9 @@ else if(SelectedGame == AvailableGames.US)
 		else if(localGameId == AvailableGames.DW)
 		{
 			DWPlayer = System.Text.Json.JsonSerializer.Deserialize<DungeonWorld.DWCharacter>(data);
+			var oldOne = Meta.SelectedSeason.Players.Find(x => x.ID == DWPlayer.ID);
+			Meta.SelectedSeason.Players.Remove(oldOne);
+			Meta.SelectedSeason.Players.Add(DWPlayer);
 			Meta.SelectedPlayer = DWPlayer;
 		}
 		else if(localGameId == AvailableGames.US)

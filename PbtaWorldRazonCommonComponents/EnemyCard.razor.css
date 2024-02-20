@@ -1,0 +1,132 @@
+﻿
+.MonsterCard {
+    background: #a2b0a3;
+    display: flex;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    max-width: 580px;
+        width: 580px;
+}
+
+    .MonsterCard > div {
+        flex: 1;
+    }
+
+.MonsterCardTitle {
+    font-family: 'Julius Sans One';
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.MonsterTagsContainer {
+    font-family: 'Roboto';
+    font-weight: normal;
+    font-size: 14px;
+    display: flex;
+}
+
+.imgHolder {
+    background: white;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: bottom;
+    border: 1px solid gray;
+    border-radius: 5px;
+    box-shadow: inset 0 0 8px black;
+    position: relative;
+}
+.HPSpace {
+    border: 2px solid black;
+    border-radius: 200px;
+    width: 50px;
+    height: 50px;
+    font-family: 'Julius Sans One';
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 7px;
+    right: 25px;
+    background: white;
+    z-index: 2;
+}
+.ArmorIcon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: -10px;
+    filter: drop-shadow(0px 0px 2px white);
+}
+.ArmorValue {
+    font-size: 22px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:white;
+}
+.ArmorSpace {
+    position: absolute;
+    top: 28px;
+    right: 40px;
+    z-index: 3;
+}
+
+.AttackSpace {
+    position: absolute;
+    top: 13px;
+    right: 65px;
+    z-index: 0;
+    border: 1px solid red;
+    border-radius: 4px;
+    background: white;
+    padding: 5px;
+    padding-right: 15px;
+}
+
+.Definition {
+    max-height: 131px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    border-bottom: 1px solid #536354;
+    transition: max-height linear 1s;
+}
+.Definition.Full{
+    height:auto;
+    max-height:1500px;
+}
+
+.DefinitionButton {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    top: -18px;
+    right: 9px;
+    z-index: 2;
+    border: 1px solid #586959;
+    background: #bec9bf;
+    padding: 5px;
+    border-radius: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    filter: drop-shadow(0px 2px 3px #000000AA);
+}
+    .DefinitionButton:hover {
+        filter: drop-shadow(0px 2px 1px #000000AA);
+    }

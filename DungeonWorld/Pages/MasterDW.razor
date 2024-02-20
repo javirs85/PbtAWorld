@@ -1,0 +1,217 @@
+﻿@using static PbtaWorldRazonCommonComponents.LastRollOverlay;
+@inject DWGameController Game
+@inject IToastService Toaster
+@inject DWMovesService Moves
+@inject LastRollViewerService LastRollViewer
+@inject VTTService VTT
+@inject VTTLocalManagerService VTTViewer
+@inject IDataBaseController Meta;
+@if (_ShowingVTT)
+{
+	<VTT />
+}
+else if(_showingSquareMap)
+{
+	<SquareMapViewer Map="Game.SquareMap" />
+}
+else
+{
+	<div class="MasterMain">
+		<div class="MasterMainColumn">
+			<div class="d-flex gap-1">
+				<button class="btn btn-primary" @onclick=@(()=>{_showingSquareMap = false; _ShowingVTT =true;})>VTT</button>
+				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})>Map</button>
+				<button class="btn btn-primary" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></button>
+			</div>
+			
+		</div>
+		<div class="MasterMainColumn"></div>
+		<div class="GenericMoves MasterMainColumn mx-2">
+			<div class="MovementsGroup">
+				<div class="MovementsGroupTittle">Movimientos comunes</div>
+				@foreach (var m in BasicMovements)
+				{
+					<MovementViewer Player="SelectedCharacter" Movement="m" />
+				}
+				<div class="MovementsGroupTittle">Movimientos avanzados</div>
+				@foreach (var m in AdvancedMovements)
+				{
+					<MovementViewer Player="SelectedCharacter" Movement="m" />
+				}
+			</div>
+		</div>
+		<div class="PlayersColumn MasterMainColumn">
+			<div class="PlayersAreaHeader">
+				@foreach(var player in Meta.SelectedSeason.Players)
+				{
+					@if (player is not null &&  player is not DWCharacter)
+					{
+						<div class="PlayersAreaHeaderTab Disabled">* @player.Name *</div>
+					}
+					else
+					{
+						@if (((DWCharacter)player).Profession != DWClasses.DW_Master)
+						{
+							<div class="PlayersAreaHeaderTab 
+								@(SelectedCharacter==((DWCharacter)player)?"Selected":"")" 
+								@onclick=@(()=>{SelectCharacter((DWCharacter)player);})>
+								<span>@player.Name</span>
+								<span>@(((DWCharacter)player).Profession.ToUI())</span>
+							</div>
+						}						
+					}
+				}
+				<div class="PlayersAreaHeaderTab @(SelectingEnemies?"Selected":"")" @onclick=TogglingSelectingEnemiesClicked>
+					<i class="bi text-danger bi-gitlab"></i>
+				</div>
+			</div>
+			<div class="d-flex flex-column flex-grow-1">
+				@if(SelectedCharacter is not null)
+				{
+					@if(SelectedCharacter.Background is not null)
+					{
+						<div>
+							<BackgroundViewer AllowEdit=false Background="SelectedCharacter.Background"  ShowEditButton=false />
+						</div>
+					}
+					<div class="MovementsGroup">
+						<div class="MovementsGroupTittle">Movimientos de @SelectedCharacter.Profession.ToUI()</div>
+						@foreach (var m in ClassMovements)
+						{
+							<MovementViewer Player="SelectedCharacter" Movement="m" />
+						}
+					</div>
+					<div class="MovementsGroup">
+						<div class="MovementsGroupTittle d-flex align-items-center">
+							Movimientos de @SelectedCharacter.Profession.ToUI() Avanzados
+						</div>
+						@foreach (var m in AvancedClassMovements)
+						{
+							<MovementViewer Player="SelectedCharacter" Movement="m" />
+						}
+					</div>
+					<div class="PlayersAreaFiller"></div>
+				}
+				else
+				{
+					
+						<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SelectEnemies">Elegir enemigo</button>
+					
+					<div class="PlayersAreaFiller"></div>
+				}
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="SelectEnemies" tabindex="-1">
+		<div class="modal-dialog modal-fullscreen" id="SelectEnemies">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="MonsterLocationSelection accordion" id="MonsterLocationSelector">
+						@foreach(var location in Game.Book.Monsters.AllMonsterPacks)
+						{
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button class="accordion-button collapsed"
+											style="border-color: none!important; outline:none!important; box-shadow:none!important;"
+											type="button" data-bs-toggle="collapse"
+											data-bs-target="#@FromNameToID(location.Name)">
+											@location.Name
+									</button>
+								</h2>
+								<div id="@FromNameToID(location.Name)" class="accordion-collapse collapse" data-bs-parent="#MonsterLocationSelector">
+									<div class="accordion-body">
+										<div class="d-flex flex-wrap">
+											@foreach(var m in location.Monsters)
+											{
+												<EnemyCard monster="m"/>
+											}
+										</div>
+									</div>
+								</div>
+							</div>
+						}
+
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+	bool _ShowingVTT = false;
+	bool _showingSquareMap = false;
+	bool SelectingEnemies = false;
+	Monster? SelectedEnemy = null;
+	private DWCharacter? SelectedCharacter = null;
+
+
+	List<IMove> ClassMovements = new();
+	List<IMove> AvancedClassMovements = new();
+	List<IMove> BasicMovements = new();
+	List<IMove> AdvancedMovements = new();
+
+	protected override void OnParametersSet()
+	{
+		VTTViewer.IsMaster = true;
+		VTTViewer.CloseRequested += (object? sender, EventArgs e) =>
+		{
+			_ShowingVTT = false;
+			StateHasChanged();
+		};
+
+		BasicMovements.Clear();
+		foreach (var movID in Moves.BasicMovements)
+		{
+			var m = Moves.GetMovement(movID);
+			BasicMovements.Add(m);
+		}
+		AdvancedMovements.Clear();
+		foreach (var movID in Moves.AdvancedMovements)
+		{
+			var m = Moves.GetMovement(movID);
+			AdvancedMovements.Add(m);
+		}
+	}
+
+	void SelectCharacter(DWCharacter c) 
+	{
+		SelectedCharacter = c;
+		SelectingEnemies = false;
+
+		ClassMovements.Clear();
+		foreach (var movID in SelectedCharacter.ClassMovments)
+		{
+			var m = Moves.GetMovement(movID);
+			if (m is not null)
+				ClassMovements.Add(m);
+		}
+		AvancedClassMovements.Clear();
+		foreach (var movID in SelectedCharacter.ClassAdvancedMovments)
+		{
+			var m = Moves.GetMovement(movID);
+			if (m is not null)
+				AvancedClassMovements.Add(m);
+		}
+
+	}
+
+	void TogglingSelectingEnemiesClicked()
+	{
+		if(SelectingEnemies)
+		{
+			SelectingEnemies = false;
+		}
+		else
+		{
+			SelectingEnemies = true;
+			SelectedCharacter = null;
+		}
+	}
+
+	string FromNameToID(string s) => String.Concat(s.Where(c => !Char.IsWhiteSpace(c)));
+}

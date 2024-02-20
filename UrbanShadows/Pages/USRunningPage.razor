@@ -11,6 +11,7 @@
 @inject MoveSelector.MoveSelectorService  MSelector
 @inject LastRollViewerService LastRollViewerService
 @inject CharacterSelectorService CharacterSelectorService
+@inject VTTService VTT
 
 <MoveSelector />
 <EditForm Model="Player">
@@ -467,6 +468,8 @@
 	protected async override void OnParametersSet()
 	{
 		if (Player is null) Player = new(Moves);
+
+		VTT.Players = Game.Players;
 
 		Game.NewInfoToast -= ShowInfo;
 		Game.NewInfoToast += ShowInfo;

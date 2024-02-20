@@ -4,24 +4,60 @@
     font-family: 'Alegreya SC', serif;
 }
 
+.PaperBack {
+    background-image: url(imgs/DW/PaperTexture.png);
+}
+
 .PaperSheet {
     background-image: url(imgs/DW/PaperTexture.png);
     height: 100%;
     width: 755px;
-    min-width: 755px;
-    max-width: 755px;
     filter: drop-shadow(0 0 5px #000);
+    position: relative;
+    transition: all 0.3s linear;
+    overflow: hidden;
 }
+    .PaperSheet.FullPaper {
+        min-width: 755px !important;
+        max-width: 755px !important;
+    }
+    .PaperSheet.JustLeft {
+        max-width: 350px !important;
+        min-width: 350px !important;
+    }
+    .PaperSheet.NoPaper {
+        max-width: 20px !important;
+        min-width: 20px !important;
+    }
 
-.PaperFirstColumn {
-    width: 347px;
-    max-width: 347px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-    padding: 0 15px;
+.ChangeSizeButton {
+    border: 1px solid black;
+    border-right: none;
+    padding: 10px 0;
+    border-radius: 5px 0 0 5px;
+    background: #00000010;
+    opacity: 0.5;
+    cursor: pointer;
+    z-index:100;
 }
+    .ChangeSizeButton:hover{
+        opacity:1;
+    }
+    .ChangeSizeButton.Centered {
+        position: absolute;
+        top: 50%;
+        right: 0;
+    }
+
+    .PaperFirstColumn {
+        width: 347px;
+        max-width: 347px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        padding: 0 15px;
+    }
 
 .comment {
     font-family: Roboto;
@@ -341,3 +377,50 @@ input {
 
 }
 
+.SectionButton {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0000003e;
+    opacity: 0.5;
+    font-weight:bold;
+}
+.SectionButton:hover{
+    opacity:1;
+}
+
+.vtt{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#000000bf;
+    z-index:100;
+}
+
+.ToggleButton {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 400px;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff5e;
+    opacity: 0.5;
+    cursor:pointer;
+    transition: all 0.2s linear;
+}
+.ToggleButton:hover{
+    opacity:1;
+}

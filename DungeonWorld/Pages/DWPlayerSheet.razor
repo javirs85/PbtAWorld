@@ -6,6 +6,10 @@
 @inject IToastService Toaster
 @inject DWMovesService Moves
 @inject LastRollViewerService LastRollViewer
+@inject VTTService VTT
+@inject VTTLocalManagerService VTTViewer
+@inject IDataBaseController Meta;
+
 
 @if (false)
 {
@@ -18,33 +22,30 @@ else
 		<div class="LastRoll">
 		</div>
 	}
-	
-	<div class="d-flex SheetContainer" @onclick=FinishAllEdits>
-		<div class="PaperSheet d-flex flex-column">
-			<div class="w-100 m-2 d-flex align-items-center">
-				<div class="HeaderName @(IsEditingName ? "Hidden" : "" )" @onclick=EditName @onclick:stopPropagation>@Player.Name</div>
-				<input class="HeaderNameInput @(!IsEditingName ? "Hidden" : "" )" @onclick:stopPropagation @bind=Player.Name @onfocusout=UpdatePlayerName>
+	@if(IsShowingVTT)
+	{
+		<div class="vtt d-flex">
+			<VTT />
+			<div class="PaperBack d-flex flex-column gap-1 p-2 align-items-center"
+				style=" overflow-y:auto;
+						transition: width 0.2s linear;
+						width:@VttPaperWidth;
+						min-width:@VttPaperWidth;
+						border-left: 1px solid black; 
+						z-index:101;
+						box-shadow: 0 0 5px black; ">
 
-				<div class="HeaderProfession"> - @Player.Profession.ToUI() |</div>
-				@if(Player.Motivation == "")
-				{
-					<button class="btn btn-primary" title="Cuando *HAGAS CAMPAMENTO* marca XP si has cumplido con tu motivación"  @onclick=ChooseMotivation>Elegir motivación</button>
-				}
-				else
-				{
-					<div class="HeaderMotivation" title="Cuando *HAGAS CAMPAMENTO* marca XP si has cumplido con tu motivación" @onclick=ChooseMotivation>@Player.Motivation</div>
-				}
-
-			</div>
-			<div class="d-flex">
-				<div class="PaperFirstColumn">
-					@if (Player.STR == 0 && Player.DEX == 0 && Player.CON == 0 && Player.INT == 0 && Player.WIS == 0 && Player.CHA == 0)
-					{ 
-						<div>Reparte +2 +1 +1 0 0 -1</div>
-					}
+				<div class="ToggleButton" @onclick="@(()=>{IsShowingVTT = false;})"
+					 style="right:@(VttPaperWidth=="400px"?"20":"10")px;">
+					<i class="bi bi-x-lg"></i>
+				</div>
+				<div class="ToggleButton" @onclick="ToggleVTTPaper" style=" top:56px; right:@(VttPaperWidth=="400px"?"20":"10")px;">
+					<i class="bi bi-arrow-left-right"></i>
+				</div>
+				@if (VttPaperWidth == "400px") { 
 					<div class="d-flex flex-column">
-						<div class="d-flex w-100 align-items-center">
-							<StatViewer Player="Player" Stat=DWStats.DW_STR  UpdateUI="StateHasChanged"/>
+						<div class="d-flex align-items-center">
+							<StatViewer Player="Player" Stat=DWStats.DW_STR UpdateUI="StateHasChanged" />
 							<StatViewer Player="Player" Stat=DWStats.DW_DEX />
 							<StatViewer Player="Player" Stat=DWStats.DW_CON />
 						</div>
@@ -55,206 +56,330 @@ else
 						</div>
 					</div>
 					<div class="d-flex w-100 justify-content-center">
-						<div class="ArmorOuter">
-							<div class="ArmorTittle">Armadura</div>
-							<input @bind=Player.Armor @onfocusout=@(async()=>{await EditFinish("Armadura = "+Player.Armor);}) />
-						</div>
-						<div class="HealthOuter">
-							<div class="d-flex">
-								<input @bind=Player.CurrentHP @onfocusout=@(async ()=>{ await EditFinish($"Actualizó sus PG a {Player.CurrentHP}");}) />
-								<div>/@Player.MaxHP</div>
-							</div>
-						</div>
-						<div class="DamageOuter" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);})>
-							<div>Daño</div>
-							<div class="DamageBox">
-								<div class="DamageOptions d-flex flex-column" 
-								@onclick:stopPropagation
-								@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
-								@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;})
-								style="@(IsShowingDamageOptions?"display:flex;":"display:none!important;")">
+								<div class="ArmorOuter">
+									<div class="ArmorTittle">Armadura</div>
+									<input @bind=Player.Armor @onfocusout=@(async()=>{await EditFinish("Armadura = "+Player.Armor);}) />
+								</div>
+								<div class="HealthOuter">
 									<div class="d-flex">
-										<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Disadvantage);}) style="background: #ff000036;" />
-										<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);}) />
-										<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Advantage);}) style="    background: #0cb53836;" />
-									</div>
-									<div class="d-flex">
-										<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_DisadvantagePlus1d6);}) style="background: #ff000036;">+1d6</div>
-										<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_SimplePlus1d6);})>+1d6</div>
-										<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_AdvantagePlus1d6);}) style="background: #0cb53836;">+1d6</div>
+										<input @bind=Player.HP @onfocusout=@(async ()=>{ await EditFinish($"Actualizó sus PG a {Player.HP}");}) />
+										<div>/@Player.MaxHP</div>
 									</div>
 								</div>
-								<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")"
-								class="DamageBoxImage"
-								@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
-								@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;}) />
+								<div class="DamageOuter" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);})>
+									<div>Daño</div>
+									<div class="DamageBox">
+										<div class="DamageOptions d-flex flex-column" 
+										@onclick:stopPropagation
+										@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
+										@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;})
+										style="@(IsShowingDamageOptions?"display:flex;":"display:none!important;")">
+											<div class="d-flex">
+												<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Disadvantage);}) style="background: #ff000036;" />
+												<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);}) />
+												<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Advantage);}) style="    background: #0cb53836;" />
+											</div>
+											<div class="d-flex">
+												<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_DisadvantagePlus1d6);}) style="background: #ff000036;">+1d6</div>
+												<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_SimplePlus1d6);})>+1d6</div>
+												<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_AdvantagePlus1d6);}) style="background: #0cb53836;">+1d6</div>
+											</div>
+										</div>
+										<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")"
+										class="DamageBoxImage"
+										@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
+										@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;}) />
+									</div>
+								</div>
+							</div>
+
+					@foreach(var m in ClassMovements)
+					{
+						<MovementViewer Player="Player" Movement="@m" IsVTT=true />
+					}
+					<div class="m-2"></div>
+					@foreach (var m in AvancedClassMovements)
+					{
+						<MovementViewer Player="Player" Movement="@m" IsVTT=true />
+					}
+					<div class="m-2"></div>
+					@foreach (var m in VTTMoves)
+					{
+						<MovementViewer Player="Player" Movement="@m" IsVTT=true />
+					}
+				}
+			</div>
+		</div>
+	}
+
+	<div class="d-flex SheetContainer" @onclick=FinishAllEdits>
+		<div class="PaperSheet d-flex flex-column @CurrentPapereSize.ToString()">
+			
+			@if(CurrentPapereSize == PaperSize.FullPaper)
+			{
+				<div class="ChangeSizeButton Centered" @onclick=@(()=>{CurrentPapereSize = PaperSize.JustLeft;})>
+					<i class="bi bi-chevron-compact-left"></i>
+				</div>
+			}
+			else if(CurrentPapereSize == PaperSize.JustLeft)
+			{
+				<div class="ChangeSizeButton Centered d-flex flex-column gap-1" style="border:none; background: transparent;">
+					<div class="ChangeSizeButton" style="position:relative;" @onclick=@(()=>{CurrentPapereSize = PaperSize.FullPaper;})>
+						<i class="bi bi-chevron-compact-right"></i>
+					</div>
+					<div class="ChangeSizeButton" style="position:relative;" @onclick=@(()=>{CurrentPapereSize = PaperSize.NoPaper;})>
+						<i class="bi bi-chevron-compact-left"></i>
+					</div>
+				</div>
+			}else
+			{
+				<div class="ChangeSizeButton Centered" @onclick=@(()=>{CurrentPapereSize = PaperSize.JustLeft;})>
+					<i class="bi bi-chevron-compact-right"></i>
+				</div>
+			}
+
+			@if (CurrentPapereSize != PaperSize.NoPaper)
+			{
+				<div class="w-100 m-2 d-flex align-items-center">
+					<div class="HeaderName @(IsEditingName ? "Hidden" : "" )" @onclick=EditName @onclick:stopPropagation>@Player.Name</div>
+					<input class="HeaderNameInput @(!IsEditingName ? "Hidden" : "" )" @onclick:stopPropagation @bind=Player.Name @onfocusout=UpdatePlayerName>
+
+					<div class="HeaderProfession"> - @Player.Profession.ToUI() |</div>
+					@if (CurrentPapereSize == PaperSize.FullPaper)
+					{
+						@if (Player.Motivation == "")
+						{
+							<button class="btn btn-primary" title="Cuando *HAGAS CAMPAMENTO* marca XP si has cumplido con tu motivación" @onclick=ChooseMotivation>Elegir motivación</button>
+						}
+						else
+						{
+							<div class="HeaderMotivation" title="Cuando *HAGAS CAMPAMENTO* marca XP si has cumplido con tu motivación" @onclick=ChooseMotivation>@Player.Motivation</div>
+						}
+					}
+				</div>
+				<div class="d-flex">
+					<div class="PaperFirstColumn">
+						@if (Player.STR == 0 && Player.DEX == 0 && Player.CON == 0 && Player.INT == 0 && Player.WIS == 0 && Player.CHA == 0)
+						{
+							<div>Reparte +2 +1 +1 0 0 -1</div>
+						}
+						<div class="d-flex flex-column">
+							<div class="d-flex w-100 align-items-center">
+								<StatViewer Player="Player" Stat=DWStats.DW_STR  UpdateUI="StateHasChanged"/>
+								<StatViewer Player="Player" Stat=DWStats.DW_DEX />
+								<StatViewer Player="Player" Stat=DWStats.DW_CON />
+							</div>
+							<div class="d-flex">
+								<StatViewer Player="Player" Stat=DWStats.DW_INT />
+								<StatViewer Player="Player" Stat=DWStats.DW_WIS />
+								<StatViewer Player="Player" Stat=DWStats.DW_CHA />
 							</div>
 						</div>
-					</div>
-					<div class="d-flex flex-column w-100">
-						<div class="d-flex align-items-center gap-1">
-							<RedCheckBox Style="RedCheckBox.Styles.Transparent"
+						<div class="d-flex w-100 justify-content-center">
+							<div class="ArmorOuter">
+								<div class="ArmorTittle">Armadura</div>
+								<input @bind=Player.Armor @onfocusout=@(async()=>{await EditFinish("Armadura = "+Player.Armor);}) />
+							</div>
+							<div class="HealthOuter">
+								<div class="d-flex">
+									<input @bind=Player.HP @onfocusout=@(async ()=>{ await EditFinish($"Actualizó sus PG a {Player.HP}");}) />
+									<div>/@Player.MaxHP</div>
+								</div>
+							</div>
+							<div class="DamageOuter" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);})>
+								<div>Daño</div>
+								<div class="DamageBox">
+									<div class="DamageOptions d-flex flex-column" 
+									@onclick:stopPropagation
+									@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
+									@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;})
+									style="@(IsShowingDamageOptions?"display:flex;":"display:none!important;")">
+										<div class="d-flex">
+											<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Disadvantage);}) style="background: #ff000036;" />
+											<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Simple);}) />
+											<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_Advantage);}) style="    background: #0cb53836;" />
+										</div>
+										<div class="d-flex">
+											<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_DisadvantagePlus1d6);}) style="background: #ff000036;">+1d6</div>
+											<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_SimplePlus1d6);})>+1d6</div>
+											<div class="DamagePlusOne" @onclick=@(()=>{RequestRollDamage(RollTypes.Roll_AdvantagePlus1d6);}) style="background: #0cb53836;">+1d6</div>
+										</div>
+									</div>
+									<img src="@($"imgs/DW/{Player.Damage.ToImagePath()}")"
+									class="DamageBoxImage"
+									@oncontextmenu:preventDefault @oncontextmenu:stopPropagation
+									@oncontextmenu=@(()=>{IsShowingDamageOptions = !IsShowingDamageOptions;}) />
+								</div>
+							</div>
+						</div>
+						<div class="d-flex flex-column w-100">
+							<div class="d-flex align-items-center gap-1">
+								<RedCheckBox Style="RedCheckBox.Styles.Transparent"
 								Value=Player.IsWeak Clicked="@(async()=>{Player.IsWeak = !Player.IsWeak; await EditFinish($"Cambió débil {Player.IsWeak}");})"/>
-							<div>Débil: desventaja en FUE y DES</div>
-						</div>
-						<div class="d-flex align-items-center gap-1">
-							<RedCheckBox Style="RedCheckBox.Styles.Transparent"
+								<div>Débil: desventaja en FUE y DES</div>
+							</div>
+							<div class="d-flex align-items-center gap-1">
+								<RedCheckBox Style="RedCheckBox.Styles.Transparent"
 								Value=Player.IsStun Clicked="@(async()=>{Player.IsStun = !Player.IsStun; await EditFinish($"Cambió Aturdido {Player.IsStun}");})" />
-							<div>Aturdido: desventaja en INT y SAB</div>
-						</div>
-						<div class="d-flex align-items-center gap-1">
-							<RedCheckBox Style="RedCheckBox.Styles.Transparent"
+								<div>Aturdido: desventaja en INT y SAB</div>
+							</div>
+							<div class="d-flex align-items-center gap-1">
+								<RedCheckBox Style="RedCheckBox.Styles.Transparent"
 								Value=Player.IsMiserable Clicked="@(async()=>{Player.IsMiserable = !Player.IsMiserable; await EditFinish($"Cambió miserable {Player.IsMiserable}");})" />
-							<div>Miserable: desventaja en CON y CAR</div>
+								<div>Miserable: desventaja en CON y CAR</div>
+							</div>
+							<div class="Separator"></div>
 						</div>
-						<div class="Separator"></div>
-					</div>
-					<div class="d-flex flex-column align-items-center w-100">
-						<!--PointsViewer NonFixedWidth=true points="Player.PX" Player="Player"/-->
-						<div class="comment">
-							Gasta 1PX para añadir +1 a una tirada después de tirar.
+						<div class="d-flex flex-column align-items-center w-100">
+							<!--PointsViewer NonFixedWidth=true points="Player.PX" Player="Player"/-->
+							<div class="comment">
+								Gasta 1PX para añadir +1 a una tirada después de tirar.
+							</div>
+							<div class="comment">
+								Gasta 5PX para elegir un avance
+							</div>
+							<div class="Separator"></div>
 						</div>
-						<div class="comment">
-							Gasta 5PX para elegir un avance
-						</div>
-						<div class="Separator"></div>
-					</div>
-					<div class="d-flex flex-column align-items-center w-100">
-						@for(int i = 0 ; i<Player.Tracks.Count; ++i)
-						{
-							var Track = Player.Tracks[i];
-							<div class="d-flex align-items-center">
-								<PointsViewer points="Track" Player="Player"/>
-								@if(i == Player.Tracks.Count -1)
-								{
-									<div class="TrackButton" style="background: green;"
+						<div class="d-flex flex-column align-items-center w-100">
+							@for (int i = 0; i < Player.Tracks.Count; ++i)
+							{
+								var Track = Player.Tracks[i];
+								<div class="d-flex align-items-center">
+									<PointsViewer points="Track" Player="Player"/>
+									@if (i == Player.Tracks.Count - 1)
+									{
+										<div class="TrackButton" style="background: green;"
 										@onclick:stopPropagation @onclick=@(
 											async() =>{ 
 												Player.Tracks.Add(new Points{Tittle="Track"}); 
 												await Game.StoreChangesOnCharacter(Player, "añadió un track");
 											})>
-										+
-									</div>
-								}
-								else
-								{
-									<div class="TrackButton" style=" background: red;  "
+											+
+										</div>
+									}
+									else
+									{
+										<div class="TrackButton" style=" background: red;  "
 										@onclick:stopPropagation @onclick=@(
 											async() =>{
 											 await RemoveTrack(Track);
 											 await Game.StoreChangesOnCharacter(Player, "eliminó un track");
 											})>
-										x
-									</div>
-								}
-							</div>
-						}						
-						<div class="Separator"></div>
-					</div>
-					<textarea class="SmallThingsTextArea" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
-					<div class="Separator"></div>
-					<div class="PaperSheetSubTittle w-100">Agenda</div>
-					<div class="d-flex flex-column w-100 ps-3" style="font-family: 'Roboto'; font-size: 12px;">
-						<div>
-							Representar un personaje atractivo<br/>
-							Interactuar con el mundo ficticio<br />
-							Jugar para descubrir qué sucede
+											x
+										</div>
+									}
+								</div>
+							}						
+							<div class="Separator"></div>
 						</div>
-					</div>
+						<!--<textarea class="SmallThingsTextArea" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
+						<div class="Separator"></div>
+						<div class="PaperSheetSubTittle w-100">Secciones</div>-->
+						<div class="d-flex w-100 ps-3" style="font-family: 'Roboto'; font-size: 12px;">
+							<div class="SectionButton" @onclick=@(()=>{VTT.StartForPlayer(Player); VTTViewer.Show(Player); IsShowingVTT=true;})>VTT</div>
+							<div class="SectionButton" @onclick=@(()=>{VTTViewer.IsMaster = true; VTTViewer.Show(); IsShowingVTT = true;})>Master</div>
+						</div>
 
-				</div>
-				<div class="flex-grow-1 h-100 px-3" style="max-width: 400px;">
-					<div class="d-flex align-items-center justify-content-between">
-						<div class="PaperSheetTittle">Equipo</div>
-						<div>
-							@for(int i = 0; i<Player.MaxLoad; ++i)
-							{
-								<RedCheckBox
+					</div>
+					<div class="flex-grow-1 h-100 px-3" style="max-width: 400px;">
+						<div class="d-flex align-items-center justify-content-between">
+							<div class="PaperSheetTittle">Equipo</div>
+							<div>
+								@for (int i = 0; i < Player.MaxLoad; ++i)
+								{
+									<RedCheckBox
 									Style="@(Player.Load > Player.MaxLoad ? RedCheckBox.Styles.RED : RedCheckBox.Styles.Diamond)"
 									Value=@(i < Player.Load)
-								/>
-							}
+									/>
+								}
+							</div>
 						</div>
-					</div>
-					@if(Player.Equip is not null && Player.Equip.GoodWeapons is not null && Player.Equip.GoodWeapons.Count > 0)
-					{						
-						<div class="PaperSheetSubTittle">
-							Armas buenas (+1 daño)
-						</div>
-						<div class="ItemPack">
-							@foreach(var i in Player.Equip.GoodWeapons)
-							{
-								<ItemViewer Game="Game"  Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})"/>
-							}
-						</div>
-					}
-					@if (Player.Equip is not null && Player.Equip.ArmorItems is not null && Player.Equip.ArmorItems.Count > 0)
-					{						
-						<div class="ItemPack">
-							@foreach(var i in Player.Equip.ArmorItems)
-							{
-								<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
-							}
-						</div>
-					}
-					@if (Player.Equip is not null && Player.Equip.OtherItems is not null && Player.Equip.OtherItems.Count > 0)
-					{
-						<div class="ItemPack">
-							@foreach (var i in Player.Equip.OtherItems)
-							{
-								<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
-							}
-						</div>
-					}
-					@if (Player.Equip is not null && Player.Equip.Misc is not null && Player.Equip.Misc.Count > 0)
-					{
-						<div class="ItemPack">
-							@foreach (var i in Player.Equip.Misc)
-							{
-								<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
-							}
-						</div>
-					}
-					@if (Player.Equip is not null && Player.Equip.Things is not null && Player.Equip.MoreThings is not null)
-					{
-						<div class="ItemPack flex-row justify-content-evenly">
-							<ItemViewer Game="Game" Player="Player" Item="Player.Equip.Things" UpdateUI="@(()=>{StateHasChanged();})" />
-							<ItemViewer Game="Game" Player="Player" Item="Player.Equip.MoreThings" UpdateUI="@(()=>{StateHasChanged();})" />
-						</div>
-					}
-					@if (Player.Equip is not null && Player.Equip.EditableItems is not null && Player.Equip.EditableItems.Count > 0)
-					{
-						<div class="PaperSheetSubTittle">Otros <span style="font-size:14px;">(Cuerda, antorchas, palanca, cosas pequeñas)</span></div>
-						<div class="ItemPack">
-							@foreach (var i in Player.Equip.EditableItems)
-							{
-								<ItemViewer Game="Game" Wide100=true Player="Player" Item="i" IsEditable=true UpdateUI="@(()=>{StateHasChanged();})" />
-							}
-						</div>
-					}
-					<div class="border-dark w-100">
-						<div class="PaperSheetSubTittle">Cosas pequeñas</div>
-						@if(Player.Equip is not null)
+						@if (Player.Equip is not null && Player.Equip.GoodWeapons is not null && Player.Equip.GoodWeapons.Count > 0)
 						{
-							<textarea class="SmallThingsTextArea" @bind=Player.Equip.SmallThings @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus bolsillos");})/>
-						}						
-					</div>
-					<div class="PaperSheetSubTittle w-100">PRINCIPIOS</div>
-					<div class="d-flex flex-column ps-2" style="font-family: 'Roboto'; font-size: 12px;">
-						<div>
-							Comenzar y terminar en la ficción<br/>
-							Mostrarnos lo que es importante para ti<br/>
-							Establecer conexiones con otros personajes<br/>
-							Ser audaz y tomar riesgos<br/>
-							Aceptar la dificultad, el contratiempo y el fracaso<br/>
-							Contribuir a su parte del mundo<br/>
-							Construir sobre lo que otros han dicho<br/>
-							Dar a otros la oportunidad de brillar<br />
-							Contribuir a la conversación: prestar atención, hacer preguntas y ofrecer sugerencias<br/>
+							<div class="PaperSheetSubTittle">
+								Armas buenas (+1 daño)
+							</div>
+							<div class="ItemPack">
+								@foreach (var i in Player.Equip.GoodWeapons)
+								{
+									<ItemViewer Game="Game"  Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})"/>
+								}
+							</div>
+						}
+						@if (Player.Equip is not null && Player.Equip.ArmorItems is not null && Player.Equip.ArmorItems.Count > 0)
+						{
+							<div class="ItemPack">
+								@foreach (var i in Player.Equip.ArmorItems)
+								{
+									<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
+								}
+							</div>
+						}
+						@if (Player.Equip is not null && Player.Equip.OtherItems is not null && Player.Equip.OtherItems.Count > 0)
+						{
+							<div class="ItemPack">
+								@foreach (var i in Player.Equip.OtherItems)
+								{
+									<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
+								}
+							</div>
+						}
+						@if (Player.Equip is not null && Player.Equip.Misc is not null && Player.Equip.Misc.Count > 0)
+						{
+							<div class="ItemPack">
+								@foreach (var i in Player.Equip.Misc)
+								{
+									<ItemViewer Game="Game" Player="Player" Item="i" UpdateUI="@(()=>{StateHasChanged();})" />
+								}
+							</div>
+						}
+						@if (Player.Equip is not null && Player.Equip.Things is not null && Player.Equip.MoreThings is not null)
+						{
+							<div class="ItemPack flex-row justify-content-evenly">
+								<ItemViewer Game="Game" Player="Player" Item="Player.Equip.Things" UpdateUI="@(()=>{StateHasChanged();})" />
+								<ItemViewer Game="Game" Player="Player" Item="Player.Equip.MoreThings" UpdateUI="@(()=>{StateHasChanged();})" />
+							</div>
+						}
+						@if (Player.Equip is not null && Player.Equip.EditableItems is not null && Player.Equip.EditableItems.Count > 0)
+						{
+							<div class="PaperSheetSubTittle">Otros <span style="font-size:14px;">(Cuerda, antorchas, palanca, cosas pequeñas)</span></div>
+							<div class="ItemPack">
+								@foreach (var i in Player.Equip.EditableItems)
+								{
+									<ItemViewer Game="Game" Wide100=true Player="Player" Item="i" IsEditable=true UpdateUI="@(()=>{StateHasChanged();})" />
+								}
+							</div>
+						}
+						<div class="border-dark w-100">
+							<div class="PaperSheetSubTittle">Cosas pequeñas</div>
+							@if (Player.Equip is not null)
+							{
+								<textarea class="SmallThingsTextArea" @bind=Player.Equip.SmallThings @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus bolsillos");})/>
+							}						
+						</div>
+						<div class="PaperSheetSubTittle w-100">PRINCIPIOS</div>
+						<div class="d-flex flex-column ps-2" style="font-family: 'Roboto'; font-size: 12px;">
+							<div class="fw-bold pb-1">
+								Representar un personaje atractivo<br />
+								Interactuar con el mundo ficticio<br />
+								Jugar para descubrir qué sucede
+							</div>
+							<div>
+								Comenzar y terminar en la ficción<br/>
+								Mostrarnos lo que es importante para ti<br/>
+								Establecer conexiones con otros personajes<br/>
+								Ser audaz y tomar riesgos<br/>
+								Aceptar la dificultad, el contratiempo y el fracaso<br/>
+								Contribuir a su parte del mundo<br/>
+								Construir sobre lo que otros han dicho<br/>
+								Dar a otros la oportunidad de brillar<br />
+								Contribuir a la conversación: prestar atención, hacer preguntas y ofrecer sugerencias<br/>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			}
+
 		</div>
 
 		<div class="MovementsArea flex-grow-1 d-flex">
@@ -279,7 +404,7 @@ else
 				<div class="MovementsGroup">
 					<div class="MovementsGroupTittle d-flex align-items-center">
 						Movimientos de @Player.Profession.ToUI() Avanzados
-						<img src="imgs/DW/editIcon.png" @onclick=AdvancedMovementsSelector/>
+						<img src="imgs/DW/editIcon.png" style="margin-left:10px" @onclick=AdvancedMovementsSelector/>
 					</div>
 					@foreach (var m in AvancedClassMovements)
 					{
@@ -356,6 +481,7 @@ else
 	private enum EditableBits {Name, Background1, Background2, Background3x}
 	private States CurrentState = States.Character;
 	private bool _ShowingLastRoll = false;
+	private bool IsShowingVTT = false;
 	private bool IsShowingDamageOptions = false;
 
 	private List<string> StringsForStringSelector = new();
@@ -364,12 +490,32 @@ else
 	private string EditableString = "";
 	private string EditableStringTopic = "";
 
-	[Parameter] public DWCharacter Player { get; set; } = new();
+	[Parameter] public DWCharacter Player {
+		get; 
+		set; } = new();
 
 	private List<IMove> BasicMovements = new();
 	private List<IMove> AdvancedMovements = new();
 	private List<IMove> ClassMovements = new();
 	private List<IMove> AvancedClassMovements = new();
+	private List<IMove> VTTMoves = new();
+
+	private string VttPaperWidth = "400px";
+	private void ToggleVTTPaper()
+	{
+		if (VttPaperWidth == "400px") VttPaperWidth = "60px";
+		else VttPaperWidth = "400px";
+	}
+
+	enum PaperSize {JustLeft, NoPaper, FullPaper};
+	PaperSize CurrentPapereSize = PaperSize.FullPaper;
+
+	void ChangePaperSize()
+	{
+		if (CurrentPapereSize == PaperSize.FullPaper) CurrentPapereSize = PaperSize.JustLeft;
+		else if (CurrentPapereSize == PaperSize.JustLeft) CurrentPapereSize = PaperSize.NoPaper;
+		else CurrentPapereSize = PaperSize.FullPaper;
+	}
 
 	private bool IsEditingName = false;
 	private string EditDetails = "";
@@ -424,6 +570,18 @@ else
 				AvancedClassMovements.Add(m);
 		}
 
+		VTTMoves.Clear();
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_DefyDanger));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_DiscernReality));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_IHaveWhatINeed));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_Interfere));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_Parley));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_SproutLore));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_Defend));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_HnS));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_Volley));
+		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_KeepYouMind));
+
 		Game.OnUIUpdate += (o, e) => InvokeAsync(() => { StateHasChanged(); });
 
 		Game.NewInfoToast -= ShowInfo;
@@ -435,10 +593,20 @@ else
 		Game.OnNewRoll -= ShowRoll;
 		Game.OnNewRoll += ShowRoll;
 
+		VTT.Players = Game.Players;
+
 		Player.UpdateUI += (o, e) =>
 		{
 			InvokeAsync(() => { StateHasChanged(); });
 			//map?.Update();
+		};
+
+		VTT.StoreChangesInCharacterSheet += async (s, id) =>
+		{
+			if(Player.ID == id)
+			{
+				await EditFinish("Ficha actualizada desde VTT");
+			}
 		};
 	}
 

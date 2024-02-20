@@ -1,0 +1,29 @@
+﻿@using PbtALib
+@using static PbtALib.BaseTextBook
+
+<div class="TagContainer @Color" style="@(Width!=0?$"width: {Width}px;":"")"
+	@onmouseenter=@(()=>{IsMouseOver = true;}) 
+	@onmouseleave=@(()=>{IsMouseOver = false;})>
+	<div class="TagInner @(IsMouseOver?"":"visually-hidden")">
+		@Tag?.Description
+	</div>
+	@Tag?.Tittle
+</div>
+
+@code {
+	[Parameter] public TagIDs ID { get; set; } = TagIDs.NotSet;
+	[Parameter] public TagColors Color { get; set; } = TagColors.Black;
+	[Parameter] public Tag? Tag { get; set; } = null;
+	[Parameter] public float Width { get; set; } = 0;
+
+	public enum TagColors {Green, Red, Orange, Blue, Black};
+
+	bool IsMouseOver = false;
+
+	protected override void OnParametersSet()
+	{
+		if (Tag is null)
+			if (ID != TagIDs.NotSet)
+				Tag = PbtALib.BaseTextBook.AllTags.Find(x => x.ID == ID);
+	}
+}

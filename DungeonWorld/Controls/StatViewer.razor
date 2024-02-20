@@ -86,7 +86,7 @@
 	private void RequestRoll(DWMovementIDs movID, RollTypes rt)
 	{
 		var mov = Moves.GetMovement(movID);
-		Game.Roll(Player.ID, Stat, movID, Player.getBonus(Stat), rt);
+		Game.Roll(Player.ID, mov, Stat, movID, Player.getBonus(Stat), rt);
 	}
 
 	private async Task EditFinished()

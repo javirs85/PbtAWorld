@@ -20,10 +20,24 @@ public class DWCharacter : PbtALib.PbtACharacter
             if (value != _profession)
 			{
 				_profession = value;
+				ClassString = _profession.ToString();
 				Init();
 			}
 		}
 	}
+
+	private int _hp = 0;
+	public override int HP
+	{
+		get => _hp;
+		set
+		{
+			if(value != _hp) _hp = Math.Min(value, MaxHP); 
+			OnUpdateUI();
+			OnVTTUpdate();
+		}
+	}
+
 	public Equipment Equip { get; set; } = new();
 
 	public string Motivation { get; set; } = "";
@@ -63,8 +77,6 @@ public class DWCharacter : PbtALib.PbtACharacter
 		}
 	}
 
-	public int MaxHP { get; set; }
-	public int CurrentHP { get; set; }
 	public DiceTypes Damage { get; set; }
 
 	public int STR { get; set; }
@@ -896,7 +908,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Barbarian_InitialChoose, DWMovementIDs.DW_Barbarian_Forastero, DWMovementIDs.DW_Barbarian_Formidable, DWMovementIDs.DW_Barbarian_Hunger, DWMovementIDs.DW_Barbarian_UpperHand });
 				MaxHP = 20;
 				Damage = DiceTypes.d10;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 3;
 				Equip = new Equipment()
 				{
@@ -925,7 +937,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Barb_Works, DWMovementIDs.DW_Barb_DoWorks, DWMovementIDs.DW_Barb_Reputation, DWMovementIDs.DW_Barb_Knowledge, DWMovementIDs.DW_Barb_Smart, DWMovementIDs.DW_Bard_Works_Fascination });
 				MaxHP = 16;
 				Damage = DiceTypes.d6;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 4;
 				Equip = new Equipment()
 				{
@@ -957,7 +969,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Cleric_CastSpell, DWMovementIDs.DW_Cleric_Favor, DWMovementIDs.DW_Cleric_PrepareSpell, DWMovementIDs.DW_Cleric_Spells });
 				MaxHP = 18;
 				Damage = DiceTypes.d6;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 5;
 				Equip = new Equipment()
 				{
@@ -985,7 +997,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Druid_Comunion, DWMovementIDs.DW_Druid_SecretLanguage, DWMovementIDs.DW_Druid_ShapeShifter, DWMovementIDs.DW_Druid_TouchedBySpirit });
 				MaxHP = 16;
 				Damage = DiceTypes.d6;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 4;
 				Equip = new Equipment()
 				{
@@ -1014,7 +1026,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Ranger_FollowMe, DWMovementIDs.DW_Ranger_Friend, DWMovementIDs.DW_Ranger_Hunt, DWMovementIDs.DW_Ranger_Shoot, DWMovementIDs.DW_Ranger_Stealthy });
 				MaxHP = 18;
 				Damage = DiceTypes.d8;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 3;
 				Equip = new Equipment()
 				{
@@ -1047,7 +1059,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Fighter_Bend, DWMovementIDs.DW_Fighter_Blind, DWMovementIDs.DW_Fighter_Expert, DWMovementIDs.DW_Fighter_Fright, DWMovementIDs.DW_Fighter_Hard });
 				MaxHP = 20;
 				Damage = DiceTypes.d10;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 6;
 				Equip = new Equipment()
 				{
@@ -1080,7 +1092,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Thief_Backstab, DWMovementIDs.DW_Thief_DangerSense, DWMovementIDs.DW_Thief_Poison, DWMovementIDs.DW_Thief_Stealth, DWMovementIDs.DW_Thief_Tricks });
 				MaxHP = 16;
 				Damage = DiceTypes.d8;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 3;
 				Equip = new Equipment()
 				{
@@ -1108,7 +1120,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Wizard_CastSpell, DWMovementIDs.DW_Wizard_PrepareSpell, DWMovementIDs.DW_Wizard_Ritual, DWMovementIDs.DW_Wizard_Spells });
 				MaxHP = 14;
 				Damage = DiceTypes.d4;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 3;
 				Equip = new Equipment()
 				{
@@ -1136,8 +1148,8 @@ public class DWCharacter : PbtALib.PbtACharacter
 			case DWClasses.DW_Paladin:
 				MaxHP = 20;
 				Damage = DiceTypes.d10;
-				CurrentHP = MaxHP;
-				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Paladin_Eyes, DWMovementIDs.DW_Paladin_Grace, DWMovementIDs.DW_Paladin_Hurt, DWMovementIDs.DW_Paladin_NoFear, DWMovementIDs.DW_Paladin_Obliged });
+				HP = MaxHP;
+				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Paladin_Eyes, DWMovementIDs.DW_Fighter_Blind, DWMovementIDs.DW_Paladin_Grace, DWMovementIDs.DW_Paladin_Hurt, DWMovementIDs.DW_Paladin_NoFear, DWMovementIDs.DW_Paladin_Obliged });
 				MaxLoadBase = 6;
 				Equip = new Equipment()
 				{
@@ -1163,7 +1175,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Wielder_Measure, DWMovementIDs.DW_Wielder_Valor, DWMovementIDs.DW_Wielder_Weapon });
 				MaxHP = 20;
 				Damage = DiceTypes.d10;
-				CurrentHP = MaxHP;
+				HP = MaxHP;
 				MaxLoadBase = 5;
 				Equip = new Equipment()
 				{

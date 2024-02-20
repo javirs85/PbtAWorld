@@ -172,7 +172,7 @@ public enum DWStats
 public enum DWClasses
 {
 	DW_Barbarian, DW_Bard, DW_Cleric, DW_Druid, DW_Explorer, DW_Fighter, DW_Thief, DW_Mage, DW_Paladin, DW_Wielder,
-	DW_NotSet
+	DW_NotSet, DW_Master
 }
 public enum MonsterKinds { cavernas, pantano, nomuerto, BosqueOscuro, Horda, Experimentos, Profundidades, Planares, Gentes, NotSet }
 
@@ -232,6 +232,7 @@ public static class DWExtesions
 			DWClasses.DW_Mage => "Mago",
 			DWClasses.DW_Paladin => "Paladín",
 			DWClasses.DW_Wielder => "Portador",
+			DWClasses.DW_Master => "Master",
 			_ => "Unknown DWClass"
 		};
 	}
