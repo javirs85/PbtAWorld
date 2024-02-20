@@ -1,6 +1,19 @@
-﻿<div class="MonsterCard">
-	<div>
-		<div class=" d-flex flex-row flex-wrap gap-1">
+﻿@inject VTTService VTT
+
+<div class="MonsterCard">
+	<div class="d-flex flex-column">
+		@if (FullText)
+		{
+			<div class=" d-flex flex-row flex-wrap gap-1">
+				<span class="MonsterCardTitle">@monster.Name</span>
+				<div>
+					@monster.Definition
+				</div>
+			</div>
+		}
+		else
+		{
+			<div class=" d-flex flex-row flex-wrap gap-1">
 			<span class="MonsterCardTitle">@monster.Name</span>
 			<TagVisualizer ID="monster.Size" Color="TagVisualizer.TagColors.Red" Width="80" />
 			<TagVisualizer ID="monster.Organization" Color=TagVisualizer.TagColors.Green Width="80" />
@@ -9,22 +22,21 @@
 				<TagVisualizer ID="t" />
 			}
 		</div>
-		<div class="d-flex flex-column">
-			<div>
-				@monster.Attack?.AttackDicesString
+			<div class="d-flex flex-column flex-grow-1">
+			<div class="Definition d-flex flex-column h-100 flex-grow-1 @(FullText?"Full":"")">
+				@foreach (var m in monster.Moves)
+				{
+					<div class="p-1 m-1 border border-secondary rounded">@m.Tittle</div>
+				}
 			</div>
-			<div class="d-flex flex-column">
-				<div class="Definition @(FullText?"Full":"")">
-					@monster.Definition
-					
+			<div style="position:relative;">
+				<div class="d-flex">
+					<strong style="width: 70px;">Instinto:</strong>
+					<div>@monster.Instinct</div>
 				</div>
-				<div style="position:relative;">
-					<div class="DefinitionButton" @onclick=@(()=>{FullText = !FullText;})><i class="bi bi-arrow-down-up"></i></div>
-					<div class="d-flex">
-						<strong style="width: 70px;">Instinto:</strong>
-						<div>@monster.Instinct</div>
-					</div>
 
+				@if(monster.Special is not null && monster.Special.Count != 0)
+				{
 					<div class="d-flex">
 						<strong style="width: 70px;">Especial</strong>
 						<div class="d-flex flex-column">
@@ -37,9 +49,11 @@
 							}
 						</div>
 					</div>
-				</div>
+				}
 			</div>
 		</div>
+		}
+		
 	</div>
 	<div class="imgHolder" style="background-image:url(_content/DungeonWorld/imgs/DW/Monsters/Images/@(monster.ID).png); ">
 		<div class="HPSpace">@monster.MaxHP</div>
@@ -51,13 +65,46 @@
 				@monster.Armor
 			</div>
 		</div>
+		<div style="position: absolute; top:0px; left:10px; font-size:25px; opacity:0.5; cursor:pointer;"
+			@onclick=ShowDetails>
+			<i class="bi @(FullText?"bi-x-circle":"bi-info-circle")"></i>
+		</div>
+		<div style="position: absolute; bottom:0px; right:10px; font-size:35px; opacity:1; cursor:pointer;"
+			 @onclick=AddMinsterDefinition>
+			 @if(VTT.MonsterDefinitions.Contains(monster))
+			{
+				<i class="bi bi-dash-circle-fill" style="color:#ba4242;"></i>
+			}
+			else
+			{
+				<i class="bi bi-plus-circle-fill" style="color:#42ba63;"></i>
+			}			
+		</div>
 		<div class="AttackSpace d-flex align-items-center">
-			@monster.Attack?.AttackDicesString
+			@if (monster.Attack is not null && monster.Attack.RollType == RollTypes.Roll_Advantage)
+			{
+				<div style="position:relative; width:30px;">
+					<i class="bi bi-emoji-smile" style="position: absolute; top:-20px; left:0; font-size:25px; color: green;"></i>
+				</div>
+			}
+			else if (monster.Attack is not null && monster.Attack.RollType == RollTypes.Roll_Disadvantage)
+			{
+				<div style="position:relative; width:30px;">
+					<i class="bi bi-emoji-frown" style="position: absolute; top:-20px; left:0; font-size:25px; color: black;"></i>
+				</div>
+			}
+			@monster.Attack?.Dices[0].ToString()
 			@if (monster.Attack is not null && monster.Attack?.Piercing != 0)
 			{
 				<div style="position:relative; width:20px;">
-					<i class="bi bi-shield" style="position: absolute; left:0"></i>
-					<div style="position: absolute; left:0">-@monster.Attack.Piercing</div>
+					<i class="bi bi-shield" style="position: absolute; top:-20px; left:0; font-size:25px; color: red;"></i>
+					<div style="position: absolute; top:-13px; font-size:14px; left:5px; color: red;">-@monster.Attack.Piercing</div>
+				</div>
+			}
+			@if (monster.Attack is not null && monster.Attack.IgnoresArmor)
+			{
+				<div style="position:relative; width:20px;">
+					<i class="bi bi-shield-slash-fill" style="position: absolute; top:-20px; left:0; font-size:25px; color: red;"></i>
 				</div>
 			}
 		</div>
@@ -68,4 +115,15 @@
 	[Parameter] public  Monster monster { get; set; } = new();
 
 	bool FullText = false;
+
+	void AddMinsterDefinition()
+	{
+		VTT.MonsterDefinitions.Add(monster);
+		StateHasChanged();
+	}
+
+	void ShowDetails()
+	{
+		FullText = !FullText;
+	}
 }

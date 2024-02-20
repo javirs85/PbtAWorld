@@ -3,7 +3,12 @@
 @using PbtaWorldRazonCommonComponents;
 @inject VTTService service;
 @inject VTTLocalManagerService VTTViewer
-
+<div class="DefinitionsSelector">
+	@foreach (var md in service.MonsterDefinitions)
+	{
+		<div>@md.Name</div>
+	}
+</div>
 <div class="VTT justify-content-center flex-grow-1"
 		style="overflow:auto;"
 		@onclick=VTTViewer.Hide
@@ -165,6 +170,12 @@
 											@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
 											{
 												<option value="@v">@v</option>
+											}
+										</InputSelect>
+										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Monster>
+											@foreach(var m in service.MonsterDefinitions)
+											{
+												@m.Name
 											}
 										</InputSelect>
 									</EditForm>

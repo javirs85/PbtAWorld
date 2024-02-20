@@ -18,6 +18,7 @@ public class VTTService
 	public event EventHandler<Guid> StoreChangesInCharacterSheet;
 	public List<Token> Tokens = new();
 	public List<Prop> Props = new();
+	public List<Monster> MonsterDefinitions = new();
 	public bool IsOpen = false;
 
 	public enum VTTMaps { farm, Bandit1, Swamp, UDTBasic, UDT_Forest};
@@ -294,6 +295,8 @@ public class Token
 	public bool IsRound { get; set; } = false;
 
 	PbtACharacter? _character;
+	public Monster Monster { get; set; }
+
 	public PbtACharacter? Character { 
 		get => _character;
 		set
