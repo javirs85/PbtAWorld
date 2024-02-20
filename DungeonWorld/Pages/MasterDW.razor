@@ -6,13 +6,14 @@
 @inject VTTService VTT
 @inject VTTLocalManagerService VTTViewer
 @inject IDataBaseController Meta;
+
 @if (_ShowingVTT)
 {
-	<VTT />
+	<VTT Game="Game"/>
 }
-else if(_showingSquareMap)
+else if (_showingSquareMap)
 {
-	<SquareMapViewer Map="Game.SquareMap" />
+	<SquareMapViewer Map="Game.SquareMap" RequestCloseSquareMapViewer="@(()=>{_showingSquareMap=false;})"/>
 }
 else
 {
@@ -95,13 +96,26 @@ else
 				else
 				{
 					
-						<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SelectEnemies">Elegir enemigo</button>
-					
+					<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SelectEnemies">Elegir enemigo</button>
+					<div class="d-flex flex-column" style="overflow:auto;">
+						@foreach(var enemy in Game.MonsterDefinitionsInCurrentScene)
+						{
+							<EnemyCard monster="enemy" Game="Game"/>
+						}
+					</div>
 					<div class="PlayersAreaFiller"></div>
 				}
 			</div>
 		</div>
 	</div>
+
+
+
+
+
+
+
+
 	<div class="modal fade" id="SelectEnemies" tabindex="-1">
 		<div class="modal-dialog modal-fullscreen" id="SelectEnemies">
 			<div class="modal-content">
@@ -123,7 +137,7 @@ else
 										<div class="d-flex flex-wrap">
 											@foreach(var m in location.Monsters)
 											{
-												<EnemyCard monster="m"/>
+												<EnemyCard monster="m" Game="Game"/>
 											}
 										</div>
 									</div>
@@ -135,7 +149,7 @@ else
 
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=@(()=>{StateHasChanged();})>Close</button>
 				</div>
 			</div>
 		</div>
@@ -176,7 +190,14 @@ else
 			var m = Moves.GetMovement(movID);
 			AdvancedMovements.Add(m);
 		}
+
+		VTTService.Game = Game;
+
+		Game.UpdateUI -= Update;
+		Game.UpdateUI += Update;
 	}
+
+	void Update(object? sender, EventArgs e) => InvokeAsync(() => { StateHasChanged(); });
 
 	void SelectCharacter(DWCharacter c) 
 	{

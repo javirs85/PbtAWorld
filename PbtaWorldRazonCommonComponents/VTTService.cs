@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using PbtALib;
+using PbtALib.ifaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,8 +19,8 @@ public class VTTService
 	public event EventHandler<Guid> StoreChangesInCharacterSheet;
 	public List<Token> Tokens = new();
 	public List<Prop> Props = new();
-	public List<Monster> MonsterDefinitions = new();
 	public bool IsOpen = false;
+	public static IGameController? Game;
 
 	public enum VTTMaps { farm, Bandit1, Swamp, UDTBasic, UDT_Forest};
 
@@ -295,7 +296,42 @@ public class Token
 	public bool IsRound { get; set; } = false;
 
 	PbtACharacter? _character;
-	public Monster Monster { get; set; }
+	private Monster _monster;
+
+	public Monster Monster
+	{
+		get { return _monster; }
+		set { _monster = value;
+			UpdateInners();
+		}
+	}
+
+	private void UpdateInners()
+	{
+		if (Monster.Size == BaseTextBook.TagIDs.Grande) this.Size = Sizes.troll;
+		else if (Monster.Size == BaseTextBook.TagIDs.Enorme) this.Size = Sizes.dragon;
+		else this.Size = Sizes.human;
+
+		this.maxHP = Monster.MaxHP;
+	}
+
+	public string MonsterKeyCode
+	{
+		set
+		{
+			Monster = VTTService.Game?.MonsterDefinitionsInCurrentScene.Find(x => x.ID == value) 
+				?? new Monster { Name =$"Monster '{value}' not found"};
+
+			UpdateInners();
+		}
+		get
+		{
+			if (Monster is not null)
+				return Monster.ID;
+			else
+				return "Not set";
+		}
+	}
 
 	public PbtACharacter? Character { 
 		get => _character;

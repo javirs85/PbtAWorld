@@ -41,7 +41,9 @@ public class Monster
     public List<TagIDs> Tags { get; set; } = new();
     public List<MasterMove> Moves { get; set; } = new();
     public List<string> Special { get; set;} = new();
-    private int _maxHp;
+    public VTTTokens FavouriteToken { get; set; } = VTTTokens.Black1;
+
+	private int _maxHp;
 
     public int MaxHP
     {

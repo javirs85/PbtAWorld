@@ -1,0 +1,28 @@
+﻿.MasterMovePack
+{
+    background:black;
+}
+.MasterMove{
+    color:white;
+    padding:5px;
+    cursor:pointer;
+}
+.MasterMove:hover{
+    border: 1px solid gray;
+}
+.LotsOfUses {
+    background: #670a0a;
+    border: 1px solid #670a0a;
+}
+.FewUses {
+    background: #693f0a;
+    border: 1px solid #693f0a;
+}
+.NeverUsed {
+    background: black;
+    border: 1px solid black;
+}
+.ToMuch {
+    background: #310d0d;
+    border: 1px solid #310d0d;
+}

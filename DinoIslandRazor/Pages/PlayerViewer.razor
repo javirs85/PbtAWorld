@@ -535,7 +535,7 @@
 	{
 		Player = DinoPlayer;
 
-		Game.OnUIUpdate += (o, e) => InvokeAsync(() => { StateHasChanged(); });
+		Game.UpdateUI += (o, e) => InvokeAsync(() => { StateHasChanged(); });
 
 		Game.NewInfoToast += (o, msg) => Toaster.ShowInfo(msg);
 

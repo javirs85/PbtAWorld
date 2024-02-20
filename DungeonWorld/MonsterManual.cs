@@ -151,6 +151,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Elemental de Tierra",
+					FavouriteToken = VTTTokens.BlackBoss,
 					Organization = TagIDs.Solitario,
 					Size = TagIDs.Enorme,
 					MaxHP = 27, CurrentHP = 27,
@@ -178,6 +179,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Escarabajo de Fuego",
+					FavouriteToken = VTTTokens.Red1,
 					Organization = TagIDs.Horda,
 					Size = TagIDs.Pequeño,
 					MaxHP = 3, CurrentHP = 3,
@@ -207,6 +209,7 @@ public class MonsterManual
 				{
 					Name = "Gárgola",
 					Organization = TagIDs.Horda,
+					FavouriteToken = VTTTokens.BlackBoss,
 					Size = TagIDs.Pequeño,
 					MaxHP = 3, CurrentHP = 3,
 					Armor = 2,
@@ -262,6 +265,7 @@ public class MonsterManual
 				{
 					Name = "Goblin",
 					Organization = TagIDs.Horda, // Combinación de tags Horda y Organizado
+					FavouriteToken = VTTTokens.Green1,
 					Size = TagIDs.Pequeño,
 					MaxHP = 3, CurrentHP = 3,
 					Armor = 1,
@@ -289,6 +293,7 @@ public class MonsterManual
 				{
 					Name = "Goblin Orkaster",
 					Organization = TagIDs.Solitario,
+					FavouriteToken = VTTTokens.Green1,
 					Size = TagIDs.Pequeño, // Combinación de tags Pequeño, Mágico, Inteligente y Organizado
 					MaxHP = 12, CurrentHP = 12,
 					Armor = 0,
@@ -573,6 +578,7 @@ public class MonsterManual
 				{
 					Name = "Dragón del Apocalipsis",
 					Organization = TagIDs.Solitario, // Solo un tag en Organización
+					FavouriteToken = VTTTokens.RedBoss,
 					Size = TagIDs.Grande, // Solo un tag en Size
 					MaxHP = 26, CurrentHP = 26,
 					Armor = 5,
@@ -743,6 +749,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Dragón",
+					FavouriteToken = VTTTokens.RedBoss,
 					Organization = TagIDs.Solitario, // Solo un tag en Organización
 					Size = TagIDs.Grande, // Combinación de tags Grande, Aterrador y Acaparador en Size
 					MaxHP = 16, CurrentHP = 16,
@@ -799,6 +806,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Magmin",
+					FavouriteToken = VTTTokens.Red1,
 					Organization = TagIDs.Horda, // Solo un tag en Organización
 					Size = TagIDs.Inteligente, // Combinación de tags Inteligente, Organizado y Acaparador en Size
 					MaxHP = 7, CurrentHP = 7,
@@ -884,6 +892,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Salamandra",
+					FavouriteToken = VTTTokens.RedBoss,
 					Organization = TagIDs.Horda, // Solo un tag en Organización
 					Size = TagIDs.Grande, // Combinación de tags Grande, Inteligente, Organizado y Planar en Size
 					MaxHP = 7, CurrentHP = 7,
@@ -1060,34 +1069,6 @@ public class MonsterManual
 					}
 				},
 
-				// Ettin
-				new Monster
-				{
-					Name = "Ettin",
-					Organization = TagIDs.Solitario, // Solo un tag en Organización
-					Size = TagIDs.Grande, // Solo un tag en Size
-					MaxHP = 16, CurrentHP = 16,
-					Armor = 1,
-					Tags = new List<TagIDs> { }, // Todos los tags adicionales en la lista de Tags
-					Special = new List<string> { "Dos cabezas" }, // Agregado a la lista de Special Qualities
-					Instinct = "Destrozar",
-					Definition = "¿Qué podría ser mejor que un gigante de la colina enojado e idiota? Uno con dos cabezas. Una idea fantástica, realmente. Material de primera. Instinto: Destrozar",
-					Moves = new List<MasterMove>
-					{
-						new MasterMove("Atacar a dos enemigos a la vez"),
-						new MasterMove("Defender a su creador")
-					},
-					Attacks = new List<AttackDef>
-					{
-						new AttackDef
-						{
-							AttackName = "Maza",
-							Dices = new List<DiceTypes> { DiceTypes.d10 },
-							Bonus = +3,
-							Tags = new List<TagIDs> { TagIDs.Cerca, TagIDs.Alcance, TagIDs.Contundente }
-						}
-					}
-				},
 				new Monster
 				{
 					Name = "Ettin",
@@ -1152,6 +1133,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Iron Golem",
+					FavouriteToken = VTTTokens.BlackBoss,
 					Organization = TagIDs.Grupo, // Solo un tag en Organización
 					Size = TagIDs.Grande, // Solo un tag en Size, si la definición no contiene ninguno será TagIDs.Pequeño
 					MaxHP = 10,
@@ -1182,6 +1164,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Flesh Golem",
+					FavouriteToken = VTTTokens.BlackBoss,
 					Organization = TagIDs.Horda, // Solo un tag en Organización
 					Size = TagIDs.Pequeño, // Sin tag en Size, será TagIDs.Pequeño
 					MaxHP = 3,
@@ -1212,6 +1195,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Kraken",
+					FavouriteToken = VTTTokens.BlueBoss,
 					Organization = TagIDs.Solitario, // Solo un tag en Organización
 					Size = TagIDs.Grande, // Solo un tag en Size, si la definición no contiene ninguno será TagIDs.Pequeño
 					MaxHP = 20,
@@ -1242,6 +1226,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Manticore",
+					FavouriteToken = VTTTokens.RedBoss,
 					Organization = TagIDs.Solitario, // Solo un tag en Organización
 					Size = TagIDs.Grande, // Solo un tag en Size, si la definición no contiene ninguno será TagIDs.Pequeño
 					MaxHP = 16,
@@ -1982,6 +1967,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Guerrero de Sangre Orc",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Horda,
 					Tags = new List<TagIDs> { TagIDs.Inteligente, TagIDs.Organizado },
 					Size = TagIDs.Pequeño, // Cambiado a Mediano según tus indicaciones
@@ -2010,6 +1996,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Berserker Orc",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Solitario,
 					Tags = new List<TagIDs> { TagIDs.Divino, TagIDs.Inteligente, TagIDs.Organizado },
 					Size = TagIDs.Grande, // Cambiado a Grande según tus indicaciones
@@ -2038,6 +2025,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Rompedor Orc",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Solitario,
 					Size = TagIDs.Grande,
 					MaxHP = 16,
@@ -2065,6 +2053,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Ojo Uno Orc",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Grupo,
 					Tags = new List<TagIDs> { TagIDs.Divino, TagIDs.Magico, TagIDs.Inteligente, TagIDs.Organizado },
 					Size = TagIDs.Pequeño,
@@ -2095,6 +2084,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Chamán Orc",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Solitario,
 					Tags = new List<TagIDs> { TagIDs.Magico, TagIDs.Inteligente, TagIDs.Organizado },
 					Size = TagIDs.Pequeño, // Asumí Mediano según la descripción
@@ -2126,6 +2116,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Esclavista Orc",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Horda,
 					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Inteligente, TagIDs.Organizado },
 					Size = TagIDs.Pequeño,
@@ -2153,6 +2144,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Cazador de Sombras Orc",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Solitario,
 					Tags = new List<TagIDs> { TagIDs.Magico, TagIDs.Inteligente, TagIDs.Sigiloso },
 					Size = TagIDs.Pequeño,
@@ -2182,6 +2174,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Jefe de Guerra Orc",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Solitario,
 					Tags = new List<TagIDs> { TagIDs.Inteligente, TagIDs.Organizado },
 					Size = TagIDs.Pequeño, // Asumí Mediano según la descripción
@@ -2210,6 +2203,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Espía Tritón",
+					FavouriteToken = VTTTokens.Blue1,
 					Organization = TagIDs.Solitario,
 					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Inteligente, TagIDs.Organizado },
 					Size = TagIDs.Pequeño,
@@ -2237,6 +2231,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Invocamareas Tritón",
+					FavouriteToken = VTTTokens.Blue1,
 					Organization = TagIDs.Grupo,
 					Tags = new List<TagIDs> { TagIDs.Divino, TagIDs.Magico, TagIDs.Inteligente },
 					Size = TagIDs.Pequeño,
@@ -2266,6 +2261,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Tritón Submarino",
+					FavouriteToken = VTTTokens.Blue1,
 					Organization = TagIDs.Grupo,
 					Tags = new List<TagIDs> { TagIDs.Organizado, TagIDs.Inteligente },
 					Size = TagIDs.Pequeño,
@@ -2294,6 +2290,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Noble Tritón",
+					FavouriteToken = VTTTokens.Blue1,
 					Organization = TagIDs.Grupo,
 					Tags = new List<TagIDs> { TagIDs.Organizado, TagIDs.Inteligente },
 					Size = TagIDs.Pequeño,
@@ -2510,6 +2507,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Imp",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Horda,
 					Tags = new List<TagIDs> { TagIDs.Planar, TagIDs.Inteligente, TagIDs.Organizado },
 					Size = TagIDs.Pequeño,
@@ -2834,6 +2832,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Dragon Turtle",
+					FavouriteToken = VTTTokens.GreenBoss,
 					Organization = TagIDs.Solitario,
 					Size = TagIDs.Enorme,
 					Tags = new List<TagIDs> { TagIDs.Cauteloso },
@@ -2917,6 +2916,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Fire Eels",
+					FavouriteToken = VTTTokens.Red1,
 					Organization = TagIDs.Horda,
 					Size = TagIDs.Minusculo,
 					Tags = new List<TagIDs>(),
@@ -2939,6 +2939,7 @@ public class MonsterManual
 				new Monster
 				{
 					Name = "Frogman",
+					FavouriteToken = VTTTokens.Green1,
 					Organization = TagIDs.Horda,
 					Size = TagIDs.Pequeño,
 					Tags = new List<TagIDs> { TagIDs.Inteligente },

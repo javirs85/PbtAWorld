@@ -1,0 +1,10 @@
+﻿<div class="MasterMovePack d-flex flex-column">
+	@foreach(var m in Moves.OrderBy(x=>x.Order))
+	{
+		<div class="MasterMove @m.HowOften.ToString()" @onclick=@m.Use>@m.Tittle</div>
+	}
+</div>
+
+@code {
+	 [Parameter] public List<MasterMove> Moves { get; set; } = new();
+}

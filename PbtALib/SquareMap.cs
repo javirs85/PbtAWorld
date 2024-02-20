@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PbtALib;
@@ -9,6 +10,7 @@ namespace PbtALib;
 public class SquareMap
 {
 	public static string ImagesPath = "/imgs/DW/SquareMap";
+	public event EventHandler UpdateAllInstances;
 
     public SquareMap()
     {
@@ -28,7 +30,31 @@ public class SquareMap
 		Tiles[2][2].Place = SquareMapTile.GenericPlaces.initial;
     }
     public List<List<SquareMapTile>> Tiles = new();
-	
+
+	public void ForceUpdateInAllClients()
+	{
+		UpdateAllInstances?.Invoke(this, new EventArgs());
+	}
+
+	public void LoadJson(string json) {
+		try
+		{
+            var loaded = JsonSerializer.Deserialize<List<List<SquareMapTile>>>(json);
+            if (loaded != null)
+            {
+                Tiles = loaded;
+                ForceUpdateInAllClients();
+            }
+        }
+		catch (Exception ex)
+		{
+			
+		}
+		
+	}
+	public string ToJson() { return JsonSerializer.Serialize(Tiles); }
+
+
 }
 
 public class SquareMapTile

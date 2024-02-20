@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PbtALib.ifaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PbtALib;
 
-public class GameControllerBase<TIDPack, TStatsPack>
+public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 {
 	private readonly MovesServiceBase moves;
 	private Random random = new Random();
@@ -21,11 +22,12 @@ public class GameControllerBase<TIDPack, TStatsPack>
 		this.DB = DB;
 	}
 
-	public event EventHandler OnUIUpdate;
+	public event EventHandler UpdateUI;
 	public event EventHandler<string> NewInfoToast;
 	public event EventHandler<IRollReport> OnNewRoll;
 	public event EventHandler<PbtAImage> OnMasterShowsImage;
 	public event EventHandler<PNJ> OnMasterShowsPNJ;
+
 
 	public ICharacter GetCharacterByID(Guid id)
 	{
@@ -38,7 +40,7 @@ public class GameControllerBase<TIDPack, TStatsPack>
 		return new PNJ { Name = "Character not found" };
 	}
 
-	public void RequestUpdateToUIOnClients() => OnUIUpdate?.Invoke(this, new EventArgs());
+	public void RequestUpdateToUIOnClients() => UpdateUI?.Invoke(this, new EventArgs());
 	public void ShowToastOnAllClients(string msg) => NewInfoToast?.Invoke(this, msg);
 	public void ShowImageToAllPlayers(PbtAImage img) => OnMasterShowsImage?.Invoke(this, img);
 	public void ShowPNJToAllPlayers(PNJ pnj) => OnMasterShowsPNJ?.Invoke(this, pnj);
@@ -55,6 +57,8 @@ public class GameControllerBase<TIDPack, TStatsPack>
 	}
 
 	public IDataBaseController DB { get; }
+	public List<Monster> MonsterDefinitionsInCurrentScene { get; set; } = new();
+	public List<Monster> CurrentSceneEnemies { get; set; } = new();
 
 	public void RollRaw(Guid PlayerID, List<DiceTypes> dices)
 	{
@@ -153,5 +157,10 @@ public class GameControllerBase<TIDPack, TStatsPack>
 	public virtual Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
 	{
 		throw new Exception("StoreChangesOnCharacter MUST be virtualized on derived GameController class");
+	}
+
+	public void Update()
+	{
+		RequestUpdateToUIOnClients();
 	}
 }

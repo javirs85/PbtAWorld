@@ -603,7 +603,7 @@
 			InvokeAsync(() => { StateHasChanged(); });
 			Map?.Update();
 		};
-		Game.OnUIUpdate += (o, e) =>
+		Game.UpdateUI += (o, e) =>
 		{
 			InvokeAsync(() => { StateHasChanged(); });
 		};
