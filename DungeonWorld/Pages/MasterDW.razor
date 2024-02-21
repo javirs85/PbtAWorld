@@ -13,39 +13,21 @@
 }
 else if (_showingSquareMap)
 {
-	<SquareMapViewer Map="Game.SquareMap" RequestCloseSquareMapViewer="@(()=>{_showingSquareMap=false;})"/>
+	<SquareMapViewer Map="Game.SquareMap" IsMaster="true" RequestCloseSquareMapViewer="@(()=>{_showingSquareMap=false;})"/>
 }
 else
 {
-	<div class="MasterMain">
-		<div class="MasterMainColumn">
+	<div class="MasterMain" style="background: #272626;">
+		<div class="MasterMainColumn" style="background: #d2d9d3;">
 			<div class="d-flex gap-1">
 				<button class="btn btn-primary" @onclick=@(()=>{_showingSquareMap = false; _ShowingVTT =true;})>VTT</button>
 				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})>Map</button>
 				<button class="btn btn-primary" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></button>
 			</div>
-			
-		</div>
-		<div class="MasterMainColumn"></div>
-		<div class="GenericMoves MasterMainColumn mx-2">
-			<div class="MovementsGroup">
-				<div class="MovementsGroupTittle">Movimientos comunes</div>
-				@foreach (var m in BasicMovements)
-				{
-					<MovementViewer Player="SelectedCharacter" Movement="m" />
-				}
-				<div class="MovementsGroupTittle">Movimientos avanzados</div>
-				@foreach (var m in AdvancedMovements)
-				{
-					<MovementViewer Player="SelectedCharacter" Movement="m" />
-				}
-			</div>
-		</div>
-		<div class="PlayersColumn MasterMainColumn">
 			<div class="PlayersAreaHeader">
-				@foreach(var player in Meta.SelectedSeason.Players)
+				@foreach (var player in Meta.SelectedSeason.Players)
 				{
-					@if (player is not null &&  player is not DWCharacter)
+					@if (player is not null && player is not DWCharacter)
 					{
 						<div class="PlayersAreaHeaderTab Disabled">* @player.Name *</div>
 					}
@@ -53,26 +35,26 @@ else
 					{
 						@if (((DWCharacter)player).Profession != DWClasses.DW_Master)
 						{
-							<div class="PlayersAreaHeaderTab 
-								@(SelectedCharacter==((DWCharacter)player)?"Selected":"")" 
-								@onclick=@(()=>{SelectCharacter((DWCharacter)player);})>
+							<div class="PlayersAreaHeaderTab
+								@(SelectedCharacter==((DWCharacter)player)?"Selected":"")"
+								 @onclick=@(()=>{SelectCharacter((DWCharacter)player);})>
 								<span>@player.Name</span>
 								<span>@(((DWCharacter)player).Profession.ToUI())</span>
 							</div>
-						}						
+						}
 					}
 				}
 				<div class="PlayersAreaHeaderTab @(SelectingEnemies?"Selected":"")" @onclick=TogglingSelectingEnemiesClicked>
 					<i class="bi text-danger bi-gitlab"></i>
 				</div>
 			</div>
-			<div class="d-flex flex-column flex-grow-1">
-				@if(SelectedCharacter is not null)
+			<div class="d-flex flex-column flex-grow-1" style="overflow: auto; overflow-x: hidden; background: #a2b0a3;">
+				@if (SelectedCharacter is not null)
 				{
-					@if(SelectedCharacter.Background is not null)
+					@if (SelectedCharacter.Background is not null)
 					{
 						<div>
-							<BackgroundViewer AllowEdit=false Background="SelectedCharacter.Background"  ShowEditButton=false />
+							<BackgroundViewer AllowEdit=false Background="SelectedCharacter.Background" ShowEditButton=false />
 						</div>
 					}
 					<div class="MovementsGroup">
@@ -95,17 +77,44 @@ else
 				}
 				else
 				{
-					
-					<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SelectEnemies">Elegir enemigo</button>
-					<div class="d-flex flex-column" style="overflow:auto;">
-						@foreach(var enemy in Game.MonsterDefinitionsInCurrentScene)
+					<div class="d-flex flex-column" style="overflow:auto; ">
+						<button class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#SelectEnemies">Elegir enemigo</button>
+						@foreach (var enemy in Game.MonsterDefinitionsInCurrentScene)
 						{
-							<EnemyCard monster="enemy" Game="Game"/>
+							<EnemyCard monster="enemy" Game="Game" />
 						}
 					</div>
 					<div class="PlayersAreaFiller"></div>
 				}
 			</div>
+		</div>
+
+		<div class="GenericMoves MasterMainColumn" style="background: #a2b0a3;">
+			<div class="MovementsGroup">
+				<div class="MovementsGroupTittle">Movimientos comunes</div>
+				@foreach (var m in BasicMovements)
+				{
+					<MovementViewer Player="SelectedCharacter" Movement="m" />
+				}
+				<div class="MovementsGroupTittle">Movimientos avanzados</div>
+				@foreach (var m in AdvancedMovements)
+				{
+					<MovementViewer Player="SelectedCharacter" Movement="m" />
+				}
+			</div>
+		</div>
+		<div class="MasterMainColumn">
+			@foreach (var pack in Game.TextBook.MasterMovesPacks)
+			{
+				<MasterMovePackViewer MovesPack="pack" />
+			}
+		</div>
+		<div class="PlayersColumn MasterMainColumn" style="overflow:auto;">
+			@foreach (var m in Game.MonsterDefinitionsInCurrentScene)
+			{
+				<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title=m.Name, Moves=m.Moves})" />
+			}
+			
 		</div>
 	</div>
 
@@ -121,7 +130,7 @@ else
 			<div class="modal-content">
 				<div class="modal-body">
 					<div class="MonsterLocationSelection accordion" id="MonsterLocationSelector">
-						@foreach(var location in Game.Book.Monsters.AllMonsterPacks)
+						@foreach(var location in Game.TextBook.Monsters.AllMonsterPacks)
 						{
 							<div class="accordion-item">
 								<h2 class="accordion-header">

@@ -10,6 +10,8 @@ public interface IRollReport
 {
 	IMove? Movement { get; set; }
 	bool IsRaw { get; set; }
+	bool IgnoresArmor { get; set; }
+	int ArmorPiercing { get; set; }
 	bool IsNoRolMove { get; set; }
 	List<Tuple<DiceTypes, int>> Dices { get; set; }
 	string Roller { get; set; }
@@ -59,7 +61,9 @@ public abstract class RollReport<T_ID, T_Stats> : IRollReport
 
 	public RollTypes RollType { get; set; } = RollTypes.Roll_Simple;
 	public string Roller { get; set; } = string.Empty;
-	public int d1 { get; set; } = 0;
+    public bool IgnoresArmor { get; set; }
+    public int ArmorPiercing { get; set; }
+    public int d1 { get; set; } = 0;
 	public int d2 { get; set; } = 0;
 	public int d3 { get; set; } = 0;
 	public int StatValue { get; set; } = 0;

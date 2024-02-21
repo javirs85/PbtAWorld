@@ -1,11 +1,12 @@
-﻿.MasterMovePack
-{
-    background:black;
+﻿.MasterMovePack {
+    background: #272626;
 }
-.MasterMove{
-    color:white;
-    padding:5px;
-    cursor:pointer;
+.MasterMove {
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 .MasterMove:hover{
     border: 1px solid gray;
@@ -25,4 +26,8 @@
 .ToMuch {
     background: #310d0d;
     border: 1px solid #310d0d;
+}
+.MasterMovePackTitle{
+    font-family: 'Julius Sans One';
+    color:white;
 }

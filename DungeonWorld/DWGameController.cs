@@ -16,11 +16,9 @@ public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>, IGa
 	public DWGameController(DWMovesService moves, IDataBaseController _db) : base(moves, _db)
 	{
 		LastRoll = new DWRollReport(moves);
+		TextBook = new DWTextBook();
 	}
 
-	public DWTextBook Book = new DWTextBook();
-
-	public SquareMap SquareMap = new SquareMap();
 
 
 	public override async Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)

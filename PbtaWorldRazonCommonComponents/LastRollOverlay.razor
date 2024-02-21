@@ -141,8 +141,83 @@
 					<div class="RollResult">@service.LastRoll.Total</div>
 				</div>
 				
-
 			</div>
+			
+				<div class="MoveDetails">
+					@if (service.LastRoll.Movement.PreCondition != null && service.LastRoll.Movement.PreCondition.MainText != "")
+					{
+						<DecodedString Value=@service.LastRoll.Movement.PreCondition.MainText />
+					}
+					@if (service.LastRoll.Movement.PreCondition.Options != null && service.LastRoll.Movement.PreCondition.Options.Count > 0)
+					{
+						<ul style="padding-left:20px;">
+							@foreach (var entry in service.LastRoll.Movement.PreCondition.Options)
+							{
+								<li><DecodedString Value="@entry" /></li>
+							}
+						</ul>
+					}
+					@if (service.LastRoll.Movement.ConsequencesOn6 != null && service.LastRoll.Movement.ConsequencesOn6.MainText != "")
+					{
+						<div class="d-flex mb-2">
+							<div>
+								<span class="service.LastRoll.MovementRangeMarker">@("<6"):</span>
+							</div/> 
+							<div>
+								@service.LastRoll.Movement.ConsequencesOn6.MainText
+								@if (service.LastRoll.Movement.ConsequencesOn6.Options != null && service.LastRoll.Movement.ConsequencesOn6.Options.Count > 0)
+								{
+									<ul>
+										@foreach (var entry in service.LastRoll.Movement.ConsequencesOn6.Options)
+										{
+											<li><DecodedString Value="@entry" /></li>
+										}
+									</ul>
+								}
+							</div>
+						</div>
+					}
+					@if (service.LastRoll.Movement.ConsequencesOn79 != null && service.LastRoll.Movement.ConsequencesOn79.MainText != "")
+					{
+						<div class="d-flex mb-2">
+							<div>
+								<span class="service.LastRoll.MovementRangeMarker">7-9:</span>
+							</div/> 
+							<div>
+								@service.LastRoll.Movement.ConsequencesOn79.MainText
+								@if (service.LastRoll.Movement.ConsequencesOn79.Options != null && service.LastRoll.Movement.ConsequencesOn79.Options.Count > 0)
+								{
+									<ul>
+										@foreach (var entry in service.LastRoll.Movement.ConsequencesOn79.Options)
+										{
+											<li><DecodedString Value="@entry" /></li>
+										}
+									</ul>
+								}
+							</div>
+						</div>
+					}
+					@if (service.LastRoll.Movement.ConsequencesOn10 != null && service.LastRoll.Movement.ConsequencesOn10.MainText != "")
+					{
+						<div class="d-flex">
+							<div>
+								<span class="service.LastRoll.MovementRangeMarker">>10:</span>
+							</div/> 
+							<div>
+								@service.LastRoll.Movement.ConsequencesOn10.MainText
+								@if (service.LastRoll.Movement.ConsequencesOn10.Options != null && service.LastRoll.Movement.ConsequencesOn10.Options.Count > 0)
+								{
+									<ul>
+										@foreach (var entry in service.LastRoll.Movement.ConsequencesOn10.Options)
+										{
+											<li><DecodedString Value="@entry" /></li>
+										}
+									</ul>
+								}
+							</div>
+						</div>
+					}
+				</div>
 		}
 		else if (service.LastRoll is not null && service.LastRoll.IsRaw == true)
 		{
@@ -151,14 +226,37 @@
 				<h4 class="text-light">@service.LastRoll.Roller</h4>
 				<i class="bi bi-x-lg text-light fs-2"></i>
 			</div>
-			<div class="LastRollContainer BoxPack d-flex flex-row gap-2" style="background: @DamageBackgroundColor">
+			<div class="LastRollContainer BoxPack d-flex flex-row gap-2 justify-content-center align-items-center" style="background: @DamageBackgroundColor">
+				@if (service.LastRoll.RollType == RollTypes.Roll_Advantage)
+				{
+					<i class="bi bi-emoji-smile" style="font-size:20px; font-size:35px; color: green;"></i>
+				}
+				else if (service.LastRoll.RollType == RollTypes.Roll_Disadvantage)
+				{
+					<i class="bi bi-emoji-frown" style="font-size:20px; font-size:35px; color: black;"></i>
+				}
+				
 				@foreach (var d in service.LastRoll.Dices)
-			{
+				{
 					<div class="RawRollerDice">
 						<img src="imgs/DW/@d.Item1.ToImagePath()"/>
 						<div class="RawDollerDiceNumber">@d.Item2</div>
 					</div>
 				}
+
+
+				@if (service.LastRoll.ArmorPiercing != 0)
+				{
+					<div style="position:relative; width:50px;">
+						<i class="bi bi-shield" style="position: absolute; top:-40px; left:0; font-size:45px; color: red;"></i>
+						<div style="position: absolute; top:-26px; font-size:24px; left:10px; color: red;">-@service.LastRoll.ArmorPiercing</div>
+					</div>
+				}
+				@if (service.LastRoll.IgnoresArmor)
+				{
+					<i class="bi bi-shield-slash-fill" style=" font-size:45px; color: red;"></i>
+				}
+				
 			</div>
 		}
 		else

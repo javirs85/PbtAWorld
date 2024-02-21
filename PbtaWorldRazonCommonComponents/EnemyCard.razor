@@ -81,7 +81,7 @@
 				<i class="bi bi-plus-circle-fill" style="color:#42ba63;"></i>
 			}			
 		</div>
-		<div class="AttackSpace d-flex align-items-center">
+		<div class="AttackSpace d-flex align-items-center" @onclick=monster.RollDamage>
 			@if (monster.Attack is not null && monster.Attack.RollType == RollTypes.Roll_Advantage)
 			{
 				<div style="position:relative; width:30px;">
@@ -125,7 +125,7 @@
 			if (Game.MonsterDefinitionsInCurrentScene.Contains(monster))
 				Game.MonsterDefinitionsInCurrentScene.Remove(monster);
 			else
-				Game.MonsterDefinitionsInCurrentScene.Add(monster);
+				Game.AddMonsterDefinition(monster);
 
 			Game.Update();
 		}

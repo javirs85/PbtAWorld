@@ -127,6 +127,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\imgs\DW\SquareMap\" />
     <Folder Include="wwwroot\imgs\VTT\" />
+    <Folder Include="wwwroot\SquareMaps\" />
   </ItemGroup>
 
 </Project>

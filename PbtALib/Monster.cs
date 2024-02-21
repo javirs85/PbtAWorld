@@ -1,4 +1,5 @@
 ﻿using PbtALib;
+using PbtALib.ifaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace PbtALib;
 public class Monster
 {
     public string Name { get; set; } = "Name not set";
+    public IGameController? Game { get; set; }
 	public string ID => String.Concat(Name.Where(c => !Char.IsWhiteSpace(c)));
 	/// <summary>
 	/// Only one tag, can only be TagIDs.Solitario, TagIDs.Horda, TagIDs.Grupo
@@ -56,6 +58,11 @@ public class Monster
     public int CurrentHP { get; set; }
     public string Definition { get; set; } = string.Empty;
 	public string Instinct { get; set; } = string.Empty;
+
+    public void RollDamage()
+    {
+        if (Game is not null) Game.RollMonsterDamage(this);
+    }
 }
 
 public class AttackDef

@@ -49,20 +49,22 @@
                   style="cursor:pointer;">
                 <i class="bi bi-x-circle"></i>
             </div>
-            @if(ShowingJsonOptions)
+            @if (IsMaster)
             {
-                <button class="btn btn-primary" @onclick=@(()=>{ShowingJsonOptions = false;})>Hide Json Options</button>
-                <button class="btn btn-primary" @onclick=@(()=>{Json = Map.ToJson();})>ShowJson</button>
-                <button class="btn btn-primary" @onclick=@(()=>{Map.LoadJson(Json);})>LoadJson</button>
-                <EditForm Model="this">
-                    <InputTextArea class="fs-6 bg-white border border-black" @bind-Value=@Json />
-                </EditForm>
+                @if(ShowingJsonOptions)
+                {
+                    <button class="btn btn-primary" @onclick=@(()=>{ShowingJsonOptions = false;})>Hide Json Options</button>
+                    <button class="btn btn-primary" @onclick=Map.SaveToJson>Save</button>
+                    <button class="btn btn-primary" @onclick=Map.LoadJson>Load</button>
+                    <EditForm Model="this">
+                        <InputTextArea class="fs-6 bg-white border border-black" @bind-Value=@Json />
+                    </EditForm>
+                }
+                else
+                {
+                    <button class="btn btn-primary" @onclick=@(()=>{ShowingJsonOptions = true;})>Json</button>
+                }
             }
-            else
-            {
-                <button class="btn btn-primary" @onclick=@(()=>{ShowingJsonOptions = true;})>Json</button>
-            }
-            
         </div>
         <div class="MapViewer">
             @foreach (var row in Map.Tiles)
@@ -104,6 +106,7 @@
 @code {
     [Parameter] public SquareMap Map { get; set; } = new();
     [Parameter] public EventCallback RequestCloseSquareMapViewer { get; set; }
+    [Parameter] public bool IsMaster { get; set; } = false;
 
     bool ShowingJsonOptions = false;
     string Json = "";

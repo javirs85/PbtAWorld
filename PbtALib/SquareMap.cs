@@ -11,6 +11,16 @@ public class SquareMap
 {
 	public static string ImagesPath = "/imgs/DW/SquareMap";
 	public event EventHandler UpdateAllInstances;
+	private Guid _gameID = Guid.Empty;
+
+	public Guid GameID
+	{
+		get { return _gameID; }
+		set { _gameID = value;
+			LoadJson();
+		}
+	}
+
 
     public SquareMap()
     {
@@ -36,23 +46,35 @@ public class SquareMap
 		UpdateAllInstances?.Invoke(this, new EventArgs());
 	}
 
-	public void LoadJson(string json) {
+	public async void LoadJson() {
 		try
 		{
-            var loaded = JsonSerializer.Deserialize<List<List<SquareMapTile>>>(json);
-            if (loaded != null)
-            {
-                Tiles = loaded;
-                ForceUpdateInAllClients();
-            }
+            string newFilePath = $"./wwwroot/SquareMaps/{GameID.ToString()}.json";
+			var encoded = await File.ReadAllTextAsync(newFilePath);
+			
+			Tiles = JsonSerializer.Deserialize<List<List<SquareMapTile>>>(encoded);
+			ForceUpdateInAllClients();
+			
         }
 		catch (Exception ex)
 		{
-			
+			Console.WriteLine(ex.Message);
 		}
 		
 	}
-	public string ToJson() { return JsonSerializer.Serialize(Tiles); }
+	public async Task SaveToJson() 
+	{
+		try
+		{
+            string newFilePath = $"./wwwroot/SquareMaps/{GameID.ToString()}.json";
+            //await using FileStream fs = new(newFilePath, FileMode.Create);
+            await File.WriteAllTextAsync(newFilePath, JsonSerializer.Serialize(Tiles));
+        }
+		catch (Exception ex)
+		{
+            Console.WriteLine(ex.Message);
+        }
+	}
 
 
 }

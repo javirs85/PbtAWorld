@@ -11,14 +11,25 @@ namespace PbtALib;
 
 public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 {
-	private readonly MovesServiceBase moves;
+	private Guid _sessionID;
+
+	public Guid SessionID
+	{
+		get { return _sessionID; }
+		set { _sessionID = value; 
+			SquareMap.GameID = value;
+		}
+	}
+
+    public SquareMap SquareMap = new SquareMap();
+
+
 	private Random random = new Random();
 
 	public IPeopleCast People;
 
 	public GameControllerBase(MovesServiceBase moves, IDataBaseController DB)
     {
-		this.moves = moves;
 		this.DB = DB;
 	}
 
@@ -59,14 +70,16 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	public IDataBaseController DB { get; }
 	public List<Monster> MonsterDefinitionsInCurrentScene { get; set; } = new();
 	public List<Monster> CurrentSceneEnemies { get; set; } = new();
+	public BaseTextBook TextBook { get; set; }
 
-	public void RollRaw(Guid PlayerID, List<DiceTypes> dices)
+	public void RollRaw(Guid PlayerID, List<DiceTypes> dices, RollTypes rtype = RollTypes.Roll_Simple)
 	{
 		var player = Players.Find(x => x.ID == PlayerID);
 		if (player is not null)
 		{
 			LastRoll.Roller = player.Name;
 			LastRoll.Dices.Clear();
+			LastRoll.RollType = rtype;
 
 			foreach (var d in dices)
 			{
@@ -76,6 +89,27 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 			OnNewRoll?.Invoke(this, LastRoll);
 		}
 	}
+
+	public void RollMonsterDamage(Monster m)
+	{
+        LastRoll.Roller = m.Name;
+        LastRoll.Dices.Clear();
+        LastRoll.IsRaw = true;
+		if (m.Attack is not null)
+		{
+			LastRoll.RollType = m.Attack.RollType;
+			LastRoll.IgnoresArmor = m.Attack.IgnoresArmor;
+			LastRoll.ArmorPiercing = m.Attack.Piercing;
+
+            foreach (var dice in m.Attack.Dices)
+            {
+                LastRoll.Dices.Add(new Tuple<DiceTypes, int>(dice, random.Next(1, dice.MaxValue() + 1)));
+            }
+        }       		
+
+        OnNewRoll?.Invoke(this, LastRoll);
+    }
+
 	public void RollDamage(Guid PlayerID, DiceTypes dice , RollTypes rtype)
 	{
 		var player = Players.Find(x => x.ID == PlayerID);
@@ -85,6 +119,8 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 			LastRoll.Dices.Clear();
 			LastRoll.IsRaw = true;
 			LastRoll.RollType = rtype;
+			LastRoll.ArmorPiercing = 0;
+			LastRoll.IgnoresArmor = false;
 
 			LastRoll.Dices.Add(new Tuple<DiceTypes, int>(dice, random.Next(1, dice.MaxValue() + 1)));
 			if (rtype == RollTypes.Roll_Disadvantage || rtype == RollTypes.Roll_DisadvantagePlus1d6 || rtype == RollTypes.Roll_Advantage || rtype == RollTypes.Roll_AdvantagePlus1d6)
@@ -102,6 +138,7 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		if (player is not null)
 		{
 			LastRoll.IsRaw = false;
+			LastRoll.Movement = move;
 
 			LastRoll.d1 = random.Next(1, 7);
 			LastRoll.d2 = random.Next(1, 7);
@@ -163,4 +200,10 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	{
 		RequestUpdateToUIOnClients();
 	}
+
+    public void AddMonsterDefinition(Monster monster)
+    {
+        MonsterDefinitionsInCurrentScene.Add(monster);
+		monster.Game = this;
+    }
 }

@@ -11,5 +11,12 @@ public interface IGameController
 	public event EventHandler UpdateUI;
 	public void Update();
 	public List<Monster> MonsterDefinitionsInCurrentScene { get; set; }
-	public List<Monster> CurrentSceneEnemies { get; set; } 
+	public void AddMonsterDefinition(Monster monster);
+
+
+    public List<Monster> CurrentSceneEnemies { get; set; }
+	public void RollMonsterDamage(Monster m);
+
+
+    public BaseTextBook TextBook { get; set; }
 }

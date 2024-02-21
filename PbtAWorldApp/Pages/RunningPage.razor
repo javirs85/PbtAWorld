@@ -1,4 +1,5 @@
 ﻿@page "/Running/{SelectedGameString}/{SelectedCharacterID:guid}"
+@using DungeonWorld
 @using PbtaWorldRazonCommonComponents
 @using UrbanShadows
 @using static PbtaWorldRazonCommonComponents.CharacterSelector;
@@ -7,6 +8,7 @@
 @inject NavigationManager nav
 @inject IDataBaseController Meta
 @inject DinoGameController DinoGame
+@inject DWGameController DWGame
 @inject USGameController USGame
 @inject USMovesService USMoves
 @inject LastRollViewerService LastRollViewerService
@@ -78,6 +80,7 @@ else if(SelectedGame == AvailableGames.US)
 			Meta.SelectedSeason.Players.Remove(oldOne);
 			Meta.SelectedSeason.Players.Add(DWPlayer);
 			Meta.SelectedPlayer = DWPlayer;
+			DWGame.SessionID = Meta.SelectedSeason.CampaignGuid;
 		}
 		else if(localGameId == AvailableGames.US)
 		{

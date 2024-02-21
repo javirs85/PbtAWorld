@@ -80,4 +80,9 @@ public class BaseTextBook
 		new Tag(BaseTextBook.TagIDs.tocar, "Tocar","Se puede usar para atacar a alguien a un brazo o menos de distancia"),
 		new Tag(BaseTextBook.TagIDs.intimo, "Íntimo","útil para atacar a alguien a quien puedes ver el blanco de los ojos"),		
 	};
+
+
+	public MonsterManual Monsters = new MonsterManual();
+
+	public List<MasterMovePack> MasterMovesPacks = new();
 }

@@ -4,6 +4,7 @@
 @using PbtaWorldRazonCommonComponents;
 @inject VTTService service;
 @inject VTTLocalManagerService VTTViewer
+
 <div class="DefinitionsSelector">
 	@if(ShowMoves)
 	{
@@ -12,10 +13,15 @@
 			<div class="p-1">
 				@if(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Monster is not null && VTTViewer.SelectedToken.Monster.Moves is not null)
 				{
-					<div class="text-light fs-3">@VTTViewer.SelectedToken.Monster.Name</div>
-					<MasterMovePack Moves="VTTViewer.SelectedToken.Monster.Moves"/>
+					<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title = @VTTViewer.SelectedToken.Monster.Name, Moves = VTTViewer.SelectedToken.Monster.Moves})"/>
 				}
-				
+				@if(VTTService.Game is not null && VTTService.Game.TextBook is not null && VTTService.Game.TextBook.MasterMovesPacks is not null)
+				{
+					@foreach (var pack in VTTService.Game?.TextBook?.MasterMovesPacks)
+					{
+						<MasterMovePackViewer MovesPack="@pack" />
+					}
+				}				
 			</div>
 		</div>
 	}

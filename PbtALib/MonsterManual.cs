@@ -1,5 +1,4 @@
-﻿using DungeonWorld;
-using PbtALib;
+﻿using PbtALib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static PbtALib.BaseTextBook;
 
-namespace DungeonWorld;
+namespace PbtALib;
 
 public class MonsterManual
 {//https://www.dungeonworldsrd.com/monsters/
@@ -3235,7 +3234,8 @@ public class MonsterManual
 					Definition = "Cadáveres cosidos sobre cadáveres conforman en su mayoría estas masas tambaleantes de magia oscura. La mayoría de los no muertos se crean para ser controlados, hechos para servir a algún propósito como construir una torre o servir como guardianes. No es así con la abominación. El último aspecto del ritual utilizado para otorgar fuego a sus infernales extremidades invoca un odio tan severo que la abominación solo conoce una tarea: desgarrar y despedazar lo único que no puede tener: la vida. Muchos estudiantes de las artes oscuras aprenden con su consternación mortal el hecho más importante sobre estos mastodontes: una abominación no tiene amo.",
 					Moves = new List<MasterMove>
 					{
-						new MasterMove(""),
+						new MasterMove("Desgarrar la carne"),
+						new MasterMove("Derramar tripas pútridas"),
 					}
 				},
 
