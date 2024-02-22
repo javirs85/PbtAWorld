@@ -16,7 +16,7 @@ public class VTTLocalManagerService
     }
 
 
-	public Token? SelectedToken = null;
+	public List<Token?> SelectedTokens = new();
 
 	public event EventHandler UpdateUI;
 	public bool IsMaster = false;
@@ -39,7 +39,8 @@ public class VTTLocalManagerService
 	{
 		IsVisible = true;
 		IsMaster = false;
-		SelectedToken = service.Tokens.Find(x => x.Character?.ID == Char.ID);
+		SelectedTokens.Clear();
+		SelectedTokens.Add(service.Tokens.Find(x => x.Character?.ID == Char.ID));
 	}
 
 	public event EventHandler CloseRequested;

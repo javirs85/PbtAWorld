@@ -264,11 +264,18 @@ public class Token
 		}
 		set
 		{
-			if (_character is not null) { 
+			if (_character is not null)
+			{
 				_character.HP = value;
 				StoreChangesInCharacterSheet?.Invoke(this, _character.ID);
 			}
-			else _hp = value;
+			else
+			{ 
+				_hp = value; 
+			}
+
+			if (_hp <= 0) Status = TokenStatus.Dead;
+
 			UpdateNeeeded?.Invoke(this, EventArgs.Empty);
 		}
 	}

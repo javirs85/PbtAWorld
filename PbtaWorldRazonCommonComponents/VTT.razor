@@ -11,9 +11,9 @@
 		<div class="d-flex flex-column h-100" style="width: 580px;">
 			<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Monsters</button>
 			<div class="p-1">
-				@if(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Monster is not null && VTTViewer.SelectedToken.Monster.Moves is not null)
+				@if(VTTViewer.SelectedTokens.Count <= 1 && VTTViewer.SelectedTokens[0].Monster is not null && VTTViewer.SelectedTokens[0].Monster.Moves is not null)
 				{
-					<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title = @VTTViewer.SelectedToken.Monster.Name, Moves = VTTViewer.SelectedToken.Monster.Moves})"/>
+					<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title = @VTTViewer.SelectedTokens[0].Monster.Name, Moves = VTTViewer.SelectedTokens[0].Monster.Moves})" />
 				}
 				@if(VTTService.Game is not null && VTTService.Game.TextBook is not null && VTTService.Game.TextBook.MasterMovesPacks is not null)
 				{
@@ -33,7 +33,7 @@
 			{
 				@foreach (var md in Game.MonsterDefinitionsInCurrentScene)
 				{
-					<div class="@(md.ID == VTTViewer.SelectedToken?.Monster?.ID?"Selected":"NotSelected")">
+					<div class="@(VTTViewer.SelectedTokens.Any() &&  md.ID == VTTViewer.SelectedTokens[0]?.Monster?.ID?"Selected":"NotSelected")">
 						<div class="AddToFightButton" @onclick=@(()=>{AddToFight(md);})><i class="bi bi-gitlab text-danger"></i></div>
 						<EnemyCard Game="Game" monster="md" />
 					</div>
@@ -61,7 +61,7 @@
 									<option value="@v">@v</option>
 								}
 							</InputSelect>
-							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection); VTTViewer.SelectedToken = service.Tokens.Last();})><i class="bi bi-plus"></i></button>
+							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection); VTTViewer.SelectedTokens.Add(service.Tokens.Last());})><i class="bi bi-plus"></i></button>
 						</EditForm>
 	
 						<button class="btn btn-dark" @onclick=@(()=>{Show(ShowingOptions.FOG);})>FOG</button>
@@ -97,7 +97,7 @@
 							{
 								@if(((VTTTokens)t).IsForest())
 								{
-									<div class="propSelectionItem" @onclick=@(()=>{service.AddPropToMap((VTTTokens)t); VTTViewer.SelectedToken = service.Props.Last();})>
+									<div class="propSelectionItem" @onclick=@(()=>{service.AddPropToMap((VTTTokens)t); VTTViewer.SelectedTokens.Add(service.Props.Last());})>
 										<img src="@(Prop.GetImagePath((VTTTokens)t))" />
 									</div>
 								}
@@ -111,7 +111,9 @@
 							{
 								@if (((VTTTokens)t).IsDungeonProp())
 								{
-									<div class="propSelectionItem" @onclick=@(()=>{service.AddPropToMap((VTTTokens)t); VTTViewer.SelectedToken = service.Props.Last();})>
+									<div class="propSelectionItem" @onclick=@(()=>{
+											service.AddPropToMap((VTTTokens)t); 
+											VTTViewer.SelectedTokens.Add(service.Props.Last());})>
 										<img src="@(Prop.GetImagePath((VTTTokens)t))" />
 									</div>
 								}
@@ -128,6 +130,8 @@
 			@onmousemove=Drag 
 			@onmouseup=UnClick
 			@onmouseleave=Exit
+			tabindex="0"
+			@onkeydown=ProcessKeyDown
 			@oncontextmenu:preventDefault 
 			@oncontextmenu:stopPropagation>
 			<img id="Map" src="@MapURL"/>
@@ -141,15 +145,15 @@
 								@(VTTViewer.IsMaster?"FOWMaster":"FOWPlayer")
 								@(t.Status == TokenStatus.Hidden?"FOWHidden":"")" 
 								style="
-									@(VTTViewer.SelectedToken == t?"border:1px solid red;":"")
+									@(VTTViewer.SelectedTokens.Contains(t)?"border:1px solid red;":"")
 									top:@(t.Y+"px"); 
 									left:@(t.X+"px");
 									width:@(t.FowWidth+"px");
 									height:@(t.FowHeight+"px");">
-							@if (VTTViewer.IsMaster && VTTViewer.SelectedToken == t)
+							@if (VTTViewer.IsMaster && VTTViewer.SelectedTokens.Contains(t))
 							{
 								<div class="PropTools">
-									<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); VTTViewer.SelectedToken = null;})><i class="bi bi-trash3"></i></button>
+									<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); VTTViewer.SelectedTokens.Remove(t);})><i class="bi bi-trash3"></i></button>
 									<button class="btn btn-info" @onclick=TogleFOWShape><i class="bi bi-square"></i><i class="bi bi-circle"></i></button>
 								</div>
 							}							
@@ -159,7 +163,7 @@
 					{
 						<div class="VTTToken 
 							@(VTTViewer.IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
-							@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")"
+							@(VTTViewer.SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")"
 							style="
 								top:@(t.Y+"px"); left:@(t.X+"px"); 
 								width: @(t.SizePixels+"px");
@@ -169,44 +173,44 @@
 								background-position-x:@(t.ImgX+"px"); 
 								background-position-y:@(t.ImgY+"px");">
 							<div class="TokenStatus @(VTTViewer.IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
-								@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")">
+								@(VTTViewer.SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")">
 							</div>
 							@if(t.Status != TokenStatus.Dead)
 							{
 								<div class="LifeContainer">
 									<div class="LifeBar" style="width:@(t.PercentageLife)%; background:@(t.LifeBarColor);"></div>
 								</div>
-							}					
-							@if(VTTViewer.IsMaster && VTTViewer.SelectedToken == t)
+							}
+							@if (VTTViewer.IsMaster && VTTViewer.SelectedTokens.Contains(t) && ShowingOptionsPanelForSelectedItems)
 							{
 								<div class="PropTools Token">
-									<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); VTTViewer.SelectedToken = null;})><i class="bi bi-trash3"></i></button>
-									<EditForm Model="VTTViewer.SelectedToken">
+									<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); VTTViewer.SelectedTokens.Remove(t);})><i class="bi bi-trash3"></i></button>
+									<EditForm Model="t">
 										<div class="d-flex gap-1 bg-dark text-white align-items-center ">
 											<label>MaxHP</label>
-											<InputNumber @bind-Value=VTTViewer.SelectedToken.maxHP style="width:40px;"/>
+											<InputNumber @bind-Value=t.maxHP style="width:40px;"/>
 											<label>HP</label>
-											<InputNumber @bind-Value=VTTViewer.SelectedToken.HP style="width:40px;" />
+											<InputNumber @bind-Value=t.HP style="width:40px;" />
 										</div>
-										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Status>
+										<InputSelect class="form-select" @bind-Value=t.Status>
 											@foreach (var v in Enum.GetValues(typeof(TokenStatus)))
 											{
 												<option value="@v">@v</option>
 											}
 										</InputSelect>
-										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Size>
+										<InputSelect class="form-select" @bind-Value=t.Size>
 											@foreach (var v in Enum.GetValues(typeof(Token.Sizes)))
 											{
 												<option value="@v">@v</option>
 											}
 										</InputSelect>
-										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.ID>
+										<InputSelect class="form-select" @bind-Value=t.ID>
 											@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
 											{
 												<option value="@v">@v</option>
 											}
 										</InputSelect>
-										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.MonsterKeyCode>
+										<InputSelect class="form-select" @bind-Value=t.MonsterKeyCode>
 											@if(Game is not null)
 											{
 												@foreach (var m in Game.MonsterDefinitionsInCurrentScene)
@@ -227,13 +231,13 @@
 				{
 					<div class="Prop
 							@(VTTViewer.IsMaster?"Master_"+p.Status.ToString():"Player_"+p.Status.ToString())
-							@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == p.Guid?"Selected":"")"
+							@(VTTViewer.SelectedTokens.Find(x=>x.Guid == p.Guid) != null?"Selected":"")"
 						 style="top:@(p.Y+"px"); left:@(p.X+"px");">
 						<img src="@p.imgURL" alt="prop" style=" transform:rotate(@(p.rotation+"deg"))" />
-						@if(VTTViewer.SelectedToken == p)
+						@if(VTTViewer.SelectedTokens.Contains(p))
 						{
 							<div class="PropTools d-flex gap-1 flex-wrap">
-								<button class="btn btn-danger" @onclick=@(()=>{service.DeleteProp(p); VTTViewer.SelectedToken = null;})><i class="bi bi-trash3"></i></button>
+								<button class="btn btn-danger" @onclick=@(()=>{service.DeleteProp(p); VTTViewer.SelectedTokens.Remove(p);})><i class="bi bi-trash3"></i></button>
 								<button class="btn btn-primary" @onclick=@(()=>{((Prop)p).RotateRight();})><i class="bi bi-arrow-clockwise"></i></button>
 								@if(p.IsDoor)
 								{
@@ -284,11 +288,30 @@
 		}
 	}
 
+	void ProcessKeyDown(KeyboardEventArgs e)
+	{
+		var key = e.Code;
+		foreach(var t in VTTViewer.SelectedTokens)
+			if (key == "KeyH")
+				if (t.Status == TokenStatus.Hidden)
+					t.Status = TokenStatus.Normal;
+				else
+					t.Status = TokenStatus.Hidden;
+
+
+		if (key == "KeyO")
+			ShowingOptionsPanelForSelectedItems = !ShowingOptionsPanelForSelectedItems;
+
+		if (key == "Escape")
+			VTTViewer.SelectedTokens.Clear();
+	}
+
 	//placeholder for the combobox
 	VTTTokens MasterSelection = VTTTokens.Black1;
 
 	private bool IsMoving = false;
 	private bool IsCreatingFogOfWar = false;
+	private bool ShowingOptionsPanelForSelectedItems = true;
 	private enum FogOfWarCreationSteps {Start, Size, Finish}
 	private FogOfWarCreationSteps FOWStep = FogOfWarCreationSteps.Start;
 	private Token CurrentlyCreatingFOW = new Token();
@@ -305,7 +328,7 @@
 	{
 		var newToken =service.AddToken(m.FavouriteToken);
 		newToken.Monster = m;
-		VTTViewer.SelectedToken = newToken;
+		VTTViewer.SelectedTokens.Add(newToken);
 	}
 
 	private void Click(MouseEventArgs e)
@@ -339,10 +362,10 @@
 					if (VTTViewer.IsMaster)
 					{
 						var t = service.SelectToken(e.OffsetX, e.OffsetY);
-						if (t is not null && t != VTTViewer.SelectedToken)
-							VTTViewer.SelectedToken = t;
-						else if (t is not null && t == VTTViewer.SelectedToken)
-							VTTViewer.SelectedToken = null;
+						if (t is not null && !VTTViewer.SelectedTokens.Contains(t))
+							VTTViewer.SelectedTokens.Add(t);
+						else if (t is not null && VTTViewer.SelectedTokens.Contains(t))
+							VTTViewer.SelectedTokens.Remove(t);
 						else
 						{
 							IsMoving = true;
@@ -354,8 +377,20 @@
 				}
 				else if (e.Button == 2)
 				{
-					if (service.SelectToken != null)
-						service.MoveToken(VTTViewer.SelectedToken, e.OffsetX, e.OffsetY);
+					//move in formation
+					for(int i =0; i< VTTViewer.SelectedTokens.Count; ++i)
+					{
+						if (i == 0) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX, e.OffsetY);
+						else if (i == 1) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
+						else if (i == 2) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
+						else if (i == 3) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+						else if (i == 4) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+						else if (i == 5) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+						else if (i == 6) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+						else if (i == 7) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+						else if (i == 8) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+					}
+
 				}
 			}			
 		}
@@ -378,12 +413,14 @@
 		}
 	}
 
+	Random rnd = new Random();
+
 	void ToggleFOGCreationMode() => IsCreatingFogOfWar = !IsCreatingFogOfWar;
 
 	private void DeleteToken()
 	{
-		if(VTTViewer.SelectedToken is not null)
-			service.DeleteToken(VTTViewer.SelectedToken);
+		foreach(var t in VTTViewer.SelectedTokens)
+			service.DeleteToken(t);
 	}
 
 	private void Show(ShowingOptions o)
@@ -396,7 +433,8 @@
 
 	public void TogleFOWShape()
 	{
-		VTTViewer.SelectedToken.IsRound = !VTTViewer.SelectedToken.IsRound;
+		foreach (var t in VTTViewer.SelectedTokens)
+			t.IsRound = !t.IsRound;
 	}
 
 	private void UnClick() => IsMoving = false;

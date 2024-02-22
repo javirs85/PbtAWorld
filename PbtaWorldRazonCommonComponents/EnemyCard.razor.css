@@ -99,7 +99,6 @@
 }
 
 .Definition {
-    max-height: 131px;
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative;

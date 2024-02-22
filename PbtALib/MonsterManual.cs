@@ -290,6 +290,67 @@ public class MonsterManual
 				},
 				new Monster
 				{
+					Name = "Goblin Granadero",
+					Organization = TagIDs.Grupo, // Combinación de tags Horda y Organizado
+					FavouriteToken = VTTTokens.Green1,
+					Size = TagIDs.Pequeño,
+					MaxHP = 6,
+					Armor = 4,
+					Tags = new List<TagIDs> {TagIDs.Organizado, TagIDs.Inteligente, TagIDs.Cauteloso }, // Añadido Cerca y Alcance a la lista de Tags
+					Special = new List<string>(),
+					Instinct = "Encender la mecha y tirarlo al 'otro' lado del escudo",
+					Definition = "Los Goblin Grenadiers trabajan en conjunto con un Goblin Operative y un Bugbear Brute. Cada uno de ellos está equipado con un escudo de torre (del tamaño adecuado), una pica y algunas granadas súper locas. Son especialmente letales cuando forman un muro de escudos para acordonar un pasillo estrecho y luego lanzan explosivos sobre sus escudos. No son sordos, pero mantienen sus oídos tapados con cera y se comunican mediante gestos con la cabeza y las manos. Instinto: enciende la cuerda y colócala en el *otro* lado del escudo.",
+					Moves = new List<MasterMove>
+					{
+						new MasterMove("Crear un muro de escudos o levantar una barricada"),
+						new MasterMove("Atacar desde detrás de la cobertura"),
+						new MasterMove("Tirar una granada (1d10)"),
+						new MasterMove("Llamar refuerzos (Goblin Operative o Bugbear bruto)"),
+					},
+					Attacks = new List<AttackDef>
+					{
+						new AttackDef
+						{
+							AttackName = "Pika",
+							Dices = new List<DiceTypes> { DiceTypes.d6 },
+							Piercing = 2,
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.Alcance, TagIDs.tocar}
+						}
+					}
+				},
+				new Monster
+				{
+					Name = "Goblin Operative",
+					Organization = TagIDs.Solitario, // Combinación de tags Horda y Organizado
+					FavouriteToken = VTTTokens.Green1,
+					Size = TagIDs.Pequeño,
+					MaxHP = 12,
+					Armor = 0,
+					Tags = new List<TagIDs> {TagIDs.Sigiloso, TagIDs.Astuto, TagIDs.Organizado, TagIDs.Inteligente }, // Añadido Cerca y Alcance a la lista de Tags
+					Special = new List<string>(),
+					Instinct = "Permanecer oculto hasta que llegue el momento adecuado",
+					Definition = "El Operativo Goblin trabaja en conjunto con un escuadrón de Granaderos Goblin y un Bugbear Brute. El operativo es flexible y desempeña una serie de funciones en su equipo. Él/ella avanza delante del grupo, buscando trampas y emboscadas, abriendo puertas y portones, etc., o monitorea los flancos del grupo para evitar que objetos puntiagudos caigan en el lado equivocado de los escudos de las torres de los Granaderos.",
+					Moves = new List<MasterMove>
+					{
+						new MasterMove("Cambia las tornas a favor de su equipo"),
+						new MasterMove("Llama al equipo para pedir refuerzos."),
+						new MasterMove("Aplica uno de los muchos venenos a una flecha de ballesta"),
+						new MasterMove("Escabullirse, esconderse en muebles, barriles, etc."),
+					},
+					Attacks = new List<AttackDef>
+					{
+						new AttackDef
+						{
+							AttackName = "ballesta ligera",
+							Dices = new List<DiceTypes> { DiceTypes.d8, DiceTypes.d8 },
+							RollType = RollTypes.Roll_Advantage,
+							Piercing = 2,
+							Tags= new List<TagIDs>{TagIDs.Cerca, TagIDs.tocar}
+						}
+					}
+				},
+				new Monster
+				{
 					Name = "Goblin Orkaster",
 					Organization = TagIDs.Solitario,
 					FavouriteToken = VTTTokens.Green1,
@@ -3010,6 +3071,120 @@ public class MonsterManual
 						new MasterMove("Montar una trampa"),
 						new MasterMove("Invocar dragones o aliados dracónidos"),
 						new MasterMove("Retirarse y reagruparse"),
+					}
+				},
+				new Monster
+				{
+					Name = "Hobgoblin",
+					Organization = TagIDs.Grupo,
+					Size = TagIDs.Pequeño,
+					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Inteligente, TagIDs.Organizado, TagIDs.Cauteloso, TagIDs.Acaparador },
+					Attacks = new List<AttackDef>
+					{
+						new AttackDef
+						{
+							AttackName = "Espada o Lanza",
+							Dices = new List<DiceTypes> { DiceTypes.d8,DiceTypes.d8, },
+							RollType = RollTypes.Roll_Advantage,
+							Tags = new List<TagIDs> { TagIDs.Alcance, TagIDs.Cerca }
+						}
+					},
+					Special = new List<string> {  },
+					MaxHP = 6,
+					Armor = 3,
+					Instinct = "Hacer la guerra",
+					Definition = "Los hobgoblins se parecen superficialmente a los duendes en el tono de la piel y los rasgos faciales, pero son erguidos y altos como un hombre, son inteligentes, utilizan armaduras y armas fabricadas y demuestran una propensión a la organización militar. Luchan en formación, designando sargentos y tenientes para servir bajo las órdenes de un general, y cada oficial comanda una banda de duendes reclutados. Los hobgoblins viven para la guerra y el derramamiento de sangre, matando o esclavizando a criaturas más débiles que ellos. Más agresivos y organizados que sus primos los duendes y los osgos, ven a todas las demás criaturas como seres inferiores a los que hay que subyugar y reservan un odio especial hacia todos los elfos, especialmente los elfos. Los hobgoblins valoran sus posesiones y fabrican sus propias armas y armaduras. Los hobgoblins gobiernan las tribus de goblins más civilizadas, a veces construyendo pequeños asentamientos y fortalezas que rivalizan con las de construcción humana.",
+					Moves = new List<MasterMove>
+					{
+						new MasterMove("Comandar otros goblinoides"),
+						new MasterMove("Formar filas"),
+					}
+				},
+				new Monster
+				{
+					Name = "Bugbear",
+					Organization = TagIDs.Solitario,
+					Size = TagIDs.Pequeño,
+					Tags = new List<TagIDs> { TagIDs.Sigiloso, TagIDs.Inteligente, TagIDs.Acaparador },
+					Attacks = new List<AttackDef>
+					{
+						new AttackDef
+						{
+							AttackName = "Espada o Lanza",
+							Dices = new List<DiceTypes> { DiceTypes.d8,DiceTypes.d8, },
+							RollType = RollTypes.Roll_Advantage,
+							Tags = new List<TagIDs> { TagIDs.Contundente, TagIDs.Cerca }
+						}
+					},
+					Special = new List<string> {  },
+					MaxHP = 12,
+					Armor = 1,
+					Instinct = "Consumir, Ser mejor que tú",
+					Definition = "a veces llamados hombres del saco, aterrorizan a las personas que viven en las fronteras. Como todos los hombres bestia, los Bugbears se alimentan de humanos. A diferencia de la mayoría de los hombres bestia, los Bugbears tienden a ser solitarios. Si los osgos se unen a otros, podrían formar equipo con algunos otros osgos o servir como exploradores para un ejército de hombres bestia más grande, pero sólo mientras continúe el alboroto. Los osgos consideran que otros hombres bestia en sus territorios elegidos son amenazas y los ahuyentan, matándolos si es necesario",
+					Moves = new List<MasterMove>
+					{
+						new MasterMove("Agarrar a alguien"),
+						new MasterMove("Mutilar a una victima desprevenida"),
+						new MasterMove("Sorprender al enemigo"),
+						new MasterMove("Aplastar con su maza"),
+					}
+				},
+				new Monster
+				{
+					Name = "Bugbear brute",
+					Organization = TagIDs.Solitario,
+					Size = TagIDs.Grande,
+					Tags = new List<TagIDs> { TagIDs.Organizado },
+					Attacks = new List<AttackDef>
+					{
+						new AttackDef
+						{
+							AttackName = "Hacha enorme primitiva",
+							Dices = new List<DiceTypes> { DiceTypes.d10,DiceTypes.d10, },
+							Bonus = 4,
+							Piercing = 2,
+							RollType = RollTypes.Roll_Advantage,
+							Tags = new List<TagIDs> { TagIDs.Contundente, TagIDs.Cerca, TagIDs.Alcance }
+						}
+					},
+					Special = new List<string> { "Son dos bestias, un bugbear y un puto tigre" },
+					MaxHP = 16,
+					Armor = 1,
+					Instinct = "despejar el camino para el resto del escuadrón.",
+					Definition = "El Bugbear Brute trabaja en conjunto con un escuadrón de Goblin Grenadiers y un Goblin Operative. Es un gran duende con un garrote pesado o un hacha o algo así. Ya ves adónde voy con esto.",
+					Moves = new List<MasterMove>
+					{
+						new MasterMove("Derribarlos o hacerlos a un lado"),
+						new MasterMove("Llama al Operativo Goblin para que te ayude con las habilidades astutas.")
+					}
+				},
+				new Monster
+				{
+					Name = "Bugbear montado en tigre",
+					Organization = TagIDs.Solitario,
+					Size = TagIDs.Grande,
+					Tags = new List<TagIDs> { TagIDs.Aterrador, TagIDs.Inteligente, TagIDs.Organizado },
+					Attacks = new List<AttackDef>
+					{
+						new AttackDef
+						{
+							AttackName = "Morning star gigante",
+							Dices = new List<DiceTypes> { DiceTypes.d10,DiceTypes.d10, },
+							Bonus = 6,
+							Piercing = 3,
+							RollType = RollTypes.Roll_Advantage,
+							Tags = new List<TagIDs> { TagIDs.Contundente, TagIDs.Cerca, TagIDs.Alcance }
+						}
+					},
+					Special = new List<string> { "Son dos bestias, un bugbear y un puto tigre" },
+					MaxHP = 12,
+					Armor = 1,
+					Instinct = "mata enemigos sin piedad y dale de comer al tigre.",
+					Definition = "Los Bugbear. Ya conoces al tipo. Duendes grandes y corpulentos. Éste ha descubierto cómo ensillar a un maldito tigre y no morir. Aunque podrías hacerlo. Una vez que uno muere, el otro probablemente seguirá luchando.",
+					Moves = new List<MasterMove>
+					{
+						new MasterMove("Saltar por encima"),
+						new MasterMove("Rugido de tigre")
 					}
 				},
 				new Monster
