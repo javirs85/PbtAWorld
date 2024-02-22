@@ -9,7 +9,7 @@ namespace DungeonWorld;
 
 public class DWCharacter : PbtALib.PbtACharacter
 {
-	public string PhysicialDescription { get; set; } = "Physicial description";
+	public string PhysicialDescription { get; set; } = "Physical description";
 
 	private DWClasses _profession = DWClasses.DW_NotSet;
 
@@ -994,7 +994,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 				};
 				break;
 			case DWClasses.DW_Druid:
-				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Druid_Comunion, DWMovementIDs.DW_Druid_SecretLanguage, DWMovementIDs.DW_Druid_ShapeShifter, DWMovementIDs.DW_Druid_TouchedBySpirit });
+				this.ClassMovments.AddRange(new List<DWMovementIDs> { DWMovementIDs.DW_Druid_ShapeShifter, DWMovementIDs.DW_Druid_Comunion, DWMovementIDs.DW_Druid_SecretLanguage,  DWMovementIDs.DW_Druid_TouchedBySpirit });
 				MaxHP = 16;
 				Damage = DiceTypes.d6;
 				HP = MaxHP;

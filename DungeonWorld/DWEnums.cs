@@ -162,7 +162,8 @@ public enum DWMovementIDs
 	DW_Bard_Works_Counterpoint,
 	DW_ALL_Adv_ImproveStat1,
 	DW_Damage,
-	DW_Barbarian_InitialChoose
+	DW_Barbarian_InitialChoose,
+	DW_Druid_Adv_BorrowedPowers
 }
 public enum DWStats
 {
