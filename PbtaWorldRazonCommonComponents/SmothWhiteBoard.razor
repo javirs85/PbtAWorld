@@ -1,0 +1,97 @@
+﻿@using System.Text
+@using WhiteBoard
+@inject WhiteBoard.WhiteBoardService service
+
+
+<div class="WhiteCanvas">
+	<div class="Grid">
+		<div class="GridContainer d-flex flex-column">
+			@for(int i =0; i<VRows; i++)
+			{
+				<div class="GridColumn"></div>
+			}
+		</div>
+		<div class="GridContainer d-flex ">
+			@for (int i = 0; i < HRows; i++)
+			{
+				<div class="GridRow"></div>
+			}
+		</div>
+	</div>
+	@if (IsMaster)
+	{
+		<div class="DrawMeArea" @onmousedown=MouseDown @onmouseup=MouseUp @onmousemove=MouseMove>
+			<svg width="100%" height="100%">
+				@if (CurrentDrawing.Points.Count < 4)
+				{
+					<polyline class="line" points="@CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
+				}
+				<path d="@CurrentDrawing.GenerateMonotonePath()" stroke="black" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
+				@foreach (var line in service.DrawnLines)
+				{
+					<path d="@line.GenerateMonotonePath()" stroke="black" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
+				}
+			</svg>
+		</div>
+	}
+	else
+	{
+		<div class="DrawMeArea">
+			<svg width="100%" height="100%">
+				@foreach (var line in service.DrawnLines)
+				{
+					<path d="@line.GenerateMonotonePath()" stroke="black" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
+				}
+			</svg>
+		</div>
+	}
+
+	
+</div>
+
+@code {
+	[Parameter] public bool IsMaster { get; set; } = false;
+
+	int VRows = 15;
+	int HRows = 30;
+
+	int DrawingStep = 7000;
+
+	bool isDrawing = false;
+	DrawnLine CurrentDrawing = new();
+
+
+	void MouseDown(MouseEventArgs e)
+	{
+		if (!isDrawing) { 
+			isDrawing = true; 
+			CurrentDrawing.Points.Clear();
+			CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+			CurrentDrawing.IsFilledIn = false;
+		}
+	}
+	void MouseUp(MouseEventArgs e)
+	{
+		if (isDrawing){
+			if (CurrentDrawing.Points.Last().DistanceTo(CurrentDrawing.Points.First()) <= DrawingStep)
+			{
+				CurrentDrawing.IsFilledIn = true;
+			}
+			isDrawing = false;
+			service.AddLine(CurrentDrawing);
+			CurrentDrawing = new DrawnLine();
+		}
+	}
+	void MouseMove(MouseEventArgs e)
+	{
+		if(isDrawing)
+		{
+			var lastPoint = CurrentDrawing.Points.Last();
+			var newPoint = new Point((int)e.OffsetX, (int)e.OffsetY);
+
+			if (newPoint.DistanceTo(lastPoint) >= DrawingStep)
+				CurrentDrawing.Points.Add(newPoint);
+		}
+	}
+
+}

@@ -18,6 +18,7 @@ using static PbtaWorldRazonCommonComponents.CharacterSelector;
 using PbtALib.ifaces;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
+using WhiteBoard;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,7 @@ builder.Services.AddSingleton<IDataBaseController, DataBaseController>();
 builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddSingleton<DWMovesService>();
 builder.Services.AddSingleton<USMovesService>();
+builder.Services.AddSingleton<WhiteBoardService>();
 builder.Services.AddSingleton<PNJs>();
 builder.Services.AddSingleton<DinoGameController>();
 builder.Services.AddSingleton<DWGameController>();

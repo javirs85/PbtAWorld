@@ -1,0 +1,42 @@
+﻿.WhiteCanvas {
+    width: 1800px; /*60*30*/
+    height: 900px; /*60*15*/
+    background: white;
+    position:relative;
+}
+
+.Grid{
+    z-index:10;
+}
+
+.GridContainer {
+    pointer-events: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.GridRow {
+    pointer-events: none;
+    width: 60px;
+    min-width: 60px;
+    height: 100%;
+    border: none;
+    border-right: 1px solid #00000030;
+}
+
+.GridColumn {
+    pointer-events:none;
+    width: 100%;
+    height: 60px;
+    min-height:60px;
+    border: none;
+    border-bottom: 1px solid #00000030;
+}
+.DrawMeArea{
+    width:100%;
+    height:100%;
+}
