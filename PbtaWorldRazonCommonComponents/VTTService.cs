@@ -22,7 +22,7 @@ public class VTTService
 	public bool IsOpen = false;
 	public static IGameController? Game;
 
-	public enum VTTMaps { farm, Bandit1, Swamp, UDTBasic, UDT_Forest};
+	public enum VTTMaps { farm, Bandit1, Swamp, UDTBasic, UDT_Forest, WhiteBoard };
 
 	private VTTMaps _currentMap;
 

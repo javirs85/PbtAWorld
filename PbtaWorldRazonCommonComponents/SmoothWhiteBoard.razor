@@ -1,0 +1,64 @@
+﻿@using System.Text
+@using WhiteBoard
+@inject WhiteBoard.WhiteBoardService service
+
+
+<div class="WhiteCanvas">
+	<div class="Grid">
+		<div class="GridContainer d-flex flex-column">
+			@for(int i =0; i<VRows; i++)
+			{
+				<div class="GridColumn"></div>
+			}
+		</div>
+		<div class="GridContainer d-flex ">
+			@for (int i = 0; i < HRows; i++)
+			{
+				<div class="GridRow"></div>
+			}
+		</div>
+	</div>
+	@if (IsMaster)
+	{
+		<div class="DrawMeArea">
+			<svg width="100%" height="100%">
+				@if (service.isDrawing)
+				{
+					<polyline class="line" points="@service.CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
+				}
+				@foreach (var line in service.DrawnLines)
+				{
+					<path d="@line.GenerateMonotonePath()" stroke="black" fill="@(service.CurrentDrawing.IsFilledIn?"red":"none")" />
+				}
+			</svg>
+		</div>
+	}
+	else
+	{
+		<div class="DrawMeArea">
+			<svg width="100%" height="100%">
+				@foreach (var line in service.DrawnLines)
+				{
+					<path d="@line.GenerateMonotonePath()" stroke="black" fill="@(service.CurrentDrawing.IsFilledIn?"red":"none")" />
+				}
+			</svg>
+		</div>
+	}
+
+	
+</div>
+
+@code {
+	[Parameter] public bool IsMaster { get; set; } = false;
+
+	int VRows = 15;
+	int HRows = 30;
+
+	protected override void OnParametersSet()
+	{
+		service.WhiteBoardChanged -= Update;
+		service.WhiteBoardChanged += Update;
+	}
+
+	public void Update(object? sender, EventArgs e) => InvokeAsync(() => { StateHasChanged(); });
+}

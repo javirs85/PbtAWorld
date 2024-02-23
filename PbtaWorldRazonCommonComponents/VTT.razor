@@ -4,6 +4,7 @@
 @using PbtaWorldRazonCommonComponents;
 @inject VTTService service;
 @inject VTTLocalManagerService VTTViewer
+@inject WhiteBoard.WhiteBoardService WhiteBoard
 
 <div class="DefinitionsSelector">
 	@if(ShowMoves)
@@ -134,7 +135,14 @@
 			@onkeydown=ProcessKeyDown
 			@oncontextmenu:preventDefault 
 			@oncontextmenu:stopPropagation>
-			<img id="Map" src="@MapURL"/>
+			@if (service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
+			{
+				<SmoothWhiteBoard IsMaster=IsMaster/>
+			}
+			else
+			{
+				<img id="Map" src="@MapURL" />
+			}			
 			<div class="VTTMain" @oncontextmenu=@(()=>{;}) @oncontextmenu:preventDefault @oncontextmenu:stopPropagation>
 				@foreach (var t in service.Tokens)
 				{
@@ -258,8 +266,10 @@
 
 @code {
 	[Parameter] public IGameController? Game { get; set; }
+	[Parameter] public bool IsMaster { get; set; } = false;
 
 	bool ShowMoves = false;
+	public bool IsDrawOn = false;
 
 	protected override void OnParametersSet()
 	{
@@ -267,6 +277,8 @@
 		service.UpdateUI += Update;
 		VTTViewer.UpdateUI -= Update;
 		VTTViewer.UpdateUI += Update;
+		WhiteBoard.WhiteBoardChanged -= Update;
+		WhiteBoard.WhiteBoardChanged += Update;
 	}
 
 	string MapURL
@@ -302,8 +314,10 @@
 		if (key == "KeyO")
 			ShowingOptionsPanelForSelectedItems = !ShowingOptionsPanelForSelectedItems;
 
-		if (key == "Escape")
+		else if (key == "Escape")
 			VTTViewer.SelectedTokens.Clear();
+		else if (key == "KeyD")
+			IsDrawOn = !IsDrawOn;
 	}
 
 	//placeholder for the combobox
@@ -333,84 +347,110 @@
 
 	private void Click(MouseEventArgs e)
 	{
-		if(e.OffsetY > 40)
+		if(IsMaster && IsDrawOn && service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
 		{
-			if(IsCreatingFogOfWar)
+			WhiteBoard.MouseDown(e);
+		}
+		else
+		{
+			if(e.OffsetY > 40)
 			{
-				if(e.Button == 0)
+				if(IsCreatingFogOfWar)
 				{
-					if(FOWStep == FogOfWarCreationSteps.Start)
+					if(e.Button == 0)
 					{
-						CurrentlyCreatingFOW = service.AddToken(VTTTokens.FogOfWar);
-						CurrentlyCreatingFOW.X = (int)e.OffsetX;
-						CurrentlyCreatingFOW.Y = (int)e.OffsetY;
-						CurrentlyCreatingFOW.Status = TokenStatus.Normal;
-
-						FOWStep = FogOfWarCreationSteps.Size;
-					}
-					else if(FOWStep == FogOfWarCreationSteps.Size)
-					{
-						FOWStep = FogOfWarCreationSteps.Start;
-						IsCreatingFogOfWar = false;
-					}
-				}
-			}
-			else
-			{
-				if (e.Button == 0)
-				{
-					if (VTTViewer.IsMaster)
-					{
-						var t = service.SelectToken(e.OffsetX, e.OffsetY);
-						if (t is not null && !VTTViewer.SelectedTokens.Contains(t))
-							VTTViewer.SelectedTokens.Add(t);
-						else if (t is not null && VTTViewer.SelectedTokens.Contains(t))
-							VTTViewer.SelectedTokens.Remove(t);
-						else
+						if(FOWStep == FogOfWarCreationSteps.Start)
 						{
-							IsMoving = true;
+							CurrentlyCreatingFOW = service.AddToken(VTTTokens.FogOfWar);
+							CurrentlyCreatingFOW.X = (int)e.OffsetX;
+							CurrentlyCreatingFOW.Y = (int)e.OffsetY;
+							CurrentlyCreatingFOW.Status = TokenStatus.Normal;
+
+							FOWStep = FogOfWarCreationSteps.Size;
+						}
+						else if(FOWStep == FogOfWarCreationSteps.Size)
+						{
+							FOWStep = FogOfWarCreationSteps.Start;
+							IsCreatingFogOfWar = false;
 						}
 					}
-					else
-						IsMoving = true;
-
 				}
-				else if (e.Button == 2)
+				else
 				{
-					//move in formation
-					for(int i =0; i< VTTViewer.SelectedTokens.Count; ++i)
+					if (e.Button == 0)
 					{
-						if (i == 0) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX, e.OffsetY);
-						else if (i == 1) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
-						else if (i == 2) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
-						else if (i == 3) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-						else if (i == 4) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
-						else if (i == 5) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-						else if (i == 6) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
-						else if (i == 7) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-						else if (i == 8) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
-					}
+						if (VTTViewer.IsMaster)
+						{
+							var t = service.SelectToken(e.OffsetX, e.OffsetY);
+							if (t is not null && !VTTViewer.SelectedTokens.Contains(t))
+								VTTViewer.SelectedTokens.Add(t);
+							else if (t is not null && VTTViewer.SelectedTokens.Contains(t))
+								VTTViewer.SelectedTokens.Remove(t);
+							else
+							{
+								IsMoving = true;
+							}
+						}
+						else
+							IsMoving = true;
 
-				}
-			}			
+					}
+					else if (e.Button == 2)
+					{
+						//move in formation
+						for(int i =0; i< VTTViewer.SelectedTokens.Count; ++i)
+						{
+							if (i == 0) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX, e.OffsetY);
+							else if (i == 1) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
+							else if (i == 2) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
+							else if (i == 3) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 4) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+							else if (i == 5) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 6) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+							else if (i == 7) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 8) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+						}
+
+					}
+				}			
+			}
 		}
 	}
 
 	private void Drag(MouseEventArgs e)
 	{
-		if(IsMoving)
+		if (service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
 		{
-			MapPosX += e.MovementX;
-			MapPosY += e.MovementY;
+			WhiteBoard.MouseMove(e);
 		}
-		else if (IsCreatingFogOfWar)
+		else
 		{
-			if(FOWStep == FogOfWarCreationSteps.Size)
+			if (IsMoving)
 			{
-				CurrentlyCreatingFOW.FowWidth = ((int)e.OffsetX)- CurrentlyCreatingFOW.X ;
-				CurrentlyCreatingFOW.FowHeight = ((int)e.OffsetY)-CurrentlyCreatingFOW.Y;
+				MapPosX += e.MovementX;
+				MapPosY += e.MovementY;
+			}
+			else if (IsCreatingFogOfWar)
+			{
+				if (FOWStep == FogOfWarCreationSteps.Size)
+				{
+					CurrentlyCreatingFOW.FowWidth = ((int)e.OffsetX) - CurrentlyCreatingFOW.X;
+					CurrentlyCreatingFOW.FowHeight = ((int)e.OffsetY) - CurrentlyCreatingFOW.Y;
+				}
 			}
 		}
+
+	}
+
+	private void UnClick() { 
+		if (service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
+		{
+			WhiteBoard.MouseUp();
+		}
+		else
+		{
+			IsMoving = false; 
+		}		
 	}
 
 	Random rnd = new Random();
@@ -437,7 +477,6 @@
 			t.IsRound = !t.IsRound;
 	}
 
-	private void UnClick() => IsMoving = false;
 	private void Exit() => IsMoving = false;
 
 
