@@ -1,12 +1,10 @@
 ﻿.WhiteCanvas {
-    width: 1800px; /*60*30*/
-    height: 900px; /*60*15*/
     background: white;
-    position:relative;
+    position: relative;
 }
 
-.Grid{
-    z-index:10;
+.Grid {
+    z-index: 10;
 }
 
 .GridContainer {
@@ -19,6 +17,7 @@
     overflow: hidden;
 }
 
+
 .GridRow {
     pointer-events: none;
     width: 60px;
@@ -29,14 +28,307 @@
 }
 
 .GridColumn {
-    pointer-events:none;
+    pointer-events: none;
     width: 100%;
     height: 60px;
-    min-height:60px;
+    min-height: 60px;
     border: none;
     border-bottom: 1px solid #00000030;
 }
-.DrawMeArea{
-    width:100%;
-    height:100%;
+
+.DrawMeArea {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top:0;
+    left:0;
+    z-index: 20;
 }
+
+.BackgroundMap {
+    pointer-events: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 2;
+    background-position: 0 0;
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+
+    .BackgroundMap.Masked {
+        clip-path: url(#myClip);
+        opacity: 1;
+    }
+
+#MyFogCurter {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* Ensure the container doesn't capture events */
+}
+
+
+.Fog {
+    pointer-events: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 1;
+}
+
+.AttentionMarker {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 5px black);
+    transition: all 0.5s;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.FlashingContainer {
+    transition: opacity 1s;
+    opacity: 0;
+}
+
+.Flashing {
+    animation: growAndFade 1.1s infinite ease-out;
+    border-radius: 50%;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    background-color: white;
+}
+
+.AttentionMarkerCircle1 {
+    animation-delay: 0.3s;
+}
+
+.AttentionMarkerCircle2 {
+    animation-delay: 0.6s;
+}
+
+.AttentionMarkerCircle3 {
+    animation-delay: 0.9s;
+}
+
+.AttentionCore {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    opacity: 1;
+    z-index: 2;
+    top: 18px;
+    left: 17px;
+}
+
+@keyframes growAndFade {
+    0% {
+        opacity: .75;
+        transform: scale(0);
+    }
+
+    75% {
+        opacity: .3;
+    }
+
+    100% {
+        opacity: .0;
+        transform: scale(1);
+    }
+}
+
+.DW_Cleric {
+    background: #515021;
+}
+
+.DW_Druid {
+    background: #0a3804;
+}
+
+.DW_Barbarian {
+    background: #570104;
+}
+
+.Hechicero {
+    background: #04015b;
+}
+
+.DW_Paladin {
+    background: #c0c937;
+}
+
+.DW_Explorer {
+    background: #482208;
+}
+
+.DW_Thief {
+    background: #2c2c2c;
+}
+
+.DW_Fighter {
+    background: #640057;
+}
+
+.DW_Bard {
+    background: #09603a;
+}
+
+.DW_Mage {
+    background: #39898c;
+}
+
+.DW_Wielder {
+    background: #51750d;
+}
+
+
+.VTTToken {
+    position: absolute;
+    background-image: url(/imgs/VTT/Tokens60.png);
+    filter: drop-shadow(2px 4px 6px black);
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    transition: all 0.5s ease-in-out;
+    pointer-events: none;
+    z-index: 2;
+}
+
+    .VTTToken.Selected {
+        box-shadow: 0px 0px 11px 8px rgb(114 197 245);
+        z-index: 1;
+    }
+.LifeContainer {
+    width: 60px;
+    height: 8px;
+    border: 1px solid black;
+}
+
+.LifeBar {
+    height: 100%;
+    background: red;
+    transition: all 0.3s linear;
+}
+
+.NameContainer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background: #00000048;
+    border-radius: 10px;
+    color: white;
+}
+
+.TokenStatus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 100px;
+}
+
+.Master_Hidden {
+    opacity: 0.5;
+}
+
+.Player_Hidden {
+    display: none;
+}
+
+.TokenStatus.Master_Dead {
+    background: #ff040438;
+    background-image: url(./imgs/redCross.png);
+    background-size: contain;
+}
+
+.TokenStatus.Master_InFlame {
+    background: #ff040438;
+    background-image: url(./imgs/inflames.png);
+    background-size: contain;
+}
+
+.TokenStatus.Master_Poisoned {
+    background: #420c475e;
+    background-image: url(./imgs/poisoned.png);
+    background-size: contain;
+}
+
+.TokenStatus.Player_Dead {
+    background: #ff040438;
+    background-image: url(./imgs/redCross.png);
+    background-size: contain;
+}
+
+.TokenStatus.Player_Poisoned {
+    background: #420c475e;
+    background-image: url(./imgs/poisoned.png);
+    background-size: contain;
+}
+
+.TokenStatus.Player_InFlame {
+    background: #ff040438;
+    background-image: url(./imgs/inflames.png);
+    background-size: contain;
+}
+
+.DefinitionsSelector {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: white;
+    z-index: 11;
+    background: black;
+    height: 100%;
+    overflow: auto;
+}
+
+.Selected {
+    opacity: 1;
+    position: relative;
+}
+
+.NotSelected {
+    opacity: 0.5;
+    position: relative;
+}
+
+.AddToFightButton {
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 4px;
+    left: 9px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.PropTools {
+    position: absolute;
+    pointer-events: all;
+}
+
+    .PropTools.Token {
+        pointer-events: none;
+        margin-top: 60px;
+        pointer-events: all;
+        transform: translateX(-50%);
+    }
+
+        .PropTools.Token button {
+        }

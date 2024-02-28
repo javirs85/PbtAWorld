@@ -41,6 +41,12 @@ public enum VTTTokens
 	Chest, Throne, Crate_Small, Barrel, Storage, Statue_Hands, Statue_Shield, Stairs
 }
 
+public enum DWClasses
+{
+	DW_Barbarian, DW_Bard, DW_Cleric, DW_Druid, DW_Explorer, DW_Fighter, DW_Thief, DW_Mage, DW_Paladin, DW_Wielder,
+	DW_NotSet, DW_Master
+}
+
 
 public static class ExtensionsEnum
 {

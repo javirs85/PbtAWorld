@@ -1,12 +1,231 @@
 ﻿@using System.Text
+@using Microsoft.AspNetCore.Components.Forms
 @using WhiteBoard
-@inject WhiteBoard.WhiteBoardService service
+@using static WhiteBoard.WhiteBoardService
+@inject WhiteBoardService service
+
+<div class="ButtonsDrawer d-flex gap-1 align-items-center m-1" style="position:absolute; z-index:500;">
+	@if(IsMaster)
+	{
+		<button class="btn btn-primary" @onclick=StartWall>StartWall</button>
+		<button class="btn btn-primary" @onclick=service.Clear>Clear all</button>
+		<button class="btn btn-primary" @onclick=@(()=>{IsTestingAttentionMarkers = !IsTestingAttentionMarkers;})>Markers</button>
+		@if(DrawModeOn)
+		{
+			<div class="p-2" style="@(isDrawing?"background: red; color: white;":"background:green; color:white;")">IsDrawing</div>
+		}
+		<div class="p-2" style="@(IsDeleting?"background: red; color: white;":"")">IsDeleting</div>
+		<div class="p-2" style="@(IsTestingVisibility?"background: black; color: white;":"")">IsTestingVisibility</div>
+		<div class="p-2" style="@(IsMaster?"background: green; color: white;":"")">IsMaster</div>
+		<div class="p-2" style="@(IsCreatingAWall?"background: green; color: white;":"background: transparent;")">Current: @CurrentDrawing.Points.Count</div>
+		<div class="p-2" style="@(IsTestingAttentionMarkers?"background: green; color: white;":"")">Attention</div>
+		<div class="p-2">l: @service.GetLines().Count w:@service.Walls.Count</div>
+		<button class="btn btn-danger" @onclick=@(()=>{IsDeleting = !IsDeleting;})>Delete</button>
+		<button class="btn btn-primary" @onclick=service.SaveToJson>SaveToJson</button>
+		<EditForm Model="service">
+			<InputSelect @bind-Value=service.MapImageURL>
+				@foreach (var op in service.GetMaps())
+				{
+					<option value="@op">@op</option>
+				}
+			</InputSelect>
+		</EditForm>
+		<button class="btn btn-primary" @onclick=@(()=>{IsTestingVisibility = !IsTestingVisibility;})>Test Visibility</button>
+		<button class="btn btn-danger" @onclick=ExitRequested>Close</button>
+	}
+	else
+	{
+		@if(MyToken is null)
+		{
+			<button class="btn btn-primary" @onclick=Join>Join</button>
+		}
+	}
+</div>
+
+<div class="DefinitionsSelector">
+	@if(ShowMoves)
+	{
+		<div class="d-flex flex-column h-100" style="width: 580px;">
+			<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Monsters</button>
+			<div class="p-1">
+				@if(SelectedTokens.Count >= 1 && SelectedTokens[0].Monster is not null && SelectedTokens[0].Monster.Moves is not null)
+				{
+					<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title = @SelectedTokens[0].Monster.Name, Moves = SelectedTokens[0].Monster.Moves})" />
+				}
+				@if(VTTService.Game is not null && VTTService.Game.TextBook is not null && VTTService.Game.TextBook.MasterMovesPacks is not null)
+				{
+					@foreach (var pack in VTTService.Game?.TextBook?.MasterMovesPacks)
+					{
+						<MasterMovePackViewer MovesPack="@pack" />
+					}
+				}				
+			</div>
+		</div>
+	}
+	else //Show monsters
+	{
+		<div class="d-flex flex-column h-100">
+			<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Moves</button>
+			@if (Game is not null && Game.MonsterDefinitionsInCurrentScene is not null)
+			{
+				@foreach (var md in Game.MonsterDefinitionsInCurrentScene)
+				{
+					<div class="@(SelectedTokens.Any() &&  md.ID == SelectedTokens[0]?.Monster?.ID?"Selected":"NotSelected")">
+						<div class="AddToFightButton" @onclick=@(()=>{AddToFight(md);})><i class="bi bi-gitlab text-danger"></i></div>
+						<EnemyCard Game="Game" monster="md" />
+					</div>
+				}
+			}
+		</div>
+	}
+</div>
 
 
-<div class="WhiteCanvas">
+
+<div class="WhiteCanvas"
+	 @onmousedown=MouseDown @onmouseup=MouseUp
+	 @onkeydown=ProcessKeyDown @onmousemove=MouseMove tabindex="0"
+	 @oncontextmenu=RightClick @oncontextmenu:stopPropagation @oncontextmenu:preventDefault
+	style="@($"top: {@GlobalTop}px; left: {GlobalLeft}px;") width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
+
+	<div class="BackgroundMap" style="@(IsMaster?"opacity:0.3;":"") background-image:url(_content/PbtaWorldRazonCommonComponents/imgs/Maps/BattleMaps/@service.MapImageURL); width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
+		
+	</div>
+	<div class="BackgroundMap Masked" style="@(IsMaster?"clip-path:none;":"") width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
+		<img src="_content/PbtaWorldRazonCommonComponents/imgs/Maps/BattleMaps/@service.MapImageURL" style="position:absolute;"/>
+		<svg width="100%" height="100%" style="position:absolute;">
+			@foreach (var line in service.GetLines())
+			{
+				<path d="@line.GenerateMonotonePath()" stroke="red" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" stroke-width="9" />
+			}
+		</svg>
+		@foreach (var marker in service.MarkerPositions)
+		{
+			<div class="AttentionMarker" style="@($"top: {marker.Position.Y}px; left: {marker.Position.X}px;")">
+				<div class="FlashingContainer" style="opacity: @(marker.IsFlashing?"1":"0")">
+					<div class="AttentionCore @marker.Color" />
+					<div class="AttentionMarkerCircle1  Flashing"></div>
+					<div class="AttentionMarkerCircle2  Flashing @marker.Color"></div>
+					<div class="AttentionMarkerCircle3  Flashing"></div>
+				</div>
+			</div>
+		}
+		@foreach (var t in service.Tokens)
+		{
+			@if(t.ID == VTTTokens.FogOfWar)
+			{
+				<div class="FOW 
+						@(t.IsRound?"Round":"")
+						@(IsMaster?"FOWMaster":"FOWPlayer")
+						@(t.Status == TokenStatus.Hidden?"FOWHidden":"")" 
+						style="
+							@(SelectedTokens.Contains(t)?"border:1px solid red;":"")
+							top:@(t.Y+"px"); 
+							left:@(t.X+"px");
+							width:@(t.FowWidth+"px");
+							height:@(t.FowHeight+"px");">
+					@if (IsMaster && SelectedTokens.Contains(t))
+					{
+						<div class="PropTools" @onclick="@(()=>{})" @onclick:preventDefault @onclick:stopPropagation>
+							<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); SelectedTokens.Remove(t);})><i class="bi bi-trash3"></i></button>
+						</div>
+					}							
+				</div>
+			}
+			else
+			{
+				<div class="VTTToken 
+					@(IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
+					@(SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")"
+					style="
+						top:@(t.Y+"px"); left:@(t.X+"px"); 
+						width: @(t.SizePixels+"px");
+						height: @(t.SizePixels+"px");
+						border-radius:@(t.SizePixels+"px");
+						background-image:url(@("imgs/VTT/Tokens"+t.SizePixels+".png"));
+						background-position-x:@(t.ImgX+"px"); 
+						background-position-y:@(t.ImgY+"px");">
+					<div class="TokenStatus @(IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
+						@(SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")">
+					</div>
+					@if(t.Status != TokenStatus.Dead)
+					{
+						<div class="LifeContainer">
+							<div class="LifeBar" style="width:@(t.PercentageLife)%; background:@(t.LifeBarColor);"></div>
+						</div>
+					}
+					@if (IsMaster && SelectedTokens.Contains(t) && ShowingOptionsPanelForSelectedItems)
+					{
+						<div class="PropTools Token" @onclick="@(()=>{Console.WriteLine("tests");})" @onclick:preventDefault @onclick:stopPropagation>
+							<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); SelectedTokens.Remove(t);})><i class="bi bi-trash3"></i></button>
+							<EditForm Model="t">
+								<div class="d-flex gap-1 bg-dark text-white align-items-center ">
+									<label>MaxHP</label>
+									<InputNumber @bind-Value=t.maxHP style="width:40px;"/>
+									<label>HP</label>
+									<InputNumber @bind-Value=t.HP style="width:40px;" />
+								</div>
+								<InputSelect class="form-select" @bind-Value=t.Status>
+									@foreach (var v in Enum.GetValues(typeof(TokenStatus)))
+									{
+										<option value="@v">@v</option>
+									}
+								</InputSelect>
+								<InputSelect class="form-select" @bind-Value=t.Size>
+									@foreach (var v in Enum.GetValues(typeof(Token.Sizes)))
+									{
+										<option value="@v">@v</option>
+									}
+								</InputSelect>
+								<InputSelect class="form-select" @bind-Value=t.ID>
+									@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
+									{
+										<option value="@v">@v</option>
+									}
+								</InputSelect>
+								<InputSelect class="form-select" @bind-Value=t.MonsterKeyCode>
+									@if(Game is not null)
+									{
+										@foreach (var m in Game.MonsterDefinitionsInCurrentScene)
+										{
+											<option value="@m.ID">@m.Name</option>
+										}
+									}											
+								</InputSelect>
+							</EditForm>
+						</div>
+					}
+
+					<div class="NameContainer">@t.Character?.Name</div>
+				</div>
+			}
+		}
+		@foreach (var p in service.Props)
+		{
+			<div class="Prop
+					@(IsMaster?"Master_"+p.Status.ToString():"Player_"+p.Status.ToString())
+					@(SelectedTokens.Find(x=>x.Guid == p.Guid) != null?"Selected":"")"
+					style="top:@(p.Y+"px"); left:@(p.X+"px");">
+				<img src="@p.imgURL" alt="prop" style=" transform:rotate(@(p.rotation+"deg"))" />
+				@if(SelectedTokens.Contains(p))
+				{
+					<div class="PropTools d-flex gap-1 flex-wrap">
+						<button class="btn btn-danger" @onclick=@(()=>{service.DeleteProp(p); SelectedTokens.Remove(p);})><i class="bi bi-trash3"></i></button>
+						<button class="btn btn-primary" @onclick=@(()=>{((Prop)p).RotateRight();})><i class="bi bi-arrow-clockwise"></i></button>
+						@if(p.IsDoor)
+						{
+							<button class="btn btn-success" @onclick=@(()=>{((Prop)p).OpenDoor();})><i class="bi bi-door-open"></i></button>
+							<button class="btn btn-info" @onclick=@(()=>{((Prop)p).CloseDoor();})><i class="bi bi-door-closed"></i></button>
+							<button class="btn btn-dark" @onclick=@(()=>{((Prop)p).GateDoor();})><i class="bi bi-bank"></i></button>
+						}								
+					</div>
+				}
+			</div>
+		}
+	</div>
 	<div class="Grid">
 		<div class="GridContainer d-flex flex-column">
-			@for(int i =0; i<VRows; i++)
+			@for (int i = 0; i < VRows; i++)
 			{
 				<div class="GridColumn"></div>
 			}
@@ -18,47 +237,318 @@
 			}
 		</div>
 	</div>
-	@if (IsMaster)
-	{
-		<div class="DrawMeArea">
-			<svg width="100%" height="100%">
-				@if (service.isDrawing)
-				{
-					<polyline class="line" points="@service.CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
-				}
-				@foreach (var line in service.DrawnLines)
-				{
-					<path d="@line.GenerateMonotonePath()" stroke="black" fill="@(service.CurrentDrawing.IsFilledIn?"red":"none")" />
-				}
-			</svg>
-		</div>
-	}
-	else
-	{
-		<div class="DrawMeArea">
-			<svg width="100%" height="100%">
-				@foreach (var line in service.DrawnLines)
-				{
-					<path d="@line.GenerateMonotonePath()" stroke="black" fill="@(service.CurrentDrawing.IsFilledIn?"red":"none")" />
-				}
-			</svg>
-		</div>
-	}
 
-	
+	<svg id="MyFogCurter" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 400">
+		<defs>
+			<clipPath id="myClip">
+				<polygon points="@viewMask" />
+				<!-- Adjust the points to center the pentagon and set the desired diameter -->
+			</clipPath>
+		</defs>
+	</svg>
+
+	<div class="Fog" id="FOG">
+	</div>
+	<div class="DrawMeArea" style="width:@(service.BattleMapWidth+"px;"); height:@(service.BattleMapHeight+"px;") pointer-events:none;" 
+		>
+		<svg width="100%" height="100%">
+			@if (IsCreatingAWall)
+			{
+				<polyline class="line" points="@CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
+			}
+			else
+			{
+				@if (CurrentDrawing.Points.Count < 4)
+				{
+					<polyline class="line" points="@CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
+				}
+				<path d="@CurrentDrawing.GenerateMonotonePath()" stroke="red" stroke-width="3" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
+			}
+
+			@if (IsMaster)
+			{
+				@foreach (var line in service.GetWalls())
+				{
+					<polyline class="line" points="@line.GeneratePolyline()" fill="none" stroke="green" stroke-dasharray="15" />
+				}
+				@foreach (var line in service.debugLines)
+				{
+					<polyline class="line" points="@line.GeneratePolyline()" fill="none" stroke="red" stroke-width="3" />
+				}
+			}
+
+			@if (IsDeleting)
+			{
+				@foreach (var line in service.GetLines())
+				{
+					<circle r="10" cx="@line.AnchorPoint.X" cy="@line.AnchorPoint.Y" fill="blue" stroke="white" />
+				}
+			}
+
+
+		</svg>
+	</div>
 </div>
 
 @code {
-	[Parameter] public bool IsMaster { get; set; } = false;
+	[Parameter] public PbtACharacter Character { get; set; } = new();
+	[Parameter] public DWClasses MyClass { get; set; } = DWClasses.DW_Bard;
+	[Parameter] public PbtALib.ifaces.IGameController? Game { get; set; }
+	[Parameter] public EventCallback ExitRequested { get; set; }
 
 	int VRows = 15;
 	int HRows = 30;
+	int DrawingStep = 10;
+	int GlobalTop = 0;
+	int GlobalLeft = 0;
+
+	bool IsCreatingAWall = false;
+	bool IsTestingAttentionMarkers = false;
+	bool IsTestingVisibility = false;
+	bool IsDeleting = false;
+	bool ShowMoves = false;
+	bool DrawModeOn = false;
+	bool MovingTokens = false;
+	private bool ShowingOptionsPanelForSelectedItems = true;
+
+	bool IsMaster => MyClass == DWClasses.DW_Master;
+	Token? MyToken = null;
+
+	List<Token> SelectedTokens = new();
+
+	string viewMask = "";
+
+	VisibilityCalculator Calculator = new();
 
 	protected override void OnParametersSet()
 	{
-		service.WhiteBoardChanged -= Update;
-		service.WhiteBoardChanged += Update;
+		service.UpdateUI -= UpdateUi;
+		service.UpdateUI += UpdateUi;
+
+		service.FlashAttentionMarker -= FlashAttentionMarker;
+		service.FlashAttentionMarker += FlashAttentionMarker;
 	}
 
-	public void Update(object? sender, EventArgs e) => InvokeAsync(() => { StateHasChanged(); });
+	public void Start(PbtACharacter character)
+	{
+		service.StartForPlayer(character);
+	}
+
+	private void UpdateUi(object? sender, EventArgs e) => InvokeAsync(StateHasChanged);
+
+
+	bool isDrawing = false;
+	DrawnLine CurrentDrawing = new DrawnLine
+	{
+	};
+
+	private void FlashAttentionMarker(object? sender, Tuple<DWClasses, Point> e)
+	{
+
+	}
+
+
+	void StartWall()
+	{
+		CurrentDrawing = new DrawnLine();
+		IsCreatingAWall = true;
+	}
+
+
+	public async Task MouseDown(MouseEventArgs e)
+	{
+		if (!IsMaster)
+		{
+			if (e.Button == 0 && MyToken is not null)
+			{
+				viewMask = Calculator.GetVisibilityArea((int)e.OffsetX, (int)e.OffsetY, service.Walls);
+				service.MoveToken(MyToken, e.OffsetX, e.OffsetY);
+			}
+			else if (e.Button == 2)
+			{
+				service.ShowPlayerAttention(MyClass, new Point(e));
+			}
+		}
+		else //is master
+		{
+			if(e.Buttons == 2)
+			{
+				for (int i = 0; i < SelectedTokens.Count; ++i)
+				{
+					if (i == 0) service.MoveToken(SelectedTokens[i], e.OffsetX, e.OffsetY);
+					else if (i == 1) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
+					else if (i == 2) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
+					else if (i == 3) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+					else if (i == 4) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+					else if (i == 5) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+					else if (i == 6) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+					else if (i == 7) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+					else if (i == 8) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+				}
+				//service.ShowPlayerAttention(MyClass, new Point(e));
+				return;
+			}
+			if (IsTestingVisibility)
+			{
+				viewMask = Calculator.GetVisibilityArea((int)e.OffsetX, (int)e.OffsetY, service.Walls);
+			}
+			else if (IsDeleting)
+			{
+				service.TryDelete(new Point((int)e.OffsetX, (int)e.OffsetY));
+			}
+			else if (DrawModeOn)
+			{
+				isDrawing = true;
+				CurrentDrawing.Points.Clear();
+				CurrentDrawing.IsFilledIn = false;
+
+				if (IsCreatingAWall)
+				{
+					//we neeed a line for a wall, so we need at least two points, the sencod will be moving with the mouse
+					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+				}
+				else
+				{
+					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+				}
+			}
+			else if (IsCreatingAWall)
+			{
+				CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+			}
+			else
+			{
+				var t = service.SelectToken(e.OffsetX, e.OffsetY);
+				if (e.ShiftKey)
+				{
+					if (t is not null && !SelectedTokens.Contains(t))
+						SelectedTokens.Add(t);
+					else if (t is not null && SelectedTokens.Contains(t))
+						SelectedTokens.Remove(t);
+				}
+				else
+				{
+					if(t is not null)
+					{
+						SelectedTokens.Clear();
+						SelectedTokens.Add(t);
+					}
+					else
+					{
+						SelectedTokens.Clear();
+					}
+				}
+
+			}
+		}	
+	}
+
+	public void RightClick(MouseEventArgs e)
+	{
+		if (isDrawing && IsCreatingAWall)
+		{
+			isDrawing = false;
+			IsCreatingAWall = false;
+			service.AddWall(CurrentDrawing);
+			CurrentDrawing = new();
+		}
+	}
+
+	public void MouseUp(MouseEventArgs e)
+	{
+		if (isDrawing)
+		{
+			if (IsCreatingAWall)
+			{
+				//CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+			}
+			else
+			{
+				if (CurrentDrawing.Points.Last().DistanceTo(CurrentDrawing.Points.First()) <= DrawingStep)
+				{
+					CurrentDrawing.IsFilledIn = true;
+				}
+				isDrawing = false;
+				service.AddDrawnLine(CurrentDrawing);
+				CurrentDrawing = new DrawnLine();
+			}
+		}
+		else
+		{
+		}
+	}
+
+	private Random rnd = new();
+
+	public void MouseMove(MouseEventArgs e)
+	{
+		if(e.CtrlKey)
+		{
+			GlobalTop += (int)e.MovementY;
+			GlobalLeft += (int)e.MovementX;
+		}
+		else if (isDrawing)
+		{
+			if (IsCreatingAWall)
+			{
+				var last = CurrentDrawing.Points.Last();
+				last.X = (int)e.OffsetX;
+				last.Y = (int)e.OffsetY;
+			}
+			else
+			{
+				var lastPoint = CurrentDrawing.Points.Last();
+				var newPoint = new Point((int)e.OffsetX, (int)e.OffsetY);
+
+				if (newPoint.DistanceTo(lastPoint) >= DrawingStep)
+					CurrentDrawing.Points.Add(newPoint);
+			}
+		}
+	}
+	void ProcessKeyDown(KeyboardEventArgs e)
+	{
+		var key = e.Code;
+		if (key == "KeyH")
+			foreach (var t in SelectedTokens)
+				if (t.Status == TokenStatus.Hidden)
+					t.Status = TokenStatus.Normal;
+				else
+					t.Status = TokenStatus.Hidden;
+
+
+		if (key == "KeyO")
+			ShowingOptionsPanelForSelectedItems = !ShowingOptionsPanelForSelectedItems;
+
+		else if (key == "Escape")
+			SelectedTokens.Clear();
+		
+		else if (key == "KeyD")
+			DrawModeOn = !DrawModeOn;
+	}
+
+	void FindMyToken()
+	{
+		// service.Tokens.Find(x=> x.Character is not null && x.Character.ID == )
+	}
+
+	async Task Join()
+	{
+		MyToken = await service.StartForPlayer(Character);
+		if (MyClass != DWClasses.DW_Master)
+			SelectedTokens.Add(MyToken);
+		Random rnd = new();
+		var x = 40 + rnd.Next(-20 + 40);
+		var y = 430 + rnd.Next(-100 + 100);
+		viewMask = Calculator.GetVisibilityArea(x,y, service.Walls);
+		service.MoveToken(MyToken, x,y);
+	}
+
+	void AddToFight(Monster m)
+	{
+		var newToken = service.AddToken(m.FavouriteToken);
+		newToken.Monster = m;
+		SelectedTokens.Add(newToken);
+	}
+
 }

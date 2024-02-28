@@ -103,7 +103,7 @@
 
 				@if(Meta.SelectedGame == AvailableGames.DW)
 				{
-					@foreach (DungeonWorld.DWClasses c in Enum.GetValues(typeof(DungeonWorld.DWClasses)))
+					@foreach (DWClasses c in Enum.GetValues(typeof(DWClasses)))
 					{
 						@if(c != DWClasses.DW_NotSet)
 						{
@@ -204,7 +204,7 @@
 	{
 		get
 		{
-			if (Meta.SelectedGame == AvailableGames.DW) return typeof(DungeonWorld.DWClasses);
+			if (Meta.SelectedGame == AvailableGames.DW) return typeof(DWClasses);
 			else if (Meta.SelectedGame == AvailableGames.DI) return typeof(DinoIsland.DinoClasses);
 			//else if (Meta.SelectedGame == AvailableGames.US) return typeof(AvailableProfesionsforUS);
 			else return null;

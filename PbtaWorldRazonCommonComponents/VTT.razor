@@ -42,7 +42,6 @@
 			}
 		</div>
 	}
-	
 </div>
 <div class="VTT justify-content-center flex-grow-1"
 		style="overflow:auto;"
@@ -277,8 +276,8 @@
 		service.UpdateUI += Update;
 		VTTViewer.UpdateUI -= Update;
 		VTTViewer.UpdateUI += Update;
-		WhiteBoard.WhiteBoardChanged -= Update;
-		WhiteBoard.WhiteBoardChanged += Update;
+		//WhiteBoard.WhiteBoardChanged -= Update;
+		//WhiteBoard.WhiteBoardChanged += Update;
 	}
 
 	string MapURL
@@ -349,7 +348,7 @@
 	{
 		if(IsMaster && IsDrawOn && service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
 		{
-			WhiteBoard.MouseDown(e);
+			//WhiteBoard.MouseDown(e);
 		}
 		else
 		{
@@ -421,7 +420,7 @@
 	{
 		if (service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
 		{
-			WhiteBoard.MouseMove(e);
+			//WhiteBoard.MouseMove(e);
 		}
 		else
 		{
@@ -445,7 +444,7 @@
 	private void UnClick() { 
 		if (service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
 		{
-			WhiteBoard.MouseUp();
+			//WhiteBoard.MouseUp();
 		}
 		else
 		{

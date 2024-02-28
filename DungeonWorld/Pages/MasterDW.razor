@@ -10,7 +10,7 @@
 
 @if (_ShowingVTT)
 {
-	<VTT Game="Game" IsMaster=true/>
+	<SmoothWhiteBoard Game="Game" MyClass="DWClasses.DW_Master" ExitRequested=@(()=>{_ShowingVTT = false;})/>
 }
 else if (_showingSquareMap)
 {
