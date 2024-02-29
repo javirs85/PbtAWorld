@@ -23,7 +23,7 @@
 		<button class="btn btn-danger" @onclick=@(()=>{IsDeleting = !IsDeleting;})>Delete</button>
 		<button class="btn btn-primary" @onclick=service.SaveToJson>SaveToJson</button>
 		<EditForm Model="service">
-			<InputSelect @bind-Value=service.MapImageURL>
+			<InputSelect @bind-Value=service.MapImageName>
 				@foreach (var op in service.GetMaps())
 				{
 					<option value="@op">@op</option>
@@ -91,12 +91,12 @@
 		 @oncontextmenu=RightClick @oncontextmenu:stopPropagation @oncontextmenu:preventDefault
 		style="@(IsMaster?"opacity:0.3;":"") 
 			pointer-events:all;
-			background-image:url(_content/PbtaWorldRazonCommonComponents/imgs/Maps/BattleMaps/@service.MapImageURL); 
+			background-image:url(@service.MapImageURL);
 			width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
 		
 	</div>
 	<div class="BackgroundMap Masked" style="@(IsMaster?"clip-path:none;":"") width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
-		<img src="_content/PbtaWorldRazonCommonComponents/imgs/Maps/BattleMaps/@service.MapImageURL" style="position:absolute;"/>
+		<img src="@service.MapImageURL" style="position:absolute;" />
 		<svg width="100%" height="100%" style="position:absolute;">
 			@foreach (var line in service.GetLines())
 			{
@@ -152,7 +152,7 @@
 					<div class="TokenStatus @(IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
 						@(SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")">
 					</div>
-					@if(t.Status != TokenStatus.Dead)
+					@if(t.Status != TokenStatus.Dead && t.maxHP != 0)
 					{
 						<div class="LifeContainer">
 							<div class="LifeBar" style="width:@(t.PercentageLife)%; background:@(t.LifeBarColor);"></div>
@@ -324,8 +324,12 @@
 		service.StartForPlayer(character);
 	}
 
-	private void UpdateUi(object? sender, EventArgs e) => InvokeAsync(StateHasChanged);
-
+	private void UpdateUi(object? sender, EventArgs e) 
+	{
+		if(MyToken is not null)
+			viewMask = Calculator.GetVisibilityArea(MyToken.X, MyToken.Y, service.Walls); InvokeAsync(StateHasChanged);
+		InvokeAsync(StateHasChanged);
+	}
 
 	bool isDrawing = false;
 	DrawnLine CurrentDrawing = new DrawnLine
@@ -363,20 +367,29 @@
 		{
 			if(e.Buttons == 2)
 			{
-				for (int i = 0; i < SelectedTokens.Count; ++i)
+				if(IsCreatingAWall)
 				{
-					if (i == 0) service.MoveToken(SelectedTokens[i], e.OffsetX, e.OffsetY);
-					else if (i == 1) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
-					else if (i == 2) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
-					else if (i == 3) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-					else if (i == 4) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
-					else if (i == 5) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-					else if (i == 6) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
-					else if (i == 7) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-					else if (i == 8) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+					service.Walls.Add(CurrentDrawing);
+					IsCreatingAWall = false;
 				}
-				//service.ShowPlayerAttention(MyClass, new Point(e));
-				return;
+				else
+				{
+					for (int i = 0; i < SelectedTokens.Count; ++i)
+					{
+						if (i == 0) service.MoveToken(SelectedTokens[i], e.OffsetX, e.OffsetY);
+						else if (i == 1) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
+						else if (i == 2) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
+						else if (i == 3) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+						else if (i == 4) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+						else if (i == 5) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+						else if (i == 6) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+						else if (i == 7) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+						else if (i == 8) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+					}
+					//service.ShowPlayerAttention(MyClass, new Point(e));
+					return;
+				}
+				
 			}
 			if (IsTestingVisibility)
 			{

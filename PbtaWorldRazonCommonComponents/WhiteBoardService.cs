@@ -15,16 +15,23 @@ public class WhiteBoardService
 	public List<Prop> Props = new();
 	public static IGameController? Game;
 
-	private string _mapurl = string.Empty;
 
-	public string MapImageURL
+
+	string RootBattleMapsURL = "./wwwroot/imgs/VTT/BattleMaps/";
+	public string MapImagePATH => RootBattleMapsURL + MapImageName;
+	public string MapImageURL => "/imgs/VTT/BattleMaps/" + MapImageName;
+	public string WallsJasonFile => RootBattleMapsURL + MapImageName.Substring(0, MapImageName.IndexOf('.'))+".json";
+
+
+	private string _mapImageName;
+	public string MapImageName
 	{
-		get { return _mapurl; }
-		set { 
-			_mapurl = value;
-			LoadMap(_mapurl);
+		get { return _mapImageName; }
+		set { _mapImageName = value;
+			LoadMap(_mapImageName);
 		}
 	}
+
 
 	public int BattleMapWidth = 0;
 	public int BattleMapHeight = 0;
@@ -70,20 +77,23 @@ public class WhiteBoardService
 		Update();
 	}
 
-	public void LoadMap(string mapName)
+
+	public async Task LoadMap(string mapName)
 	{
-		var path = "./wwwroot/imgs/VTT/BattleMaps/" + mapName;
-		using (var image = Image.Load(path))
+		using (var image = Image.Load(MapImagePATH))
 		{
 			BattleMapWidth = image.Width; 
 			BattleMapHeight = image.Height;
 		}
+
+		await LoadJson();
+
 	}
 
 	public List<string> GetMaps()
 	{
-		var rest = from file in Directory.GetFiles("./wwwroot/imgs/VTT/BattleMaps")
-			   select file.Substring(file.LastIndexOf("\\")+1);
+		var rest =	from file in Directory.GetFiles(RootBattleMapsURL).Where(x=>x.Contains(".png"))
+					select file.Substring(file.LastIndexOf("/")+1);
 		return rest.ToList();
 	}
 
@@ -136,9 +146,7 @@ public class WhiteBoardService
 	{
 		try
 		{
-			var Filename = "TestFile";
-			string newFilePath = $"./wwwroot/{Filename}.json";
-			var encoded = await File.ReadAllTextAsync(newFilePath);
+			var encoded = await File.ReadAllTextAsync(WallsJasonFile);
 
 			Walls = JsonSerializer.Deserialize<List<DrawnLine>>(encoded);
 			Update();
@@ -147,6 +155,7 @@ public class WhiteBoardService
 		catch (Exception ex)
 		{
 			Console.WriteLine(ex.Message);
+			Walls.Clear();
 		}
 
 		Update();
@@ -155,9 +164,7 @@ public class WhiteBoardService
 	{
 		try
 		{
-			var Filename = "TestFile";
-			string newFilePath = $"./wwwroot/{Filename}.json";
-			await File.WriteAllTextAsync(newFilePath, JsonSerializer.Serialize(Walls));
+			await File.WriteAllTextAsync(WallsJasonFile, JsonSerializer.Serialize(Walls));
 		}
 		catch (Exception ex)
 		{
@@ -170,11 +177,6 @@ public class WhiteBoardService
 
 	public async Task<Token> StartForPlayer(PbtACharacter character)
 	{
-		if (Walls.Count == 0)
-		{
-			await LoadJson();
-		}
-
 		var TheToken = Tokens.Find(x => x.Guid == character.ID);
 		if (TheToken == null)
 		{
@@ -182,9 +184,7 @@ public class WhiteBoardService
 			Tokens.Add(TheToken);
 			TheToken.StoreChangesInCharacterSheet += StoreChangesInCharacterSheet;
 			character.UpdateVTT += Update;
-		}
-
-		
+		}	
 
 		return TheToken;
 	}

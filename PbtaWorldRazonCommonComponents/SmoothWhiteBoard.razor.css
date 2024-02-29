@@ -300,7 +300,7 @@
 
 .Selected {
     opacity: 1;
-    position: relative;
+    /*position: relative;*/
 }
 
 .NotSelected {
