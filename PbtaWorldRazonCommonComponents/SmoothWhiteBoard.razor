@@ -83,12 +83,16 @@
 
 
 <div class="WhiteCanvas"
-	 @onmousedown=MouseDown @onmouseup=MouseUp
-	 @onkeydown=ProcessKeyDown @onmousemove=MouseMove tabindex="0"
-	 @oncontextmenu=RightClick @oncontextmenu:stopPropagation @oncontextmenu:preventDefault
+	 
 	style="@($"top: {@GlobalTop}px; left: {GlobalLeft}px;") width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
 
-	<div class="BackgroundMap" style="@(IsMaster?"opacity:0.3;":"") background-image:url(_content/PbtaWorldRazonCommonComponents/imgs/Maps/BattleMaps/@service.MapImageURL); width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
+	<div class="BackgroundMap" @onmousedown=MouseDown @onmouseup=MouseUp
+		 @onkeydown=ProcessKeyDown @onmousemove=MouseMove tabindex="0"
+		 @oncontextmenu=RightClick @oncontextmenu:stopPropagation @oncontextmenu:preventDefault
+		style="@(IsMaster?"opacity:0.3;":"") 
+			pointer-events:all;
+			background-image:url(_content/PbtaWorldRazonCommonComponents/imgs/Maps/BattleMaps/@service.MapImageURL); 
+			width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
 		
 	</div>
 	<div class="BackgroundMap Masked" style="@(IsMaster?"clip-path:none;":"") width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
@@ -222,20 +226,6 @@
 				}
 			</div>
 		}
-	</div>
-	<div class="Grid">
-		<div class="GridContainer d-flex flex-column">
-			@for (int i = 0; i < VRows; i++)
-			{
-				<div class="GridColumn"></div>
-			}
-		</div>
-		<div class="GridContainer d-flex ">
-			@for (int i = 0; i < HRows; i++)
-			{
-				<div class="GridRow"></div>
-			}
-		</div>
 	</div>
 
 	<svg id="MyFogCurter" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 400">
