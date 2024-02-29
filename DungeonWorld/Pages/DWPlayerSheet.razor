@@ -7,6 +7,7 @@
 @inject DWMovesService Moves
 @inject LastRollViewerService LastRollViewer
 @inject VTTService VTT
+@inject WhiteBoard.WhiteBoardService WhiteBoardService
 @inject VTTLocalManagerService VTTViewer
 @inject IDataBaseController Meta;
 
@@ -25,9 +26,11 @@ else
 	@if(IsShowingVTT)
 	{
 		<div class="vtt d-flex">
-			<VTT />
+			<SmoothWhiteBoard Character="Player" MyClass="Player.Profession" />
 			<div class="PaperBack d-flex flex-column gap-1 p-2 align-items-center"
 				style=" overflow-y:auto;
+						font-family: 'Alegreya SC';
+						position:absolute; right:0;
 						transition: width 0.2s linear;
 						width:@VttPaperWidth;
 						min-width:@VttPaperWidth;
@@ -110,6 +113,10 @@ else
 				}
 			</div>
 		</div>
+	}
+	else if (IsShowingSquareMap)
+	{
+		<SquareMapViewer Map="Game.SquareMap" RequestCloseSquareMapViewer="@(()=>{IsShowingSquareMap=false;})" />
 	}
 
 	<div class="d-flex SheetContainer" @onclick=FinishAllEdits>
@@ -272,14 +279,14 @@ else
 							}						
 							<div class="Separator"></div>
 						</div>
-						<!--<textarea class="SmallThingsTextArea" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
+						<!--
 						<div class="Separator"></div>
 						<div class="PaperSheetSubTittle w-100">Secciones</div>-->
-						<div class="d-flex w-100 ps-3" style="font-family: 'Roboto'; font-size: 12px;">
-							<div class="SectionButton" @onclick=@(()=>{VTT.StartForPlayer(Player); VTTViewer.Show(Player); IsShowingVTT=true;})>VTT</div>
-							<div class="SectionButton" @onclick=@(()=>{VTTViewer.IsMaster = true; VTTViewer.Show(); IsShowingVTT = true;})>Master</div>
+						<div class="d-flex w-100 ps-3 gap-2" style="font-family: 'Roboto'; font-size: 12px;">
+							<div class="SectionButton" @onclick=@(()=>{/*VTT.StartForPlayer(Player); VTTViewer.Show(Player);*/ IsShowingVTT=true;})>VTT</div>
+							<div class="SectionButton" @onclick=@(()=>{IsShowingSquareMap = true; IsShowingVTT = false;})>Map</div>
 						</div>
-
+						<textarea class="SmallThingsTextArea mt-2" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
 					</div>
 					<div class="flex-grow-1 h-100 px-3" style="max-width: 400px;">
 						<div class="d-flex align-items-center justify-content-between">
@@ -482,6 +489,7 @@ else
 	private States CurrentState = States.Character;
 	private bool _ShowingLastRoll = false;
 	private bool IsShowingVTT = false;
+	private bool IsShowingSquareMap = false;
 	private bool IsShowingDamageOptions = false;
 
 	private List<string> StringsForStringSelector = new();
@@ -582,7 +590,7 @@ else
 		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_Volley));
 		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_KeepYouMind));
 
-		Game.OnUIUpdate += (o, e) => InvokeAsync(() => { StateHasChanged(); });
+		Game.UpdateUI += (o, e) => InvokeAsync(() => { StateHasChanged(); });
 
 		Game.NewInfoToast -= ShowInfo;
 		Game.NewInfoToast += ShowInfo;

@@ -1,12 +1,46 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
 @using PbtALib;
+@using PbtALib.ifaces
 @using PbtaWorldRazonCommonComponents;
 @inject VTTService service;
 @inject VTTLocalManagerService VTTViewer
+@inject WhiteBoard.WhiteBoardService WhiteBoard
+
 <div class="DefinitionsSelector">
-	@foreach (var md in service.MonsterDefinitions)
+	@if(ShowMoves)
 	{
-		<div>@md.Name</div>
+		<div class="d-flex flex-column h-100" style="width: 580px;">
+			<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Monsters</button>
+			<div class="p-1">
+				@if(VTTViewer.SelectedTokens.Count <= 1 && VTTViewer.SelectedTokens[0].Monster is not null && VTTViewer.SelectedTokens[0].Monster.Moves is not null)
+				{
+					<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title = @VTTViewer.SelectedTokens[0].Monster.Name, Moves = VTTViewer.SelectedTokens[0].Monster.Moves})" />
+				}
+				@if(VTTService.Game is not null && VTTService.Game.TextBook is not null && VTTService.Game.TextBook.MasterMovesPacks is not null)
+				{
+					@foreach (var pack in VTTService.Game?.TextBook?.MasterMovesPacks)
+					{
+						<MasterMovePackViewer MovesPack="@pack" />
+					}
+				}				
+			</div>
+		</div>
+	}
+	else //Show monsters
+	{
+		<div class="d-flex flex-column h-100">
+			<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Moves</button>
+			@if (Game is not null && Game.MonsterDefinitionsInCurrentScene is not null)
+			{
+				@foreach (var md in Game.MonsterDefinitionsInCurrentScene)
+				{
+					<div class="@(VTTViewer.SelectedTokens.Any() &&  md.ID == VTTViewer.SelectedTokens[0]?.Monster?.ID?"Selected":"NotSelected")">
+						<div class="AddToFightButton" @onclick=@(()=>{AddToFight(md);})><i class="bi bi-gitlab text-danger"></i></div>
+						<EnemyCard Game="Game" monster="md" />
+					</div>
+				}
+			}
+		</div>
 	}
 </div>
 <div class="VTT justify-content-center flex-grow-1"
@@ -27,7 +61,7 @@
 									<option value="@v">@v</option>
 								}
 							</InputSelect>
-							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection); VTTViewer.SelectedToken = service.Tokens.Last();})><i class="bi bi-plus"></i></button>
+							<button class="btn btn-primary" @onclick=@(()=>{service.AddToken(MasterSelection); VTTViewer.SelectedTokens.Add(service.Tokens.Last());})><i class="bi bi-plus"></i></button>
 						</EditForm>
 	
 						<button class="btn btn-dark" @onclick=@(()=>{Show(ShowingOptions.FOG);})>FOG</button>
@@ -63,7 +97,7 @@
 							{
 								@if(((VTTTokens)t).IsForest())
 								{
-									<div class="propSelectionItem" @onclick=@(()=>{service.AddPropToMap((VTTTokens)t); VTTViewer.SelectedToken = service.Props.Last();})>
+									<div class="propSelectionItem" @onclick=@(()=>{service.AddPropToMap((VTTTokens)t); VTTViewer.SelectedTokens.Add(service.Props.Last());})>
 										<img src="@(Prop.GetImagePath((VTTTokens)t))" />
 									</div>
 								}
@@ -77,7 +111,9 @@
 							{
 								@if (((VTTTokens)t).IsDungeonProp())
 								{
-									<div class="propSelectionItem" @onclick=@(()=>{service.AddPropToMap((VTTTokens)t); VTTViewer.SelectedToken = service.Props.Last();})>
+									<div class="propSelectionItem" @onclick=@(()=>{
+											service.AddPropToMap((VTTTokens)t); 
+											VTTViewer.SelectedTokens.Add(service.Props.Last());})>
 										<img src="@(Prop.GetImagePath((VTTTokens)t))" />
 									</div>
 								}
@@ -94,9 +130,18 @@
 			@onmousemove=Drag 
 			@onmouseup=UnClick
 			@onmouseleave=Exit
+			tabindex="0"
+			@onkeydown=ProcessKeyDown
 			@oncontextmenu:preventDefault 
 			@oncontextmenu:stopPropagation>
-			<img id="Map" src="@MapURL"/>
+			@if (service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
+			{
+				<SmoothWhiteBoard IsMaster=IsMaster/>
+			}
+			else
+			{
+				<img id="Map" src="@MapURL" />
+			}			
 			<div class="VTTMain" @oncontextmenu=@(()=>{;}) @oncontextmenu:preventDefault @oncontextmenu:stopPropagation>
 				@foreach (var t in service.Tokens)
 				{
@@ -107,15 +152,15 @@
 								@(VTTViewer.IsMaster?"FOWMaster":"FOWPlayer")
 								@(t.Status == TokenStatus.Hidden?"FOWHidden":"")" 
 								style="
-									@(VTTViewer.SelectedToken == t?"border:1px solid red;":"")
+									@(VTTViewer.SelectedTokens.Contains(t)?"border:1px solid red;":"")
 									top:@(t.Y+"px"); 
 									left:@(t.X+"px");
 									width:@(t.FowWidth+"px");
 									height:@(t.FowHeight+"px");">
-							@if (VTTViewer.IsMaster && VTTViewer.SelectedToken == t)
+							@if (VTTViewer.IsMaster && VTTViewer.SelectedTokens.Contains(t))
 							{
 								<div class="PropTools">
-									<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); VTTViewer.SelectedToken = null;})><i class="bi bi-trash3"></i></button>
+									<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); VTTViewer.SelectedTokens.Remove(t);})><i class="bi bi-trash3"></i></button>
 									<button class="btn btn-info" @onclick=TogleFOWShape><i class="bi bi-square"></i><i class="bi bi-circle"></i></button>
 								</div>
 							}							
@@ -125,7 +170,7 @@
 					{
 						<div class="VTTToken 
 							@(VTTViewer.IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
-							@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")"
+							@(VTTViewer.SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")"
 							style="
 								top:@(t.Y+"px"); left:@(t.X+"px"); 
 								width: @(t.SizePixels+"px");
@@ -135,48 +180,51 @@
 								background-position-x:@(t.ImgX+"px"); 
 								background-position-y:@(t.ImgY+"px");">
 							<div class="TokenStatus @(VTTViewer.IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
-								@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == t.Guid?"Selected":"")">
+								@(VTTViewer.SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")">
 							</div>
 							@if(t.Status != TokenStatus.Dead)
 							{
 								<div class="LifeContainer">
 									<div class="LifeBar" style="width:@(t.PercentageLife)%; background:@(t.LifeBarColor);"></div>
 								</div>
-							}					
-							@if(VTTViewer.IsMaster && VTTViewer.SelectedToken == t)
+							}
+							@if (VTTViewer.IsMaster && VTTViewer.SelectedTokens.Contains(t) && ShowingOptionsPanelForSelectedItems)
 							{
 								<div class="PropTools Token">
-									<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); VTTViewer.SelectedToken = null;})><i class="bi bi-trash3"></i></button>
-									<EditForm Model="VTTViewer.SelectedToken">
+									<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); VTTViewer.SelectedTokens.Remove(t);})><i class="bi bi-trash3"></i></button>
+									<EditForm Model="t">
 										<div class="d-flex gap-1 bg-dark text-white align-items-center ">
 											<label>MaxHP</label>
-											<InputNumber @bind-Value=VTTViewer.SelectedToken.maxHP style="width:40px;"/>
+											<InputNumber @bind-Value=t.maxHP style="width:40px;"/>
 											<label>HP</label>
-											<InputNumber @bind-Value=VTTViewer.SelectedToken.HP style="width:40px;" />
+											<InputNumber @bind-Value=t.HP style="width:40px;" />
 										</div>
-										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Status>
+										<InputSelect class="form-select" @bind-Value=t.Status>
 											@foreach (var v in Enum.GetValues(typeof(TokenStatus)))
 											{
 												<option value="@v">@v</option>
 											}
 										</InputSelect>
-										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Size>
+										<InputSelect class="form-select" @bind-Value=t.Size>
 											@foreach (var v in Enum.GetValues(typeof(Token.Sizes)))
 											{
 												<option value="@v">@v</option>
 											}
 										</InputSelect>
-										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.ID>
+										<InputSelect class="form-select" @bind-Value=t.ID>
 											@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
 											{
 												<option value="@v">@v</option>
 											}
 										</InputSelect>
-										<InputSelect class="form-select" @bind-Value=VTTViewer.SelectedToken.Monster>
-											@foreach(var m in service.MonsterDefinitions)
+										<InputSelect class="form-select" @bind-Value=t.MonsterKeyCode>
+											@if(Game is not null)
 											{
-												@m.Name
-											}
+												@foreach (var m in Game.MonsterDefinitionsInCurrentScene)
+												{
+													<option value="@m.ID">@m.Name</option>
+												}
+											}											
 										</InputSelect>
 									</EditForm>
 								</div>
@@ -190,13 +238,13 @@
 				{
 					<div class="Prop
 							@(VTTViewer.IsMaster?"Master_"+p.Status.ToString():"Player_"+p.Status.ToString())
-							@(VTTViewer.SelectedToken is not null && VTTViewer.SelectedToken.Guid == p.Guid?"Selected":"")"
+							@(VTTViewer.SelectedTokens.Find(x=>x.Guid == p.Guid) != null?"Selected":"")"
 						 style="top:@(p.Y+"px"); left:@(p.X+"px");">
 						<img src="@p.imgURL" alt="prop" style=" transform:rotate(@(p.rotation+"deg"))" />
-						@if(VTTViewer.SelectedToken == p)
+						@if(VTTViewer.SelectedTokens.Contains(p))
 						{
 							<div class="PropTools d-flex gap-1 flex-wrap">
-								<button class="btn btn-danger" @onclick=@(()=>{service.DeleteProp(p); VTTViewer.SelectedToken = null;})><i class="bi bi-trash3"></i></button>
+								<button class="btn btn-danger" @onclick=@(()=>{service.DeleteProp(p); VTTViewer.SelectedTokens.Remove(p);})><i class="bi bi-trash3"></i></button>
 								<button class="btn btn-primary" @onclick=@(()=>{((Prop)p).RotateRight();})><i class="bi bi-arrow-clockwise"></i></button>
 								@if(p.IsDoor)
 								{
@@ -216,6 +264,11 @@
 </div>
 
 @code {
+	[Parameter] public IGameController? Game { get; set; }
+	[Parameter] public bool IsMaster { get; set; } = false;
+
+	bool ShowMoves = false;
+	public bool IsDrawOn = false;
 
 	protected override void OnParametersSet()
 	{
@@ -223,6 +276,8 @@
 		service.UpdateUI += Update;
 		VTTViewer.UpdateUI -= Update;
 		VTTViewer.UpdateUI += Update;
+		//WhiteBoard.WhiteBoardChanged -= Update;
+		//WhiteBoard.WhiteBoardChanged += Update;
 	}
 
 	string MapURL
@@ -244,11 +299,32 @@
 		}
 	}
 
+	void ProcessKeyDown(KeyboardEventArgs e)
+	{
+		var key = e.Code;
+		foreach(var t in VTTViewer.SelectedTokens)
+			if (key == "KeyH")
+				if (t.Status == TokenStatus.Hidden)
+					t.Status = TokenStatus.Normal;
+				else
+					t.Status = TokenStatus.Hidden;
+
+
+		if (key == "KeyO")
+			ShowingOptionsPanelForSelectedItems = !ShowingOptionsPanelForSelectedItems;
+
+		else if (key == "Escape")
+			VTTViewer.SelectedTokens.Clear();
+		else if (key == "KeyD")
+			IsDrawOn = !IsDrawOn;
+	}
+
 	//placeholder for the combobox
 	VTTTokens MasterSelection = VTTTokens.Black1;
 
 	private bool IsMoving = false;
 	private bool IsCreatingFogOfWar = false;
+	private bool ShowingOptionsPanelForSelectedItems = true;
 	private enum FogOfWarCreationSteps {Start, Size, Finish}
 	private FogOfWarCreationSteps FOWStep = FogOfWarCreationSteps.Start;
 	private Token CurrentlyCreatingFOW = new Token();
@@ -261,82 +337,129 @@
 	enum ShowingOptions {nothing, FOG, props, dungeon};
 	ShowingOptions CurrentlyShowing = ShowingOptions.nothing;
 
+	void AddToFight(Monster m)
+	{
+		var newToken =service.AddToken(m.FavouriteToken);
+		newToken.Monster = m;
+		VTTViewer.SelectedTokens.Add(newToken);
+	}
+
 	private void Click(MouseEventArgs e)
 	{
-		if(e.OffsetY > 40)
+		if(IsMaster && IsDrawOn && service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
 		{
-			if(IsCreatingFogOfWar)
+			//WhiteBoard.MouseDown(e);
+		}
+		else
+		{
+			if(e.OffsetY > 40)
 			{
-				if(e.Button == 0)
+				if(IsCreatingFogOfWar)
 				{
-					if(FOWStep == FogOfWarCreationSteps.Start)
+					if(e.Button == 0)
 					{
-						CurrentlyCreatingFOW = service.AddToken(VTTTokens.FogOfWar);
-						CurrentlyCreatingFOW.X = (int)e.OffsetX;
-						CurrentlyCreatingFOW.Y = (int)e.OffsetY;
-						CurrentlyCreatingFOW.Status = TokenStatus.Normal;
-
-						FOWStep = FogOfWarCreationSteps.Size;
-					}
-					else if(FOWStep == FogOfWarCreationSteps.Size)
-					{
-						FOWStep = FogOfWarCreationSteps.Start;
-						IsCreatingFogOfWar = false;
-					}
-				}
-			}
-			else
-			{
-				if (e.Button == 0)
-				{
-					if (VTTViewer.IsMaster)
-					{
-						var t = service.SelectToken(e.OffsetX, e.OffsetY);
-						if (t is not null && t != VTTViewer.SelectedToken)
-							VTTViewer.SelectedToken = t;
-						else if (t is not null && t == VTTViewer.SelectedToken)
-							VTTViewer.SelectedToken = null;
-						else
+						if(FOWStep == FogOfWarCreationSteps.Start)
 						{
-							IsMoving = true;
+							CurrentlyCreatingFOW = service.AddToken(VTTTokens.FogOfWar);
+							CurrentlyCreatingFOW.X = (int)e.OffsetX;
+							CurrentlyCreatingFOW.Y = (int)e.OffsetY;
+							CurrentlyCreatingFOW.Status = TokenStatus.Normal;
+
+							FOWStep = FogOfWarCreationSteps.Size;
+						}
+						else if(FOWStep == FogOfWarCreationSteps.Size)
+						{
+							FOWStep = FogOfWarCreationSteps.Start;
+							IsCreatingFogOfWar = false;
 						}
 					}
-					else
-						IsMoving = true;
-
 				}
-				else if (e.Button == 2)
+				else
 				{
-					if (service.SelectToken != null)
-						service.MoveToken(VTTViewer.SelectedToken, e.OffsetX, e.OffsetY);
-				}
-			}			
+					if (e.Button == 0)
+					{
+						if (VTTViewer.IsMaster)
+						{
+							var t = service.SelectToken(e.OffsetX, e.OffsetY);
+							if (t is not null && !VTTViewer.SelectedTokens.Contains(t))
+								VTTViewer.SelectedTokens.Add(t);
+							else if (t is not null && VTTViewer.SelectedTokens.Contains(t))
+								VTTViewer.SelectedTokens.Remove(t);
+							else
+							{
+								IsMoving = true;
+							}
+						}
+						else
+							IsMoving = true;
+
+					}
+					else if (e.Button == 2)
+					{
+						//move in formation
+						for(int i =0; i< VTTViewer.SelectedTokens.Count; ++i)
+						{
+							if (i == 0) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX, e.OffsetY);
+							else if (i == 1) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
+							else if (i == 2) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
+							else if (i == 3) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 4) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+							else if (i == 5) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 6) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+							else if (i == 7) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - VTTViewer.SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 8) service.MoveToken(VTTViewer.SelectedTokens[i], e.OffsetX + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + VTTViewer.SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+						}
+
+					}
+				}			
+			}
 		}
 	}
 
 	private void Drag(MouseEventArgs e)
 	{
-		if(IsMoving)
+		if (service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
 		{
-			MapPosX += e.MovementX;
-			MapPosY += e.MovementY;
+			//WhiteBoard.MouseMove(e);
 		}
-		else if (IsCreatingFogOfWar)
+		else
 		{
-			if(FOWStep == FogOfWarCreationSteps.Size)
+			if (IsMoving)
 			{
-				CurrentlyCreatingFOW.FowWidth = ((int)e.OffsetX)- CurrentlyCreatingFOW.X ;
-				CurrentlyCreatingFOW.FowHeight = ((int)e.OffsetY)-CurrentlyCreatingFOW.Y;
+				MapPosX += e.MovementX;
+				MapPosY += e.MovementY;
+			}
+			else if (IsCreatingFogOfWar)
+			{
+				if (FOWStep == FogOfWarCreationSteps.Size)
+				{
+					CurrentlyCreatingFOW.FowWidth = ((int)e.OffsetX) - CurrentlyCreatingFOW.X;
+					CurrentlyCreatingFOW.FowHeight = ((int)e.OffsetY) - CurrentlyCreatingFOW.Y;
+				}
 			}
 		}
+
 	}
+
+	private void UnClick() { 
+		if (service.CurrentMap == VTTService.VTTMaps.WhiteBoard)
+		{
+			//WhiteBoard.MouseUp();
+		}
+		else
+		{
+			IsMoving = false; 
+		}		
+	}
+
+	Random rnd = new Random();
 
 	void ToggleFOGCreationMode() => IsCreatingFogOfWar = !IsCreatingFogOfWar;
 
 	private void DeleteToken()
 	{
-		if(VTTViewer.SelectedToken is not null)
-			service.DeleteToken(VTTViewer.SelectedToken);
+		foreach(var t in VTTViewer.SelectedTokens)
+			service.DeleteToken(t);
 	}
 
 	private void Show(ShowingOptions o)
@@ -349,10 +472,10 @@
 
 	public void TogleFOWShape()
 	{
-		VTTViewer.SelectedToken.IsRound = !VTTViewer.SelectedToken.IsRound;
+		foreach (var t in VTTViewer.SelectedTokens)
+			t.IsRound = !t.IsRound;
 	}
 
-	private void UnClick() => IsMoving = false;
 	private void Exit() => IsMoving = false;
 
 

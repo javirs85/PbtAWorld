@@ -176,6 +176,14 @@
 							</div>
 						}
 					}
+					@if((Movement as DWMove) is not null && (Movement as DWMove).ID == DWMovementIDs.DW_Barbarian_Hunger)
+					{
+						<div class="w-100 d-flex justify-content-center p-3 gap-1">
+							<button class="btn btn-danger" @onclick=@(()=>{RollD6D8DisAdvantage((Movement as DWMove));})> (d6) d6 + d8</button>
+							<button class="btn btn-primary" @onclick=@(()=>{RollD6D8((Movement as DWMove));})>d6 + d8</button>
+							<button class="btn btn-success" @onclick=@(()=>{RollD6D8Advantage((Movement as DWMove));})>(d6) d6 + d8</button>
+						</div>
+					}
 				</div>
 			}
 
@@ -276,13 +284,17 @@
 	private void RollClickedWithAdvantage()=> RollWithType(RollTypes.Roll_Advantage);
 	private void RollClickedWithDISAdvantage()=> RollWithType(RollTypes.Roll_Disadvantage);
 
+	void RollD6D8(IMove m) => DWGameController.RollRaw(Player.ID, new List<DiceTypes>{DiceTypes.d6, DiceTypes.d8});
+	void RollD6D8Advantage(IMove m) => DWGameController.RollRaw(Player.ID, new List<DiceTypes>{DiceTypes.d6,DiceTypes.d6, DiceTypes.d8});
+	void RollD6D8DisAdvantage(IMove m) => DWGameController.RollRaw(Player.ID, new List<DiceTypes>{DiceTypes.d6,DiceTypes.d6, DiceTypes.d8});
+
 	private void RollWithType(RollTypes rType)
 	{
 		if(Player is null)
 		{
-			throw new Exception("Player has not been assigned to movement viewer");
+			Console.WriteLine("Player has not been assigned to movement viewer");
 		}
-		if(Movement is DWMove)
+		else if(Movement is DWMove)
 		{
 			var DWMove = Movement as DWMove;
 			var bonus = 0;

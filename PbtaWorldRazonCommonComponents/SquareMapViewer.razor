@@ -4,6 +4,7 @@
 @using Serilog
 @inject IToastService Toaster
 
+<div class="MapViewerContainer p-3" style="position:fixed; width:100%; height:100%; z-index:10; background:white; overflow:auto;">
 @if(SelectedTile is not null)
 {
     <div class="d-flex flex-column gap-2">
@@ -22,7 +23,7 @@
                     <button class="btn btn-primary" @onclick=Update>Update</button>
                     <InputFile OnChange="UploadFile" />
                 </Microsoft.AspNetCore.Components.Forms.EditForm>
-                <button class="btn btn-primary" @onclick=@(()=>{SelectedTile = null; StateHasChanged();})>Finish</button>
+                <button class="btn btn-primary" @onclick=@(()=>{SelectedTile = null; Map.ForceUpdateInAllClients();})>Finish</button>
             </div>
             <div>
                 <div class="Tile @SelectedTile.Place.ToString()" style="background-color: @SelectedTile.Color; background-image:url(@SelectedTile.BackgroundImageUrl">
@@ -40,50 +41,91 @@
     </div>
     
 }
-else
-{
-    <div class="MapViewer">
-        @foreach (var row in Map.Tiles)
-        {
-            <div class="MapRow">
-                @foreach (var cel in row)
-                {
-                    @if (IsActionable(cel))
-                    {
-                        <div class="Tile actionable" 
-                            
-                            @onclick=@(()=>{AddTile(cel.X, cel.Y);})>
-                            <i class="bi bi-plus-square"></i>
-                        </div>
-                    }
-                    else if (cel.Place == SquareMapTile.GenericPlaces.empty)
-                    {
-                        <div class="Tile @cel.Place.ToString()">
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="Tile @cel.Place.ToString()"
-                             style="background-color: @cel.Color; background-image: url(@cel.BackgroundImageUrl);"
-                             >
-                            <div class="CelTitle">@cel.Name</div>
-                            <div class="EditButton">
-                                <i class="bi bi-pencil" @onclick=@(()=>{Edit(cel);})></i>
-                            </div>
-                        </div>
-                    }
-                }
+    else
+    {
+        <div class="d-flex gap-1 align-items-center" style="position:fixed; top:0; left:10px; font-size:50px; z-index:100; ">
+            <div class="CloseButtonSquareMap"
+                 @onclick=RequestCloseSquareMapViewer
+                  style="cursor:pointer;">
+                <i class="bi bi-x-circle"></i>
             </div>
-        }
-    </div>
-}
+            @if (IsMaster)
+            {
+                @if(ShowingJsonOptions)
+                {
+                    <button class="btn btn-primary" @onclick=@(()=>{ShowingJsonOptions = false;})>Hide Json Options</button>
+                    <button class="btn btn-primary" @onclick=Map.SaveToJson>Save</button>
+                    <button class="btn btn-primary" @onclick=Map.LoadJson>Load</button>
+                    <EditForm Model="this">
+                        <InputTextArea class="fs-6 bg-white border border-black" @bind-Value=@Json />
+                    </EditForm>
+                }
+                else
+                {
+                    <button class="btn btn-primary" @onclick=@(()=>{ShowingJsonOptions = true;})>Json</button>
+                }
+            }
+        </div>
+        <div class="MapViewer">
+            @foreach (var row in Map.Tiles)
+            {
+                <div class="MapRow">
+                    @foreach (var cel in row)
+                    {
+                        @if (IsActionable(cel))
+                        {
+                            <div class="Tile actionable" 
+                            
+                                @onclick=@(()=>{AddTile(cel.X, cel.Y);})>
+                                <i class="bi bi-plus-square"></i>
+                            </div>
+                        }
+                        else if (cel.Place == SquareMapTile.GenericPlaces.empty)
+                        {
+                            <div class="Tile @cel.Place.ToString()">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="Tile @cel.Place.ToString()"
+                                 style="background-color: @cel.Color; background-image: url(@cel.BackgroundImageUrl);"
+                                 >
+                                <div class="CelTitle">@cel.Name</div>
+                                <div class="EditButton">
+                                    <i class="bi bi-pencil" @onclick=@(()=>{Edit(cel);})></i>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
 
 @code {
     [Parameter] public SquareMap Map { get; set; } = new();
+    [Parameter] public EventCallback RequestCloseSquareMapViewer { get; set; }
+    [Parameter] public bool IsMaster { get; set; } = false;
+
+    bool ShowingJsonOptions = false;
+    string Json = "";
 
     bool IsEditing = false;
     SquareMapTile? SelectedTile = null;
     string NewColor = "";
+
+    protected override void OnParametersSet()
+    {
+        Map.UpdateAllInstances -= Update;
+        Map.UpdateAllInstances += Update;
+    }
+
+    void Update(object? sender, EventArgs e)
+    {
+        InvokeAsync(() => { StateHasChanged(); });
+    }
+
 
     bool IsActionable(SquareMapTile cel)
     {

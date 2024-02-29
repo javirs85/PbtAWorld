@@ -6,22 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using PbtALib;
 using PbtADBConnector;
+using PbtALib.ifaces;
 
 namespace DungeonWorld;
 
-public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>
+public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>, IGameController
 {
 	
 	public DWGameController(DWMovesService moves, IDataBaseController _db) : base(moves, _db)
 	{
 		LastRoll = new DWRollReport(moves);
+		TextBook = new DWTextBook();
 	}
 
-	public DWTextBook Book = new DWTextBook();
 
-	public SquareMap SquareMap = new SquareMap();
-
-	public List<Monster> CurrentSceneEnemies = new List<Monster>();
 
 	public override async Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
 	{
@@ -37,4 +35,5 @@ public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>
 		else
 			throw new Exception("tried to store a character that is not DWCharacter at DWGameController");
 	}
+
 }

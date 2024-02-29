@@ -1,4 +1,5 @@
-﻿@inject VTTService VTT
+﻿@using PbtALib.ifaces
+@inject VTTService VTT
 
 <div class="MonsterCard">
 	<div class="d-flex flex-column">
@@ -70,8 +71,8 @@
 			<i class="bi @(FullText?"bi-x-circle":"bi-info-circle")"></i>
 		</div>
 		<div style="position: absolute; bottom:0px; right:10px; font-size:35px; opacity:1; cursor:pointer;"
-			 @onclick=AddMinsterDefinition>
-			 @if(VTT.MonsterDefinitions.Contains(monster))
+			 @onclick=ToggleMonsterDefinition>
+			@if (Game.MonsterDefinitionsInCurrentScene.Contains(monster))
 			{
 				<i class="bi bi-dash-circle-fill" style="color:#ba4242;"></i>
 			}
@@ -80,7 +81,7 @@
 				<i class="bi bi-plus-circle-fill" style="color:#42ba63;"></i>
 			}			
 		</div>
-		<div class="AttackSpace d-flex align-items-center">
+		<div class="AttackSpace d-flex align-items-center" @onclick=monster.RollDamage>
 			@if (monster.Attack is not null && monster.Attack.RollType == RollTypes.Roll_Advantage)
 			{
 				<div style="position:relative; width:30px;">
@@ -113,14 +114,25 @@
 
 @code {
 	[Parameter] public  Monster monster { get; set; } = new();
+	[Parameter] public IGameController? Game { get; set; }
 
 	bool FullText = false;
 
-	void AddMinsterDefinition()
+	void ToggleMonsterDefinition()
 	{
-		VTT.MonsterDefinitions.Add(monster);
+		if(Game is not null)
+		{
+			if (Game.MonsterDefinitionsInCurrentScene.Contains(monster))
+				Game.MonsterDefinitionsInCurrentScene.Remove(monster);
+			else
+				Game.AddMonsterDefinition(monster);
+
+			Game.Update();
+		}
+		
 		StateHasChanged();
 	}
+
 
 	void ShowDetails()
 	{

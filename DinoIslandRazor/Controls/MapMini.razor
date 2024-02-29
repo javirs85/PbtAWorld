@@ -47,7 +47,7 @@
 
 	protected override void OnParametersSet()
 	{
-		Game.OnUIUpdate += (o,e)=> { InvokeAsync(()=> { StateHasChanged(); }); };
+		Game.UpdateUI += (o,e)=> { InvokeAsync(()=> { StateHasChanged(); }); };
 	}
 
 	private async Task SelectIcon(DinoMapTokens icon)

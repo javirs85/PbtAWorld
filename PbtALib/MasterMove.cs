@@ -5,6 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PbtALib;
+
+public class MasterMovePack
+{
+	public string Title { get; set; } = string.Empty;
+	public List<MasterMove> Moves { get; set; } = new();
+}
+
 public class MasterMove
 {
 	public string Tittle { get; set; } = string.Empty;

@@ -42,8 +42,8 @@ public class DWMovesService : MovesServiceBase
 		};
 	public List<DWMovementIDs> DruidAdvanced = new List<DWMovementIDs>
 		{
-			DWMovementIDs.DW_ALL_Adv_ImproveStat2, DWMovementIDs.DW_ALL_Adv_ImproveStat1, DWMovementIDs.DW_ALL_Adv_SuperiorStat,
-			DWMovementIDs.DW_Druid_Adv_Call, DWMovementIDs.DW_Druid_Adv_Red, DWMovementIDs.DW_Druid_Adv_TigerEyes
+			DWMovementIDs.DW_ALL_Adv_ImproveStat1, DWMovementIDs.DW_ALL_Adv_SuperiorStat,
+			DWMovementIDs.DW_Druid_Adv_Call, DWMovementIDs.DW_Druid_Adv_Red, DWMovementIDs.DW_Druid_Adv_TigerEyes, DWMovementIDs.DW_Druid_Adv_BorrowedPowers
 		};
 	public List<DWMovementIDs> FighterAdvanced = new List<DWMovementIDs>
 		{
@@ -125,7 +125,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Discernir la realidad",
 				PreCondition = new Consequences{
-					MainText = "Cuando estudias de minuciosamente una situación o persona y miras al DJ para saber más, tira +SAB: "
+					MainText = "Cuando estudias minuciosamente una situación o persona y miras al DJ para saber más, tira +SAB: "
 
 				},
 				ConsequencesOn79 = new Consequences
@@ -150,7 +150,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Tengo lo que necesito",
 				PreCondition = new Consequences{
-					MainText = "Cuando decides que llevas contigo, borra un ⧫ (o ⧫⧫) de su equipo indefinido y marca un elemento o espacio para indicar que tiene eso. Si marcas un espacio, rellénalo con un elemento común o mundano. Como alternativa, gasta 1 uso de Suministros (en lugar de equipo indefinido) para producir un artículo pequeño, común y mundano."
+					MainText = "Cuando decides que llevas algo contigo, borra un ⧫ (o ⧫⧫) de su equipo indefinido y marca un elemento o espacio para indicar que tiene eso. Si marcas un espacio, rellénalo con un elemento común o mundano. Como alternativa, gasta 1 uso de 'Cosas' (en lugar de equipo indefinido) para producir un artículo pequeño, común y mundano."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Interfere, DWStats.DW_CHOSE)
@@ -179,7 +179,7 @@ public class DWMovesService : MovesServiceBase
 					Options = new List<string>
 					{
 						"Hacerlo de todos modos, pero tira Desventaja.",
-						"Ceder, cambiar o frustrar de tu movimiento"
+						"Ceder, cambiar o desistir de tu movimiento"
 					}
 				}
 			},
@@ -191,8 +191,7 @@ public class DWMovesService : MovesServiceBase
 					Options = new List<string>
 					{
 						"ÉL obtiene 1 XP si hace lo que tú quieres",
-						"Debe hacer lo que tú quieres",
-						"revela cómo podrías convencerlo de que lo hiciera"
+						"Debe hacer lo que tú quieres o revelar cómo podrías convencerlo de que lo hiciera"
 					}
 				},
 				ConsequencesOn79 = new Consequences
@@ -279,7 +278,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Saja-Raja",
 				PreCondition = new Consequences{
-					MainText = "Cuando luches en combate cuerpo a cuerpo tira con FUE (DES para armas delicadas)"
+					MainText = "Cuando luches en combate cuerpo a cuerpo con un enemigo de tu nivel, tira con FUE (DES para armas delicadas)"
 				},
 				ConsequencesOn79 = new Consequences
 				{
@@ -370,13 +369,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Recupera el control de tu mente",
 				PreCondition = new Consequences{
-					MainText = "Cuando te veas obligado a actuar en contra de su voluntad, marca PX si actúas según lo ordenado. Si te resistes, tira +SAB: ",
-					Options= new List<string>
-					{
-						"Si has cumplido con tu impulso, marca XP",
-						"Describe como tu opinión o relación con otro personaje ha cambiado. Si todos están de acuerdo, marca XP",
-						"Señale algo impresionante que otro personaje lo hizo, que nadie más ha mencionado aún; si lo haces, marca XP"
-					}
+					MainText = "Cuando te veas obligado a actuar en contra de tu voluntad, marca PX si actúas según lo ordenado. Si te resistes, tira +SAB: ",
 				},
 				ConsequencesOn79 = new Consequences
 				{
@@ -1002,7 +995,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Cambia formas",
 				PreCondition = new Consequences{
-					MainText = "Cuando *tomas prestada la forma de una bestia natural, una nativa de tu tierra natal**, nómbrala y tira +CON:\r\n\r\nMientras estás en tu forma prestada, tienes su armadura innata, cualidades, etiquetas y habilidades, pero usa tus propias estadísticas (podrías ser un buey, y fuerte como un buey, pero tiras tu FUE para ver cómo manejas nesa fuerza).\r\n\r\nCuando actúas en contra de los instintos o la naturaleza de tu forma prestada, estás Desafiando el Peligro con SAB"
+					MainText = "Cuando *tomas prestada la forma de una bestia natural, una nativa de tu tierra natal**, nómbrala y tira +CON:\r\n\r\nMientras estás en tu forma prestada, tienes su armadura innata, cualidades, etiquetas y habilidades, pero usa tus propias estadísticas (podrías ser un buey, y fuerte como un buey, pero tiras tu FUE para ver cómo manejas esa fuerza).\r\n\r\nCuando actúas en contra de los instintos o la naturaleza de tu forma prestada, estás Desafiando el Peligro con SAB"
 				},
 				ConsequencesOn10 = new Consequences{MainText="permaneces en esa forma hasta que decidas volver a cambiar o asumir otro;"},
 				ConsequencesOn79 = new Consequences{MainText="pierdes tu forma prestada la primera vez que tires un 6- (además de lo que diga el DJ), o antes si así lo desea"},
@@ -1015,7 +1008,7 @@ public class DWMovesService : MovesServiceBase
 					MainText = "Puedes comunicarte con bestias naturales, espíritus\r\nde la naturaleza, y otros que hablan La Lengua.\r\nCuando parlamentes usando la lengua secreta, tire\r\ncon SAB en lugar de CAR."
 				}
 			},
-			new DWMove (DWMovementIDs.DW_Druid_TouchedBySpirit, DWStats.DW_WIS)
+			new DWMove (DWMovementIDs.DW_Druid_TouchedBySpirit, DWStats.DW_None)
 			{
 				Tittle = "Tocado por el espíritu",
 				PreCondition = new Consequences{
@@ -1034,14 +1027,14 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Garras y dientes rojos",
 				PreCondition = new Consequences{
-					MainText = "Cuando convences a un espíritu o a una bestia para que te preste su potencia, pregunta al DJ por uno de sus movimientos. Escríbelo abajo; puedes hacer ese movimiento, una vez, así como así. Solo puedes mantener un movimiento de este tipo a la vez."
+					MainText = "Cuando cambias de forma a la de una animal peligroso, haces 1D4 Extra de daño."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Druid_Adv_Call, DWStats.DW_None)
 			{
 				Tittle = "Escucha mi llamada",
 				PreCondition = new Consequences{
-					MainText = "Cuando marcas una debilidad y suplicas a uno de los elementos que te asista, un espíritu elemental se manifiestá de forma dramática. Haz tu demanda y Parlamenta como de costumbre, pero notarás que es inconstante y terco, con deseos y necesidades ajenos a las tuyas."
+					MainText = "Cuando marcas una debilidad y suplicas a uno de los elementos que te asista, un espíritu elemental se manifestará de forma dramática. Haz tu demanda y Parlamenta como de costumbre, pero notarás que es inconstante y terco, con deseos y necesidades ajenos a las tuyas."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Druid_Adv_TigerEyes, DWStats.DW_None)
@@ -1049,6 +1042,13 @@ public class DWMovesService : MovesServiceBase
 				Tittle = "Ojos de tigre",
 				PreCondition = new Consequences{
 					MainText = "Cuando marcas una bestia (con pigmento, barro, sangre, etc.), ves a través de sus ojos como si fueran tuyos, sin importar la distancia entre tú y él. Solo un animal puede estar tan marcado a la vez"
+				}
+			},
+			new DWMove (DWMovementIDs.DW_Druid_Adv_BorrowedPowers, DWStats.DW_None)
+			{
+				Tittle = "Poderes prestados",
+				PreCondition = new Consequences{
+					MainText = "Cuando convences a un espíritu o a una bestia para que te preste su potencia, pregunta al DJ por uno de sus movimientos. Escríbelo abajo; puedes hacer ese movimiento, una vez, así como así. Solo puedes mantener un movimiento de este tipo a la vez."
 				}
 			},
 
@@ -1610,7 +1610,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Obligado por una ley superior",
 				PreCondition = new Consequences{
-					MainText = "Cuando violes uno de tus juramentos, elige dos de tus movimientos de paladín. Pierdes esos movimientos hasta que expíes; (pregúntale al DJ)"
+					MainText = "Marca 3 juramentos. Cuando violes uno de ellos, elige dos de tus movimientos de paladín. Pierdes esos movimientos hasta que te expíes; (pregúntale al DJ)"
 				},
 				HasSubMovements = true,
 				SelectableOptions = new List<SubMovement>
@@ -1618,17 +1618,17 @@ public class DWMovesService : MovesServiceBase
 					new SubMovement
 					{
 						ID= DWMovementIDs.DW_Paladin_Oblige_Cheat,
-						Description = "No haré trampa, mentiré con mis palabras"
+						Description = "No haré trampas, no mentiré ni engañaré con mis palabras"
 					},
 					new SubMovement
 					{
 						ID= DWMovementIDs.DW_Paladin_Oblige_Protect,
-						Description = "Protegeré a los débiles y ayudaré a cualquier\r\ninocente quien me lo pida\r\n"
+						Description = "Protegeré a los débiles y ayudaré a cualquier inocente quien me lo pida"
 					},
 					new SubMovement
 					{
 						ID= DWMovementIDs.DW_Paladin_Oblige_Crime,
-						Description = "No debo dejar impune un crimen"
+						Description = "No dejaré que un crimen quede impune"
 					},
 					new SubMovement
 					{
@@ -1651,7 +1651,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Gracia divina",
 				PreCondition = new Consequences{
-					MainText = "Cuando *Defiendes**, tira +CAR en lugar de +CON. Además de las opciones habituales, puedes:",
+					MainText = "Cuando *Defiendes**, tira +CAR en lugar de +CON. Además de las opciones habituales, puedes gastar tus puntos en:",
 					Options = new List<string>
 					{
 						"todos los demonios y no muertos retroceden.",
@@ -1694,7 +1694,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Aura de coraje",
 				PreCondition = new Consequences{
-					MainText = "Cuando te mantienes firme en la batalla, los aliados que pueden ver o escuchar que no les afectan el miedo o la duda"
+					MainText = "Cuando te mantienes firme en la batalla, a aquellos aliados que pueden verte o escucharte no les afectan ni el miedo o la duda"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Adv_Charge, DWStats.DW_None)
@@ -1722,14 +1722,16 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Ventana al alma",
 				PreCondition = new Consequences{
-					MainText = "Cuando mires a los ojos de otro, tira +SAB. Mientras estés en su presencia, gasta puntos 1-por-\r\n1 para preguntar a su jugador/el DJ",
+					MainText = "Cuando mires a los ojos de otro, tira +SAB. Mientras estés en su presencia, gasta puntos que consigas, 1-por-1, para preguntar a su jugador/el DJ",
 					Options = new List<string>
 					{
 						"¿Están mintiendo o tratando de engañarme?",
 						"¿Qué están sintiendo realmente?",
 						"¿Qué pecado domina en su corazón?"
 					}
-				}
+				},
+				ConsequencesOn10 = new Consequences{ MainText = "Consigues 2 puntos"},
+				ConsequencesOn79 = new Consequences{MainText = "Consigues 1 punto"}
 			},
 
 			new DWMove (DWMovementIDs.DW_Wielder_Valor, DWStats.DW_None)
@@ -1831,6 +1833,52 @@ public class DWMovesService : MovesServiceBase
 					{
 						"Te pones en peligro a ti mismo, a un aliado o a un inocente",
 						"Recibes una penalización continua de -1 (acumulativa) para usa este movimiento hasta que hagas Campamento"
+					}
+				},
+				HasSubMovements = true,
+				SelectableOptions = new List<SubMovement>
+				{
+					new SubMovement
+					{
+						ID = DWMovementIDs.DW_Wizard_Spells_Light,
+						Tittle = "Luz",
+						Description = "conjuras una luz mágica. Te sigue hasta que lo descartas o lanzas otro hechizo."
+					},
+					new SubMovement
+					{
+						ID = DWMovementIDs.DW_Wizard_Spells_Enchant,
+						Tittle = "Encantar",
+						Description = "Míralos a los ojos,te tratarán como a un amigo hasta que demuestres lo contrario o sufran daños"
+					},
+					new SubMovement
+					{
+						ID = DWMovementIDs.DW_Wizard_Spells_Spirits,
+						Tittle = "Contactar con espíritus",
+						Description = "Un espíritu se manifestará ante ti, está obligado a responder con veracidad a una pregunta que le formules"
+					},
+					new SubMovement
+					{
+						ID = DWMovementIDs.DW_Wizard_Spells_Invisible,
+						Tittle = "Invisibilidad",
+						Description = "Toca a alguien; ¡son invisibles! Dura hasta que atacan o lanzas algún hechizo"
+					},
+					new SubMovement
+					{
+						ID = DWMovementIDs.DW_Wizard_Spells_Misil,
+						Tittle = "Misil Mágico",
+						Description = "2d4 a un objetivo que puedas ver"
+					},
+					new SubMovement
+					{
+						ID = DWMovementIDs.DW_Wizard_Spells_Mimic,
+						Tittle = "Mímica",
+						Description = "Tomas la apariencia de alguien a quien tocas. Pierdes poderes de mago mientras dure el efecto"
+					},
+					new SubMovement
+					{
+						ID = DWMovementIDs.DW_Wizard_Spells_Telepathy,
+						Tittle = "Telepatía",
+						Description = "Toca a alguien, compartes sus sentimientos y puedes hablar de mente a mente. -1 para realizar otros hechizos mientras dure el efecto"
 					}
 				}
 			},

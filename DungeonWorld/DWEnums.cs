@@ -162,18 +162,15 @@ public enum DWMovementIDs
 	DW_Bard_Works_Counterpoint,
 	DW_ALL_Adv_ImproveStat1,
 	DW_Damage,
-	DW_Barbarian_InitialChoose
+	DW_Barbarian_InitialChoose,
+	DW_Druid_Adv_BorrowedPowers
 }
 public enum DWStats
 {
 	DW_STR, DW_DEX, DW_CON, DW_INT, DW_WIS, DW_CHA, DW_NotSet, DW_CHOSE, DW_DorS, DW_None, DW_PlusZero, DW_DEXCONWIS, DW_CON_Plus2
 }
 
-public enum DWClasses
-{
-	DW_Barbarian, DW_Bard, DW_Cleric, DW_Druid, DW_Explorer, DW_Fighter, DW_Thief, DW_Mage, DW_Paladin, DW_Wielder,
-	DW_NotSet, DW_Master
-}
+
 public enum MonsterKinds { cavernas, pantano, nomuerto, BosqueOscuro, Horda, Experimentos, Profundidades, Planares, Gentes, NotSet }
 
 public static class DWExtesions

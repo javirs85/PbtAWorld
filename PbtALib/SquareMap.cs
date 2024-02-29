@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PbtALib;
@@ -9,6 +10,17 @@ namespace PbtALib;
 public class SquareMap
 {
 	public static string ImagesPath = "/imgs/DW/SquareMap";
+	public event EventHandler UpdateAllInstances;
+	private Guid _gameID = Guid.Empty;
+
+	public Guid GameID
+	{
+		get { return _gameID; }
+		set { _gameID = value;
+			LoadJson();
+		}
+	}
+
 
     public SquareMap()
     {
@@ -28,7 +40,43 @@ public class SquareMap
 		Tiles[2][2].Place = SquareMapTile.GenericPlaces.initial;
     }
     public List<List<SquareMapTile>> Tiles = new();
-	
+
+	public void ForceUpdateInAllClients()
+	{
+		UpdateAllInstances?.Invoke(this, new EventArgs());
+	}
+
+	public async void LoadJson() {
+		try
+		{
+            string newFilePath = $"./wwwroot/SquareMaps/{GameID.ToString()}.json";
+			var encoded = await File.ReadAllTextAsync(newFilePath);
+			
+			Tiles = JsonSerializer.Deserialize<List<List<SquareMapTile>>>(encoded);
+			ForceUpdateInAllClients();
+			
+        }
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+		}
+		
+	}
+	public async Task SaveToJson() 
+	{
+		try
+		{
+            string newFilePath = $"./wwwroot/SquareMaps/{GameID.ToString()}.json";
+            //await using FileStream fs = new(newFilePath, FileMode.Create);
+            await File.WriteAllTextAsync(newFilePath, JsonSerializer.Serialize(Tiles));
+        }
+		catch (Exception ex)
+		{
+            Console.WriteLine(ex.Message);
+        }
+	}
+
+
 }
 
 public class SquareMapTile

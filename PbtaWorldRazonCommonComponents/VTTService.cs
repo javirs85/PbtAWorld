@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using PbtALib;
+using PbtALib.ifaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,10 +19,10 @@ public class VTTService
 	public event EventHandler<Guid> StoreChangesInCharacterSheet;
 	public List<Token> Tokens = new();
 	public List<Prop> Props = new();
-	public List<Monster> MonsterDefinitions = new();
 	public bool IsOpen = false;
+	public static IGameController? Game;
 
-	public enum VTTMaps { farm, Bandit1, Swamp, UDTBasic, UDT_Forest};
+	public enum VTTMaps { farm, Bandit1, Swamp, UDTBasic, UDT_Forest, WhiteBoard };
 
 	private VTTMaps _currentMap;
 
@@ -263,11 +264,18 @@ public class Token
 		}
 		set
 		{
-			if (_character is not null) { 
+			if (_character is not null)
+			{
 				_character.HP = value;
 				StoreChangesInCharacterSheet?.Invoke(this, _character.ID);
 			}
-			else _hp = value;
+			else
+			{ 
+				_hp = value; 
+			}
+
+			if (_hp <= 0) Status = TokenStatus.Dead;
+
 			UpdateNeeeded?.Invoke(this, EventArgs.Empty);
 		}
 	}
@@ -295,7 +303,42 @@ public class Token
 	public bool IsRound { get; set; } = false;
 
 	PbtACharacter? _character;
-	public Monster Monster { get; set; }
+	private Monster _monster;
+
+	public Monster Monster
+	{
+		get { return _monster; }
+		set { _monster = value;
+			UpdateInners();
+		}
+	}
+
+	private void UpdateInners()
+	{
+		if (Monster.Size == BaseTextBook.TagIDs.Grande) this.Size = Sizes.troll;
+		else if (Monster.Size == BaseTextBook.TagIDs.Enorme) this.Size = Sizes.dragon;
+		else this.Size = Sizes.human;
+
+		this.maxHP = Monster.MaxHP;
+	}
+
+	public string MonsterKeyCode
+	{
+		set
+		{
+			Monster = VTTService.Game?.MonsterDefinitionsInCurrentScene.Find(x => x.ID == value) 
+				?? new Monster { Name =$"Monster '{value}' not found"};
+
+			UpdateInners();
+		}
+		get
+		{
+			if (Monster is not null)
+				return Monster.ID;
+			else
+				return "Not set";
+		}
+	}
 
 	public PbtACharacter? Character { 
 		get => _character;
@@ -391,8 +434,8 @@ public class Token
 				VTTTokens.Green5 => -SizePixels * 5,
 				VTTTokens.Green6 => -SizePixels * 6,
 				VTTTokens.Green7 => -SizePixels * 0,
-				VTTTokens.Green8 => -SizePixels * 1,
-				VTTTokens.GreenBoss => -SizePixels * 2,
+				VTTTokens.SpikeTrap => -SizePixels * 2,
+				VTTTokens.GreenBoss => -SizePixels * 1,
 				VTTTokens.Cleric => -SizePixels * 3,
 				VTTTokens.Druid => -SizePixels * 4,
 				VTTTokens.Barbarian => -SizePixels * 5,
@@ -464,7 +507,7 @@ public class Token
 				VTTTokens.Green5 => -SizePixels * 4,
 				VTTTokens.Green6 => -SizePixels * 4,
 				VTTTokens.Green7 => -SizePixels * 5,
-				VTTTokens.Green8 => -SizePixels * 5,
+				VTTTokens.SpikeTrap => -SizePixels * 5,
 				VTTTokens.GreenBoss => -SizePixels * 5,
 				VTTTokens.Cleric => -SizePixels * 5,
 				VTTTokens.Druid => -SizePixels * 5,
