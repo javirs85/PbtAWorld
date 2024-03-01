@@ -16,6 +16,10 @@ else if (_showingSquareMap)
 {
 	<SquareMapViewer Map="Game.SquareMap" IsMaster="true" RequestCloseSquareMapViewer="@(()=>{_showingSquareMap=false;})"/>
 }
+else if(_ShowingImagesManager)
+{
+	<ImagesManager GameId="@Game.SessionID" IsMaster=true CloseRequest="@(()=>{_ShowingImagesManager = false;})"/>
+}
 else
 {
 	<div class="MasterMain" style="background: #272626;">
@@ -23,6 +27,7 @@ else
 			<div class="d-flex gap-1">
 				<button class="btn btn-primary" @onclick=@(()=>{_showingSquareMap = false; _ShowingVTT =true;})>VTT</button>
 				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})>Map</button>
+				<button class="btn btn-primary" @onclick=@(()=>{ _ShowingImagesManager =true;})>Images</button>
 				<button class="btn btn-primary" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></button>
 				<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d4, RollTypes.Roll_Simple);})/>
 				<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d6, RollTypes.Roll_Simple);}) />
@@ -193,6 +198,7 @@ else
 @code {
 	bool _ShowingVTT = false;
 	bool _showingSquareMap = false;
+	bool _ShowingImagesManager = false;
 	bool SelectingEnemies = false;
 	Monster? SelectedEnemy = null;
 	private DWCharacter? SelectedCharacter = null;
