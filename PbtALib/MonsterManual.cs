@@ -1328,7 +1328,10 @@ public class MonsterManual
 					Definition = "Cuerpo de oso. Plumas de búho. Pico, garras y excelente visión nocturna. ¿Qué no amar?", // La expresión "Instinct: To hunt" se mueve a su propia sección.
 					Moves = new List<MasterMove>
 					{
-						new MasterMove("Atacar desde la oscuridad")
+						new MasterMove("Atacar desde la oscuridad"),
+						new MasterMove("Huida feroz: Huye arrasando con todo hasta fundirte en la oscuridad"),
+						new MasterMove("Gran salto: aterriza y hace falta DD para no caer al suelo"),
+						new MasterMove("Abrazo de oso: atrapa a alguien, contundente, daña hasta que se libere"),
 					},
 					Attacks = new List<AttackDef>
 					{

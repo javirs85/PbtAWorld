@@ -43,6 +43,7 @@ builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddSingleton<DWMovesService>();
 builder.Services.AddSingleton<USMovesService>();
 builder.Services.AddSingleton<WhiteBoardService>();
+builder.Services.AddSingleton<ImagesService>();
 builder.Services.AddSingleton<PNJs>();
 builder.Services.AddSingleton<DinoGameController>();
 builder.Services.AddSingleton<DWGameController>();

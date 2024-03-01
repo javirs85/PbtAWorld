@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inject ImagesService service
+
+@if (!IsMaster && _IsForcedFromOutside)
+{
+	<div class="ImagesService d-flex flex-column align-items-center" style="position:fixed; top:0; left:0; width:100%; height:100%;">
+		<div class="CloseButton" style="color:white;" @onclick=CloseWhenForced></div>
+		<img src="@ForcedImage.src" alt="@ForcedImage.Name" style="max-width:600px;" />
+		<div>@ForcedImage.Name</div>
+	</div>
+}
+else
+{
+	<div class="CloseButton" style="color:white;" @onclick=CloseRequest></div>
+	<div class="ImagesService">
+		@if (IsMaster)
+		{
+			<div class="ButtonsShelf d-flex gap-1 p-3 align-items-center">
+				<button class="btn btn-primary" @onclick=service.LoadAll>LoadAll</button>
+				<button class="btn btn-primary" @onclick=service.SaveImagesInfo>SaveJson</button>
+				<div>Images Loaded: @service.AllImages.Count</div>
+			</div>
+			<EditForm Model="this">
+				<InputFile OnChange="service.SaveImageToDisk" class="form-control" style="background: var(--bs-gray-700); border: none; color: white;" />
+			</EditForm>
+			<div class="d-flex gap-1  overflow-auto flex-wrap">
+				@foreach (var f in service.AllImages)
+				{
+					<ImageCard Image="f" IsMaster=IsMaster />
+				}
+			</div>
+		}
+		else
+		{
+			<div class="d-flex gap-1  overflow-auto flex-wrap">
+				@foreach (var f in service.AllImages.Where(x => x.IsVisibleForPlayers == true))
+				{
+					<ImageCard Image="f" IsMaster=IsMaster />
+				}
+			</div>
+		}
+
+	</div>
+}
+
+
+@code {
+	[Parameter]
+	public Guid GameId
+	{
+		get
+		{
+			return service.GameID;
+		}
+		set
+		{
+			service.GameID = value;
+		}
+	}
+
+	[Parameter] public bool IsMaster { get; set; }
+	[Parameter] public EventCallback CloseRequest { get; set; }
+
+	bool _IsForcedFromOutside = false;
+	PbtAImage ForcedImage = new();
+
+	protected override void OnParametersSet()
+	{
+		service.UpdateUI -= Update;
+		service.UpdateUI += Update;
+		service.ForceFullScreenImageOnPlayers -= ForceFromOutside;
+		service.ForceFullScreenImageOnPlayers += ForceFromOutside;
+	}
+
+	public void ForceFromOutside(object? sender, PbtAImage img)
+	{
+		@if(!IsMaster)
+		{
+			ForcedImage = img;
+			_IsForcedFromOutside = true;
+			InvokeAsync(StateHasChanged);
+		}		
+	}
+
+	void CloseWhenForced()
+	{
+		_IsForcedFromOutside = false;
+		CloseRequest.InvokeAsync();
+	}
+
+	void Update(object? sender, EventArgs e) => Update();
+	void Update() => InvokeAsync(StateHasChanged);
+}
