@@ -26,6 +26,7 @@ else
 	}
 	@if (_IsShowingImages)
 	{
+
 		<ImagesManager CloseRequest="@(()=>{_IsShowingImages = false;})" GameId="Game.SessionID" IsMaster=false />
 	}
 	@if(IsShowingVTT)
