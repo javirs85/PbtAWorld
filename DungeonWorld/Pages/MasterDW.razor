@@ -29,11 +29,11 @@ else
 				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})>Map</button>
 				<button class="btn btn-primary" @onclick=@(()=>{ _ShowingImagesManager =true;})>Images</button>
 				<button class="btn btn-primary" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></button>
-				<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d4, RollTypes.Roll_Simple);})/>
-				<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d6, RollTypes.Roll_Simple);}) />
-				<img src="imgs/DW/d8.svg" alt="d8" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d8, RollTypes.Roll_Simple);}) />
-				<img src="imgs/DW/d10.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d10, RollTypes.Roll_Simple);}) />
-				<img src="imgs/DW/d12.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d12, RollTypes.Roll_Simple);}) />
+				<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d4);})/>
+				<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d6);}) />
+				<img src="imgs/DW/d8.svg" alt="d8" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d8);}) />
+				<img src="imgs/DW/d10.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d10);}) />
+				<img src="imgs/DW/d12.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d12);}) />
 			</div>
 			<div class="PlayersAreaHeader">
 				@foreach (var player in Meta.SelectedSeason.Players)
@@ -293,5 +293,25 @@ else
 		}
 	}
 
+	private List<DiceTypes> clicksDices = new();
+	private Timer clickTimer;
+
+	void RequestDamage(MouseEventArgs e, DiceTypes dice)
+	{
+		int numClicks = (int)e.Detail;
+
+		if(numClicks == 1)
+		{
+			clickTimer = new Timer(MasterDamageClickTimeOut);
+			clicksDices = new();
+		}
+
+		clicksDices.Add(dice);
+		clickTimer.Change(500, Timeout.Infinite);
+	}
+	private void MasterDamageClickTimeOut(object? state)
+	{
+		Game.RollRaw(MasterPlayer.ID, clicksDices);
+	}
 	string FromNameToID(string s) => String.Concat(s.Where(c => !Char.IsWhiteSpace(c)));
 }

@@ -155,6 +155,8 @@ public enum DWMovementIDs
 	DW_Wielder_Valor,
 	DW_Wielder_Measure,
 	DW_Wielder_Weapon,
+	DW_Wielder_Weapon_Crom,
+	DW_Wielder_Weapon_EbonyBlade,
 	DW_Wielder_Adv_Keep,
 	DW_Wielder_Adv_Pain,
 	DW_Wielder_Adv_Voices,
@@ -163,7 +165,11 @@ public enum DWMovementIDs
 	DW_ALL_Adv_ImproveStat1,
 	DW_Damage,
 	DW_Barbarian_InitialChoose,
-	DW_Druid_Adv_BorrowedPowers
+	DW_Druid_Adv_BorrowedPowers,
+	DW_Wielder_Weapon_IronFang,
+	DW_Wielder_Weapon_Meofainn,
+	DW_Wielder_Weapon_Sindarin,
+	DW_Wielder_Weapon_Urawhu
 }
 public enum DWStats
 {

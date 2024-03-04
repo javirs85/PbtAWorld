@@ -6,10 +6,20 @@ namespace DinoIsland;
 
 public class DinoGameController : GameControllerBase<DinoMoveIDs, DinoStates>
 {
-	public DinoGameController(DinoMovesService moves, IDataBaseController _db) : base(moves, _db)
+	DinoMovesService moves;
+
+	public DinoGameController(DinoMovesService _moves, IDataBaseController _db, LastRollViewerService _lastrollviewer) : base(_moves, _db, _lastrollviewer)
+	{
+		LastRoll = new DinoRollReport(_moves);
+		moves = _moves;
+	}
+
+
+	protected override void CreateNewRollReport()
 	{
 		LastRoll = new DinoRollReport(moves);
 	}
+
 
 	public event EventHandler OnShowLastMoveToPlayers;
 

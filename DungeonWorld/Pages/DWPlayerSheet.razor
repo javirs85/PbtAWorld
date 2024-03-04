@@ -1,6 +1,8 @@
 ﻿@page "/DWPlayer/{PlayerID:guid}"
 @using static PbtaWorldRazonCommonComponents.LastRollOverlay;
 
+@implements IDisposable
+
 @inject NavigationManager NavigationManager
 @inject DWGameController Game
 @inject ImagesService ImagesCenter
@@ -19,14 +21,12 @@
 }
 else
 {
-	@if (_ShowingLastRoll)
+	@if(IsShowingOldRolls)
 	{
-		<div class="LastRoll">
-		</div>
+		<LastRollOverlay />
 	}
 	@if (_IsShowingImages)
 	{
-
 		<ImagesManager CloseRequest="@(()=>{_IsShowingImages = false;})" GameId="Game.SessionID" IsMaster=false />
 	}
 	@if(IsShowingVTT)
@@ -290,8 +290,9 @@ else
 						<div class="PaperSheetSubTittle w-100">Secciones</div>-->
 						<div class="d-flex w-100 ps-3 gap-2" style="font-family: 'Roboto'; font-size: 12px;">
 							<div class="SectionButton" @onclick=@(()=>{/*VTT.StartForPlayer(Player); VTTViewer.Show(Player);*/ IsShowingVTT=true;})>VTT</div>
-							<div class="SectionButton" @onclick=@(()=>{IsShowingSquareMap = true; IsShowingVTT = false;})>Map</div>
-							<div class="SectionButton" @onclick=@(()=>{_IsShowingImages = true; IsShowingVTT = false;})>Imgs</div>
+							<div class="SectionButton" @onclick=@(()=>{IsShowingSquareMap = true; IsShowingVTT = false;})><i class="bi bi-map"></i></div>
+							<div class="SectionButton" @onclick=@(()=>{_IsShowingImages = true; IsShowingVTT = false;})><i class="bi bi-image"></i></div>
+							<div class="SectionButton" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></div>
 						</div>
 						<textarea class="SmallThingsTextArea mt-2" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
 					</div>
@@ -494,9 +495,9 @@ else
 	private enum States {Character, StringSelector, MovementSelector, BackgroundSelector, StringEditing}
 	private enum EditableBits {Name, Background1, Background2, Background3x}
 	private States CurrentState = States.Character;
-	private bool _ShowingLastRoll = false;
 	private bool _IsShowingImages = false;
 	private bool IsShowingVTT = false;
+	private bool IsShowingOldRolls = false;
 	private bool IsShowingSquareMap = false;
 	private bool IsShowingDamageOptions = false;
 
@@ -556,6 +557,10 @@ else
 		}
 	}
 
+	public void Dispose()
+	{
+		Game.NewInfoToast -= ShowInfo;
+	}
 
 	protected override async Task OnParametersSetAsync()
 	{
@@ -606,8 +611,8 @@ else
 		ImagesDB.Init();
 		Game.AddPlayer(Player);
 
-		Game.OnNewRoll -= ShowRoll;
-		Game.OnNewRoll += ShowRoll;
+		/*Game.OnNewRoll -= ShowRoll;
+		Game.OnNewRoll += ShowRoll;*/
 
 		VTT.Players = Game.Players;
 

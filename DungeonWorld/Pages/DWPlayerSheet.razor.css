@@ -389,6 +389,7 @@ input {
     background: #0000003e;
     opacity: 0.5;
     font-weight:bold;
+    font-size:20px;
 }
 .SectionButton:hover{
     opacity:1;

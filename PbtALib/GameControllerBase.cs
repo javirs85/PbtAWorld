@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PbtALib;
 
-public class GameControllerBase<TIDPack, TStatsPack> : IGameController
+public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 {
 	private Guid _sessionID;
 
@@ -25,12 +25,14 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 
 
 	private Random random = new Random();
+	private LastRollViewerService lastRollViewer;
 
 	public IPeopleCast People;
 
-	public GameControllerBase(MovesServiceBase moves, IDataBaseController DB)
+	public GameControllerBase(MovesServiceBase moves, IDataBaseController DB, LastRollViewerService LastRoll)
     {
 		this.DB = DB;
+		lastRollViewer = LastRoll;
 	}
 
 	public event EventHandler UpdateUI;
@@ -72,11 +74,15 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	public List<Monster> CurrentSceneEnemies { get; set; } = new();
 	public BaseTextBook TextBook { get; set; }
 
+	protected abstract void CreateNewRollReport();
+
 	public void RollRaw(Guid PlayerID, List<DiceTypes> dices, RollTypes rtype = RollTypes.Roll_Simple)
 	{
 		var player = Players.Find(x => x.ID == PlayerID);
 		if (player is not null)
 		{
+			CreateNewRollReport();
+
 			LastRoll.Roller = player.Name;
 			LastRoll.Dices.Clear();
 			LastRoll.RollType = rtype;
@@ -86,13 +92,17 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 				LastRoll.Dices.Add(new Tuple<DiceTypes, int>(d, random.Next(1, d.MaxValue() + 1)));
 			}
 			LastRoll.IsRaw = true;
-			OnNewRoll?.Invoke(this, LastRoll);
+
+			lastRollViewer.Show(LastRoll);
+			//OnNewRoll?.Invoke(this, LastRoll);
 		}
 	}
 
 	public void RollMonsterDamage(Monster m)
 	{
-        LastRoll.Roller = m.Name;
+		CreateNewRollReport();
+
+		LastRoll.Roller = m.Name;
         LastRoll.Dices.Clear();
         LastRoll.IsRaw = true;
 		if (m.Attack is not null)
@@ -105,9 +115,10 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
             {
                 LastRoll.Dices.Add(new Tuple<DiceTypes, int>(dice, random.Next(1, dice.MaxValue() + 1)));
             }
-        }       		
+        }
 
-        OnNewRoll?.Invoke(this, LastRoll);
+		lastRollViewer.Show(LastRoll);
+		OnNewRoll?.Invoke(this, LastRoll);
     }
 
 	public void RollDamage(Guid PlayerID, DiceTypes dice , RollTypes rtype)
@@ -115,6 +126,8 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		var player = Players.Find(x => x.ID == PlayerID);
 		if (player is not null)
 		{
+			CreateNewRollReport();
+
 			LastRoll.Roller = player.Name;
 			LastRoll.Dices.Clear();
 			LastRoll.IsRaw = true;
@@ -128,6 +141,7 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 			if (rtype == RollTypes.Roll_SimplePlus1d6 || rtype == RollTypes.Roll_DisadvantagePlus1d6 || rtype == RollTypes.Roll_AdvantagePlus1d6)
 				LastRoll.Dices.Add(new Tuple<DiceTypes, int>(DiceTypes.d6, random.Next(1, DiceTypes.d6.MaxValue() + 1)));
 
+			lastRollViewer.Show(LastRoll);
 			OnNewRoll?.Invoke(this, LastRoll);
 		}
 	}
@@ -137,6 +151,8 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		var player = Players.Find(x => x.ID == PlayerID);
 		if (player is not null)
 		{
+			CreateNewRollReport();
+
 			LastRoll.IsRaw = false;
 			LastRoll.Movement = move;
 
@@ -176,6 +192,7 @@ public class GameControllerBase<TIDPack, TStatsPack> : IGameController
 				LastRoll.StatString = hardcodedRolledStatName;
 		}
 
+		lastRollViewer.Show(LastRoll);
 		OnNewRoll?.Invoke(this, LastRoll);
 	}
 

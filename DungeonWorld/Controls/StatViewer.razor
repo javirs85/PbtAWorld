@@ -1,7 +1,7 @@
 ﻿@inject DWGameController Game
 @inject DWMovesService Moves
 
-<div class="StatViewerMain d-flex flex-column align-items-center" @onclick=MainClicked>
+<div class="StatViewerMain d-flex flex-column align-items-center @(IsDebilitated?"Debilitated":"Normal")">
 	<div class="StatViewerTitle">
 		@Stat.ToUI()
 	</div>
@@ -9,8 +9,17 @@
 		<input @bind=StatValueString @onclick:stopPropagation @onfocusout=EditFinished>
 	</div>
 	<div class="d-flex">
-		<div class="diceButton redDice" @onclick=RedClicked @onclick:stopPropagation></div>
-		<div class="diceButton greenDice" @onclick=GreenClicked @onclick:stopPropagation></div>
+		@if(IsDebilitated)
+		{
+			<div class="diceButton redDice" @onclick=RedClicked @onclick:stopPropagation></div>
+		}
+		else
+		{
+			<div class="diceButton redDice" @onclick=RedClicked @onclick:stopPropagation></div>
+			<div class="diceButton whiteDice" @onclick=MainClicked @onclick:stopPropagation></div>
+			<div class="diceButton greenDice" @onclick=GreenClicked @onclick:stopPropagation></div>
+		}
+		
 	</div>
 </div>
 
@@ -18,13 +27,23 @@
 	.StatViewerMain{
 		width: 99px;
 		height: 115px;
-		background-image: url(imgs/DW/Flag_Semi.png);
-		cursor: pointer;
 		background-size: cover;
 	}
-	.StatViewerMain:hover{
-			background-image: url(imgs/DW/Flag_Full.png);
+		
+
+	.Normal{
+		background-image: url(imgs/DW/Flag_Semi.png);
 	}
+		.Normal:hover {
+			background-image: url(imgs/DW/Flag_Full.png);
+		}
+
+	.Debilitated{
+		background-image: url(imgs/DW/Flag_Semi_Debilitated.png);
+	}
+		.Debilitated:hover {
+			background-image: url(imgs/DW/Flag_FullDebilitated.png);
+		}
 
 	.StatViewerTitle{
 		font-size:26px;
@@ -50,23 +69,46 @@
 	}
 	.greenDice{
 		background-image: url(imgs/DW/GreenDice_off.png);
-	}.greenDice:hover{
-			background-image: url(imgs/DW/GreenDice_on.png);
+	}	
+	.greenDice:hover{
+		background-image: url(imgs/DW/GreenDice_on.png);
 	}
 
 	.redDice {
 		background-image: url(imgs/DW/RedDice_off.png);
 	}
+	.redDice:hover {
+		background-image: url(imgs/DW/RedDice_on.png);
+	}
 
-		.redDice:hover {
-			background-image: url(imgs/DW/RedDice_on.png);
+	.whiteDice {
+		background-image: url(imgs/DW/WhiteDice_off.png);
+	}
+
+		.whiteDice:hover {
+			background-image: url(imgs/DW/WhiteDice_on.png);
 		}
+
+
 </style>
 
 @code {
 	[Parameter] public DWStats Stat { get; set; }
 	[Parameter] public EventCallback UpdateUI { get; set; }
 	[Parameter] public DWCharacter Player { get; set; }
+
+	private bool IsDebilitated
+	{
+		get{
+			if (Player.IsWeak && Stat == DWStats.DW_STR) return true;
+			if (Player.IsWeak && Stat == DWStats.DW_DEX) return true;
+			if (Player.IsStun && Stat == DWStats.DW_INT) return true;
+			if (Player.IsStun && Stat == DWStats.DW_WIS) return true;
+			if (Player.IsMiserable && Stat == DWStats.DW_CON) return true;
+			if (Player.IsMiserable && Stat == DWStats.DW_CHA) return true;
+			else return false;
+		}
+	}
 
 	private int StatValue;
 
