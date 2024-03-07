@@ -1,4 +1,5 @@
 ﻿@page "/DWPlayer/{PlayerID:guid}"
+@using static PbtaWorldRazonCommonComponents.CharacterSelector
 @using static PbtaWorldRazonCommonComponents.LastRollOverlay;
 
 @implements IDisposable
@@ -9,6 +10,7 @@
 @inject IToastService Toaster
 @inject DWMovesService Moves
 @inject LastRollViewerService LastRollViewer
+@inject CharacterSelectorService CharacterSelectorService
 @inject VTTService VTT
 @inject WhiteBoard.WhiteBoardService WhiteBoardService
 @inject VTTLocalManagerService VTTViewer

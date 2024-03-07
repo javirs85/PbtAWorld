@@ -163,6 +163,12 @@ else
 												type="button" data-bs-toggle="collapse"
 												data-bs-target="#@FromNameToID(location.Name)">
 											@location.Name
+											<div @onclick=location.SaveToFile>
+												<i class="bi bi-floppy ms-2"></i>
+											</div>
+											<div @onclick=location.AddEmptyMonster>
+												<i class="bi bi-plus-square ms-2" style="color: darkgreen;"></i>
+											</div>
 										</button>
 									</h2>
 									<div id="@FromNameToID(location.Name)" class="accordion-collapse collapse" data-bs-parent="#MonsterLocationSelector">
@@ -251,6 +257,9 @@ else
 
 		Game.UpdateUI -= Update;
 		Game.UpdateUI += Update;
+
+		MonsterManual.LoadedFinished -= Update;
+		MonsterManual.LoadedFinished += Update;
 
 		Game.AddPlayer(MasterPlayer);
 	}

@@ -63,6 +63,16 @@ public class Monster
     {
         if (Game is not null) Game.RollMonsterDamage(this);
     }
+
+    public void DeleteMove(MasterMove m)
+    {
+        Moves.Remove(m);
+    }
+
+    public void AddMove(string s)
+    {
+        Moves.Add(new MasterMove(s));
+    }
 }
 
 public class AttackDef

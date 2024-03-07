@@ -125,6 +125,7 @@
 
 
   <ItemGroup>
+    <Folder Include="wwwroot\DW\Monsters\" />
     <Folder Include="wwwroot\imgs\DW\SquareMap\" />
     <Folder Include="wwwroot\imgs\VTT\" />
     <Folder Include="wwwroot\SquareMaps\" />
