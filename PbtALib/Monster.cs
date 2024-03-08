@@ -55,6 +55,8 @@ public class Monster
             }
     }
 
+    public string ImageURL => $"/DW/Monsters/Images/{ID}.png";
+
     public int CurrentHP { get; set; }
     public string Definition { get; set; } = string.Empty;
 	public string Instinct { get; set; } = string.Empty;
@@ -73,6 +75,7 @@ public class Monster
     {
         Moves.Add(new MasterMove(s));
     }
+
 }
 
 public class AttackDef

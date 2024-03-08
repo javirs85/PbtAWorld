@@ -27,11 +27,20 @@ else
 	{
 		<LastRollOverlay />
 	}
-	@if (_IsShowingImages)
+	else if (_IsShowingImages)
 	{
 		<ImagesManager CloseRequest="@(()=>{_IsShowingImages = false;})" GameId="Game.SessionID" IsMaster=false />
 	}
-	@if(IsShowingVTT)
+	else if (_IsShowingImageFromMaster)
+	{
+		<div class="FullScreenImageContainer" @onclick=@(()=>{_IsShowingImageFromMaster = false;})>
+			<div class="d-flex">
+				<img src="@ImageFromMasterURL" />
+				<i class="bi bi-x-lg" style="color:white; font-size:20px; margin-left:20px; cursor:pointer;"></i>
+			</div>
+		</div>
+	}
+	else if(IsShowingVTT)
 	{
 		<div class="vtt d-flex">
 			<SmoothWhiteBoard Character="Player" MyClass="Player.Profession" />
@@ -498,10 +507,13 @@ else
 	private enum EditableBits {Name, Background1, Background2, Background3x}
 	private States CurrentState = States.Character;
 	private bool _IsShowingImages = false;
+	private bool _IsShowingImageFromMaster = false;
 	private bool IsShowingVTT = false;
 	private bool IsShowingOldRolls = false;
 	private bool IsShowingSquareMap = false;
 	private bool IsShowingDamageOptions = false;
+
+	private string ImageFromMasterURL = "";
 
 	private List<string> StringsForStringSelector = new();
 	private List<Background> BackgroundsForBackgroundSelector = new();
@@ -609,6 +621,12 @@ else
 
 		Game.NewInfoToast -= ShowInfo;
 		Game.NewInfoToast += ShowInfo;
+
+		Game.ImageToShowToAllPlayers += (o, url) => { 
+			_IsShowingImageFromMaster = true; 
+			ImageFromMasterURL = url;
+			InvokeAsync(StateHasChanged);
+		};
 
 		ImagesDB.Init();
 		Game.AddPlayer(Player);

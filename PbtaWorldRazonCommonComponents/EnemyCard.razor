@@ -62,7 +62,7 @@
 			}
 		
 		</div>
-		<div class="imgHolder" style="background-image:url(/DW/Monsters/Images/@(monster.ID).png); ">
+		<div class="imgHolder" style="background-image:url(@(monster.ImageURL)); ">
 			<div class="HPSpace">@monster.MaxHP</div>
 			<div class="ArmorSpace">
 				<div class="ArmorIcon">
@@ -75,6 +75,10 @@
 			<div style="position: absolute; top:0px; left:10px; font-size:25px; opacity:0.5; cursor:pointer;"
 				@onclick=ShowDetails>
 				<i class="bi @(FullText?"bi-x-circle":"bi-info-circle")"></i>
+			</div>
+			<div style="position: absolute; top:32px; left:10px; font-size:25px; opacity:0.5; cursor:pointer;"
+				 @onclick=@(()=>{Game.ShowImageToAllPlayers(monster.ImageURL);})>
+				<i class="bi bi-send text-primary"></i>
 			</div>
 			<div style="position: absolute; bottom:0px; right:10px; font-size:35px; opacity:1; cursor:pointer;"
 				 @onclick=ToggleMonsterDefinition>
@@ -123,11 +127,61 @@
 			<EditForm Model="this">
 				<div class="d-flex justify-content-between">
 					<InputText class="form-control flex-grow-1" style="height: 34px;" @bind-Value=monster.Name />
-					<div style="cursor:pointer; padding:5px;" @onclick=CloseEditingMovesPanel>
-						<i class="bi bi-x"></i>
+					<div class="GreenButton" @onclick=CloseEditingMovesPanel>
+						<i class="bi bi-check-lg fs-2" style="line-height:9px;"></i>
 					</div>
 				</div>
-			
+
+				<div class="d-flex gap-2">
+					<span>Size:</span>
+					<InputSelect class="form-select" @bind-Value="monster.Size" style="width: 80px;">
+						@foreach (var d in new List<BaseTextBook.TagIDs> { BaseTextBook.TagIDs.Pequeño, BaseTextBook.TagIDs.Grande, BaseTextBook.TagIDs.Enorme})
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<span>Organization:</span>
+					<InputSelect class="form-select" @bind-Value="monster.Organization" style="width: 80px;">
+						@foreach (var d in new List<BaseTextBook.TagIDs> { BaseTextBook.TagIDs.Solitario, BaseTextBook.TagIDs.batallon, BaseTextBook.TagIDs.Grupo, BaseTextBook.TagIDs.Horda, BaseTextBook.TagIDs.plaga })
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+				</div>
+				<div class="d-flex gap-2">
+					<span>Tags:</span>
+					<InputSelect class="form-select" @bind-Value="Tag1" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<InputSelect class="form-select" @bind-Value="Tag2" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<InputSelect class="form-select" @bind-Value="Tag3" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<InputSelect class="form-select" @bind-Value="Tag4" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<InputSelect class="form-select" @bind-Value="Tag5" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+				</div>
+
 				<div>
 					@foreach (var m in monster.Moves)
 					{
@@ -140,7 +194,7 @@
 						<span style="width:110px;">+Move</span>
 						<InputText class="form-control flex-grow-1" style="height: 34px;" @bind-Value=CurrentlyEditingMasterMove />
 						<i class="bi bi-plus-square " style="    color: darkgreen; cursor: pointer; font-size: 32px; line-height: 34px;" 
-							@onclick=@(()=>{monster.AddMove(CurrentlyEditingMasterMove);})></i>
+							@onclick=@(()=>{monster.AddMove(CurrentlyEditingMasterMove); CurrentlyEditingMasterMove = "";})></i>
 					</div>
 					<div class="d-flex gap-1 align-items-center">
 						<span style="width:50px; text-align:right;">Bonus</span>
@@ -168,7 +222,13 @@
 						<span style="width:69px; text-align:right;">Armor</span>
 						<InputNumber class="form-control flex-grow-1" style="height: 34px; width:50px;" @bind-Value=monster.Armor />
 					</div>
-					<InputFile OnChange="StoreMonsterImage"></InputFile>
+					<div class="d-flex gap-2 align-items-end">
+						<div class="imgHolder" style="background-image:url(@monster.ImageURL); min-width:200px; min-height:200px;" />
+						<InputFile OnChange="StoreMonsterImage" style="flex:1"></InputFile>
+						<i class="bi bi-trash3 " style="    color: darkred; cursor: pointer; font-size: 32px; line-height: 34px;"
+						   @onclick=RemoveThisMonster></i>
+					</div>
+					
 				</div>
 			</EditForm>
 		</div>
@@ -181,6 +241,12 @@
 @code {
 	[Parameter] public  Monster monster { get; set; } = new();
 	[Parameter] public IGameController? Game { get; set; }
+
+	BaseTextBook.TagIDs Tag1 = BaseTextBook.TagIDs.NotSet;
+	BaseTextBook.TagIDs Tag2 = BaseTextBook.TagIDs.NotSet;
+	BaseTextBook.TagIDs Tag3 = BaseTextBook.TagIDs.NotSet;
+	BaseTextBook.TagIDs Tag4 = BaseTextBook.TagIDs.NotSet;
+	BaseTextBook.TagIDs Tag5 = BaseTextBook.TagIDs.NotSet;
 
 	DiceTypes ReferenceDiceType
 	{
@@ -207,7 +273,20 @@
 
 	public async Task StoreMonsterImage(InputFileChangeEventArgs e)
 	{
-		
+		try
+		{
+			string newFileName = monster.ID + System.IO.Path.GetExtension(e.File.Name);
+			string newFilePath = $"./wwwroot/DW/Monsters/Images/{newFileName}";
+
+			await using FileStream fs = new(newFilePath, FileMode.Create);
+			await e.GetMultipleFiles(1)[0].OpenReadStream().CopyToAsync(fs);
+
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+		}
 	}
 
 	bool FullText = false;
@@ -220,6 +299,13 @@
 	}
 	void CloseEditingMovesPanel()
 	{
+		monster.Tags.Clear();
+		if (Tag1 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag1);
+		if (Tag2 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag2);
+		if (Tag3 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag3);
+		if (Tag4 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag4);
+		if (Tag5 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag5);
+
 		IsEditingMoves = false;
 	}
 
@@ -234,13 +320,17 @@
 
 			Game.Update();
 		}
-		
+
 		StateHasChanged();
 	}
-
 
 	void ShowDetails()
 	{
 		FullText = !FullText;
+	}
+
+	void RemoveThisMonster()
+	{
+		Game.TextBook.Monsters.RemoveMonster(monster);
 	}
 }

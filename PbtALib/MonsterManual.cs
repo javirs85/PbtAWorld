@@ -20,7 +20,27 @@ public class MonsterManual
 		LoadAllMonsterFiles();
 	}
 
-    public List<MonsterPack> AllMonsterPacks = new List<MonsterPack>
+	public void AddNewLocation(string NewName)
+	{
+		AllMonsterPacks.Add(new MonsterPack { Name = NewName });
+		LoadedFinished?.Invoke(this, EventArgs.Empty);
+
+		AllMonsterPacks = AllMonsterPacks.OrderBy(x => x.Name).ToList();
+	}
+
+	public void RemoveMonster(Monster monster)
+	{
+		var pack = AllMonsterPacks.Find(x=> x.Monsters.Contains(monster));
+		if(pack != null) { 
+			pack.Monsters.Remove(monster);
+		}
+
+		SendLoadedFinishMessage();
+	}
+
+	private void SendLoadedFinishMessage() => LoadedFinished?.Invoke(this, EventArgs.Empty);
+
+	public List<MonsterPack> AllMonsterPacks = new List<MonsterPack>
 	{/*
 		new MonsterPack
 		{
@@ -4428,6 +4448,9 @@ public class MonsterManual
 				}
 					
 			}
+
+			AllMonsterPacks = AllMonsterPacks.OrderBy(x=>x.Name).ToList();
+
 			LoadedFinished?.Invoke(this, EventArgs.Empty);
 		}
 		catch (Exception e)
@@ -4459,8 +4482,6 @@ public class MonsterPack
 
 		Monsters = Monsters.OrderBy(x => x.Name).ToList();
 	}
-
-
 
 	public async Task SaveToFile()
 	{

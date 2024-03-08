@@ -1,0 +1,13 @@
+﻿.MonsterSelectorButton {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    border:1px solid darkgreen;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+}
+    .MonsterSelectorButton:hover {
+        box-shadow: 0 0 3px #00000087;
+    }

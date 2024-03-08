@@ -40,7 +40,7 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	public event EventHandler<IRollReport> OnNewRoll;
 	public event EventHandler<PbtAImage> OnMasterShowsImage;
 	public event EventHandler<PNJ> OnMasterShowsPNJ;
-
+	public event EventHandler<string> ImageToShowToAllPlayers;
 
 	public ICharacter GetCharacterByID(Guid id)
 	{
@@ -223,4 +223,9 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
         MonsterDefinitionsInCurrentScene.Add(monster);
 		monster.Game = this;
     }
+
+	public void ShowImageToAllPlayers(string url)
+	{
+		ImageToShowToAllPlayers?.Invoke(this, url);
+	}
 }

@@ -1,0 +1,126 @@
+﻿@using PbtALib.ifaces
+
+
+<div class="modal-dialog modal-fullscreen" id="SelectEnemies">
+	<div class="modal-content">
+		<div class="modal-body">
+			<div class="MonsterSelectionHeader d-flex justify-content-between align-items-center">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=CloseClicked>Close</button>
+				<EditForm Model="this">
+					@if(_IsCreatingNewMonsterFaction)
+					{
+						<div class="d-flex gap-1 align-items-center">
+							<label>New Name:</label>
+							<input class="form-field" @bind-value=NewNameString />
+							<div class="MonsterSelectorButton"
+								 @onclick=@(()=>{Game.TextBook.Monsters.AddNewLocation(NewNameString);})>
+								<i class="bi bi-floppy" style="line-height: 30px; color: darkgreen; font-size: 20px;"></i>
+							</div>
+							<div class="MonsterSelectorButton" style="color: red; border-color:red;"
+								 @onclick=ToggleNewLocationCreationMode>
+								<i class="bi bi-x-lg"></i>
+							</div>
+						</div>
+					}
+					else
+					{
+						<div class="d-flex gap-1 align-items-center">
+							<div class="MonsterSelectorButton" style="color: blue; border-color:blue;"
+								 @onclick=@(async ()=>{await Game.TextBook.Monsters.LoadAllMonsterFiles(); await InvokeAsync(StateHasChanged);})>
+								<i class="bi bi-arrow-clockwise text-primary" style=""></i>
+							</div>
+							<label>Buscar:</label>
+							<input class="form-field" @bind-value=SearchString @bind-value:event="oninput" />
+							<div class="MonsterSelectorButton" style="color: darkgreen; border-color:darkgreen;"
+								 @onclick=ToggleNewLocationCreationMode>
+								<i class="bi bi-plus" style="line-height: 10px; color: font-size: 30px;"></i>
+							</div>
+							<div class="MonsterSelectorButton"
+								 style="color: red; border-color:red;"
+								 @onclick=@(()=>{SearchString = "";})>
+								<i class="bi bi-x-lg text-danger"></i>
+							</div>
+						</div>
+					}
+					
+				</EditForm>
+				<button type="button" class="btn btn-secondary" @onclick=CloseClicked>Close</button>
+			</div>
+			@if (string.IsNullOrEmpty(SearchString) || string.IsNullOrWhiteSpace(SearchString) || SearchString == "")
+			{
+				<div class="MonsterLocationSelection accordion" id="MonsterLocationSelector">
+					@foreach (var location in Game.TextBook.Monsters.AllMonsterPacks)
+					{
+						<div class="accordion-item">
+							<h2 class="accordion-header">
+								<button class="accordion-button collapsed"
+										style="border-color: none!important; outline:none!important; box-shadow:none!important;"
+										type="button" data-bs-toggle="collapse"
+										data-bs-target="#@FromNameToID(location.Name)">
+									@location.Name
+									<div @onclick=location.SaveToFile>
+										<i class="bi bi-floppy ms-2"></i>
+									</div>
+									<div @onclick=location.AddEmptyMonster @onclick:preventDefault @onclick:stopPropagation>
+										<i class="bi bi-plus-square ms-2" style="color: darkgreen;"></i>
+									</div>
+								</button>
+							</h2>
+							<div id="@FromNameToID(location.Name)" class="accordion-collapse collapse" data-bs-parent="#MonsterLocationSelector">
+								<div class="accordion-body">
+									<div class="d-flex flex-wrap">
+										@foreach (var m in location.Monsters)
+										{
+											<EnemyCard monster="m" Game="Game" />
+										}
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+
+				</div>
+			}
+			else
+			{
+				<div class="SearchResults d-flex flex-wrap">
+					@foreach (var m in FilteredMonsterList)
+					{
+						<EnemyCard monster="m" Game="Game" />
+					}
+				</div>
+			}
+		</div>
+	</div>
+</div>
+
+@code {
+	string SearchString = "";
+	string NewNameString = "";
+	[Parameter] public IGameController Game { get; set; }
+	[Parameter] public EventCallback CloseClicked { get; set; }
+
+	bool _IsCreatingNewMonsterFaction = false;
+
+	void ToggleNewLocationCreationMode(){
+		_IsCreatingNewMonsterFaction = !_IsCreatingNewMonsterFaction;
+		if (_IsCreatingNewMonsterFaction)
+			NewNameString = "";
+	}
+
+	List<Monster> FilteredMonsterList
+	{
+		get
+		{
+			if (Game is not null)
+				return Game.TextBook.Monsters.AllMonsterPacks
+								.SelectMany(mp => mp.Monsters)
+								.Where(x => x.Name.ToLower().Contains(SearchString.ToLower()) ||
+								x.Definition.ToLower().Contains(SearchString.ToLower()))
+								.ToList();
+			else
+				return new List<Monster>();
+		}
+	}
+	string FromNameToID(string s) => String.Concat(s.Where(c => !Char.IsWhiteSpace(c)));
+}
