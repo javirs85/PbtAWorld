@@ -7,14 +7,17 @@ using System.Threading.Tasks;
 using PbtALib;
 using PbtADBConnector;
 using PbtALib.ifaces;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace DungeonWorld;
 
 public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>, IGameController
 {
-	
-	public DWGameController(DWMovesService moves, IDataBaseController _db) : base(moves, _db)
+	private DWMovesService movesService;
+	public DWGameController(DWMovesService moves, IDataBaseController _db , LastRollViewerService _lastRollViewerService) : base(moves, _db, _lastRollViewerService)
 	{
+		movesService = moves;
 		LastRoll = new DWRollReport(moves);
 		TextBook = new DWTextBook();
 	}
@@ -30,10 +33,14 @@ public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>, IGa
 
 			await DB.StoreChangesinCharacter(ch.ID,ch.Name, System.Text.Json.JsonSerializer.Serialize(DWChar));
 			if(!string.IsNullOrEmpty(notification) )
-				ShowToastOnAllClients(notification);
+				ShowToastOnAllClients(ch.Name +": "+ notification);
 		}
 		else
 			throw new Exception("tried to store a character that is not DWCharacter at DWGameController");
 	}
 
+	protected override void CreateNewRollReport()
+	{
+		LastRoll = new DWRollReport(movesService);
+	}
 }

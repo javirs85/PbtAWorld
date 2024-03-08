@@ -11,8 +11,8 @@
 }
 else
 {
-	<div class="CloseButton" style="color:white;" @onclick=CloseRequest></div>
-	<div class="ImagesService">
+	<div class="CloseButton" style="color:white;z-index:22;" @onclick=CloseRequest></div>
+	<div class="ImagesService" style="position:fixed; top:0;">
 		@if (IsMaster)
 		{
 			<div class="ButtonsShelf d-flex gap-1 p-3 align-items-center">
@@ -32,6 +32,10 @@ else
 		}
 		else
 		{
+			@if(service.AllImages.Count == 0)
+			{
+				<button class="btn btn-primary" @onclick=service.LoadAll>LoadAll</button>
+			}
 			<div class="d-flex gap-1  overflow-auto flex-wrap">
 				@foreach (var f in service.AllImages.Where(x => x.IsVisibleForPlayers == true))
 				{

@@ -8,9 +8,11 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 {
 	public List<Debt> AllDebts = new();
 	public List<USFaction> AllFactions { get; set; } = new();
-	public USGameController(USMovesService moves, IDataBaseController _db) : base(moves, _db)
+	private USMovesService moves;
+	public USGameController(USMovesService _moves, IDataBaseController _db, LastRollViewerService lrvs) : base(_moves, _db, lrvs)
 	{
-		LastRoll = new USRollReport(moves);
+		LastRoll = new USRollReport(_moves);
+		moves = _moves;
 
 		People = new USPeople(_db);
 
@@ -27,7 +29,10 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 		};
 		People.Circles[3].Factions.Add(f);
     }
-
+	protected override void CreateNewRollReport()
+	{
+		LastRoll = new USRollReport(moves);
+	}
 	//public override void AddPlayerToPeople(PbtACharacter ch) { 
 	//	if(ch is USCharacterSheet)
 	//	{
@@ -77,4 +82,6 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 	public async Task CreateNewFactionAtSelectedCircle(Circles c) { throw new NotImplementedException(); }
 	public List<USCharacterSheet> GetMembersOfFaction(USFaction fac) { throw new NotImplementedException(); }
 	public async Task StoreImageBase64(string Data64, Guid CharacterID) { throw new NotImplementedException(); }
+
+	
 }

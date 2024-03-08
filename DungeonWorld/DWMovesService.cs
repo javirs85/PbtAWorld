@@ -1759,31 +1759,37 @@ public class DWMovesService : MovesServiceBase
 				{
 					new SubMovement
 					{
+						ID = DWMovementIDs.DW_Wielder_Weapon_Crom,
 						Tittle="Crom Faeyr",
 						Description="martillo de los reyes enanos\r\n(+1d4 de daño, contundente, ruidoso)\r\nCuando sacas 12+ a Saja-Raja retumba como un trueno, los aturde, y los manda a volar\r\n"
 					},
 					new SubMovement
 					{
+						ID = DWMovementIDs.DW_Wielder_Weapon_EbonyBlade,
 						Tittle="Ebony Blade",
 						Description="una espada pesada de color negro azabache (+1 daño, escabrosa) Cuando matas una criatura viva con esta espada, recuperas 1d4 PG"
 					},
 					new SubMovement
 					{
+						ID = DWMovementIDs.DW_Wielder_Weapon_IronFang,
 						Tittle="Ironfang",
 						Description="una lanza adornada de acero negro\r\n(+1 daño, alcance, lanzado) Cuando disparas con esta lanza, puedes usar FUE en lugar de DES. cuando así lo desees, la lanza vuela segura hacia tu mano abierta.\r\n"
 					},
 					new SubMovement
 					{
+						ID = DWMovementIDs.DW_Wielder_Weapon_Meofainn,
 						Tittle="Meofainn",
 						Description="un hacha templada en sangre de dragón (+1 daño, escabrosa, contundente, 3 perforante) Esta hacha corta la madera como si fuera arcilla, la piedra como si fuera era madera, y acero como si fuera piedra. Cuando tiras 12+ a Saja-Raja con este hacha, destruyes algo que usan o vistan."
 					},
 					new SubMovement
 					{
+						ID = DWMovementIDs.DW_Wielder_Weapon_Sindarin,
 						Tittle="Sindarin",
 						Description=", una hoja delgada como una luna creciente (+1 daño, ignora la armadura) Cuando S-R con esta cuchilla, puedes usar DES en lugar de FUE. Su borde puede cortar incluso espíritus o enemigos insustanciales."
 					},
 					new SubMovement
 					{
+						ID = DWMovementIDs.DW_Wielder_Weapon_Urawhu,
 						Tittle="Urawhu",
 						Description="una hoja con púas en una larga cadena de plata (+1 daño, alcance, lanzado) Cuando S-R, puedes usar DES en lugar de FUE. con 12+ en S-R o Disparar con Urawhiu, describe cómo atrapas, haces tropezar o desarmas tu enemigo"
 					},

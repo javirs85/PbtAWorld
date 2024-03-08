@@ -19,4 +19,7 @@ public interface IGameController
 
 
     public BaseTextBook TextBook { get; set; }
+
+	public void ShowImageToAllPlayers(string url);
+	public event EventHandler<string> ImageToShowToAllPlayers;
 }

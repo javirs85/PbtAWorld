@@ -1,273 +1,279 @@
 ﻿@using PbtALib;
 @inject LastRollViewerService service
 
-@if(service.IsVisible)
+@if(IsVisible)
 {
-	<div class="FloatinCover @FloatinCoverClass" @onclick=service.Hide>
-		@if(service.LastRoll.RollType == RollTypes.JustShowMoveWithNoRoll)
+	<div class="FloatinCover @FloatinCoverClass d-flex flex-column gap-3 h-100 overflow-auto" @onclick=Hide>
+		@foreach(var LastRoll in service.LastRolls)
 		{
-			@if(service.Movement is not null)
-			{
-				<div class="MovementContent" style="color: white;">
-					<div class="MovementHeader">@service.Movement.Tittle</div>
-					@if (service.Movement.PreCondition != null && service.Movement.PreCondition.MainText != "")
+			<div class="d-flex flex-column p-2 border rounded @GetBorderTag(LastRoll)" style="background:@GetBackgroundTag(LastRoll);">
+				@if(LastRoll.RollType == RollTypes.JustShowMoveWithNoRoll)
+				{
+					@if(LastRoll.Movement is not null)
 					{
-						<DecodedString Value=@service.Movement.PreCondition.MainText />
-					}
-					@if (service.Movement.PreCondition.Options != null && service.Movement.PreCondition.Options.Count > 0)
-					{
-						<ul>
-							@foreach (var entry in service.Movement.PreCondition.Options)
+						<div class="MovementContent" style="color: white;">
+							<div class="MovementHeader">@LastRoll.Movement.Tittle</div>
+							@if (LastRoll.Movement.PreCondition != null && LastRoll.Movement.PreCondition.MainText != "")
 							{
-								<li><DecodedString Value="@entry" /></li>
+								<DecodedString Value=@LastRoll.Movement.PreCondition.MainText />
 							}
-						</ul>
-					}
-					@if (service.Movement.ConsequencesOn6 != null && service.Movement.ConsequencesOn6.MainText != "")
-					{
-						<div class="d-flex mb-2">
-							<div>
-								<span class="MovementRangeMarker">@("<6"):</span>
-							</div/> 
-							<div>
-								@service.Movement.ConsequencesOn6.MainText
-								@if (service.Movement.ConsequencesOn6.Options != null && service.Movement.ConsequencesOn6.Options.Count > 0)
-								{
-									<ul>
-										@foreach (var entry in service.Movement.ConsequencesOn6.Options)
+							@if (LastRoll.Movement.PreCondition.Options != null && LastRoll.Movement.PreCondition.Options.Count > 0)
+							{
+								<ul>
+									@foreach (var entry in LastRoll.Movement.PreCondition.Options)
+									{
+										<li><DecodedString Value="@entry" /></li>
+									}
+								</ul>
+							}
+							@if (LastRoll.Movement.ConsequencesOn6 != null && LastRoll.Movement.ConsequencesOn6.MainText != "")
+							{
+								<div class="d-flex mb-2">
+									<div>
+										<span class="MovementRangeMarker">@("<6"):</span>
+									</div/> 
+									<div>
+										@LastRoll.Movement.ConsequencesOn6.MainText
+										@if (LastRoll.Movement.ConsequencesOn6.Options != null && LastRoll.Movement.ConsequencesOn6.Options.Count > 0)
 										{
-											<li><DecodedString Value="@entry" /></li>
+											<ul>
+												@foreach (var entry in LastRoll.Movement.ConsequencesOn6.Options)
+												{
+													<li><DecodedString Value="@entry" /></li>
+												}
+											</ul>
 										}
-									</ul>
-								}
-							</div>
+									</div>
+								</div>
+							}
+							@if ( LastRoll.Movement.ConsequencesOn79 != null &&  LastRoll.Movement.ConsequencesOn79.MainText != "")
+							{
+								<div class="d-flex mb-2">
+									<div>
+										<span class="MovementRangeMarker">7-9:</span>
+									</div/> 
+									<div>
+										@LastRoll.Movement.ConsequencesOn79.MainText
+										@if ( LastRoll.Movement.ConsequencesOn79.Options != null &&  LastRoll.Movement.ConsequencesOn79.Options.Count > 0)
+										{
+											<ul>
+												@foreach (var entry in  LastRoll.Movement.ConsequencesOn79.Options)
+												{
+													<li><DecodedString Value="@entry" /></li>
+												}
+											</ul>
+										}
+									</div>
+								</div>
+							}
+							@if ( LastRoll.Movement.ConsequencesOn10 != null &&  LastRoll.Movement.ConsequencesOn10.MainText != "")
+							{
+								<div class="d-flex">
+									<div>
+										<span class="MovementRangeMarker">>10:</span>
+									</div/> 
+									<div>
+										@LastRoll.Movement.ConsequencesOn10.MainText
+										@if ( LastRoll.Movement.ConsequencesOn10.Options != null &&  LastRoll.Movement.ConsequencesOn10.Options.Count > 0)
+										{
+											<ul>
+												@foreach (var entry in  LastRoll.Movement.ConsequencesOn10.Options)
+												{
+													<li><DecodedString Value="@entry" /></li>
+												}
+											</ul>
+										}
+									</div>
+								</div>
+							}
 						</div>
 					}
-					@if ( service.Movement.ConsequencesOn79 != null &&  service.Movement.ConsequencesOn79.MainText != "")
-					{
-						<div class="d-flex mb-2">
-							<div>
-								<span class="MovementRangeMarker">7-9:</span>
-							</div/> 
-							<div>
-								@service.Movement.ConsequencesOn79.MainText
-								@if ( service.Movement.ConsequencesOn79.Options != null &&  service.Movement.ConsequencesOn79.Options.Count > 0)
-								{
-									<ul>
-										@foreach (var entry in  service.Movement.ConsequencesOn79.Options)
-										{
-											<li><DecodedString Value="@entry" /></li>
-										}
-									</ul>
-								}
-							</div>
-						</div>
-					}
-					@if ( service.Movement.ConsequencesOn10 != null &&  service.Movement.ConsequencesOn10.MainText != "")
-					{
-						<div class="d-flex">
-							<div>
-								<span class="MovementRangeMarker">>10:</span>
-							</div/> 
-							<div>
-								@service.Movement.ConsequencesOn10.MainText
-								@if ( service.Movement.ConsequencesOn10.Options != null &&  service.Movement.ConsequencesOn10.Options.Count > 0)
-								{
-									<ul>
-										@foreach (var entry in  service.Movement.ConsequencesOn10.Options)
-										{
-											<li><DecodedString Value="@entry" /></li>
-										}
-									</ul>
-								}
-							</div>
-						</div>
-					}
-				</div>
-			}
-		}
-		else if(service.LastRoll is not null && service.LastRoll.IsRaw == false)
-		{
-			<div @onclick=service.Hide
-				 class="LastRollHeader">
-				<h4 class="text-light">@service.LastRoll.MoveTittle</h4>
-				<i class="bi bi-x-lg text-light fs-2"></i>
-			</div>
-			<div class="LastRollContainer BoxPack @LastRollBoxColor">
+				}
+				else if(LastRoll is not null && LastRoll.IsRaw == false)
+				{
+					<div @onclick=Hide
+						 class="LastRollHeader">
+						<h4 class="text-light">@LastRoll.MoveTittle</h4>
+						<i class="bi bi-x-lg text-light fs-2"></i>
+					</div>
+					<div class="LastRollContainer BoxPack" style="background:@GetBackgroundTag(LastRoll);">
 							
-				<div>
-					@service.LastRoll.Roller <span class="small opacity-50">tira </span>
-					@service.LastRoll.MoveTittle <span class="small opacity-50">con </span> 
-					@if(service.LastRoll.RollType == RollTypes.Roll_Simple)
-					{
-						@service.LastRoll.StatString
-					}
-					else if(service.LastRoll.RollType == RollTypes.Roll_Advantage)
-					{
-						<span>ventaja</span>
-					}
-					else
-					{
-						<span>desventaja</span>
-					}
-				</div>
-					
-				<div class="d-flex gap-2 justify-content-center m-4">
-					<div class="d-flex align-items-center gap-2">
-						@if(service.LastRoll.RollType == RollTypes.Roll_Disadvantage)
-						{
-							<div class="dice">@service.LastRoll.d1</div><span> + </span>
-							<div class="dice">@service.LastRoll.d2</div><span> + </span>
-							<div class="dice crossed">@service.LastRoll.d3</div>
-						}
-						else if(service.LastRoll.RollType == RollTypes.Roll_Simple)
-						{
-							<div class="dice">@service.LastRoll.d1</div><span> + </span>
-							<div class="dice">@service.LastRoll.d2</div>
-						}
-						else if(service.LastRoll.RollType == RollTypes.Roll_Advantage)
-						{
-							<div class="dice crossed">@service.LastRoll.d1</div> <span> + </span>
-							<div class="dice">@service.LastRoll.d2</div> <span> + </span>
-							<div class="dice">@service.LastRoll.d3</div>
-						}
-
-						<span> + </span>
-						<div class="dice rounded-circle" style="border-style: none; background: #ffffff2e;">
-							@service.LastRoll.bonus
-						</div>
-						=
-					</div>
-					<div class="RollResult">@service.LastRoll.Total</div>
-				</div>
-				
-			</div>
-			
-				<div class="MoveDetails">
-					@if (service.LastRoll.Movement.PreCondition != null && service.LastRoll.Movement.PreCondition.MainText != "")
-					{
-						<DecodedString Value=@service.LastRoll.Movement.PreCondition.MainText />
-					}
-					@if (service.LastRoll.Movement.PreCondition.Options != null && service.LastRoll.Movement.PreCondition.Options.Count > 0)
-					{
-						<ul style="padding-left:20px;">
-							@foreach (var entry in service.LastRoll.Movement.PreCondition.Options)
+						<div>
+							@LastRoll.Roller <span class="small opacity-50">tira </span>
+							@LastRoll.MoveTittle <span class="small opacity-50">con </span> 
+							@if(LastRoll.RollType == RollTypes.Roll_Simple)
 							{
-								<li><DecodedString Value="@entry" /></li>
+								@LastRoll.StatString
 							}
-						</ul>
-					}
-					@if (service.LastRoll.Movement.ConsequencesOn6 != null && service.LastRoll.Movement.ConsequencesOn6.MainText != "")
-					{
-						<div class="d-flex mb-2">
-							<div>
-								<span class="service.LastRoll.MovementRangeMarker">@("<6"):</span>
-							</div/> 
-							<div>
-								@service.LastRoll.Movement.ConsequencesOn6.MainText
-								@if (service.LastRoll.Movement.ConsequencesOn6.Options != null && service.LastRoll.Movement.ConsequencesOn6.Options.Count > 0)
-								{
-									<ul>
-										@foreach (var entry in service.LastRoll.Movement.ConsequencesOn6.Options)
-										{
-											<li><DecodedString Value="@entry" /></li>
-										}
-									</ul>
-								}
-							</div>
+							else if(LastRoll.RollType == RollTypes.Roll_Advantage)
+							{
+								<span>ventaja</span>
+							}
+							else
+							{
+								<span>desventaja</span>
+							}
 						</div>
-					}
-					@if (service.LastRoll.Movement.ConsequencesOn79 != null && service.LastRoll.Movement.ConsequencesOn79.MainText != "")
-					{
-						<div class="d-flex mb-2">
-							<div>
-								<span class="service.LastRoll.MovementRangeMarker">7-9:</span>
-							</div/> 
-							<div>
-								@service.LastRoll.Movement.ConsequencesOn79.MainText
-								@if (service.LastRoll.Movement.ConsequencesOn79.Options != null && service.LastRoll.Movement.ConsequencesOn79.Options.Count > 0)
+					
+						<div class="d-flex gap-2 justify-content-center m-4">
+							<div class="d-flex align-items-center gap-2">
+								@if(LastRoll.RollType == RollTypes.Roll_Disadvantage)
 								{
-									<ul>
-										@foreach (var entry in service.LastRoll.Movement.ConsequencesOn79.Options)
-										{
-											<li><DecodedString Value="@entry" /></li>
-										}
-									</ul>
+									<div class="dice">@LastRoll.d1</div><span> + </span>
+									<div class="dice">@LastRoll.d2</div><span> + </span>
+									<div class="dice crossed">@LastRoll.d3</div>
 								}
-							</div>
-						</div>
-					}
-					@if (service.LastRoll.Movement.ConsequencesOn10 != null && service.LastRoll.Movement.ConsequencesOn10.MainText != "")
-					{
-						<div class="d-flex">
-							<div>
-								<span class="service.LastRoll.MovementRangeMarker">>10:</span>
-							</div/> 
-							<div>
-								@service.LastRoll.Movement.ConsequencesOn10.MainText
-								@if (service.LastRoll.Movement.ConsequencesOn10.Options != null && service.LastRoll.Movement.ConsequencesOn10.Options.Count > 0)
+								else if(LastRoll.RollType == RollTypes.Roll_Simple)
 								{
-									<ul>
-										@foreach (var entry in service.LastRoll.Movement.ConsequencesOn10.Options)
-										{
-											<li><DecodedString Value="@entry" /></li>
-										}
-									</ul>
+									<div class="dice">@LastRoll.d1</div><span> + </span>
+									<div class="dice">@LastRoll.d2</div>
 								}
+								else if(LastRoll.RollType == RollTypes.Roll_Advantage)
+								{
+									<div class="dice crossed">@LastRoll.d1</div> <span> + </span>
+									<div class="dice">@LastRoll.d2</div> <span> + </span>
+									<div class="dice">@LastRoll.d3</div>
+								}
+
+								<span> + </span>
+								<div class="dice rounded-circle" style="border-style: none; background: #ffffff2e;">
+									@LastRoll.bonus
+								</div>
+								=
 							</div>
+							<div class="RollResult">@LastRoll.Total</div>
 						</div>
-					}
-				</div>
-		}
-		else if (service.LastRoll is not null && service.LastRoll.IsRaw == true)
-		{
-			<div @onclick=service.Hide
-				 class="LastRollHeader">
-				<h4 class="text-light">@service.LastRoll.Roller</h4>
-				<i class="bi bi-x-lg text-light fs-2"></i>
-			</div>
-			<div class="LastRollContainer BoxPack d-flex flex-row gap-2 justify-content-center align-items-center" style="background: @DamageBackgroundColor">
-				@if (service.LastRoll.RollType == RollTypes.Roll_Advantage)
-				{
-					<i class="bi bi-emoji-smile" style="font-size:20px; font-size:35px; color: green;"></i>
-				}
-				else if (service.LastRoll.RollType == RollTypes.Roll_Disadvantage)
-				{
-					<i class="bi bi-emoji-frown" style="font-size:20px; font-size:35px; color: black;"></i>
-				}
 				
-				@foreach (var d in service.LastRoll.Dices)
-				{
-					<div class="RawRollerDice">
-						<img src="imgs/DW/@d.Item1.ToImagePath()"/>
-						<div class="RawDollerDiceNumber">@d.Item2</div>
 					</div>
+			
+						<div class="MoveDetails">
+							@if (LastRoll.Movement.PreCondition != null && LastRoll.Movement.PreCondition.MainText != "")
+							{
+								<DecodedString Value=@LastRoll.Movement.PreCondition.MainText />
+							}
+							@if (LastRoll.Movement.PreCondition.Options != null && LastRoll.Movement.PreCondition.Options.Count > 0)
+							{
+								<ul style="padding-left:20px;">
+									@foreach (var entry in LastRoll.Movement.PreCondition.Options)
+									{
+										<li><DecodedString Value="@entry" /></li>
+									}
+								</ul>
+							}
+							@if (LastRoll.Movement.ConsequencesOn6 != null && LastRoll.Movement.ConsequencesOn6.MainText != "")
+							{
+								<div class="d-flex mb-2">
+									<div>
+										<span class="LastRoll.MovementRangeMarker">@("<6"):</span>
+									</div/> 
+									<div>
+										@LastRoll.Movement.ConsequencesOn6.MainText
+										@if (LastRoll.Movement.ConsequencesOn6.Options != null && LastRoll.Movement.ConsequencesOn6.Options.Count > 0)
+										{
+											<ul>
+												@foreach (var entry in LastRoll.Movement.ConsequencesOn6.Options)
+												{
+													<li><DecodedString Value="@entry" /></li>
+												}
+											</ul>
+										}
+									</div>
+								</div>
+							}
+							@if (LastRoll.Movement.ConsequencesOn79 != null && LastRoll.Movement.ConsequencesOn79.MainText != "")
+							{
+								<div class="d-flex mb-2">
+									<div>
+										<span class="LastRoll.MovementRangeMarker">7-9:</span>
+									</div/> 
+									<div>
+										@LastRoll.Movement.ConsequencesOn79.MainText
+										@if (LastRoll.Movement.ConsequencesOn79.Options != null && LastRoll.Movement.ConsequencesOn79.Options.Count > 0)
+										{
+											<ul>
+												@foreach (var entry in LastRoll.Movement.ConsequencesOn79.Options)
+												{
+													<li><DecodedString Value="@entry" /></li>
+												}
+											</ul>
+										}
+									</div>
+								</div>
+							}
+							@if (LastRoll.Movement.ConsequencesOn10 != null && LastRoll.Movement.ConsequencesOn10.MainText != "")
+							{
+								<div class="d-flex">
+									<div>
+										<span class="LastRoll.MovementRangeMarker">>10:</span>
+									</div/> 
+									<div>
+										@LastRoll.Movement.ConsequencesOn10.MainText
+										@if (LastRoll.Movement.ConsequencesOn10.Options != null && LastRoll.Movement.ConsequencesOn10.Options.Count > 0)
+										{
+											<ul>
+												@foreach (var entry in LastRoll.Movement.ConsequencesOn10.Options)
+												{
+													<li><DecodedString Value="@entry" /></li>
+												}
+											</ul>
+										}
+									</div>
+								</div>
+							}
+						</div>
 				}
+				else if (LastRoll is not null && LastRoll.IsRaw == true)
+				{
+					<div @onclick=Hide
+						 class="LastRollHeader">
+						<h4 class="text-light">@LastRoll.Roller</h4>
+						<i class="bi bi-x-lg text-light fs-2"></i>
+					</div>
+					<div class="LastRollContainer BoxPack d-flex flex-row gap-2 justify-content-center align-items-center" style="background: @GetDamageBackgroundColor(LastRoll)">
+						@if (LastRoll.RollType == RollTypes.Roll_Advantage)
+						{
+							<i class="bi bi-emoji-smile" style="font-size:20px; font-size:35px; color: green;"></i>
+						}
+						else if (LastRoll.RollType == RollTypes.Roll_Disadvantage)
+						{
+							<i class="bi bi-emoji-frown" style="font-size:20px; font-size:35px; color: black;"></i>
+						}
+				
+						@foreach (var d in LastRoll.Dices)
+						{
+							<div class="RawRollerDice">
+								<img src="imgs/DW/@d.Item1.ToImagePath()"/>
+								<div class="RawDollerDiceNumber">@d.Item2</div>
+							</div>
+						}
 
 
-				@if (service.LastRoll.ArmorPiercing != 0)
-				{
-					<div style="position:relative; width:50px;">
-						<i class="bi bi-shield" style="position: absolute; top:-40px; left:0; font-size:45px; color: red;"></i>
-						<div style="position: absolute; top:-26px; font-size:24px; left:10px; color: red;">-@service.LastRoll.ArmorPiercing</div>
+						@if (LastRoll.ArmorPiercing != 0)
+						{
+							<div style="position:relative; width:50px;">
+								<i class="bi bi-shield" style="position: absolute; top:-40px; left:0; font-size:45px; color: red;"></i>
+								<div style="position: absolute; top:-26px; font-size:24px; left:10px; color: red;">-@LastRoll.ArmorPiercing</div>
+							</div>
+						}
+						@if (LastRoll.IgnoresArmor)
+						{
+							<i class="bi bi-shield-slash-fill" style=" font-size:45px; color: red;"></i>
+						}
+				
 					</div>
 				}
-				@if (service.LastRoll.IgnoresArmor)
-				{
-					<i class="bi bi-shield-slash-fill" style=" font-size:45px; color: red;"></i>
-				}
-				
+				else
+			{
+				<div>Aún nadie ha tirado nada</div>
+			}
 			</div>
-		}
-		else
-		{
-			<div>Aún nadie ha tirado nada</div>
 		}
 	</div>
 }
 
 @code {
 	private AvailableGames Game  = AvailableGames.NotSet;
+	private bool IsVisible = false;
 	private string FloatinCoverClass
 	{
 		get {
@@ -282,61 +288,57 @@
 	{
 		service.UpdateNeeded += (o, e) => { Update(); };
 		service.SetGame += (o, game) => { Game = game; Update(); };
+		service.ShowOverlay += (o, e) => { InvokeAsync(() => {Show(); }); };
 	}
 
 	private void Update() => InvokeAsync(() => { StateHasChanged(); });
 
-	private string DamageBackgroundColor
+	private string GetDamageBackgroundColor(IRollReport LastRoll)
 	{
-		get
-		{
-			if (service.LastRoll.RollType == RollTypes.Roll_Simple || service.LastRoll.RollType == RollTypes.Roll_SimplePlus1d6  )
-				return "white";
-			if (service.LastRoll.RollType == RollTypes.Roll_Disadvantage || service.LastRoll.RollType == RollTypes.Roll_DisadvantagePlus1d6)
-				return "#e9acac";
-			if (service.LastRoll.RollType == RollTypes.Roll_Advantage || service.LastRoll.RollType == RollTypes.Roll_AdvantagePlus1d6)
-				return "#dce9dc";
-			else
-				return "white";
-		}
+
+		if (LastRoll.RollType == RollTypes.Roll_Simple || LastRoll.RollType == RollTypes.Roll_SimplePlus1d6  )
+			return "white";
+		if (LastRoll.RollType == RollTypes.Roll_Disadvantage || LastRoll.RollType == RollTypes.Roll_DisadvantagePlus1d6)
+			return "#e9acac";
+		if (LastRoll.RollType == RollTypes.Roll_Advantage || LastRoll.RollType == RollTypes.Roll_AdvantagePlus1d6)
+			return "#dce9dc";
+		else
+			return "white";
 	}
 
-	private string LastRollBoxColor
+	private string GetBorderTag(IRollReport roll)
 	{
-		get
-		{
-			if (service.LastRoll.Total >= 10) return "TotalSuccess";
-			else if (service.LastRoll.Total >= 7) return "HalfSuccess";
-			else return "FailedRoll";
-		}
+		if (roll.Total >= 10) return "border-success";
+		if (roll.Total >= 7) return "border-warning";
+		else return "border-danger";
 	}
 
-	public class LastRollViewerService
+	private string GetBackgroundTag(IRollReport roll)
 	{
-		public event EventHandler UpdateNeeded;
-		public event EventHandler<AvailableGames> SetGame;
-		public bool IsVisible = false;
-		public IRollReport LastRoll { get; set; }
-		public IMove? Movement = null;
-
-		public void SetGameMode(AvailableGames Game) => SetGame?.Invoke(this, Game);
-
-		public void Show()
-		{
-			if (LastRoll is not null)
-				Show(LastRoll);
+		if (roll.Total >= 10) return "#00230c";
+		if (roll.Total >= 7) return "#3b1f02";
+		else return "#330202";
 	}
 
-		public void Show(IRollReport roll)
+	private string GetLastRollBoxColor(IRollReport LastRoll)
+	{
+		if (LastRoll.Total >= 10) return "TotalSuccess";
+		else if (LastRoll.Total >= 7) return "HalfSuccess";
+		else return "FailedRoll";
+	}
+
+	public void Show()
+	{
+		InvokeAsync(() =>
 		{
-			LastRoll = roll;
-			Movement = roll.Movement;
 			IsVisible = true;
-			UpdateNeeded?.Invoke(this, EventArgs.Empty);
-		} 
-		public void Hide(){
-			IsVisible = false;
-			UpdateNeeded?.Invoke(this, EventArgs.Empty);
-		}
+			StateHasChanged();
+		});		
+	}
+
+	public void Hide()
+	{
+		IsVisible = false;
+		StateHasChanged();
 	}
 }

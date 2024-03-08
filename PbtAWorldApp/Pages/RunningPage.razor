@@ -81,6 +81,7 @@ else if(SelectedGame == AvailableGames.US)
 			Meta.SelectedSeason.Players.Add(DWPlayer);
 			Meta.SelectedPlayer = DWPlayer;
 			DWGame.SessionID = Meta.SelectedSeason.CampaignGuid;
+			CharacterSelectorService.Campaign = DWGame.People;
 		}
 		else if(localGameId == AvailableGames.US)
 		{

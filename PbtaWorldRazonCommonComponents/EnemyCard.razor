@@ -1,8 +1,11 @@
-﻿@using PbtALib.ifaces
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using PbtALib.ifaces
 @inject VTTService VTT
 
 <div class="MonsterCard">
-	<div class="d-flex flex-column">
+	@if (!IsEditingMoves)
+	{
+		<div class="d-flex flex-column">
 		@if (FullText)
 		{
 			<div class=" d-flex flex-row flex-wrap gap-1">
@@ -15,108 +18,296 @@
 		else
 		{
 			<div class=" d-flex flex-row flex-wrap gap-1">
-			<span class="MonsterCardTitle">@monster.Name</span>
-			<TagVisualizer ID="monster.Size" Color="TagVisualizer.TagColors.Red" Width="80" />
-			<TagVisualizer ID="monster.Organization" Color=TagVisualizer.TagColors.Green Width="80" />
-			@foreach (var t in monster.Tags)
-			{
-				<TagVisualizer ID="t" />
-			}
-		</div>
-			<div class="d-flex flex-column flex-grow-1">
-			<div class="Definition d-flex flex-column h-100 flex-grow-1 @(FullText?"Full":"")">
-				@foreach (var m in monster.Moves)
+				<span class="MonsterCardTitle">@monster.Name</span>
+				<TagVisualizer ID="monster.Size" Color="TagVisualizer.TagColors.Red" Width="80" />
+				<TagVisualizer ID="monster.Organization" Color=TagVisualizer.TagColors.Green Width="80" />
+				@foreach (var t in monster.Tags)
 				{
-					<div class="p-1 m-1 border border-secondary rounded">@m.Tittle</div>
+					<TagVisualizer ID="t" />
 				}
 			</div>
-			<div style="position:relative;">
-				<div class="d-flex">
-					<strong style="width: 70px;">Instinto:</strong>
-					<div>@monster.Instinct</div>
+			<div class="d-flex flex-column flex-grow-1">
+				<div class="Definition d-flex flex-column h-100 flex-grow-1 @(FullText?"Full":"")">
+					@foreach (var m in monster.Moves)
+					{
+						<div class="p-1 m-1 border border-secondary rounded">@m.Tittle</div>
+					}
+					<div style="cursor:pointer; padding:5px;" @onclick=ShowEditMovesPanel>
+							<i class="bi bi-pencil"></i>
+					</div>
 				</div>
-
-				@if(monster.Special is not null && monster.Special.Count != 0)
-				{
+				<div style="position:relative;">
 					<div class="d-flex">
-						<strong style="width: 70px;">Especial</strong>
-						<div class="d-flex flex-column">
-							@foreach (var s in monster.Special)
-							{
-								<div class="d-flex align-items-center">
-									<div style="border-left:1px solid black; padding-left:5px; width:2px; height:10px;"></div>
-									@s
-								</div>
-							}
+						<strong style="width: 70px;">Instinto:</strong>
+						<div>@monster.Instinct</div>
+					</div>
+
+					@if(monster.Special is not null && monster.Special.Count != 0)
+					{
+						<div class="d-flex">
+							<strong style="width: 70px;">Especial</strong>
+							<div class="d-flex flex-column">
+								@foreach (var s in monster.Special)
+								{
+									<div class="d-flex align-items-center">
+										<div style="border-left:1px solid black; padding-left:5px; width:2px; height:10px;"></div>
+										@s
+									</div>
+								}
+							</div>
 						</div>
+					}
+				</div>
+			</div>
+			}
+		
+		</div>
+		<div class="imgHolder" style="background-image:url(@(monster.ImageURL)); ">
+			<div class="HPSpace">@monster.MaxHP</div>
+			<div class="ArmorSpace">
+				<div class="ArmorIcon">
+					<i class="bi bi-shield-fill"></i>
+				</div>
+				<div class="ArmorValue">
+					@monster.Armor
+				</div>
+			</div>
+			<div style="position: absolute; top:0px; left:10px; font-size:25px; opacity:0.5; cursor:pointer;"
+				@onclick=ShowDetails>
+				<i class="bi @(FullText?"bi-x-circle":"bi-info-circle")"></i>
+			</div>
+			<div style="position: absolute; top:32px; left:10px; font-size:25px; opacity:0.5; cursor:pointer;"
+				 @onclick=@(()=>{Game.ShowImageToAllPlayers(monster.ImageURL);})>
+				<i class="bi bi-send text-primary"></i>
+			</div>
+			<div style="position: absolute; bottom:0px; right:10px; font-size:35px; opacity:1; cursor:pointer;"
+				 @onclick=ToggleMonsterDefinition>
+				@if (Game.MonsterDefinitionsInCurrentScene.Contains(monster))
+				{
+					<i class="bi bi-dash-circle-fill" style="color:#ba4242;"></i>
+				}
+				else
+				{
+					<i class="bi bi-plus-circle-fill" style="color:#42ba63;"></i>
+				}			
+			</div>
+			<div class="AttackSpace d-flex align-items-center" @onclick=monster.RollDamage>
+				@if (monster.Attack is not null && monster.Attack.RollType == RollTypes.Roll_Advantage)
+				{
+					<div style="position:relative; width:30px;">
+						<i class="bi bi-emoji-smile" style="position: absolute; top:-20px; left:0; font-size:25px; color: green;"></i>
+					</div>
+				}
+				else if (monster.Attack is not null && monster.Attack.RollType == RollTypes.Roll_Disadvantage)
+				{
+					<div style="position:relative; width:30px;">
+						<i class="bi bi-emoji-frown" style="position: absolute; top:-20px; left:0; font-size:25px; color: black;"></i>
+					</div>
+				}
+				@monster.Attack?.Dices[0].ToString()
+				@if (monster.Attack is not null && monster.Attack?.Piercing != 0)
+				{
+					<div style="position:relative; width:20px;">
+						<i class="bi bi-shield" style="position: absolute; top:-20px; left:0; font-size:25px; color: red;"></i>
+						<div style="position: absolute; top:-13px; font-size:14px; left:5px; color: red;">-@monster.Attack.Piercing</div>
+					</div>
+				}
+				@if (monster.Attack is not null && monster.Attack.IgnoresArmor)
+				{
+					<div style="position:relative; width:20px;">
+						<i class="bi bi-shield-slash-fill" style="position: absolute; top:-20px; left:0; font-size:25px; color: red;"></i>
 					</div>
 				}
 			</div>
 		</div>
-		}
+	}
+	else
+	{
+		<div class=" d-flex flex-column flex-wrap gap-1">
+			<EditForm Model="this">
+				<div class="d-flex justify-content-between">
+					<InputText class="form-control flex-grow-1" style="height: 34px;" @bind-Value=monster.Name />
+					<div class="GreenButton" @onclick=CloseEditingMovesPanel>
+						<i class="bi bi-check-lg fs-2" style="line-height:9px;"></i>
+					</div>
+				</div>
+
+				<div class="d-flex gap-2">
+					<span>Size:</span>
+					<InputSelect class="form-select" @bind-Value="monster.Size" style="width: 80px;">
+						@foreach (var d in new List<BaseTextBook.TagIDs> { BaseTextBook.TagIDs.Pequeño, BaseTextBook.TagIDs.Grande, BaseTextBook.TagIDs.Enorme})
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<span>Organization:</span>
+					<InputSelect class="form-select" @bind-Value="monster.Organization" style="width: 80px;">
+						@foreach (var d in new List<BaseTextBook.TagIDs> { BaseTextBook.TagIDs.Solitario, BaseTextBook.TagIDs.batallon, BaseTextBook.TagIDs.Grupo, BaseTextBook.TagIDs.Horda, BaseTextBook.TagIDs.plaga })
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+				</div>
+				<div class="d-flex gap-2">
+					<span>Tags:</span>
+					<InputSelect class="form-select" @bind-Value="Tag1" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<InputSelect class="form-select" @bind-Value="Tag2" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<InputSelect class="form-select" @bind-Value="Tag3" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<InputSelect class="form-select" @bind-Value="Tag4" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+					<InputSelect class="form-select" @bind-Value="Tag5" style="width: 80px;">
+						@foreach (var d in Enum.GetValues(typeof(BaseTextBook.TagIDs)))
+						{
+							<option value="@d">@d</option>
+						}
+					</InputSelect>
+				</div>
+
+				<div>
+					@foreach (var m in monster.Moves)
+					{
+						<div class="p-1 m-1 border border-secondary rounded d-flex justify-content-between">
+							@m.Tittle
+							<i class="bi bi-trash3-fill" style="color:darkred;" @onclick=@(()=>{monster.DeleteMove(m);})></i>
+						</div>
+					}
+					<div class="d-flex gap-1 mt-3">
+						<span style="width:110px;">+Move</span>
+						<InputText class="form-control flex-grow-1" style="height: 34px;" @bind-Value=CurrentlyEditingMasterMove />
+						<i class="bi bi-plus-square " style="    color: darkgreen; cursor: pointer; font-size: 32px; line-height: 34px;" 
+							@onclick=@(()=>{monster.AddMove(CurrentlyEditingMasterMove); CurrentlyEditingMasterMove = "";})></i>
+					</div>
+					<div class="d-flex gap-1 align-items-center">
+						<span style="width:50px; text-align:right;">Bonus</span>
+						<InputNumber class="form-control flex-grow-1" style="height: 34px; width:50px;" @bind-Value=monster.Attacks[0].Bonus />
+						<span style="width:69px; text-align:right;">Piercing</span>
+						<InputNumber class="form-control flex-grow-1" style="height: 34px; width:50px;" @bind-Value=monster.Attacks[0].Piercing />
+						<span style="width:50px; text-align:right;">Ignore arm.</span>
+						<InputCheckbox class="form-checkbox" style="height: 34px; width:50px;" @bind-Value=monster.Attacks[0].IgnoresArmor />
+						<InputSelect class="form-select" @bind-Value="ReferenceDiceType" style="width: 80px;">
+							@foreach (var d in Enum.GetValues(typeof(DiceTypes)))
+							{
+								<option value="@d">@d</option>
+							}
+						</InputSelect>
+						<InputSelect class="form-select" @bind-Value="ReferenceRollType" style="width: 80px;">
+							@foreach (var d in Enum.GetValues(typeof(RollTypes)))
+							{
+								<option value="@d">@d</option>
+							}
+						</InputSelect>
+					</div>
+					<div class="d-flex gap-1 align-items-center">
+						<span style="width:50px; text-align:right;">Max HP</span>
+						<InputNumber class="form-control flex-grow-1" style="height: 34px; width:50px;" @bind-Value=monster.MaxHP />
+						<span style="width:69px; text-align:right;">Armor</span>
+						<InputNumber class="form-control flex-grow-1" style="height: 34px; width:50px;" @bind-Value=monster.Armor />
+					</div>
+					<div class="d-flex gap-2 align-items-end">
+						<div class="imgHolder" style="background-image:url(@monster.ImageURL); min-width:200px; min-height:200px;" />
+						<InputFile OnChange="StoreMonsterImage" style="flex:1"></InputFile>
+						<i class="bi bi-trash3 " style="    color: darkred; cursor: pointer; font-size: 32px; line-height: 34px;"
+						   @onclick=RemoveThisMonster></i>
+					</div>
+					
+				</div>
+			</EditForm>
+		</div>
+
 		
-	</div>
-	<div class="imgHolder" style="background-image:url(_content/DungeonWorld/imgs/DW/Monsters/Images/@(monster.ID).png); ">
-		<div class="HPSpace">@monster.MaxHP</div>
-		<div class="ArmorSpace">
-			<div class="ArmorIcon">
-				<i class="bi bi-shield-fill"></i>
-            </div>
-			<div class="ArmorValue">
-				@monster.Armor
-			</div>
-		</div>
-		<div style="position: absolute; top:0px; left:10px; font-size:25px; opacity:0.5; cursor:pointer;"
-			@onclick=ShowDetails>
-			<i class="bi @(FullText?"bi-x-circle":"bi-info-circle")"></i>
-		</div>
-		<div style="position: absolute; bottom:0px; right:10px; font-size:35px; opacity:1; cursor:pointer;"
-			 @onclick=ToggleMonsterDefinition>
-			@if (Game.MonsterDefinitionsInCurrentScene.Contains(monster))
-			{
-				<i class="bi bi-dash-circle-fill" style="color:#ba4242;"></i>
-			}
-			else
-			{
-				<i class="bi bi-plus-circle-fill" style="color:#42ba63;"></i>
-			}			
-		</div>
-		<div class="AttackSpace d-flex align-items-center" @onclick=monster.RollDamage>
-			@if (monster.Attack is not null && monster.Attack.RollType == RollTypes.Roll_Advantage)
-			{
-				<div style="position:relative; width:30px;">
-					<i class="bi bi-emoji-smile" style="position: absolute; top:-20px; left:0; font-size:25px; color: green;"></i>
-				</div>
-			}
-			else if (monster.Attack is not null && monster.Attack.RollType == RollTypes.Roll_Disadvantage)
-			{
-				<div style="position:relative; width:30px;">
-					<i class="bi bi-emoji-frown" style="position: absolute; top:-20px; left:0; font-size:25px; color: black;"></i>
-				</div>
-			}
-			@monster.Attack?.Dices[0].ToString()
-			@if (monster.Attack is not null && monster.Attack?.Piercing != 0)
-			{
-				<div style="position:relative; width:20px;">
-					<i class="bi bi-shield" style="position: absolute; top:-20px; left:0; font-size:25px; color: red;"></i>
-					<div style="position: absolute; top:-13px; font-size:14px; left:5px; color: red;">-@monster.Attack.Piercing</div>
-				</div>
-			}
-			@if (monster.Attack is not null && monster.Attack.IgnoresArmor)
-			{
-				<div style="position:relative; width:20px;">
-					<i class="bi bi-shield-slash-fill" style="position: absolute; top:-20px; left:0; font-size:25px; color: red;"></i>
-				</div>
-			}
-		</div>
-	</div>
+	}
+	
 </div>
 
 @code {
 	[Parameter] public  Monster monster { get; set; } = new();
 	[Parameter] public IGameController? Game { get; set; }
 
+	BaseTextBook.TagIDs Tag1 = BaseTextBook.TagIDs.NotSet;
+	BaseTextBook.TagIDs Tag2 = BaseTextBook.TagIDs.NotSet;
+	BaseTextBook.TagIDs Tag3 = BaseTextBook.TagIDs.NotSet;
+	BaseTextBook.TagIDs Tag4 = BaseTextBook.TagIDs.NotSet;
+	BaseTextBook.TagIDs Tag5 = BaseTextBook.TagIDs.NotSet;
+
+	DiceTypes ReferenceDiceType
+	{
+		get
+		{
+			return monster.Attacks[0].Dices[0];
+		}
+		set
+		{
+			monster.Attacks[0].Dices[0] = value;
+		}
+	} 
+	RollTypes ReferenceRollType
+	{
+		get
+		{
+			return monster.Attacks[0].RollType;
+		}
+		set
+		{
+			monster.Attacks[0].RollType = value;
+		}
+	}
+
+	public async Task StoreMonsterImage(InputFileChangeEventArgs e)
+	{
+		try
+		{
+			string newFileName = monster.ID + System.IO.Path.GetExtension(e.File.Name);
+			string newFilePath = $"./wwwroot/DW/Monsters/Images/{newFileName}";
+
+			await using FileStream fs = new(newFilePath, FileMode.Create);
+			await e.GetMultipleFiles(1)[0].OpenReadStream().CopyToAsync(fs);
+
+			StateHasChanged();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+		}
+	}
+
 	bool FullText = false;
+	bool IsEditingMoves = false;
+	string CurrentlyEditingMasterMove = "";
+
+	void ShowEditMovesPanel()
+	{
+		IsEditingMoves = true;
+	}
+	void CloseEditingMovesPanel()
+	{
+		monster.Tags.Clear();
+		if (Tag1 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag1);
+		if (Tag2 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag2);
+		if (Tag3 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag3);
+		if (Tag4 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag4);
+		if (Tag5 != BaseTextBook.TagIDs.NotSet) monster.Tags.Add(Tag5);
+
+		IsEditingMoves = false;
+	}
 
 	void ToggleMonsterDefinition()
 	{
@@ -129,13 +320,17 @@
 
 			Game.Update();
 		}
-		
+
 		StateHasChanged();
 	}
-
 
 	void ShowDetails()
 	{
 		FullText = !FullText;
+	}
+
+	void RemoveThisMonster()
+	{
+		Game.TextBook.Monsters.RemoveMonster(monster);
 	}
 }

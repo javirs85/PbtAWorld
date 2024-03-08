@@ -20,6 +20,10 @@ else if(_ShowingImagesManager)
 {
 	<ImagesManager GameId="@Game.SessionID" IsMaster=true CloseRequest="@(()=>{_ShowingImagesManager = false;})"/>
 }
+else if (_ShowingEnemySelectionTool)
+{
+	<MonsterSelector Game="Game" CloseClicked="@(()=>{_ShowingEnemySelectionTool = false;})"/>
+}
 else
 {
 	<div class="MasterMain" style="background: #272626;">
@@ -29,11 +33,11 @@ else
 				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})>Map</button>
 				<button class="btn btn-primary" @onclick=@(()=>{ _ShowingImagesManager =true;})>Images</button>
 				<button class="btn btn-primary" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></button>
-				<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d4, RollTypes.Roll_Simple);})/>
-				<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d6, RollTypes.Roll_Simple);}) />
-				<img src="imgs/DW/d8.svg" alt="d8" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d8, RollTypes.Roll_Simple);}) />
-				<img src="imgs/DW/d10.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d10, RollTypes.Roll_Simple);}) />
-				<img src="imgs/DW/d12.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@(()=>{Game.RollDamage(MasterPlayer.ID, DiceTypes.d12, RollTypes.Roll_Simple);}) />
+				<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d4);})/>
+				<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d6);}) />
+				<img src="imgs/DW/d8.svg" alt="d8" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d8);}) />
+				<img src="imgs/DW/d10.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d10);}) />
+				<img src="imgs/DW/d12.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d12);}) />
 			</div>
 			<div class="PlayersAreaHeader">
 				@foreach (var player in Meta.SelectedSeason.Players)
@@ -89,7 +93,7 @@ else
 				else
 				{
 					<div class="d-flex flex-column" style="overflow:auto; ">
-						<button class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#SelectEnemies">Elegir enemigo</button>
+						<button class="btn btn-primary m-1" data-bs-toggle="modal" @onclick=@(()=>{_ShowingEnemySelectionTool = true;})>Elegir enemigo</button>
 						@foreach (var enemy in Game.MonsterDefinitionsInCurrentScene)
 						{
 							<EnemyCard monster="enemy" Game="Game" />
@@ -131,93 +135,18 @@ else
 
 
 
-
-
-
-
-
-	<div class="modal fade" id="SelectEnemies" tabindex="-1">
-		<div class="modal-dialog modal-fullscreen" id="SelectEnemies">
-			<div class="modal-content">
-				<div class="modal-body">
-					<div class="MonsterSelectionHeader d-flex justify-content-between">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=@(()=>{StateHasChanged();})>Close</button>
-						<EditForm Model="this">
-							<div class="d-flex gap-1">
-								<label>Buscar:</label>
-								<input class="form-field" @bind-value=SearchString @bind-value:event="oninput"/>
-								<i class="bi bi-x-lg text-danger" style="cursor:pointer" @onclick=@(()=>{SearchString = "";})></i>
-							</div>
-						</EditForm>
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=@(()=>{StateHasChanged();})>Close</button>
-					</div>
-					@if (string.IsNullOrEmpty(SearchString) || string.IsNullOrWhiteSpace(SearchString) || SearchString == "")
-					{
-						<div class="MonsterLocationSelection accordion" id="MonsterLocationSelector">
-							@foreach (var location in Game.TextBook.Monsters.AllMonsterPacks)
-							{
-								<div class="accordion-item">
-									<h2 class="accordion-header">
-										<button class="accordion-button collapsed"
-												style="border-color: none!important; outline:none!important; box-shadow:none!important;"
-												type="button" data-bs-toggle="collapse"
-												data-bs-target="#@FromNameToID(location.Name)">
-											@location.Name
-										</button>
-									</h2>
-									<div id="@FromNameToID(location.Name)" class="accordion-collapse collapse" data-bs-parent="#MonsterLocationSelector">
-										<div class="accordion-body">
-											<div class="d-flex flex-wrap">
-												@foreach (var m in location.Monsters)
-												{
-													<EnemyCard monster="m" Game="Game" />
-												}
-											</div>
-										</div>
-									</div>
-								</div>
-							}
-
-						</div>
-					}
-					else
-					{
-						<div class="SearchResults d-flex flex-wrap">
-							@foreach (var m in FilteredMonsterList)
-							{
-								<EnemyCard monster="m" Game="Game" />
-							}
-						</div>
-					}
-				</div>
-			</div>
-		</div>
-	</div>
 }
 
 @code {
 	bool _ShowingVTT = false;
 	bool _showingSquareMap = false;
 	bool _ShowingImagesManager = false;
+	bool _ShowingEnemySelectionTool = false;
 	bool SelectingEnemies = false;
 	Monster? SelectedEnemy = null;
 	private DWCharacter? SelectedCharacter = null;
 
 	[Parameter] public DWCharacter MasterPlayer { get; set; } = new();
-
-	bool IsSearchActive = false;
-	string SearchString = "";
-	List<Monster> FilteredMonsterList
-	{
-		get
-		{
-			return Game.TextBook.Monsters.AllMonsterPacks
-								.SelectMany(mp => mp.Monsters)
-								.Where(x => x.Name.ToLower().Contains(SearchString.ToLower()) || 
-								x.Definition.ToLower().Contains(SearchString.ToLower()))
-								.ToList();
-		}
-	}
 
 
 	List<IMove> ClassMovements = new();
@@ -251,6 +180,9 @@ else
 
 		Game.UpdateUI -= Update;
 		Game.UpdateUI += Update;
+
+		MonsterManual.LoadedFinished -= Update;
+		MonsterManual.LoadedFinished += Update;
 
 		Game.AddPlayer(MasterPlayer);
 	}
@@ -293,5 +225,24 @@ else
 		}
 	}
 
-	string FromNameToID(string s) => String.Concat(s.Where(c => !Char.IsWhiteSpace(c)));
+	private List<DiceTypes> clicksDices = new();
+	private Timer clickTimer;
+
+	void RequestDamage(MouseEventArgs e, DiceTypes dice)
+	{
+		int numClicks = (int)e.Detail;
+
+		if(numClicks == 1)
+		{
+			clickTimer = new Timer(MasterDamageClickTimeOut);
+			clicksDices = new();
+		}
+
+		clicksDices.Add(dice);
+		clickTimer.Change(500, Timeout.Infinite);
+	}
+	private void MasterDamageClickTimeOut(object? state)
+	{
+		Game.RollRaw(MasterPlayer.ID, clicksDices);
+	}
 }

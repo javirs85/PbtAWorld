@@ -332,3 +332,14 @@
 
         .PropTools.Token button {
         }
+
+.FullPageMonsterImageHolder{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:transparent;
+    pointer-events:none;
+}
+.FullPageMonsterImage {
+    pointer-events: none;
+}
