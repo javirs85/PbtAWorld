@@ -92,7 +92,7 @@ public class WhiteBoardService
 
 	public List<string> GetMaps()
 	{
-		var rest =	from file in Directory.GetFiles(RootBattleMapsURL).Where(x=>x.Contains(".png"))
+		var rest =	from file in Directory.GetFiles(RootBattleMapsURL).Where(x=> x.Contains(".png") || x.Contains(".jpg"))
 					select file.Substring(file.LastIndexOf("/")+1);
 		return rest.ToList();
 	}
