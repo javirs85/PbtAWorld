@@ -6,11 +6,11 @@
 
 @if (_ShowingMonsterImage)
 {
-<div class="FullPageMonsterImageHolder">
-		<div class="FullPageMonsterImage" style="position:absolute; top:@(hoveredY+"px"); left:@(hoveredX+"px");">
-		<img src="@HoveredMonster.ImageURL" />
+	<div class="FullPageMonsterImageHolder">
+			<div class="FullPageMonsterImage" style="position:absolute; top:@(hoveredY+"px"); left:@(hoveredX+"px");">
+			<img src="@HoveredMonster.ImageURL" />
+		</div>
 	</div>
-</div>
 }
 
 @if (_ShowingMonsterSelector)
@@ -383,7 +383,7 @@ else
 
 					}
 				}
-				viewMask = Calculator.GetVisibilityArea((int)e.OffsetX, (int)e.OffsetY, service.Walls);
+				viewMask = Calculator.GetVisibilityArea((int)e.OffsetX+30, (int)e.OffsetY+30, service.Walls);
 				service.MoveToken(MyToken, e.OffsetX, e.OffsetY);
 			}
 			else if (e.Button == 2)
