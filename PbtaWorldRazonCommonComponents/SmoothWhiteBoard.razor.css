@@ -194,6 +194,10 @@
     background: #51750d;
 }
 
+.DW_Master {
+    background: #ff0000;
+}
+
 
 .VTTToken {
     position: absolute;
@@ -298,12 +302,12 @@
     overflow: auto;
 }
 
-.Selected {
+.MonsterCardSelected {
     opacity: 1;
-    /*position: relative;*/
+    position: relative;
 }
 
-.NotSelected {
+.MonsterCardNotSelected {
     opacity: 0.5;
     position: relative;
 }
@@ -339,7 +343,19 @@
     height:100%;
     background:transparent;
     pointer-events:none;
+    z-index:22;
 }
 .FullPageMonsterImage {
     pointer-events: none;
+}
+
+.ToolsReminder {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    gap: 5px;
+    z-index: 22;
+    background: transparent;
+    padding: 10px;
 }

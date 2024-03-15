@@ -115,6 +115,13 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
             {
                 LastRoll.Dices.Add(new Tuple<DiceTypes, int>(dice, random.Next(1, dice.MaxValue() + 1)));
             }
+
+			if(m.Attack.RollType == RollTypes.Roll_Disadvantage || m.Attack.RollType == RollTypes.Roll_Advantage)
+			{
+				if(m.Attack.Dices.Count == 1) {
+					LastRoll.Dices.Add(new Tuple<DiceTypes, int>(m.Attack.Dices[0], random.Next(1, m.Attack.Dices[0].MaxValue() + 1)));
+				}
+			}
         }
 
 		lastRollViewer.Show(LastRoll);

@@ -4,15 +4,6 @@
 @using static WhiteBoard.WhiteBoardService
 @inject WhiteBoardService service
 
-@if (_ShowingMonsterImage)
-{
-	<div class="FullPageMonsterImageHolder">
-			<div class="FullPageMonsterImage" style="position:absolute; top:@(hoveredY+"px"); left:@(hoveredX+"px");">
-			<img src="@HoveredMonster.ImageURL" />
-		</div>
-	</div>
-}
-
 @if (_ShowingMonsterSelector)
 {
 	<MonsterSelector Game="Game" CloseClicked="@(()=>{_ShowingMonsterSelector = false;})"/>
@@ -25,7 +16,7 @@ else
 		{
 			<button class="btn btn-primary" @onclick=StartWall>StartWall</button>
 			<button class="btn btn-primary" @onclick=service.Clear>Clear all</button>
-			<button class="btn btn-primary" @onclick=@(()=>{IsTestingAttentionMarkers = !IsTestingAttentionMarkers;})>Markers</button>
+			<button class="btn btn-primary" @onclick=@(()=>{UsingAttentionMarker = !UsingAttentionMarker;})>Attention</button>
 			@if(DrawModeOn)
 			{
 				<div class="p-2" style="@(isDrawing?"background: red; color: white;":"background:green; color:white;")">IsDrawing</div>
@@ -34,7 +25,7 @@ else
 			<div class="p-2" style="@(IsTestingVisibility?"background: black; color: white;":"")">IsTestingVisibility</div>
 			<div class="p-2" style="@(IsMaster?"background: green; color: white;":"")">IsMaster</div>
 			<div class="p-2" style="@(IsCreatingAWall?"background: green; color: white;":"background: transparent;")">Current: @CurrentDrawing.Points.Count</div>
-			<div class="p-2" style="@(IsTestingAttentionMarkers?"background: green; color: white;":"")">Attention</div>
+			<div class="p-2" style="@(UsingAttentionMarker?"background: green; color: white;":"")">Attention</div>
 			<div class="p-2">l: @service.GetLines().Count w:@service.Walls.Count</div>
 			<button class="btn btn-danger" @onclick=@(()=>{IsDeleting = !IsDeleting;})>Delete</button>
 			<button class="btn btn-primary" @onclick=service.SaveToJson>SaveToJson</button>
@@ -87,7 +78,7 @@ else
 				{
 					@foreach (var md in Game.MonsterDefinitionsInCurrentScene)
 					{
-						<div class="@(SelectedTokens.Any() &&  md.ID == SelectedTokens[0]?.Monster?.ID?"Selected":"NotSelected")">
+						<div class="@(SelectedTokens.Any() &&  md.ID == SelectedTokens[0]?.Monster?.ID?"MonsterCardSelected":"MonsterCardNotSelected")">
 							<div class="AddToFightButton" @onclick=@(()=>{AddToFight(md);})><i class="bi bi-gitlab text-danger"></i></div>
 							<EnemyCard Game="Game" monster="md" />
 						</div>
@@ -97,8 +88,7 @@ else
 		}
 	</div>
 
-	<div class="WhiteCanvas"
-	 
+	<div class="WhiteCanvas"	 
 		style="@($"top: {@GlobalTop}px; left: {GlobalLeft}px;") width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
 
 		<div class="BackgroundMap" @onmousedown=MouseDown @onmouseup=MouseUp
@@ -243,6 +233,27 @@ else
 			}
 		</div>
 
+		@if(!IsMaster)
+		{
+			@if (_ShowingMonsterImage)
+			{
+				<div class="FullPageMonsterImageHolder">
+					<div class="FullPageMonsterImage" style="position:absolute; top:@(hoveredY+"px"); left:@(hoveredX+"px");">
+						<img src="@HoveredMonster.ImageURL" />
+					</div>
+				</div>
+			}
+
+			<div class="ToolsReminder">
+				<div style="border:1px solid red;
+						padding:10px; border-radius:7px;
+						@(_ShouldShowImageOnHover?"background:red; color:black;":"background:black;color:red; ")">
+					[I] mages
+				</div>
+			</div>
+		}
+		
+
 		<svg id="MyFogCurter" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 400">
 			<defs>
 				<clipPath id="myClip">
@@ -305,6 +316,7 @@ else
 
 	bool _ShowingMonsterSelector = false;
 	bool _ShowingMonsterImage = false;
+	bool _ShouldShowImageOnHover = true;
 
 	int VRows = 15;
 	int HRows = 30;
@@ -313,13 +325,14 @@ else
 	int GlobalLeft = 0;
 
 	bool IsCreatingAWall = false;
-	bool IsTestingAttentionMarkers = false;
+	bool UsingAttentionMarker = false;
 	bool IsTestingVisibility = false;
 	bool IsDeleting = false;
 	bool ShowMoves = false;
 	bool DrawModeOn = false;
 	bool MovingTokens = false;
 	private bool ShowingOptionsPanelForSelectedItems = true;
+
 
 	bool IsMaster => MyClass == DWClasses.DW_Master;
 	Token? MyToken = null;
@@ -347,7 +360,7 @@ else
 	private void UpdateUi(object? sender, EventArgs e) 
 	{
 		if(MyToken is not null)
-			viewMask = Calculator.GetVisibilityArea(MyToken.X, MyToken.Y, service.Walls); InvokeAsync(StateHasChanged);
+			viewMask = Calculator.GetVisibilityArea(MyToken.X+30, MyToken.Y+30, service.Walls); InvokeAsync(StateHasChanged);
 		InvokeAsync(StateHasChanged);
 	}
 
@@ -383,7 +396,6 @@ else
 
 					}
 				}
-				viewMask = Calculator.GetVisibilityArea((int)e.OffsetX+30, (int)e.OffsetY+30, service.Walls);
 				service.MoveToken(MyToken, e.OffsetX, e.OffsetY);
 			}
 			else if (e.Button == 2)
@@ -393,84 +405,91 @@ else
 		}
 		else //is master
 		{
-			if(e.Buttons == 2)
+			if (UsingAttentionMarker)
 			{
-				if(IsCreatingAWall)
-				{
-					service.Walls.Add(CurrentDrawing);
-					IsCreatingAWall = false;
-				}
-				else
-				{
-					for (int i = 0; i < SelectedTokens.Count; ++i)
-					{
-						if (i == 0) service.MoveToken(SelectedTokens[i], e.OffsetX, e.OffsetY);
-						else if (i == 1) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
-						else if (i == 2) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
-						else if (i == 3) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-						else if (i == 4) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
-						else if (i == 5) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-						else if (i == 6) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
-						else if (i == 7) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
-						else if (i == 8) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
-					}
-					//service.ShowPlayerAttention(MyClass, new Point(e));
-					return;
-				}
-
-			}
-			if (IsTestingVisibility)
-			{
-				viewMask = Calculator.GetVisibilityArea((int)e.OffsetX, (int)e.OffsetY, service.Walls);
-			}
-			else if (IsDeleting)
-			{
-				service.TryDelete(new Point((int)e.OffsetX, (int)e.OffsetY));
-			}
-			else if (DrawModeOn)
-			{
-				isDrawing = true;
-				CurrentDrawing.Points.Clear();
-				CurrentDrawing.IsFilledIn = false;
-
-				if (IsCreatingAWall)
-				{
-					//we neeed a line for a wall, so we need at least two points, the sencod will be moving with the mouse
-					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
-					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
-				}
-				else
-				{
-					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
-				}
-			}
-			else if (IsCreatingAWall)
-			{
-				CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+				service.ShowPlayerAttention(MyClass, new Point(e));
 			}
 			else
 			{
-				var t = service.SelectToken(e.OffsetX, e.OffsetY);
-				if (e.ShiftKey)
+				if (e.Buttons == 2)
 				{
-					if (t is not null && !SelectedTokens.Contains(t))
-						SelectedTokens.Add(t);
-					else if (t is not null && SelectedTokens.Contains(t))
-						SelectedTokens.Remove(t);
-				}
-				else
-				{
-					if(t is not null)
+					if (IsCreatingAWall)
 					{
-						SelectedTokens.Clear();
-						SelectedTokens.Add(t);
+						service.Walls.Add(CurrentDrawing);
+						IsCreatingAWall = false;
 					}
 					else
 					{
-						SelectedTokens.Clear();
+						for (int i = 0; i < SelectedTokens.Count; ++i)
+						{
+							if (i == 0) service.MoveToken(SelectedTokens[i], e.OffsetX, e.OffsetY);
+							else if (i == 1) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(50), e.OffsetY + rnd.Next(-30, 30));
+							else if (i == 2) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + rnd.Next(-30, 30));
+							else if (i == 3) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 4) service.MoveToken(SelectedTokens[i], e.OffsetX + rnd.Next(-30, 30), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+							else if (i == 5) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 6) service.MoveToken(SelectedTokens[i], e.OffsetX - SelectedTokens[i - 1].SizePixels - rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+							else if (i == 7) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY - SelectedTokens[i - 1].SizePixels - rnd.Next(60));
+							else if (i == 8) service.MoveToken(SelectedTokens[i], e.OffsetX + SelectedTokens[i - 1].SizePixels + rnd.Next(60), e.OffsetY + SelectedTokens[i - 1].SizePixels + rnd.Next(60));
+						}
+						//service.ShowPlayerAttention(MyClass, new Point(e));
+						return;
+					}
+
+				}
+				if (IsTestingVisibility)
+				{
+					viewMask = Calculator.GetVisibilityArea((int)e.OffsetX, (int)e.OffsetY, service.Walls);
+				}
+				else if (IsDeleting)
+				{
+					service.TryDelete(new Point((int)e.OffsetX, (int)e.OffsetY));
+				}
+				else if (DrawModeOn)
+				{
+					isDrawing = true;
+					CurrentDrawing.Points.Clear();
+					CurrentDrawing.IsFilledIn = false;
+
+					if (IsCreatingAWall)
+					{
+						//we neeed a line for a wall, so we need at least two points, the sencod will be moving with the mouse
+						CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+						CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+					}
+					else
+					{
+						CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
 					}
 				}
+				else if (IsCreatingAWall)
+				{
+					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+				}
+				else
+				{
+					var t = service.SelectToken(e.OffsetX, e.OffsetY);
+					if (e.ShiftKey)
+					{
+						if (t is not null && !SelectedTokens.Contains(t))
+							SelectedTokens.Add(t);
+						else if (t is not null && SelectedTokens.Contains(t))
+							SelectedTokens.Remove(t);
+					}
+					else
+					{
+						if (t is not null)
+						{
+							SelectedTokens.Clear();
+							SelectedTokens.Add(t);
+						}
+						else
+						{
+							SelectedTokens.Clear();
+						}
+					}
 
+				}
 			}
 		}	
 	}
@@ -538,24 +557,37 @@ else
 		}
 		if (!IsMaster)
 		{
-			var t = service.SelectToken(e.OffsetX, e.OffsetY);
-			if (t is not null)
+			if (_ShouldShowImageOnHover)
 			{
-				if (t.Monster is not null)
+				var t = service.SelectToken(e.OffsetX, e.OffsetY);
+				if (t is not null)
 				{
-					hoveredX = (float)e.OffsetX;
-					hoveredY = (float)e.OffsetY;
-					ShowMonsterImage(t.Monster);
+					if (t.Monster is not null)
+					{
+						hoveredX = (float)e.OffsetX;
+						hoveredY = (float)e.OffsetY;
+						ShowMonsterImage(t.Monster);
+					}
 				}
-			}
-			else
-			{
-				_ShowingMonsterImage = false;
+				else
+				{
+					_ShowingMonsterImage = false;
+				}
 			}
 		}
 	}
 	void ProcessKeyDown(KeyboardEventArgs e)
 	{
+		if (!IsMaster)
+		{
+			if (e.Code == "KeyI")
+			{
+				_ShouldShowImageOnHover = !_ShouldShowImageOnHover;
+				if (!_ShouldShowImageOnHover) _ShowingMonsterImage = false;
+			}
+			return;
+		} 
+
 		var key = e.Code;
 		if (key == "KeyH")
 			foreach (var t in SelectedTokens)
@@ -572,7 +604,54 @@ else
 			SelectedTokens.Clear();
 
 		else if (key == "KeyD")
-			DrawModeOn = !DrawModeOn;
+		{
+			if (DrawModeOn) { DrawModeOn = false; IsDeleting = true; UsingAttentionMarker = false; }
+			else if (IsDeleting) { DrawModeOn = false; IsDeleting = false; UsingAttentionMarker = false; }
+			else { DrawModeOn = true; UsingAttentionMarker = false; }
+		}
+
+		else if(key == "KeyA")
+		{
+			DrawModeOn = false;
+			IsDeleting = false;
+			UsingAttentionMarker = !UsingAttentionMarker;
+		}
+
+		else if (key == "KeyK")
+			foreach (var t in SelectedTokens) t.Status = TokenStatus.Dead;
+
+		else if (key.Contains("Digit") || key.Contains("Numpad"))
+			TryToMakeGroup(key);
+	}
+
+	private void TryToMakeGroup(string key)
+	{
+		try
+		{
+			string val = key.Substring(key.Length - 1);
+			foreach(var i in SelectedTokens)
+			{
+				var oldToken = i.ID;
+
+				if (oldToken.ToString().Contains("Boss")) continue;
+
+				if(oldToken.ToString().Contains("Green"))
+				{
+					Enum.TryParse("Green"+val, out VTTTokens myStatus);
+				}
+				else if (oldToken.ToString().Contains("Black"))
+				{
+					VTTTokens newToken = VTTTokens.Green2;
+					Enum.TryParse("Black" + val, out newToken);
+					i.ID = newToken;
+				}
+			}
+		}
+		catch (Exception)
+		{
+		
+		}
+		
 	}
 
 	void FindMyToken()
