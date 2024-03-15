@@ -5,9 +5,9 @@
 {
 	<div class="d-flex align-items-center justify-content-center"
 		 @onclick=CloseFullScreenClick
-		 style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1000; background:black;">
+		 style="background-color:red; position:absolute; top:0; left:0; width:100%; height:100%; z-index:1000; background:black;
+				background-image: url(@Image.src.Replace(" ", "%20")); background-size:contain; background-repeat:no-repeat;">
 		<div class="CloseButton" />
-		<img src="@Image.src" alt="@Image.Name"/>
 	</div>
 }
 else
@@ -105,9 +105,12 @@ else
 	[Parameter] public PbtAImage Image { get; set; }
 	[Parameter] public bool IsMaster { get; set; }
 	[Parameter] public EventCallback ExitFullScreenClicked { get; set; }
+	[Parameter] public bool IsForcedFullscreen { get; set; } = false;
 
 	string NewName = "";
 	bool IsEditing = false;
+
+	string scapedURL => System.Web.HttpUtility.UrlEncode(Image.src);
 
 	bool _IsFullScreen = false;
 	bool IsFullScreenFromOutside = false;
@@ -115,11 +118,17 @@ else
 	protected override void OnParametersSet()
 	{
 		NewName = Image.Name;
+		if (IsForcedFullscreen) _IsFullScreen = true;
 	}
 
 	void CloseFullScreenClick()
 	{
 		_IsFullScreen = false;
+		if(IsForcedFullscreen)
+		{
+			IsForcedFullscreen = false;
+			ExitFullScreenClicked.InvokeAsync(this);
+		}
 	}
 
 	void RequestFullScreen() => _IsFullScreen = true;

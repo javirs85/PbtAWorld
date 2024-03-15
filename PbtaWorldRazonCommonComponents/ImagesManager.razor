@@ -3,11 +3,14 @@
 
 @if (!IsMaster && _IsForcedFromOutside)
 {
-	<div class="ImagesService d-flex flex-column align-items-center" style="position:fixed; top:0; left:0; width:100%; height:100%;">
+	@* <div class="ImagesService d-flex flex-column align-items-center" 
+		style="position:fixed; top:0; left:0; width:100%; height:100%;
+				background-size:contain; background-repeat:no-repeat;
+				background-image: url(@ForcedImage.src.Replace(" ", "%20"))">
 		<div class="CloseButton" style="color:white;" @onclick=CloseWhenForced></div>
-		<img src="@ForcedImage.src" alt="@ForcedImage.Name" style="max-width:600px;" />
 		<div>@ForcedImage.Name</div>
-	</div>
+	</div> *@
+	<ImageCard Image="ForcedImage" IsMaster=false IsForcedFullscreen=true ExitFullScreenClicked=CloseWhenForced />
 }
 else
 {

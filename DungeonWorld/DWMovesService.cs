@@ -125,7 +125,7 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Discernir la realidad",
 				PreCondition = new Consequences{
-					MainText = "Cuando estudias minuciosamente una situación o persona y miras al DJ para saber más, tira +SAB: "
+					MainText = "Cuando estudias minuciosamente una situación o persona y miras al DJ para saber más, tira +SAB. Con 7+ tira con ventaja si usas tu nuevos conocimientos"
 
 				},
 				ConsequencesOn79 = new Consequences
