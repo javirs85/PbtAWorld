@@ -14,7 +14,7 @@ public class DWMovesService : MovesServiceBase
 {
 	public List<DWMovementIDs> BasicMovements = new List<DWMovementIDs> {
 			DWMovementIDs.DW_DefyDanger, DWMovementIDs.DW_DiscernReality, DWMovementIDs.DW_IHaveWhatINeed,
-			DWMovementIDs.DW_Interfere, DWMovementIDs.DW_Parley, DWMovementIDs.DW_Supplies,
+			DWMovementIDs.DW_Interfere, DWMovementIDs.DW_Aid, DWMovementIDs.DW_Parley, DWMovementIDs.DW_Supplies,
 			DWMovementIDs.DW_SproutLore, DWMovementIDs.DW_Defend,
 			DWMovementIDs.DW_HnS, DWMovementIDs.DW_Volley, DWMovementIDs.DW_LastBreath,
 			DWMovementIDs.DW_Recover, DWMovementIDs.DW_Camp
@@ -153,6 +153,13 @@ public class DWMovesService : MovesServiceBase
 					MainText = "Cuando decides que llevas algo contigo, borra un ⧫ (o ⧫⧫) de su equipo indefinido y marca un elemento o espacio para indicar que tiene eso. Si marcas un espacio, rellénalo con un elemento común o mundano. Como alternativa, gasta 1 uso de 'Cosas' (en lugar de equipo indefinido) para producir un artículo pequeño, común y mundano."
 				}
 			},
+			new DWMove (DWMovementIDs.DW_Aid, DWStats.DW_None)
+			{
+				Tittle = "Ayudar",
+				PreCondition = new Consequences{
+					MainText = "Cuando ayudas a otro personaje que está apunto de tirar, tirar con ventaja pero te expones a los riesgos/costes/consecuencias."
+				}
+			},			
 			new DWMove (DWMovementIDs.DW_Interfere, DWStats.DW_CHOSE)
 			{
 				Tittle = "Interferir",
