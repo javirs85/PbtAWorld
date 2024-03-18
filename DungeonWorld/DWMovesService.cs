@@ -481,9 +481,9 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_FightAsOne, DWStats.DW_CHOSE)
 			{
-				Tittle = "Luchar como uno",
+				Tittle = "Actuar como uno",
 				PreCondition = new Consequences{
-					MainText = "Cuando el DJ te llame para desafiar el peligro como grupo, describirá el peligro al que te enfrentas. Di cómo lo manejas y tira +STAT"
+					MainText = "Cuando intenteis superar un peligro todos juntos. Di cómo lo manejas y tira +STAT"
 				},
 				ConsequencesOn10 = new Consequences
 				{
