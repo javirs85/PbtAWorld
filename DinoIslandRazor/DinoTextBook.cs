@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -382,7 +383,14 @@ public class DinoTextBook
 				new MasterMove("Un flujo de lava se acerca directamente hacia ellos"),
 				new MasterMove("Estampida de herbívoros que huyen.")
 			},
-			Clock = new Clock{ EventAt12 = "El volcán entra en erupción!"}
+			Clock = new Clock{
+				Steps = new List<StepItem>
+				{
+					new StepItem{Id = 0, Text = "" },
+					new StepItem{Id = 0, Text = "" },
+					new StepItem { Id = 0, Text = "El volcán entra en erupción!" }
+				}
+			}
 		},
 		new ExtinctionEvent
 		{
@@ -402,7 +410,14 @@ public class DinoTextBook
 				new MasterMove("Los generadores fallan y se corta la energía"),
 				new MasterMove("El Xenosaurio está suelto")
 			},
-			Clock = new Clock{ EventAt12 = "Un huracán arrasa la isla!"}
+			Clock = new Clock{
+				Steps = new List<StepItem>
+				{
+					new StepItem{Id = 0, Text = "" },
+					new StepItem{Id = 0, Text = "" },
+					new StepItem { Id = 0, Text = "Un huracán arrasa la isla!" }
+				}
+			}
 		},
 		new ExtinctionEvent
 		{
@@ -420,7 +435,14 @@ public class DinoTextBook
 				new MasterMove("Los viejos trucos no funcionan"),
 				new MasterMove("Se encuentran con el Xenosaurio")
 			},
-			Clock = new Clock{ EventAt12 = "Los dinosaurios son la nueva raza alfa"}
+			Clock = new Clock{
+				Steps = new List<StepItem>
+				{
+					new StepItem{Id = 0, Text = "" },
+					new StepItem{Id = 0, Text = "" },
+					new StepItem { Id = 0, Text = "Los dinosaurios son la nueva raza alfa" }
+				}
+			}
 		},
 		new ExtinctionEvent
 		{
@@ -440,7 +462,14 @@ public class DinoTextBook
 				new MasterMove("El equipo de eliminación despliega una bomba nuclear"),
 				new MasterMove("Genera un nuevo enemigo => Escuadrón: Equipo de Eliminación")
 			},
-			Clock = new Clock{ EventAt12 = "Asalto militar absoluto!"}
+			Clock = new Clock{
+				Steps = new List<StepItem>
+				{
+					new StepItem{Id = 0, Text = "" },
+					new StepItem{Id = 0, Text = "" },
+					new StepItem { Id = 0, Text = "Asalto militar absoluto!" }
+				}
+			}
 		},
 		new ExtinctionEvent
 		{
@@ -456,7 +485,14 @@ public class DinoTextBook
 				new MasterMove("La primera remesa está a punto de salir"),
 				new MasterMove("A los dinosaurios no les gusta barcos/aviones/automóviles")
 			},
-			Clock = new Clock{ EventAt12 = "Los dinosaurios escapan de la isla!"}
+			Clock = new Clock{
+				Steps = new List<StepItem>
+				{
+					new StepItem{Id = 0, Text = "" },
+					new StepItem{Id = 0, Text = "" },
+					new StepItem { Id = 0, Text = "Los dinosaurios escapan de la isla!" }
+				}
+			}
 		},
 		new ExtinctionEvent
 		{
@@ -473,8 +509,14 @@ public class DinoTextBook
 				new MasterMove("Aparece una criatura/objeto extraño del pasado lejano o el futuro distante"),
 				new MasterMove("La comprensión de un PNJ sobre el tiempo se confunde"),
 				new MasterMove("El tiempo se mueve de manera errática o hacia atrás")
-			},
-			Clock = new Clock{ EventAt12 = "El tiempo se rasga, todo se rompe!"}
+			},Clock = new Clock{
+				Steps = new List<StepItem>
+				{
+					new StepItem{Id = 0, Text = "" },
+					new StepItem{Id = 0, Text = "" },
+					new StepItem { Id = 0, Text = "El tiempo se rasga, todo se rompe!" }
+				}
+			}
 		}
 	};
 

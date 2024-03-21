@@ -18,10 +18,12 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		get { return _sessionID; }
 		set { _sessionID = value; 
 			SquareMap.GameID = value;
+			Clocks.GameID = value;
 		}
 	}
 
     public SquareMap SquareMap = new SquareMap();
+	public ClocksManager Clocks = new();
 
 
 	private Random random = new Random();
