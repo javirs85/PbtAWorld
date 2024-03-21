@@ -1,0 +1,62 @@
+﻿.ClockViewerContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 300px;
+    min-height: 300px;
+    border-radius: 10px;
+    border: 1px solid black;
+    z-index: 10;
+    background: black;
+    color: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    overflow: auto;
+}
+
+.CloseButtonSquareMap{
+    position:absolute;
+    right:0%;
+    top:0%;
+    padding:5px 10px;
+    font-size:20px;
+    opacity:0.5;
+    cursor:pointer;
+}
+.CloseButtonSquareMap:hover{
+    opacity:1;
+}
+
+.Clock {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    border: 1px solid #413232;
+    background: #1c1919;
+    margin-bottom:10px;
+}
+.ClockHeader {
+    padding: 10px;
+    background: #413232;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+.step{
+}
+.stepNumber{
+    min-width:38px;
+    min-height:38px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.ClockStepActive {
+    background: #413232;
+}
+.ClockStepNOTactive{
+    opacity:0.4;
+}

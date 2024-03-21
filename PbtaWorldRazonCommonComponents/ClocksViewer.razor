@@ -1,0 +1,84 @@
+@using Microsoft.AspNetCore.Components.Forms
+<div class="ClockViewerContainer">
+	<div class="CloseButtonSquareMap"
+		 @onclick=RequestCloseClocksViewer
+		 style="cursor:pointer;">
+		<i class="bi bi-x-circle"></i>
+	</div>
+	<div class="d-flex">
+		<div class="fs-2">Clocks Viewer</div>
+		@if(IsMaster)
+		{
+			<button class="btn btn-primary ms-2 me-5 mb-2" @onclick=SpreadChanges>Send update to patients</button>
+		}
+	</div>
+	<div class="d-flex flex-column h-100 flex-wrap">
+		@foreach(var c in Clocks.Clocks)
+		{
+			<div class="Clock">
+				@if (IsMaster)
+				{
+					<EditForm class="d-flex flex-column gap-1" Model="c">
+						<div class="ClockHeader">
+							<input class="form-control" @bind-value="c.Title" />
+							<button class="btn btn-primary" @onclick=c.ForceUpdateInAllClients><i class="bi bi-send"></i></button>
+							<div class="flex-grow-1"></div>
+							<button class="btn btn-primary" @onclick=c.MoveStatusDown><i class="bi bi-dash"></i></button>
+							<button class="btn btn-primary me-4" @onclick=c.MoveStatusUp><i class="bi bi-plus"></i></button>
+						
+							<button class="btn btn-danger" @onclick=@(()=>{Clocks.Remove(c);})><i class="bi bi-trash3"></i></button>
+						</div>
+						@foreach (var step in c.Steps)
+						{
+							<div class="d-flex @((step.Id > c.Status)?"ClockStepNOTactive":"ClockStepActive")">
+								<div class="stepNumber">@step.Id</div>
+								<input class="form-control" @bind-value="step.Text" />
+								<button class="btn btn-danger" @onclick=@(()=>{c.Remove(step.Id);})><i class="bi bi-trash3"></i></button>
+							</div>
+						}
+						<button class="btn btn-primary m-2" style="border-color: #5d5858; background: #272121;" @onclick=c.AddStep>
+							<i class="bi bi-plus-lg"></i>
+						</button>
+					</EditForm>
+				}
+				else
+				{
+					<div class="ClockHeader">
+						@c.Title
+					</div>
+					@foreach (var step in c.Steps)
+					{
+						<div class="d-flex overflow-auto @((step.Id > c.Status)?"ClockStepNOTactive":"ClockStepActive")">
+							<div class="stepNumber">@step.Id</div>
+							<div class="d-flex align-items-center">@step.Text</div>
+						</div>
+					}
+				}
+			</div>
+		}
+	</div>
+	@if (IsMaster)
+	{
+		<button class="btn btn-primary" @onclick=@(()=>{Clocks.AddNewClock();})>Add Clock</button>
+	}
+</div>
+
+
+@code{
+	[Parameter] public ClocksManager Clocks {get;set;} = new();
+	[Parameter] public EventCallback RequestCloseClocksViewer {get;set;}
+	[Parameter] public bool IsMaster {get;set;} = false;
+
+	protected override void OnParametersSet()
+	{
+		Clocks.UpdateAllInstances -= Update;
+		Clocks.UpdateAllInstances += Update;
+	}
+
+	void Update(object? sender, EventArgs e) => Update();
+	void Update() {
+		//InvokeAsync(StateHasChanged);
+	}
+
+	void SpreadChanges() => Clocks.ForceUpdateInAllClients();
+}

@@ -181,8 +181,17 @@
 						}
 					</InputSelect>
 				</div>
-
+				<div class="d-flex">
+					<span>Instinto</span>
+					<InputText class="form-control" style="height: 34px;" @bind-Value=monster.Instinct></InputText>
+				</div>
 				<div>
+					<div class="d-flex flex-column">
+						<div>Cómo se revela o presagia su presencia</div>
+						<div>Cómo daña, obstaculiza o perjudica</div>
+						<div>Cómo se intensifica o empeora</div>
+						<div>Cómo frustra los intentos de superarlo</div>
+					</div>
 					@foreach (var m in monster.Moves)
 					{
 						<div class="p-1 m-1 border border-secondary rounded d-flex justify-content-between">
