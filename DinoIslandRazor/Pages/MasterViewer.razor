@@ -276,7 +276,7 @@
 								<span>@mv</span>
 							}
 							<h5 class="m-0"><strong>Evento final</strong></h5>
-							<span>@Game.SelectedExtinctionEvent.Clock.EventAt12</span>
+							<span>@Game.SelectedExtinctionEvent.Clock.LastEvent</span>
 							@foreach (var mv in Game.SelectedExtinctionEvent.NewMasterMoves.OrderBy(x=>x.Order))
 							{
 								<div class="Move @mv.HowOften.ToString()" @onclick=@(()=>{mv.Use();})>

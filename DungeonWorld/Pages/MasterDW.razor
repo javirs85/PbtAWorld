@@ -8,6 +8,10 @@
 @inject VTTLocalManagerService VTTViewer
 @inject IDataBaseController Meta;
 
+@if(_ShowingClocks)
+{
+	<ClocksViewer Clocks="Game.Clocks" IsMaster=true RequestCloseClocksViewer="@(()=>{_ShowingClocks = false;})"/>
+}
 @if (_ShowingVTT)
 {
 	<SmoothWhiteBoard Game="Game" MyClass="DWClasses.DW_Master" ExitRequested=@(()=>{_ShowingVTT = false;})/>
@@ -30,9 +34,10 @@ else
 		<div class="MasterMainColumn" style="background: #d2d9d3;">
 			<div class="d-flex gap-1">
 				<button class="btn btn-primary" @onclick=@(()=>{_showingSquareMap = false; _ShowingVTT =true;})>VTT</button>
-				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})>Map</button>
-				<button class="btn btn-primary" @onclick=@(()=>{ _ShowingImagesManager =true;})>Images</button>
+				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})><i class="bi bi-map"></i></button>
+				<button class="btn btn-primary" @onclick=@(()=>{ _ShowingImagesManager =true;})><i class="bi bi-image"></i></button>
 				<button class="btn btn-primary" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></button>
+				<button class="btn btn-primary" @onclick=@(()=>{_ShowingClocks = true;})><i class="bi bi-hourglass-split"></i></button>
 				<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d4);})/>
 				<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d6);}) />
 				<img src="imgs/DW/d8.svg" alt="d8" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d8);}) />
@@ -139,6 +144,7 @@ else
 
 @code {
 	bool _ShowingVTT = false;
+	bool _ShowingClocks = false;
 	bool _showingSquareMap = false;
 	bool _ShowingImagesManager = false;
 	bool _ShowingEnemySelectionTool = false;

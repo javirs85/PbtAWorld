@@ -1,0 +1,58 @@
+﻿@if (IsEditing)
+{
+	<div class="d-flex">
+		<input class="me-2" value="@Text" @onchange="OnTextChanged" />
+		<div style="width:40px; cursor:pointer; height:40px; display:flex; align-items:center; justify-content:center; font-size:30px; color:#3fcb3f;"
+			@onclick=Finish>
+			<i class="bi bi-check-square"></i>
+		</div>
+		<div style="width:40px; cursor:pointer; height:40px; display:flex; align-items:center; 
+					justify-content:center; font-size:30px; color:#ff8383;"
+			@onclick=Cancel>
+			<i class="bi bi-x-square"></i>
+		</div>
+	</div>
+}
+else
+{
+	<div class="d-flex">
+		@Text
+		<i class="bi bi-pencil ms-2 opacity-25 clickMe" @onclick=Start @onclick:stopPropagation=true @onclick:preventDefault=true></i>
+	</div>
+}
+
+@code {
+	bool IsEditing = false;
+
+	[Parameter]
+	public string Text { get; set; } = string.Empty;
+
+	[Parameter]
+	public EventCallback<string> TextChanged { get; set; }
+
+	string initial = "";
+	void Start()
+	{
+		initial = Text;
+		IsEditing = true;
+	}
+
+	void Finish()
+	{
+		IsEditing = false;
+	}
+
+	async Task Cancel()
+	{
+		Text = initial;
+		IsEditing = false;
+		await TextChanged.InvokeAsync(Text);
+	}
+
+	private async Task OnTextChanged(ChangeEventArgs e)
+	{
+		Text = e?.Value?.ToString() ?? "Not set";
+
+		await TextChanged.InvokeAsync(Text);
+	}
+}
