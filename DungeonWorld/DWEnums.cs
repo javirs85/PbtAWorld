@@ -11,7 +11,7 @@ public enum DWMovementIDs
 {
 	DW_RawSTR, DW_RawDEX, DW_RawCON, DW_RawINT, DW_RawWIS, DW_RawCHA,
 	DW_NotSet, DW_Basic, DW_Advanced, DW_DefyDanger, DW_DD_STR, DW_DD_DEX, DW_DD_CON, DW_DD_INT, DW_DD_WIS, DW_DD_CHA,
-	DW_DD, DW_DiscernReality, DW_Interfere, DW_Parley, DW_Supplies, DW_IHaveWhatINeed, DW_SproutLore, DW_Help, DW_DealDamage, DW_Defend, DW_HnS,
+	DW_DD, DW_DiscernReality, DW_Interfere, DW_Aid, DW_Parley, DW_Supplies, DW_IHaveWhatINeed, DW_SproutLore, DW_Help, DW_DealDamage, DW_Defend, DW_HnS,
 	DW_Volley, DW_ReceiveDamage, DW_LastBreath, DW_Recover, DW_Camp, DW_KeepYouMind, DW_HuntDown, DW_IKnowAMan, DW_GlossOverFight,
 	DW_FightAsOne, DW_RunAway, DW_Scout, DW_HoldBreath, DW_Travel,
 	DW_Barbarian_Hunger,
