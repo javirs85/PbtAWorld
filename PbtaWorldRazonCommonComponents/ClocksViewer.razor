@@ -33,8 +33,12 @@
 							<div class="d-flex @((step.Id > c.Status)?"ClockStepNOTactive":"ClockStepActive")">
 								<div class="stepNumber">@step.Id</div>
 								<input class="form-control" @bind-value="step.Text" />
+								<button class="btn btn-danger" @onclick=@(()=>{c.Remove(step.Id);})><i class="bi bi-trash3"></i></button>
 							</div>
 						}
+						<button class="btn btn-primary m-2" style="border-color: #5d5858; background: #272121;" @onclick=c.AddStep>
+							<i class="bi bi-plus-lg"></i>
+						</button>
 					</EditForm>
 				}
 				else

@@ -28,6 +28,24 @@ public class Clock
 		Controller.ForceUpdateInAllClients();
 	}
 
+	public void AddStep() => AddStep("");
+
+	public void AddStep(string body = "")
+	{
+		Steps.Add(new StepItem { 
+			Id = Steps.Count+1, 
+			Text = body });
+	}
+
+	public void Remove(int Id)
+	{
+		Steps.RemoveAt(Id-1);
+
+		for(int i = 0; i < Steps.Count; i++)
+		{
+			Steps[i].Id = i+1;
+		}
+	}
 	public void ForceUpdateInAllClients() => Controller.ForceUpdateInAllClients();
 }
 
@@ -61,10 +79,10 @@ public class ClocksManager
 		{
 			Title = "New Clock",
 			Steps = new List<StepItem> { 
-				new StepItem { Id = 0, Text = "s1" },
-				new StepItem { Id = 1, Text = "s2" },
-				new StepItem { Id = 2, Text = "s3" },
-				new StepItem { Id = 3, Text = "s4" },
+				new StepItem { Id = 1, Text = "" },
+				new StepItem { Id = 2, Text = "" },
+				new StepItem { Id = 3, Text = "" },
+				new StepItem { Id = 4, Text = "" },
 			},
 			Controller = this
 		}) ;
