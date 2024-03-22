@@ -142,4 +142,16 @@ public class ImagesService
 	}
 
 	public void SendImageToAllPlayers(PbtAImage image) => ForceFullScreenImageOnPlayers?.Invoke(this, image);
+
+	public void DeleteImage(PbtAImage image)
+	{
+		AllImages.Remove(image);
+
+		var FilePath = "./wwwroot" + image.src;
+
+		if (File.Exists(FilePath))
+			System.IO.File.Delete(FilePath);
+
+		ForeceUpdateInAllClients();
+	}
 }
