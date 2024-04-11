@@ -227,13 +227,21 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		RequestUpdateToUIOnClients();
 	}
 
+	public event EventHandler UpdateMasterMoveListRequested;
+	public void UpdateMasterMoveList() => UpdateMasterMoveListRequested?.Invoke(this, EventArgs.Empty);
+
     public void AddMonsterDefinition(Monster monster)
     {
         MonsterDefinitionsInCurrentScene.Add(monster);
+		Update();
 		monster.Game = this;
     }
-
-	public void ShowImageToAllPlayers(string url)
+    public void RemoveMonsterDefinition(Monster monster)
+    {
+        MonsterDefinitionsInCurrentScene.Remove(monster);
+        Update();
+    }
+    public void ShowImageToAllPlayers(string url)
 	{
 		ImageToShowToAllPlayers?.Invoke(this, url);
 	}

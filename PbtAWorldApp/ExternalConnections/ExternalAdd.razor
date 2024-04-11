@@ -1,0 +1,50 @@
+﻿@page "/ExternalAdd"
+@using DungeonWorld
+@using PbtaWorldRazonCommonComponents
+@inject DWGameController DWGame
+@inject NavigationManager NavigationManager
+
+<div class="h-100 d-flex">
+    @URLMessage
+</div>
+
+@code {
+    string URLMessage = string.Empty;
+
+    private string? GetQueryStringValue(string key)
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        var query = uri.Query;
+        var queryParams = System.Web.HttpUtility.ParseQueryString(query);
+        return queryParams[key];
+    }
+
+    string monsterID = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        DWGame.UpdateUI += (_,e) => InvokeAsync(StateHasChanged);
+
+        var id = GetQueryStringValue("monsterID");
+        if(id is not null)
+        {
+            URLMessage = $"monsterID = {id}";
+
+            var MonsterManual = DWGame.TextBook.Monsters;
+            if (MonsterManual.AllMonsterPacks.Count == 0) await MonsterManual.LoadAllMonsterFiles();
+
+            var encodedID = String.Concat(id.Where(c => !Char.IsWhiteSpace(c)));
+
+            var Monster = MonsterManual.FindMonsterByID(encodedID);
+
+            if (Monster is null) URLMessage = $"monster {encodedID} cannot be found in the monsters manual";
+
+            if (Monster is not null && !DWGame.MonsterDefinitionsInCurrentScene.Contains(Monster))
+                DWGame.AddMonsterDefinition(Monster);
+        }
+        else
+        {
+            URLMessage = "monsterID not set";
+        }
+    }
+}
