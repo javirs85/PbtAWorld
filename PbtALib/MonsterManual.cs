@@ -4459,6 +4459,21 @@ public class MonsterManual
 		}
 	}
 
+	public Monster? FindMonsterByID(string id)
+	{
+		foreach(var pack in AllMonsterPacks)
+		{
+			foreach(var monster in pack.Monsters)
+			{
+				if (monster.ID.ToLower() == id.ToLower())
+				{
+					return monster;
+				}
+			}
+		}
+		return null;
+	}
+
 }
 
 public class MonsterPack

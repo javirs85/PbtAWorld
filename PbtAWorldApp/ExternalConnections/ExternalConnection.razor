@@ -1,0 +1,42 @@
+﻿@page "/ExternalConnection"
+@using DungeonWorld
+@using PbtaWorldRazonCommonComponents
+@inject DWGameController DWGame
+@inject NavigationManager NavigationManager
+
+<div class="bg-dark h-100 d-flex">
+    <div class="d-flex flex-column">
+        <div class="MasterMainColumn">
+            @foreach (var pack in DWGame.TextBook.MasterMovesPacks)
+            {
+                <MasterMovePackViewer MovesPack="pack" />
+            }
+        </div>
+        
+    </div>
+    <div class="d-flex flex-column flex-wrap gap-1">
+        <button class="btn btn-primary" @onclick=ClearEnemies>Clear enemies</button>
+        @foreach (var m in DWGame.MonsterDefinitionsInCurrentScene)
+        {
+            <div class="d-flex bg-white">
+                <img src="@m.ImageURL" width="100"/>
+                <div class="bg-dark h-100 w-100">
+                    <MasterMovePackViewer MovesPack="@(new MasterMovePack {Title=m.Name, Moves=m.Moves})" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    protected override void OnParametersSet()
+    {
+        DWGame.UpdateUI += (_,e) => InvokeAsync(StateHasChanged);
+    }
+
+    private void ClearEnemies()
+    {
+        DWGame.MonsterDefinitionsInCurrentScene.Clear();
+        StateHasChanged();
+    }
+}

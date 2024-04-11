@@ -1563,7 +1563,6 @@ public class DWMovesService : MovesServiceBase
 					}
 				}
 			},
-
 			new DWMove (DWMovementIDs.DW_Wizard_Adv_Guardian, DWStats.DW_None)
 			{
 				Tittle = "Guardián Arcano",
@@ -1612,7 +1611,6 @@ public class DWMovesService : MovesServiceBase
 					}
 				}
 			},
-
 			new DWMove (DWMovementIDs.DW_Paladin_Obliged, DWStats.DW_None)
 			{
 				Tittle = "Obligado por una ley superior",
@@ -1695,7 +1693,6 @@ public class DWMovesService : MovesServiceBase
 				},
 				ConsequencesOn79 = new Consequences{MainText="también te expones a daño o atención no deseada"}
 			},
-
 
 			new DWMove (DWMovementIDs.DW_Paladin_Adv_Aura, DWStats.DW_None)
 			{

@@ -16,7 +16,7 @@
 }
 else if(_ShowingCast)
 {
-	<CharacterSelector />
+	<CharacterSelector CloseRequest="@(()=>{_ShowingCast = false;})"/>
 }
 @if (_ShowingVTT)
 {

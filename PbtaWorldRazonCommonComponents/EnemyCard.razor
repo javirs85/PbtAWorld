@@ -323,7 +323,7 @@
 		if(Game is not null)
 		{
 			if (Game.MonsterDefinitionsInCurrentScene.Contains(monster))
-				Game.MonsterDefinitionsInCurrentScene.Remove(monster);
+				Game.RemoveMonsterDefinition(monster);
 			else
 				Game.AddMonsterDefinition(monster);
 
