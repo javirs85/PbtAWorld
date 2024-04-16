@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
 @using PbtALib;
 @inject CharacterSelectorService CSService
+@inject ImagesService ImagesService
 @inject IDataBaseController DB;
 
 <div class="FullScreenModal" @onclick=Hide>
@@ -116,8 +117,8 @@
 @code {
     [Parameter] public EventCallback CloseRequest {get;set; }
 
-    private ICharacter? SelectedCharacter = null;
-    private IPbtAFaction? SelectedFaction = null;
+    private PbtACharacter? SelectedCharacter = null;
+    private PbtAFaction? SelectedFaction = null;
     private bool IsShowingImages = false;
     private FolderOfImages? SelectedFolder = null;
 
@@ -200,13 +201,13 @@
     {
     }
 
-    private  void EditChar(ICharacter ch)
+    private  void EditChar(PbtACharacter ch)
     {
         SelectedCharacter = ch;
         IsShowingEditIChar = true;
     }
 
-    private void EditFaction(IPbtAFaction f)
+    private void EditFaction(PbtAFaction f)
     {
         SelectedFaction = f;
         IsShowingEditFaction= true;
@@ -222,11 +223,12 @@
 
     private void AddNewCharacter(IPbtAFaction f)
     {
-        PNJ pnj = new PNJ();
+       /* PNJ pnj = new PNJ();
         pnj.Name = "Nuevo PNJ";
         CSService?.Campaign?.AddCharacterToFaction(pnj, f);
         SelectedCharacter = pnj;
         IsShowingEditIChar = true;
+        */
     }
 
     private async Task UpdateSelectedFaction()
@@ -245,7 +247,7 @@
         IsShowingEditIChar = false;
     }
 
-    private async Task UpdateSelectedICharacter(ICharacter ch)
+    private async Task UpdateSelectedICharacter(PbtACharacter ch)
     {
         await CSService?.Campaign?.SaveChangesOnCharacter(ch);
     }

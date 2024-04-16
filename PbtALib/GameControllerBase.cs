@@ -35,6 +35,7 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
     {
 		this.DB = DB;
 		lastRollViewer = LastRoll;
+		if (People is null) People = new People(null);
 	}
 
 	public event EventHandler UpdateUI;

@@ -16,7 +16,8 @@
 }
 else if(_ShowingCast)
 {
-	<CharacterSelector CloseRequest="@(()=>{_ShowingCast = false;})"/>
+	<PeopleViewr GameID="@Meta.SelectedSeason.CampaignGuid" People="@Game.People" IsMaster=true ExitRequested=@(()=>{_ShowingCast = false;})/>
+ 	@* <CharacterSelector CloseRequest="@(()=>{_ShowingCast = false;})"/> *@
 }
 @if (_ShowingVTT)
 {
