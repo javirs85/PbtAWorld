@@ -10,6 +10,7 @@ public class PbtACharacter : ICharacter
 
 	public bool IsDead { get; set; } = false;
 	public bool IsNPC { get; set; } = true;
+	public bool IsKnownByPlayers { get; set; } = false;
 
 
 	private string _name = "Escoge un nombre";

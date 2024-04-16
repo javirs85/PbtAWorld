@@ -8,7 +8,7 @@ using PbtALib;
 namespace UrbanShadows;
 
 
-public class USFaction : IPbtAFaction
+public class USFaction : PbtAFaction
 {
 	public string Description { get; set; } = "descripción";
 	public string Kind { get; set; } = "Tipo";
@@ -71,7 +71,7 @@ public class USFaction : IPbtAFaction
 
 	public Guid ID { get; set; } = Guid.NewGuid();
 	public string Name { get; set; } = string.Empty;
-	public List<ICharacter> Members { get; set; } = new();
+	public List<PbtACharacter> Members { get; set; } = new();
 
 	public void DeleteCharacter(ICharacter ch)
 	{

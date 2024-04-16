@@ -13,7 +13,7 @@
 else
 {
 	<div class="ImageCard d-flex align-items-center" style="position: relative; background:black;">
-		<img src="@Image.src" alt="@Image.Name" style="max-width:300px;max-height:300px;" />
+		<img src="@Image.src" alt="@Image.Name" style="max-width:@(ForcedSize)px;max-height:@(ForcedSize)px;" />
 		<div class="d-flex flex-column gap-2" style="position:absolute; top:2px; right: 2px;">
 			<div class="d-flex align-items-center justify-content-center" style=" @(IsMaster?"":"opacity:0.5;")
 				right: 2px; color: black; cursor:pointer; 
@@ -67,7 +67,7 @@ else
 			<div style="border-radius: 25px;
 						height: 34px;
 						border: black 1px solid;
-						background: #000000bd;
+						background: black;
 						padding: 10px 30px;
 						color: white;
 						display: flex;
@@ -106,6 +106,7 @@ else
 	[Parameter] public bool IsMaster { get; set; }
 	[Parameter] public EventCallback ExitFullScreenClicked { get; set; }
 	[Parameter] public bool IsForcedFullscreen { get; set; } = false;
+	[Parameter] public float ForcedSize { get; set; } = 300.0f;
 
 	string NewName = "";
 	bool IsEditing = false;

@@ -60,6 +60,13 @@ public class ImagesService
 		var json = JsonSerializer.Serialize(AllImages);
 		await File.WriteAllTextAsync(InfoFile, json);
 	}
+
+	public async Task LoadAll(Guid _gameID)
+	{
+		GameID = _gameID;
+		await LoadAll();
+	}
+
 	public async Task LoadAll()
 	{
 		Directory.CreateDirectory(RootPath);

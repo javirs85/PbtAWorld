@@ -141,7 +141,7 @@ else
 	}
 	else if(IsShowingPeople)
 	{
-		<CharacterSelector CloseRequest="@(()=>{IsShowingPeople = false;})"/>		
+		<PeopleViewr GameID="@Meta.SelectedSeason.CampaignGuid" People="@Game.People" IsMaster=false ExitRequested=@(()=>{IsShowingPeople = false;}) />
 	}
 
 	<div class="d-flex SheetContainer" @onclick=FinishAllEdits>

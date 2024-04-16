@@ -1606,7 +1606,7 @@ public class DWMovesService : MovesServiceBase
 					},new SubMovement
 					{
 						ID = DWMovementIDs.DW_Wizard_AdvSpells_Sleep,
-						Tittle= "Ver Verdadero",
+						Tittle= "Dormir",
 						Description = "Di una palabra y tira 1d8+INT. Ese número de los enemigos que escucharon tu palabra se quedaron dormidos (la elección del DJ en cuanto a cuál)."
 					}
 				}

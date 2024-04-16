@@ -17,7 +17,7 @@ public class USPeople : People
         Circles.Add(new Circle(UrbanShadows.Circles.Poder.ToString(), new USFaction { Name = "Autónomos en Poder" }));
         Circles.Add(new Circle(UrbanShadows.Circles.Velo.ToString(), new USFaction { Name = "Autónomos en Velo" }));
     }
-    public override IPbtAFaction AddNewFactionToCircle(Circle c)
+    public override PbtAFaction AddNewFactionToCircle(Circle c)
     {
         USFaction faction = new USFaction();
 		c.Factions.Add(faction);

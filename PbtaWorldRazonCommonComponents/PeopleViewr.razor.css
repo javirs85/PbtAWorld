@@ -1,0 +1,107 @@
+﻿.PeopleModalBody {
+    background: #1C1E20;
+    padding: 50px;
+    padding-top: 0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 30px;
+    border: 1px solid grey;
+    gap: 10px;
+    overflow-y: auto;
+    width:100%;
+    height:100%;
+}
+
+.CircleContainer {
+    display: flex;
+    flex-direction: column;
+    background: #292e33;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s linear;
+}
+.Small {
+    flex: 1;
+    opacity: 1;
+}
+.SuperWide {
+    flex: 1;
+    opacity: 1;
+}
+
+.CircleBody span{
+    opacity:0.5;
+    font-size: 0.8em;
+}
+
+.CircleContainer .header {
+    background: #292e33;
+    text-align: center;
+    padding: 10px 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.CircleBody {
+    padding: 5px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.FactionContainer {
+    display: flex;
+    flex-direction: column;
+    background: black;
+    border: 1px solid gray;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s linear;
+}
+    .FactionContainer .header {
+        background: black;
+        text-align: center;
+        padding: 10px 5px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
+
+.FactionBody {
+    padding: 5px;
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.CharacterBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.CharacterDetailsBox{
+    display:flex;
+    flex-direction:column;
+    width: 200px;
+    height:100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+.CharacterDetailsBox div{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+}
