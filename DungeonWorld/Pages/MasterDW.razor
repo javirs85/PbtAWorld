@@ -38,7 +38,7 @@ else if (_ShowingEnemySelectionTool)
 else
 {
 	<div class="MasterMain" style="background: #272626;">
-		<div class="MasterMainColumn" style="background: #d2d9d3;">
+		<div class="MasterMainColumn" style="background: #d2d9d3; @(!IsShowingEnemiesColum?"width:0; max-width: 0; overflow: hidden;":"")">
 			<div class="d-flex gap-1">
 				<button class="btn btn-primary" @onclick=@(()=>{_showingSquareMap = false; _ShowingVTT =true;})>VTT</button>
 				<button class="btn btn-primary" @onclick=@(()=>{_ShowingVTT = false; _showingSquareMap =true;})><i class="bi bi-map"></i></button>
@@ -46,11 +46,14 @@ else
 				<button class="btn btn-primary" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></button>
 				<button class="btn btn-primary" @onclick=@(()=>{_ShowingClocks = true;})><i class="bi bi-hourglass-split"></i></button>
 				<button class="btn btn-primary" @onclick=@(()=>{_ShowingCast = true;})><i class="bi bi-person-vcard"></i></button>
-				<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d4);})/>
-				<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d6);}) />
-				<img src="imgs/DW/d8.svg" alt="d8" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d8);}) />
-				<img src="imgs/DW/d10.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d10);}) />
-				<img src="imgs/DW/d12.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d12);}) />
+				@if(IsShowingEnemiesColum)
+				{
+					<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d4);}) />
+					<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d6);}) />
+					<img src="imgs/DW/d8.svg" alt="d8" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d8);}) />
+					<img src="imgs/DW/d10.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d10);}) />
+					<img src="imgs/DW/d12.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d12);}) />
+				}
 			</div>
 			<div class="PlayersAreaHeader">
 				@foreach (var player in Meta.SelectedSeason.Players)
@@ -105,8 +108,14 @@ else
 				}
 				else
 				{
-					<div class="d-flex flex-column" style="overflow:auto; ">
-						<button class="btn btn-primary m-1" data-bs-toggle="modal" @onclick=@(()=>{_ShowingEnemySelectionTool = true;})>Elegir enemigo</button>
+					<div class="d-flex flex-column" style="overflow:auto; overflow-x:hidden;">
+						<div class="d-flex">
+							<button class="btn btn-primary m-1" data-bs-toggle="modal" @onclick=@(()=>{_ShowingEnemySelectionTool = true;})>Elegir enemigo</button>
+							@if(IsShowingEnemiesColum)
+							{
+								<button class="btn btn-success" @onclick=ToggleMenu><i class="bi bi-arrow-left-right"></i></button>
+							}
+						</div>
 						@foreach (var enemy in Game.MonsterDefinitionsInCurrentScene)
 						{
 							<EnemyCard monster="enemy" Game="Game" />
@@ -117,7 +126,19 @@ else
 			</div>
 		</div>
 
-		<div class="GenericMoves MasterMainColumn" style="background: #a2b0a3;">
+		<div class="GenericMoves MasterMainColumn" style="background: #a2b0a3; max-width:464px; min-width:464px; height:100%; overflow-y:auto;">
+			@if(!IsShowingEnemiesColum)
+			{
+				<div class="d-flex gap-1 w-100 justify-content-center" style="margin-top:5px; margin-bottom: -25px; z-index:2; overflow:visible;">
+					<button class="btn btn-success" @onclick=ToggleMenu><i class="bi bi-arrow-left-right"></i></button>
+					<img src="imgs/DW/d4.svg" alt="d4" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d4);}) />
+					<img src="imgs/DW/d6.svg" alt="d6" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d6);}) />
+					<img src="imgs/DW/d8.svg" alt="d8" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d8);}) />
+					<img src="imgs/DW/d10.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d10);}) />
+					<img src="imgs/DW/d12.svg" alt="d10" style="height: 38px; cursor:pointer;" @onclick=@((e)=>{RequestDamage(e, DiceTypes.d12);}) />
+				</div>
+			}
+
 			<div class="MovementsGroup">
 				<div class="MovementsGroupTittle">Movimientos comunes</div>
 				@foreach (var m in BasicMovements)
@@ -131,16 +152,20 @@ else
 				}
 			</div>
 		</div>
-		<div class="MasterMainColumn">
+		<div class="d-flex flex-column h-100">
 			@foreach (var pack in Game.TextBook.MasterMovesPacks)
 			{
-				<MasterMovePackViewer MovesPack="pack" />
+				<div style="@(!IsShowingEnemiesColum?"max-width:550px;min-width:550px;":"max-width:400px;min-width:400px;")">
+					<MasterMovePackViewer MovesPack="pack" />
+				</div>
 			}
 		</div>
-		<div class="PlayersColumn MasterMainColumn" style="overflow:auto;">
+		<div class="d-flex flex-column @(!IsShowingEnemiesColum?"flex-grow-1 flex-wrap align-items-stretch align-content-end":"")" style="overflow:auto;">
 			@foreach (var m in Game.MonsterDefinitionsInCurrentScene)
 			{
-				<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title=m.Name, Moves=m.Moves})" />
+				<div style="max-width:400px; ">
+					<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title=m.Name, Moves=m.Moves})" />
+				</div>
 			}
 			
 		</div>
@@ -158,6 +183,10 @@ else
 	bool _ShowingImagesManager = false;
 	bool _ShowingEnemySelectionTool = false;
 	bool SelectingEnemies = false;
+	bool IsShowingEnemiesColum = true;
+
+	private void ToggleMenu() => IsShowingEnemiesColum = !IsShowingEnemiesColum;
+
 	Monster? SelectedEnemy = null;
 	private DWCharacter? SelectedCharacter = null;
 
