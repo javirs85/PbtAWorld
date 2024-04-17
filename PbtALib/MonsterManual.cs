@@ -4459,6 +4459,26 @@ public class MonsterManual
 		}
 	}
 
+	public void RemoveMonsterPack(MonsterPack pack)
+	{
+		AllMonsterPacks.Remove(pack);
+		var FilePath = $"./wwwroot/DW/Monsters/{pack.ID.ToString()}.json";
+		if(File.Exists(FilePath))
+		{
+			File.Delete(FilePath);
+		}
+	}
+
+	public void AddMonsterPackFromJson(string json)
+	{
+		var pack = JsonSerializer.Deserialize<MonsterPack>(json);
+		if(pack is not null)
+		{
+			AllMonsterPacks.Add(pack);
+		}
+		File.WriteAllText($"./wwwroot/DW/Monsters/{pack.ID.ToString()}.json", json);	
+	}
+
 	public Monster? FindMonsterByID(string id)
 	{
 		foreach(var pack in AllMonsterPacks)

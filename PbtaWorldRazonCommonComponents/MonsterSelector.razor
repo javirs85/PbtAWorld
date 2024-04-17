@@ -1,11 +1,19 @@
-﻿@using PbtALib.ifaces
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using PbtALib.ifaces
 
 
 <div class="modal-dialog modal-fullscreen" id="SelectEnemies">
 	<div class="modal-content">
 		<div class="modal-body">
 			<div class="MonsterSelectionHeader d-flex justify-content-between align-items-center">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=CloseClicked>Close</button>
+				<div class="d-flex gap-1">
+					<EditForm Model="this">
+						<InputFile class="form-control" OnChange=AddNewLocationFromFile />
+					</EditForm>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=CloseClicked>Close</button>
+				</div>
+				
+				
 				<EditForm Model="this">
 					@if(_IsCreatingNewMonsterFaction)
 					{
@@ -63,6 +71,13 @@
 									</div>
 									<div @onclick=location.AddEmptyMonster @onclick:preventDefault @onclick:stopPropagation>
 										<i class="bi bi-plus-square ms-2" style="color: darkgreen;"></i>
+									</div>
+									<div>
+										<a href="/DW/Monsters/@(location.ID.ToString()).json"><i class="bi bi-cloud-arrow-down text-primary ms-2 fs-5"></i></a>
+									</div>
+									<div>
+										<i class="bi bi-trash3 ms-2" style="color: red; cursor:pointer;"
+										   @onclick="@(()=>{DeleteLocation(location);})"></i>
 									</div>
 								</button>
 							</h2>
@@ -123,4 +138,25 @@
 		}
 	}
 	string FromNameToID(string s) => String.Concat(s.Where(c => !Char.IsWhiteSpace(c)));
+
+	async Task AddNewLocationFromFile(InputFileChangeEventArgs e)
+	{
+		var file = e.File;
+		if (file != null)
+		{
+			using (var stream = file.OpenReadStream())
+			{
+				using (var reader = new StreamReader(stream))
+				{
+					var jsonContent = await reader.ReadToEndAsync();
+					Game.TextBook.Monsters.AddMonsterPackFromJson(jsonContent);
+				}
+			}
+		}
+	}
+
+	void DeleteLocation(MonsterPack mp)
+	{
+		Game.TextBook.Monsters.RemoveMonsterPack(mp);
+	}
 }
