@@ -25,7 +25,7 @@ else
 {
 	@if(IsShowingOldRolls)
 	{
-		<LastRollOverlay />
+		<LastRollOverlay OnExitRequest="@(()=>{IsShowingOldRolls = false;})" />
 	}
 	else if (_IsShowingImages)
 	{
@@ -311,8 +311,8 @@ else
 							<div class="SectionButton" @onclick=@(()=>{IsShowingVTT=true;})>VTT</div>
 							<div class="SectionButton" @onclick=@(()=>{IsShowingSquareMap = true; IsShowingVTT = false;})><i class="bi bi-map"></i></div>
 							<div class="SectionButton" @onclick=@(()=>{_IsShowingImages = true; IsShowingVTT = false;})><i class="bi bi-image"></i></div>
-							<div class="SectionButton" @onclick=@(()=>{LastRollViewer.Show();})><i class="bi bi-dice-5"></i></div>
-							<div class="SectionButton" @onclick=@(()=>{IsShowingClocksViewer = true;})><i class="bi bi-hourglass-split" style="font-size:24px; margin-bottom"></i></div>
+							<div class="SectionButton" @onclick=@(()=>{IsShowingOldRolls=true;})><i class="bi bi-dice-5"></i></div>
+							<div class="SectionButton" @onclick=@(()=>{ IsShowingClocksViewer = true;})><i class="bi bi-hourglass-split" style="font-size:24px; margin-bottom"></i></div>
 							<div class="SectionButton" @onclick=@(()=>{IsShowingPeople = true;})><i class="bi bi-person-vcard" style="font-size:24px; margin-bottom"></i></div>
 						</div>
 						<textarea class="SmallThingsTextArea mt-2" style="border:none; height:100px;" @bind=Player.PhysicialDescription @onfocusout=@(async ()=>{await Game.StoreChangesOnCharacter(Player, "Modificó sus aspecto físico");}) />
@@ -673,6 +673,8 @@ else
 			InvokeAsync(StateHasChanged);
 			IsShowingClocksViewer = true;
 		};
+
+		LastRollViewer.ShowOverlay += (o, e) => { IsShowingOldRolls = true; InvokeAsync(StateHasChanged); };
 	}
 
 	private void ShowFullScreenImage(object? sender, PbtAImage img)
