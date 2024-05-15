@@ -1,7 +1,7 @@
 ﻿@using PbtALib;
 @inject LastRollViewerService service
 
-@if(IsVisible)
+@if(true)
 {
 	<div class="FloatinCover @FloatinCoverClass d-flex flex-column gap-3 h-100 overflow-auto" @onclick=Hide>
 		@foreach(var LastRoll in service.LastRolls)
@@ -272,6 +272,8 @@
 }
 
 @code {
+	[Parameter] public EventCallback OnExitRequest { get; set; }
+
 	private AvailableGames Game  = AvailableGames.NotSet;
 	private bool IsVisible = false;
 	private string FloatinCoverClass
@@ -288,7 +290,7 @@
 	{
 		service.UpdateNeeded += (o, e) => { Update(); };
 		service.SetGame += (o, game) => { Game = game; Update(); };
-		service.ShowOverlay += (o, e) => { InvokeAsync(() => {Show(); }); };
+		//service.ShowOverlay += (o, e) => { InvokeAsync(() => {Show(); }); };
 	}
 
 	private void Update() => InvokeAsync(() => { StateHasChanged(); });
@@ -339,6 +341,7 @@
 	public void Hide()
 	{
 		IsVisible = false;
+		OnExitRequest.InvokeAsync();
 		StateHasChanged();
 	}
 }
