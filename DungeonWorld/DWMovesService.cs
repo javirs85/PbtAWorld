@@ -751,7 +751,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Works, DWStats.DW_None)
 			{
-				Tittle = "Trabajos Arcanos",
+				Tittle = "Trabajos Arcanos (Fascinación +3)",
 				HasSubMovements = true,
 				SelectableOptions = new List<SubMovement>
 				{
@@ -1089,14 +1089,14 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Sigiloso",
 				PreCondition = new Consequences{
-					MainText = "Cuando *Desafies el peligro**, te *adelantes y explres**  o *Luches como uno** de forma sigilosa. Tienes ventaja. No puedes usar este movimiento si estas sobrecargado"
+					MainText = "Cuando *Desafíes el peligro**, te *adelantes y explores**  o *Luches como uno** de forma sigilosa. Tienes ventaja. No puedes usar este movimiento si estas sobrecargado"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_FollowMe, DWStats.DW_None)
 			{
 				Tittle = "Sígueme",
 				PreCondition = new Consequences{
-					MainText = "Cuando guías al grupo mientras se aventuran, trate un 7-9 como un 10+."
+					MainText = "Cuando guías al grupo mientras se *Adelantan y exploran**, trate un 7-9 como un 10+."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_Friend, DWStats.DW_None)
