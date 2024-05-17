@@ -901,7 +901,9 @@ public class DWCharacter : PbtALib.PbtACharacter
 
 		Tracks.Add(new Points { Tittle = "Experiencia", Value = 0 });
 		Tracks.Add(new Points { Tittle = "Defender", Value = 0 });
-		
+
+		ClassMovments.Clear();
+
 		switch (this.Profession)
 		{
 			case DWClasses.DW_Barbarian:

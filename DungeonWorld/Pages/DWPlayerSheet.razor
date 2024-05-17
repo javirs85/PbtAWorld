@@ -27,7 +27,7 @@ else
 	{
 		<LastRollOverlay OnExitRequest="@(()=>{IsShowingOldRolls = false;})" />
 	}
-	else if (_IsShowingImages)
+	if (_IsShowingImages)
 	{
 		<ImagesManager CloseRequest="@(()=>{_IsShowingImages = false;})" GameId="Game.SessionID" IsMaster=false />
 	}
@@ -431,7 +431,10 @@ else
 					</div>
 				}
 				<div class="MovementsGroup">
-					<div class="MovementsGroupTittle">Movimientos de @Player.Profession.ToUI()</div>
+					<div class="MovementsGroupTittle d-flex align-items-center">
+						Movimientos de @Player.Profession.ToUI()
+						<img src="imgs/DW/editIcon.png" style="margin-left:10px; cursor:pointer;" @onclick=ClassMovementsSelector />
+					</div>
 					@foreach (var m in ClassMovements)
 					{
 						<MovementViewer Player="Player" Movement="m" />
@@ -440,7 +443,7 @@ else
 				<div class="MovementsGroup">
 					<div class="MovementsGroupTittle d-flex align-items-center">
 						Movimientos de @Player.Profession.ToUI() Avanzados
-						<img src="imgs/DW/editIcon.png" style="margin-left:10px" @onclick=AdvancedMovementsSelector/>
+						<img src="imgs/DW/editIcon.png" style="margin-left:10px; cursor:pointer;" @onclick=AdvancedMovementsSelector />
 					</div>
 					@foreach (var m in AvancedClassMovements)
 					{
@@ -488,6 +491,29 @@ else
 					}
 				</div>
 			}
+			else if(CurrentState == States.ClassMovementsSelector)
+			{
+				<div class="Selector BackgroundSelector" style="overflow:auto; flex-wrap: nowrap; justify-content: flex-start;" @onclick:stopPropagation>
+					@foreach (var mp in AllClassesBasicMoves)
+					{
+						<div>@mp.packageName</div>
+						@foreach(var m in mp.Moves)
+						{
+							<div class="MovementInSelectorItem  d-flex">
+								<MovementViewer Player="Player" Movement="m" />
+								@if (Player.ClassMovments.Contains(m.ID))
+								{
+									<img src="imgs/US/DeleteIcon.svg" @onclick:stopPropagation @onclick=@(async ()=>{await ToggleClassMovement(m);}) />
+								}
+								else
+								{
+									<img src="imgs/US/Add.svg" @onclick:stopPropagation @onclick=@(async ()=>{await ToggleClassMovement(m);}) />
+								}
+							</div>
+						}
+					}
+				</div>
+			}
 			else if(CurrentState == States.MovementSelector)
 			{
 				<div class="Selector BackgroundSelector" @onclick:stopPropagation>
@@ -513,7 +539,7 @@ else
 
 
 @code {
-	private enum States {Character, StringSelector, MovementSelector, BackgroundSelector, StringEditing}
+	private enum States {Character, StringSelector, ClassMovementsSelector, MovementSelector, BackgroundSelector, StringEditing}
 	private enum EditableBits {Name, Background1, Background2, Background3x}
 	private States CurrentState = States.Character;
 	private bool _IsShowingImages = false;
@@ -541,7 +567,14 @@ else
 	private List<IMove> AdvancedMovements = new();
 	private List<IMove> ClassMovements = new();
 	private List<IMove> AvancedClassMovements = new();
+	private List<MovesPackage> AllClassesBasicMoves = new();
 	private List<IMove> VTTMoves = new();
+
+	private class MovesPackage
+	{
+		public string packageName = "";
+		public List<DWMove> Moves = new();
+	}
 
 	private string VttPaperWidth = "400px";
 	private void ToggleVTTPaper()
@@ -616,6 +649,9 @@ else
 			if (m is not null)
 				AvancedClassMovements.Add(m);
 		}
+
+		AllClassesBasicMoves.Clear();
+		FillAllClassesBasicMoves();
 
 		VTTMoves.Clear();
 		VTTMoves.Add(Moves.AllMovements.Find(x => x.ID == DWMovementIDs.DW_DefyDanger));
@@ -702,6 +738,33 @@ else
 		// await JSRuntime.InvokeVoidAsync("DownloadJson", $"{Player.CharacterName}.json", streamRef);
 	}
 
+	private void FillAllClassesBasicMoves()
+	{
+		if(AllClassesBasicMoves.Count != 0) return; 
+
+		DWCharacter ch = new DWCharacter();
+		foreach(DWClasses cl in Enum.GetValues(typeof(DWClasses)))
+		{
+			if (cl == DWClasses.DW_NotSet || cl == DWClasses.DW_Master) continue;
+
+			ch.Init(cl);
+			MovesPackage mp = new MovesPackage { packageName = cl.ToString() };
+			foreach (var m in ch.ClassMovments) mp.Moves.Add(Moves.GetMovement(m));
+			AllClassesBasicMoves.Add(mp);
+
+			var IDs = Moves.GetAdvancedMovementsFor(cl);
+			MovesPackage mpadv = new MovesPackage { packageName = cl.ToString()+" avanzados" };
+			foreach (var m in IDs)
+			{
+				if (m == DWMovementIDs.DW_ALL_Adv_ImproveStat1 || m == DWMovementIDs.DW_ALL_Adv_ImproveStat2 || m == DWMovementIDs.DW_ALL_Adv_SuperiorStat)
+					continue;
+				mpadv.Moves.Add(Moves.GetMovement(m));
+			}
+
+			AllClassesBasicMoves.Add(mpadv);
+		}
+	}
+
 	private async Task Connect()
 	{
 	}
@@ -719,6 +782,16 @@ else
 	private void StartStringEditing(ref string ToEdit, string why)
 	{
 
+	}
+
+	private void ClassMovementsSelector()
+	{
+		var IDs = Moves.GetAdvancedMovementsFor(Player.Profession);
+		MovmentsForAdvancedSelector.Clear();
+		foreach (var m in IDs)
+			MovmentsForAdvancedSelector.Add(Moves.GetMovement(m));
+
+		CurrentState = States.ClassMovementsSelector;
 	}
 
 
@@ -755,6 +828,28 @@ else
 		Player.Background = b;
 		await Game.StoreChangesOnCharacter(Player, $"Cambió su trasfondo a {b.Title}");
 		CurrentState = States.Character;
+		StateHasChanged();
+	}
+
+	private async Task ToggleClassMovement(DWMove mov)
+	{
+		if (!Player.ClassMovments.Contains(mov.ID))
+		{
+			Player.ClassMovments.Add(mov.ID);
+			await Game.StoreChangesOnCharacter(Player, $"añadió {mov.Tittle}");
+		}
+		else
+		{
+			Player.ClassMovments.Remove(mov.ID);
+			await Game.StoreChangesOnCharacter(Player, $"quitó {mov.Tittle}");
+		}
+
+		ClassMovements.Clear();
+		foreach (var movID in Player.ClassMovments)
+		{
+			var m = Moves.GetMovement(movID);
+			ClassMovements.Add(m);
+		}
 		StateHasChanged();
 	}
 
