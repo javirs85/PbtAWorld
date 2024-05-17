@@ -14,20 +14,50 @@ else
 	<div class="ButtonsDrawer d-flex gap-1 align-items-center m-1" style="position:absolute; z-index:500;">
 		@if(IsMaster)
 		{
-			<button class="btn btn-primary" @onclick=StartWall>StartWall</button>
-			<button class="btn btn-primary" @onclick=service.Clear>Clear all</button>
-			<button class="btn btn-primary" @onclick=@(()=>{UsingAttentionMarker = !UsingAttentionMarker;})>Attention</button>
-			@if(DrawModeOn)
+			<!--
+				<button class="btn btn-primary" @onclick=StartWall>StartWall</button>
+				<button class="btn btn-primary" @onclick=service.Clear>Clear all</button>
+				<button class="btn btn-primary" @onclick=@(()=>{UsingAttentionMarker = !UsingAttentionMarker;})>Attention</button>
+			-->
+			@if (DrawModeOn)
 			{
-				<div class="p-2" style="@(isDrawing?"background: red; color: white;":"background:green; color:white;")">IsDrawing</div>
+				<div class="p-2" style="@(isDrawing?"background: red; color: white;":"background:green; color:white;")">[D] Drawing</div>
 			}
-			<div class="p-2" style="@(IsDeleting?"background: red; color: white;":"")">IsDeleting</div>
+			else
+			{
+				@if(IsDeleting)
+				{
+					<div class="p-2" style="@("background: green; color: white;")">[D] Deleting drawings</div>
+				}else if(UsingAttentionMarker)
+				{
+					<div class="p-2" style="background: gray; color: white;">[D] Drawing</div>
+				}
+				else
+				{
+					<div class="p-2" style="@("background: green; color: white;")">[D] Selecting</div>
+				}
+			}
+			@if(UsingAttentionMarker)
+			{
+				<div class="p-2" style="background: green; color: white;">[A] Attention</div>
+			}
+			else
+			{
+				<div class="p-2" style="background: gray; color: white;">[A] Attention</div>
+			}
+
+			<div class="p-2" style="background: darkslategray; color: white;">[O] Options</div>
+			<div class="p-2" style="background: darkslategray; color: white;">[H] Hide/Show foe</div>
+			<div class="p-2" style="background: darkslategray; color: white;">[K] Kill foe</div>
+			<div class="p-2" style="background: darkslategray; color: white;">[1..9] make group</div>
+			<div class="p-2" style="background: darkslategray; color: white;">[Shift] Select multiple</div>
+			<div class="p-2" style="background: darkslategray; color: white;">[Ctrl] Move map</div>
+			
 			<div class="p-2" style="@(IsTestingVisibility?"background: black; color: white;":"")">IsTestingVisibility</div>
 			<div class="p-2" style="@(IsMaster?"background: green; color: white;":"")">IsMaster</div>
 			<div class="p-2" style="@(IsCreatingAWall?"background: green; color: white;":"background: transparent;")">Current: @CurrentDrawing.Points.Count</div>
-			<div class="p-2" style="@(UsingAttentionMarker?"background: green; color: white;":"")">Attention</div>
+			
 			<div class="p-2">l: @service.GetLines().Count w:@service.Walls.Count</div>
-			<button class="btn btn-danger" @onclick=@(()=>{IsDeleting = !IsDeleting;})>Delete</button>
 			<button class="btn btn-primary" @onclick=service.SaveToJson>SaveToJson</button>
 			<EditForm Model="service">
 				<InputSelect @bind-Value=service.MapImageName>
