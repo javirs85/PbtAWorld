@@ -1329,10 +1329,10 @@ public class DWMovesService : MovesServiceBase
 			{
 				Tittle = "Puñalada por la espalda",
 				PreCondition = new Consequences{
-					MainText = "Cuando *atacas a alguien de cerca y no lo ven venir**, puedes tira +DES"
+					MainText = "Cuando *atacas a alguien de cerca y no lo ven venir**, simplemente haz tu daño, o puedes tira +DES y"
 				},
-				ConsequencesOn79 = new Consequences{MainText="Elije 1"},
-				ConsequencesOn10 = new Consequences{MainText="Elije 2",
+				ConsequencesOn79 = new Consequences{MainText="Haz tu daño y elije 1"},
+				ConsequencesOn10 = new Consequences{MainText="Haz tu daño y elije 2",
 					Options = new List<string>
 					{
 						"Inflige +1d4 de daño",
