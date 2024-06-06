@@ -87,7 +87,6 @@ public class WhiteBoardService
 		}
 
 		await LoadJson();
-
 	}
 
 	public List<string> GetMaps()
