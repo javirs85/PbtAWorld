@@ -12,7 +12,7 @@ public class DinoTextBook
 {
 	public DinoMove SafeAtLast = new DinoMove(DinoMoveIDs.SafeAtLast, DinoStates.D_0)
 	{
-		Tittle = "Al fin a salvo",
+		Title = "Al fin a salvo",
 		PreCondition = new Consequences { MainText = "Cuando escapas de la isla, tira + el número de historias que has contado.", },
 		ConsequencesOn10 = new Consequences { MainText = "Describe algo bueno que te pasa a tí, o pasa gracias a tí, como resultado de tu estada en la isla." },
 		ConsequencesOn79 = new Consequences { MainText = "Describe algo (una imagen o memoria) que llevarás contigo para siempre de tu tiempo en la isla." },
@@ -20,7 +20,7 @@ public class DinoTextBook
 	};
 	public DinoMove NeverToReturn = new DinoMove(DinoMoveIDs.NeverToReturn, DinoStates.D_0)
 	{
-		Tittle = "Nunca de vuelta",
+		Title = "Nunca de vuelta",
 		PreCondition = new Consequences { MainText = "Cuando no consigues escapar e la isla (tanto por que moriste como por que te dejaron atrás), tira + el número de historias que has contado.", },
 		ConsequencesOn10 = new Consequences { MainText = "Elije un jugador para que diga un impacto positivo que has tenido en el mundo." },
 		ConsequencesOn79 = new Consequences { MainText = "Elije a un jugador para que explique nunca olvidará sobre tí." },

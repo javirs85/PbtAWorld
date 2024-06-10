@@ -9,6 +9,7 @@
 @inject IDataBaseController Meta
 @inject DinoGameController DinoGame
 @inject DWGameController DWGame
+@inject SVGameController SVGame
 @inject USGameController USGame
 @inject USMovesService USMoves
 @inject LastRollViewerService LastRollViewerService
@@ -36,6 +37,10 @@ else if(SelectedGame == AvailableGames.US)
 {
 	<UrbanShadows.Pages.USRunningPage Player="USPlayer" />
 }
+else if(SelectedGame == AvailableGames.SV)
+{
+	<ScumAndVillainy.Pages.SVPlayerSheet Player="SVPlayer" />
+}
 
 @code {
 	[Parameter] public string SelectedGameString { get; set; } = "NotSet";
@@ -44,6 +49,7 @@ else if(SelectedGame == AvailableGames.US)
 	DinoCharacter DinoPlayer;
 	DungeonWorld.DWCharacter DWPlayer;
 	UrbanShadows.USCharacterSheet USPlayer;
+	SVCharacter SVPlayer;
 
 	AvailableGames SelectedGame = AvailableGames.NotSet;
 
@@ -100,6 +106,13 @@ else if(SelectedGame == AvailableGames.US)
 					circle.DefaultFaction.Members.Add(usp);
 			}
 			AlreadySet = true;
+		}
+		else if(localGameId == AvailableGames.SV)
+		{
+			SVPlayer = System.Text.Json.JsonSerializer.Deserialize<SVCharacter>(data);
+			Meta.SelectedPlayer = SVPlayer;
+			SVGame.SessionID = Meta.SelectedSeason.CampaignGuid;
+			CharacterSelectorService.Campaign = SVGame.People;
 		}
 
 

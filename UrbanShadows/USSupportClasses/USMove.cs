@@ -12,7 +12,7 @@ public class USMove : PbtALib.BaseMove<USMoveIDs, USAttributes>
 {
 	public USMove(USMoveIDs IDs, USAttributes roll) : base(IDs, roll)
 	{
-		Tittle = "Not Set";
+		Title = "Not Set";
 	}
 
 	public override bool HasRoll() => Roll != USAttributes.None;

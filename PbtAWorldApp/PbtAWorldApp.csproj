@@ -13,6 +13,7 @@
     <ProjectReference Include="..\PbtADBConnector\PbtADBConnector.csproj" />
     <ProjectReference Include="..\PbtAWorldConnectivity\PbtAWorldConnectivity.csproj" />
     <ProjectReference Include="..\PbtALib\PbtALib.csproj" />
+    <ProjectReference Include="..\ScumAndVillainiRazor\ScumAndVillainy.csproj" />
     <ProjectReference Include="..\UrbanShadows\UrbanShadows.csproj" />
   </ItemGroup>
 

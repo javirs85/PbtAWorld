@@ -14,7 +14,7 @@
 				type="button"
 				data-bs-toggle="collapse"
 				data-bs-target="@("#collapsing"+string.Concat(Move.IDText.Where(c => !char.IsWhiteSpace(c))))">
-			@Move.Tittle
+			@Move.Title
 		</button>
 	</h2>
 	<div class="MoveBody accordion-collapse collapse" id=@("collapsing"+Move.IDText+string.Concat(Move.IDText.Where(c => !char.IsWhiteSpace(c))))>

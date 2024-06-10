@@ -12,7 +12,7 @@
 					@if(LastRoll.Movement is not null)
 					{
 						<div class="MovementContent" style="color: white;">
-							<div class="MovementHeader">@LastRoll.Movement.Tittle</div>
+							<div class="MovementHeader">@LastRoll.Movement.Title</div>
 							@if (LastRoll.Movement.PreCondition != null && LastRoll.Movement.PreCondition.MainText != "")
 							{
 								<DecodedString Value=@LastRoll.Movement.PreCondition.MainText />

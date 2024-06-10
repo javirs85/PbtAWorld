@@ -1,0 +1,34 @@
+﻿<h3>SVPlayerSheet</h3>
+
+	@Player.Name
+@code {
+	[Parameter] public SVCharacter Player { get; set; } = new();
+
+	
+
+	// protected async override void OnParametersSet()
+	// {
+	// 	if (Player is null) Player = new(Moves);
+
+	// 	VTT.Players = Game.Players;
+
+	// 	Game.NewInfoToast -= ShowInfo;
+	// 	Game.NewInfoToast += ShowInfo;
+
+	// 	Game.OnNewRoll -= ShowLastRoll;
+	// 	Game.OnNewRoll += ShowLastRoll;
+
+	// 	Game.AllDebts.Clear();
+	// 	Game.AllDebts.Add(new Debt
+	// 		{
+	// 			ID = Guid.NewGuid(),
+	// 			Amount = 1,
+	// 			PayingID = this.Player.ID,
+	// 			ReceivingID = this.Player.ID,
+	// 			Reason = "Because this is Sparta"
+	// 		});
+
+	// 	ChargeListsOnScreen();
+	// 	CharacterSelectorService.SetPeople(Game.People);
+	// }
+}

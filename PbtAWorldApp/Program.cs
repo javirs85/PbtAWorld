@@ -19,6 +19,7 @@ using PbtALib.ifaces;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 using WhiteBoard;
+using ScumAndVillainy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,12 +43,14 @@ builder.Services.AddSingleton<IDataBaseController, DataBaseController>();
 builder.Services.AddSingleton<DinoMovesService>();
 builder.Services.AddSingleton<DWMovesService>();
 builder.Services.AddSingleton<USMovesService>();
+builder.Services.AddSingleton<SVMovesService>();
 builder.Services.AddSingleton<WhiteBoardService>();
 builder.Services.AddSingleton<ImagesService>();
 builder.Services.AddSingleton<PNJs>();
 builder.Services.AddSingleton<DinoGameController>();
 builder.Services.AddSingleton<DWGameController>();
 builder.Services.AddSingleton<USGameController>();
+builder.Services.AddSingleton<SVGameController>();
 builder.Services.AddSingleton<LastRollViewerService>();
 builder.Services.AddScoped<DinoCharacter>();
 builder.Services.AddSingleton<MoveSelector.MoveSelectorService>();

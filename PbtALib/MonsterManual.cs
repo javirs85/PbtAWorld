@@ -61,7 +61,7 @@ public class MonsterManual
 					Moves = new List<MasterMove>
 					{
 						new MasterMove("Cavar la tierra"),
-						new MasterMove("Irrumpir desde el subsuelo"),
+						new MasterMove("Maniobrar desde el subsuelo"),
 						new MasterMove("Rociar ácido, devorando el metal y la carne")
 					},
 					Attacks = new List<AttackDef>
@@ -560,7 +560,7 @@ public class MonsterManual
 					{
 						new MasterMove("Excavar bajo la piel"),
 						new MasterMove("Poner huevos"),
-						new MasterMove("Irrumpir desde una criatura infectada")
+						new MasterMove("Maniobrar desde una criatura infectada")
 					},
 					Attacks = new List<AttackDef>
 					{
@@ -2400,7 +2400,7 @@ public class MonsterManual
 					},
 					Special = new List<string> { "Acuático" },
 					Instinct = "Dirigir",
-					Definition = "Se dice que las casas gobernantes tritón fueron elegidas al amanecer de los tiempos. Otorgadas con el señorío sobre todas las razas del mar por algún dios ahora olvidado. Estas líneas de sangre continúan, transmitiendo el gobierno de padre a hija y madre a hijo a lo largo de las edades. A cada uno se le permite gobernar su ciudad de la manera que elija, algunos solos o con sus cónyuges, otros en consejo de hermanos y hermanas. En épocas pasadas, eran conocidos por su sabiduría y las líneas de sangre de temperamento ecuánime eran respetadas por encima de todo. La profecía de los invocamareas está cambiando eso: se espera que los nobles sean fuertes, no sabios. Los nobles han comenzado a responder, y algunos temen que la antigua sangre esté cambiando para siempre. Puede ser demasiado tarde para retroceder. El tiempo y la marea no esperan a nadie.",
+					Definition = "Se dice que las casas gobernantes tritón fueron elegidas al amanecer de los tiempos. Otorgadas con el señorío sobre todas las razas del mar por algún dios ahora olvidado. Estas líneas de sangre continúan, transmitiendo el gobierno de padre a hija y madre a hijo a lo largo de las edades. A cada uno se le permite gobernar su ciudad de la manera que elija, algunos solos o con sus cónyuges, otros en consejo de hermanos y hermanas. En épocas pasadas, eran conocidos por su Perspicacia y las líneas de sangre de temperamento ecuánime eran respetadas por encima de todo. La profecía de los invocamareas está cambiando eso: se espera que los nobles sean fuertes, no sabios. Los nobles han comenzado a responder, y algunos temen que la antigua sangre esté cambiando para siempre. Puede ser demasiado tarde para retroceder. El tiempo y la marea no esperan a nadie.",
 					Moves = new List<MasterMove>
 					{
 						new MasterMove("Incitar a los tritones a la guerra"),
@@ -3097,7 +3097,7 @@ public class MonsterManual
 					MaxHP = 3,
 					Armor = 1,
 					Instinct = "Servir a los dragones",
-					Definition = "Algunos tienden a agrupar a estos pequeños hombres-dragón, parecidos a ratas, con trasgos, orcos, ogros y hobgoblins. Son más inteligentes y sabios que sus parientes, sin embargo. Los kobolds son esclavos subyugados a los dragones y fueron, en tiempos antiguos, los guardianes de su sabiduría y sirvientes hechiceros. Sus clanes, con nombres como Ironscale y Whitewing, se forman alrededor de un maestro dragón y viven para servir y hacer su voluntad. Ver a un kobold significa que hay más cerca, y si hay más cerca, entonces no puede estar lejos un poderoso dragón.",
+					Definition = "Algunos tienden a agrupar a estos pequeños hombres-dragón, parecidos a ratas, con trasgos, orcos, ogros y hobgoblins. Son más inteligentes y sabios que sus parientes, sin embargo. Los kobolds son esclavos subyugados a los dragones y fueron, en tiempos antiguos, los guardianes de su Perspicacia y sirvientes hechiceros. Sus clanes, con nombres como Ironscale y Whitewing, se forman alrededor de un maestro dragón y viven para servir y hacer su voluntad. Ver a un kobold significa que hay más cerca, y si hay más cerca, entonces no puede estar lejos un poderoso dragón.",
 					Moves = new List<MasterMove>
 					{
 						new MasterMove("Montar una trampa"),

@@ -130,7 +130,16 @@
 						}
 					}
 				}
-
+				else if (Meta.SelectedGame == AvailableGames.SV)
+				{
+					@foreach (ScumAndVillainy.SVClasses c in Enum.GetValues(typeof(ScumAndVillainy.SVClasses)))
+					{
+						@if (c != ScumAndVillainy.SVClasses.NotSet && c != ScumAndVillainy.SVClasses.All)
+						{
+							<div class="btn btn-primary" @onclick=@(async ()=>{await CreateNewSVCharacter(c);})>@c.ToUI()</div>
+						}
+					}
+				}
 			</div>
 		}
 	</div>
@@ -181,6 +190,10 @@
 		else if(Meta.SelectedGame == AvailableGames.US)
 		{
 			return ((AvailableArchetypes)classID).ToUI();
+		}
+		else if (Meta.SelectedGame == AvailableGames.SV)
+		{
+			return ((ScumAndVillainy.SVClasses)classID).ToUI();
 		}
 		else
 			return "Wrong SelectedGame at FromClassIDToUI";
@@ -272,7 +285,7 @@
 		newCharacter.ID = Guid.NewGuid();
 		newCharacter.Name = NewCharacterName;
 		newCharacter.Archetype = c;
-		
+
 
 		if (Meta.SelectedGame is not null && Meta.SelectedSeason is not null)
 			await Meta.InsertNewCharacter(
@@ -281,6 +294,28 @@
 				System.Text.Json.JsonSerializer.Serialize(newCharacter),
 				newCharacter.Name,
 				(byte)newCharacter.Archetype,
+				newCharacter.ID);
+
+		NewCharacterName = "Nombre";
+		IsLoadingFromDB = true;
+		await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
+		IsLoadingFromDB = false;
+	}
+
+	private async Task CreateNewSVCharacter(ScumAndVillainy.SVClasses c)
+	{
+		SVCharacter newCharacter = new SVCharacter();
+		newCharacter.ID = Guid.NewGuid();
+		newCharacter.Name = NewCharacterName;
+		newCharacter.Profession = c;
+
+		if (Meta.SelectedGame is not null && Meta.SelectedSeason is not null)
+			await Meta.InsertNewCharacter(
+				(byte)Meta.SelectedGame,
+				Meta.SelectedSeason.CampaignGuid,
+				System.Text.Json.JsonSerializer.Serialize(newCharacter),
+				newCharacter.Name,
+				(byte)newCharacter.Profession,
 				newCharacter.ID);
 
 		NewCharacterName = "Nombre";

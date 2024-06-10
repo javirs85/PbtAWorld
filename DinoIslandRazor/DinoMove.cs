@@ -15,7 +15,7 @@ namespace DinoIsland;
 public class DinoMove : BaseMove<DinoMoveIDs, DinoStates>
 {
     public DinoMove(DinoMoveIDs moveId, DinoStates state) : base(moveId, state) {
-        Tittle = "Tittle not set";
+        Title = "Tittle not set";
     }
 
     public MovementType TypeOfMovement { get; set; } = MovementType.NotSet;
