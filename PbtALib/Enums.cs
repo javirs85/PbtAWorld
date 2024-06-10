@@ -3,7 +3,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace PbtALib;
 
-public enum AvailableGames { DW, US, DI, NotSet}
+public enum AvailableGames { DW, US, DI, SV, NotSet}
 
 public enum HowOftenUsed { NeverUsed, FewUses, LotsOfUses, ToMuch };
 
@@ -18,8 +18,12 @@ public static class Extensions
 
 public enum RollTypes
 {
-	Roll_Simple, Roll_Advantage, Roll_Disadvantage, Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6, JustShowMoveWithNoRoll
+	Roll_Simple, Roll_Advantage, Roll_Disadvantage, Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6, JustShowMoveWithNoRoll,
+	FitD_Action, FitD_Resistance
 }
+
+
+
 public enum DiceTypes
 {
 	d4, d6, d8, d10, d12, d20
@@ -124,6 +128,7 @@ public static class UIExtensions
 			AvailableGames.DI => "Escape from dino island",
 			AvailableGames.DW => "Dungeon World",
 			AvailableGames.US => "Urban shadows",
+			AvailableGames.SV => "Scum and Villainy",
 			_ => "Game not selected"
 		};
 	}

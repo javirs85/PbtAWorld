@@ -99,7 +99,7 @@ public class DWMovesService : MovesServiceBase
 	{
 		new DWMove(DWMovementIDs.DW_DefyDanger, DWStats.DW_None)
 		{
-			Tittle = "Desafiar al peligro",
+			Title = "Desafiar al peligro",
 			PreCondition = new Consequences{
 				MainText = "Cuando el peligro acecha y hay mucho en juego, pero de todos modos actúas, verifica si se aplica otro movimiento. Si no, tira...",
 				Options = new List<string>
@@ -123,7 +123,7 @@ public class DWMovesService : MovesServiceBase
 		},
 		 new DWMove (DWMovementIDs.DW_DiscernReality, DWStats.DW_WIS)
 			{
-				Tittle = "Discernir la realidad",
+				Title = "Discernir la realidad",
 				PreCondition = new Consequences{
 					MainText = "Cuando estudias minuciosamente una situación o persona y miras al DJ para saber más, tira +SAB. Con 7+ tira con ventaja si usas tu nuevos conocimientos"
 
@@ -148,21 +148,21 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_IHaveWhatINeed, DWStats.DW_None)
 			{
-				Tittle = "Tengo lo que necesito",
+				Title = "Tengo lo que necesito",
 				PreCondition = new Consequences{
 					MainText = "Cuando decides que llevas algo contigo, borra un ⧫ (o ⧫⧫) de su equipo indefinido y marca un elemento o espacio para indicar que tiene eso. Si marcas un espacio, rellénalo con un elemento común o mundano. Como alternativa, gasta 1 uso de 'Cosas' (en lugar de equipo indefinido) para producir un artículo pequeño, común y mundano."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Aid, DWStats.DW_None)
 			{
-				Tittle = "Ayudar",
+				Title = "Ayudar",
 				PreCondition = new Consequences{
 					MainText = "Cuando ayudas a otro personaje que está apunto de tirar, tirar con ventaja pero te expones a los riesgos/costes/consecuencias."
 				}
 			},			
 			new DWMove (DWMovementIDs.DW_Interfere, DWStats.DW_CHOSE)
 			{
-				Tittle = "Interferir",
+				Title = "Interferir",
 				PreCondition = new Consequences{
 					MainText = "Cuando intentas frustrar la acción de otro PJ y ninguno de los dos retrocede, tira ... ",
 					Options = new List<string>
@@ -192,7 +192,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Parley, DWStats.DW_CHA)
 			{
-				Tittle = "Parlamentar",
+				Title = "Parlamentar",
 				PreCondition = new Consequences{
 					MainText = "Cuando presionas (amenaza, implora, avergüenza, suplica, motiva...) o atraes (seduce, soborna, tienta...) a un PNJ, di lo que quieres que hagan (o no hagan). Sí tienen razón para resistir, tira +CAR. En el caso de ser un PJ, con un 7-9 elije una de la lista, con 10+ las dos, ",
 					Options = new List<string>
@@ -225,14 +225,14 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Supplies, DWStats.DW_None)
 			{
-				Tittle = "Reabastecimiento",
+				Title = "Reabastecimiento",
 				PreCondition = new Consequences{
 					MainText = "Cuando aproveches la oportunidad para reabastecerte, borra cualquier ⧫ y vuelve a seleccionar tu equipo como desees. Si estás pagando, un artículo valioso (como una bolsa de monedas) debe bastar para cubrir todo el grupo.",
 				}
 			},
 			new DWMove (DWMovementIDs.DW_SproutLore, DWStats.DW_INT)
 			{
-				Tittle = "Decir conocimiento",
+				Title = "Decir conocimiento",
 				PreCondition = new Consequences{
 					MainText = "Cuando consultas tu conocimiento acumulado sobre algo, tira +INT"
 				},
@@ -247,21 +247,21 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Help, DWStats.DW_None)
 			{
-				Tittle = "Ayudar",
+				Title = "Ayudar",
 				PreCondition = new Consequences{
 					MainText = "Cuando ayudas a otro personaje que está a punto de tirar, él gana ventaja, pero estás expuesto a cualquier riesgo, costo o consecuencia."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_DealDamage, DWStats.DW_None)
 			{
-				Tittle = "Hacer daño",
+				Title = "Hacer daño",
 				PreCondition = new Consequences{
 					MainText = "Cuando dañes a un enemigo, pero no lo mates de forma directa, tira tu daño y di el resultado (más cualquier etiqueta (aparatoso, contundente, etc.). El DJ reducirá los PG del enemigo (menos su armadura) y describirá el resultado o te pedirá que lo hagas. Cuando tengas ventaja o desventaja en una tirada de daño, tira el dado de daño principal dos veces y guarda el resultado más alto o más bajo; luego añade bonificadores que se apliquen."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Defend, DWStats.DW_CON)
 			{
-				Tittle = "Defender",
+				Title = "Defender",
 				PreCondition = new Consequences{
 					MainText = "Cuando adoptes una postura defensiva o te metas en medio para proteger a otros, tira +CON y gana puntos que podrás usar. Cuando pasas a la ofensiva, dejas de concentrarte en la defensa, o la amenaza pasa, pierdes cualquier punto que tengas"
 				},
@@ -283,7 +283,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_HnS, DWStats.DW_DorS)
 			{
-				Tittle = "Saja-Raja",
+				Title = "Saja-Raja",
 				PreCondition = new Consequences{
 					MainText = "Cuando luches en combate cuerpo a cuerpo con un enemigo de tu nivel, tira con FUE (DES para armas delicadas)"
 				},
@@ -303,7 +303,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Volley, DWStats.DW_DEX)
 			{
-				Tittle = "Disparar",
+				Title = "Disparar",
 				PreCondition = new Consequences{
 					MainText = "Cuando lanzas un ataque a distancia, tira +DES"
 				},
@@ -324,7 +324,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_LastBreath, DWStats.DW_PlusZero)
 			{
-				Tittle = "Último aliento",
+				Title = "Último aliento",
 				PreCondition = new Consequences{
 					MainText = "Cuando te estás muriendo, vislumbras lo que hay más allá de las Puertas Negras de la Muerte (Descríbelo). Luego tira +nada (a la muerte no le importan los numeritos en tu ficha)"
 				},
@@ -343,7 +343,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Recover, DWStats.DW_None)
 			{
-				Tittle = "Recuperarse",
+				Title = "Recuperarse",
 				PreCondition = new Consequences
 				{
 					MainText="Cuando *te tomas el tiempo para recuperar el aliento y cuidar de lo que te aqueja**, gasta 1 uso de Suministros y recupera 5 PG. No puedes beneficiarte de este movimiento de nuevo hasta que recibas más daño.\r\n\r\nCuando *atiendes a una debilidad o a una herida problemática**, explica cómo. El DJ dirá si se cura o debes hacer algo más (Desafiar el Peligro, gastar Suministros, encontrar __, *Levantar campamento**, etc.)"
@@ -351,7 +351,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Camp, DWStats.DW_None)
 			{
-				Tittle = "Levantar un campamento",
+				Title = "Levantar un campamento",
 				PreCondition = new Consequences{
 					MainText = "Cuando te instalas para descansar en una zona peligrosa, alguien en el grupo debe gastar 1 uso de Suministros. Luego, turnaos para",
 					Options= new List<string>
@@ -374,7 +374,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_KeepYouMind, DWStats.DW_WIS)
 			{
-				Tittle = "Recupera el control de tu mente",
+				Title = "Recupera el control de tu mente",
 				PreCondition = new Consequences{
 					MainText = "Cuando te veas obligado a actuar en contra de tu voluntad, marca PX si actúas según lo ordenado. Si te resistes, tira +SAB: ",
 				},
@@ -404,7 +404,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_HuntDown, DWStats.DW_DEXCONWIS)
 			{
-				Tittle = "Dar caza",
+				Title = "Dar caza",
 				PreCondition = new Consequences{
 					MainText = "Cuando persigas a tu presa, tira y añade...",
 					Options= new List<string>
@@ -431,7 +431,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_IKnowAMan, DWStats.DW_CHA)
 			{
-				Tittle = "Conozco a un tipo...",
+				Title = "Conozco a un tipo...",
 				PreCondition = new Consequences{
 					MainText = "Cuando decidas que conoces a alguien que pueda ayudarte, nómbralo y tira +CAR",
 				},
@@ -457,7 +457,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_GlossOverFight, DWStats.DW_CHOSE)
 			{
-				Tittle = "Luchar a camara rápida",
+				Title = "Luchar a camara rápida",
 				PreCondition = new Consequences{
 					MainText = "Cuando la victoria sea clara y todos estén de acuerdo en saltarse los detalles de la pelea, describe tu papel en el conflicto y tira +STAT (por Desafiar el peligro)"
 				},
@@ -488,7 +488,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_FightAsOne, DWStats.DW_CHOSE)
 			{
-				Tittle = "Actuar como uno",
+				Title = "Actuar como uno",
 				PreCondition = new Consequences{
 					MainText = "Cuando intenteis superar un peligro todos juntos. Di cómo lo manejas y tira +STAT"
 				},
@@ -507,7 +507,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_RunAway, DWStats.DW_PlusZero)
 			{
-				Tittle = "Huir",
+				Title = "Huir",
 				PreCondition = new Consequences{
 					MainText = "Cuando el grupo huya del peligro, tira y suma...",
 					Options = new List<string>
@@ -536,7 +536,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Scout, DWStats.DW_CHOSE)
 			{
-				Tittle = "Adelantarte y explorar",
+				Title = "Adelantarte y explorar",
 				PreCondition = new Consequences{
 					MainText = "Cuando vayas por tu cuenta a explorar un área peligrosa, di cómo lo haces y tira + STAT (por Desafiar el peligro)"
 				},
@@ -571,7 +571,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_HoldBreath, DWStats.DW_CON_Plus2)
 			{
-				Tittle = "Mantener la respiración",
+				Title = "Mantener la respiración",
 				PreCondition = new Consequences{
 					MainText = "Cuando te sumerjas bajo el agua, consigue CON+2 puntos de respiración. Si tomas una respiración profunda primero, obtén un +1. Cada vez que tiras 2d6 para hacer un movimiento, elige 1 (después de tirar):",
 					Options = new List<string>
@@ -584,7 +584,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Travel, DWStats.DW_WIS)
 			{
-				Tittle = "Viajar",
+				Title = "Viajar",
 				PreCondition = new Consequences{
 					MainText = "Cuando viajes por tierras peligrosas o desconocidas, indica tu ruta y tu destino (que podría ser simplemente “un lugar seguro para acampar” o “hasta donde nos lleve este sendero”). Si la ruta es difícil, elige 1. Si la ruta es peligrosa, elige 2.Después de hacer cualquier elección, quien dirija el camino tira +SAB: ",
 					Options = new List<string>
@@ -610,7 +610,7 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Barbarian_InitialChoose, DWStats.DW_None)
 			{
-				Tittle = "Elije o fuerzo o agilidad",
+				Title = "Elije o fuerzo o agilidad",
 				PreCondition = new Consequences
 				{
 					MainText= "Elije gratis y al inicio una de los dos movimientos avanzados, o músculos poderosos o Grácia de pantera"
@@ -618,14 +618,14 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Hunger, DWStats.DW_None)
 			{
-				Tittle = "Apetitos hercúleos",
+				Title = "Apetitos hercúleos",
 				PreCondition = new Consequences{
 					MainText = "Escoge dos: \r\nRespuestas, Venganza sangrienta, Conflicto y destrucción, Descubrimiento y asombro, Placeres mortales, Superioridad sobre los demás, Riquezas y gloria,\r\n añádelo a tu descripción.\r\n\r\n Cuando haces un movimiento en busca de tu apetitos, tira 1d6+1d8 en lugar de 2d6. Si el d6 es > que el d8, el DJ agregará una complicación relacionada con sus actividades irresponsables. \r\n En caso de ventaja o desventaja duplica el d6."
                 }
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Formidable, DWStats.DW_None)
 			{
-				Tittle = "Formidable",
+				Title = "Formidable",
 				PreCondition = new Consequences{
 					MainText = "Cuando te lanzas a la batalla con arrojo, obtienes puntos igual a tu CON. Cuando dejes de pelear, dudes, o muestres cobardía, pierdes los puntos. Mientras peleas, gasta puntos 1 por 1 para:",
 					Options = new List<string>
@@ -638,14 +638,14 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Forastero, DWStats.DW_None)
 			{
-				Tittle = "Forastero",
+				Title = "Forastero",
 				PreCondition = new Consequences{
 					MainText = "Cuando hagas el campamento, pide al DJ que te haga una pregunta sobre tu gente, tu patria, o por qué lo dejaste. Si las responde, marca 1 PX"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_UpperHand, DWStats.DW_None)
 			{
-				Tittle = "Mirar a la muerte a los ojos",
+				Title = "Mirar a la muerte a los ojos",
 				PreCondition = new Consequences{
 					MainText = "Cuando *tomas tu último aliento**, tienes ventaja."
 				},
@@ -657,42 +657,42 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Barbarian_Adv_Muscle, DWStats.DW_None)
 			{
-				Tittle = "Músculos poderosos",
+				Title = "Músculos poderosos",
 				PreCondition = new Consequences{
 					MainText = "Cuando infliges daño es contundente (los golpea) y brutal (sangriento y destructivo). Empieza a jugar con 5◇"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Adv_Panter, DWStats.DW_None)
 			{
-				Tittle = "Gracia de pantera",
+				Title = "Gracia de pantera",
 				PreCondition = new Consequences{
 					MainText = "Cuando estás desarmado y no sobrecargado, impones una desventaja sobre cualquier daño que recibas que podrías esquivar o rodar."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Adv_Impresive, DWStats.DW_None)
 			{
-				Tittle = "Realmente impresionante",
+				Title = "Realmente impresionante",
 				PreCondition = new Consequences{
 					MainText = "Cuando realizas una hazaña de destreza física, nombra un testigo a quien hayas impresionado. Ganas ventaja en tu próximo *Parlamentar** con ellos."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Adv_Sanson, DWStats.DW_None)
 			{
-				Tittle = "Sansón",
+				Title = "Sansón",
 				PreCondition = new Consequences{
 					MainText = "Puedes marcar una debilidad para liberarte inmediatamente de una restricción física o mental."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Adv_VoleyAll, DWStats.DW_None)
 			{
-				Tittle = "Tirar cualquier cosa",
+				Title = "Tirar cualquier cosa",
 				PreCondition = new Consequences{
 					MainText = "Puedes *disparar** lanzando cualquier cosa que puedas recoger. Si no es adecuado para ser arrojado, tira +FUE en lugar de +DES."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barbarian_Adv_Instinct, DWStats.DW_None)
 			{
-				Tittle = "Instintos Salvajes",
+				Title = "Instintos Salvajes",
 				PreCondition = new Consequences{
 					MainText = "Cuando *disciernes la realidad**, siempre puedes preguntar “¿A qué debería estar atento?” gratis, incluso en un 6-."
 				}
@@ -701,14 +701,14 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Barb_Knowledge, DWStats.DW_None)
 			{
-				Tittle = "Saber bardo",
+				Title = "Saber bardo",
 				PreCondition = new Consequences{
 					MainText = "Cuando nombras una canción, un poema o un cuento que habla del tema en cuestión, gane ventaja a *Decir conocimiento**."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Reputation, DWStats.DW_CHA)
 			{
-				Tittle = "Reputación",
+				Title = "Reputación",
 				PreCondition = new Consequences{
 					MainText = "Cuando *conoces a alguien que ha oído hablar de ti** (tú lo decides), tira +CAR:  con 7-9, di una cosa que han escuchado sobre ti, y el DJ revelará otra\r\n"
 				},
@@ -723,14 +723,14 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Smart, DWStats.DW_None)
 			{
-				Tittle = "Ingenioso",
+				Title = "Ingenioso",
 				PreCondition = new Consequences{
 					MainText = "Cuando sacas un 6- en un movimiento y marcas XP, puede hacer una pregunta de la lista de *Discernir realidad**. Gana ventaja en tu primer movimiento para actuar sobre la respuesta."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barb_DoWorks, DWStats.DW_CHA)
 			{
-				Tittle = "Realizar un Trabajo Arcano",
+				Title = "Realizar un Trabajo Arcano",
 				PreCondition = new Consequences{
 					MainText = "Cuando realices un trabajo, nombra a cualquier persona que desea *eximir** del efecto y tira +CAR:"
 				},
@@ -751,7 +751,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Works, DWStats.DW_None)
 			{
-				Tittle = "Trabajos Arcanos (Fascinación +3)",
+				Title = "Trabajos Arcanos (Fascinación +3)",
 				HasSubMovements = true,
 				SelectableOptions = new List<SubMovement>
 				{
@@ -809,35 +809,35 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Barb_Adv_Parry, DWStats.DW_None)
 			{
-				Tittle = "Parada de duelista",
+				Title = "Parada de duelista",
 				PreCondition = new Consequences{
 					MainText = "+2 de armadura mientras haces Saja-Raja"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Adv_MoreWorks, DWStats.DW_None)
 			{
-				Tittle = "Repertorio ampliado",
+				Title = "Repertorio ampliado",
 				PreCondition = new Consequences{
 					MainText = "Aprende 2 trabajos arcanos más."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Adv_Cute, DWStats.DW_None)
 			{
-				Tittle = "Irresistible",
+				Title = "Irresistible",
 				PreCondition = new Consequences{
 					MainText = "Siempre puedes preguntar si un PNJ te encuentra atractivo (la respuesta es usualmente sí). Tienes ventaja para *Parlamentar** con él."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Adv_Party, DWStats.DW_None)
 			{
-				Tittle = "Alma de la fiesta",
+				Title = "Alma de la fiesta",
 				PreCondition = new Consequences{
 					MainText = "Cuando *ayudas a alguien a recuperarse animándolo**, él no necesita gastar Suministros. Cuando *haces campamento** e intentas mejorar el animo de todo el grupo, todos (y tú) eligen un beneficio adicional de la lista."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Barb_Adv_SilverTonge, DWStats.DW_None)
 			{
-				Tittle = "Lengua de plata",
+				Title = "Lengua de plata",
 				PreCondition = new Consequences{
 					MainText = "Cuando usas palabras para evitar sospechas o problemas, tira +CAR"
 				},
@@ -857,7 +857,7 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Cleric_Spells, DWStats.DW_None)
 			{
-				Tittle = "Hechizos (5 preparados)",
+				Title = "Hechizos (5 preparados)",
 				HasSubMovements = true,
 				SelectableOptions = new List<SubMovement>
 				{
@@ -913,7 +913,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Cleric_CastSpell, DWStats.DW_INT)
 			{
-				Tittle = "Lanzar un hechizo",
+				Title = "Lanzar un hechizo",
 				PreCondition = new Consequences{
 					MainText = "Cuando lanzas un hechizo que has preparado, tira +INT"
 				},
@@ -931,7 +931,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Cleric_PrepareSpell, DWStats.DW_None)
 			{
-				Tittle = "Preparar hechizos",
+				Title = "Preparar hechizos",
 				PreCondition = new Consequences{
 					MainText = "Cuando *pasas una hora+ en comunión con tu Dios**:",
 					Options = new List<string>
@@ -943,7 +943,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Cleric_Favor, DWStats.DW_None)
 			{
-				Tittle = "Favor Divino",
+				Title = "Favor Divino",
 				PreCondition = new Consequences{
 					MainText = "Empiezas a jugar con Favor. Cuando gastas tu Favor para invocar a tu dios para que te guíe, muestra su voluntad a través de señales y presagios. Tú y tus aliados obtenéis ventaja en el siguiente Movimiento que cada uno haga para actuar en la voluntad de su dios."
 				}
@@ -951,28 +951,28 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Cleric_Adv_Intervention, DWStats.DW_None)
 			{
-				Tittle = "Intervención divina",
+				Title = "Intervención divina",
 				PreCondition = new Consequences{
 					MainText = "Puedes *gastar tu Favor** cuando tú o un aliado sufre daño. Si lo haces, el daño es negado por una manifestación del dominio de tu dios."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Cleric_Adv_Balance, DWStats.DW_None)
 			{
-				Tittle = "Balanzas de Vida y de Muerte",
+				Title = "Balanzas de Vida y de Muerte",
 				PreCondition = new Consequences{
 					MainText = "Cuando alguien en su presencia (incluido tú) toma su último aliento, tienen ventaja."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Cleric_Adv_Serenity, DWStats.DW_None)
 			{
-				Tittle = "Serenidad",
+				Title = "Serenidad",
 				PreCondition = new Consequences{
 					MainText = "Cuando lanzas un hechizo, puedes ignorar una penalización de -1X a causa de desventajas."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Cleric_Adv_MoreSpells, DWStats.DW_None)
 			{
-				Tittle = "Nuevos Hechizos",
+				Title = "Nuevos Hechizos",
 				PreCondition = new Consequences{
 					MainText = "Cuando tomas este movimineto y cada vez que usas *preparar hechizos** preparas 6 en lugar de 5."
 				},
@@ -1000,7 +1000,7 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Druid_ShapeShifter, DWStats.DW_CON)
 			{
-				Tittle = "Cambia formas",
+				Title = "Cambia formas",
 				PreCondition = new Consequences{
 					MainText = "Cuando *tomas prestada la forma de una bestia natural, una nativa de tu tierra natal**, nómbrala y tira +CON:\r\n\r\nMientras estás en tu forma prestada, tienes su armadura innata, cualidades, etiquetas y habilidades, pero usa tus propias estadísticas (podrías ser un buey, y fuerte como un buey, pero tiras tu FUE para ver cómo manejas esa fuerza).\r\n\r\nCuando actúas en contra de los instintos o la naturaleza de tu forma prestada, estás Desafiando el Peligro con SAB"
 				},
@@ -1010,21 +1010,21 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Druid_SecretLanguage, DWStats.DW_WIS)
 			{
-				Tittle = "Lengua secreta",
+				Title = "Lengua secreta",
 				PreCondition = new Consequences{
 					MainText = "Puedes comunicarte con bestias naturales, espíritus\r\nde la naturaleza, y otros que hablan La Lengua.\r\nCuando parlamentes usando la lengua secreta, tire\r\ncon SAB en lugar de CAR."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Druid_TouchedBySpirit, DWStats.DW_None)
 			{
-				Tittle = "Tocado por el espíritu",
+				Title = "Tocado por el espíritu",
 				PreCondition = new Consequences{
 					MainText = "Siempre puedes preguntarle al DJ \"¿Qué espíritus están activos aquí? "
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Druid_Comunion, DWStats.DW_None)
 			{
-				Tittle = "Comunión",
+				Title = "Comunión",
 				PreCondition = new Consequences{
 					MainText = "Cuando realizas un pequeño ritual y haces una ofrenda de algo que les gustaría (whisky, incienso, sangre, etc.), los espíritus de un lugar se manifiestan, no siempre amistosos, pero al menos curiosos y dispuesto a escucharte.\r\n\r\nCuando te comunicas con el espíritu de una bestia y pides prestada su forma, te pedirá algo. Cumple con su solicitud, y en adelante podrás cambiar de forma en esa bestia, como si fuera nativo de tu patria."
 				}
@@ -1032,28 +1032,28 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Druid_Adv_Red, DWStats.DW_None)
 			{
-				Tittle = "Garras y dientes rojos",
+				Title = "Garras y dientes rojos",
 				PreCondition = new Consequences{
 					MainText = "Cuando cambias de forma a la de una animal peligroso, haces 1D4 Extra de daño."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Druid_Adv_Call, DWStats.DW_None)
 			{
-				Tittle = "Escucha mi llamada",
+				Title = "Escucha mi llamada",
 				PreCondition = new Consequences{
 					MainText = "Cuando marcas una debilidad y suplicas a uno de los elementos que te asista, un espíritu elemental se manifestará de forma dramática. Haz tu demanda y Parlamenta como de costumbre, pero notarás que es inconstante y terco, con deseos y necesidades ajenos a las tuyas."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Druid_Adv_TigerEyes, DWStats.DW_None)
 			{
-				Tittle = "Ojos de tigre",
+				Title = "Ojos de tigre",
 				PreCondition = new Consequences{
 					MainText = "Cuando marcas una bestia (con pigmento, barro, sangre, etc.), ves a través de sus ojos como si fueran tuyos, sin importar la distancia entre tú y él. Solo un animal puede estar tan marcado a la vez"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Druid_Adv_BorrowedPowers, DWStats.DW_None)
 			{
-				Tittle = "Poderes prestados",
+				Title = "Poderes prestados",
 				PreCondition = new Consequences{
 					MainText = "Cuando convences a un espíritu o a una bestia para que te preste su potencia, pregunta al DJ por uno de sus movimientos. Escríbelo abajo; puedes hacer ese movimiento, una vez, así como así. Solo puedes mantener un movimiento de este tipo a la vez."
 				}
@@ -1062,7 +1062,7 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Ranger_Hunt, DWStats.DW_WIS)
 			{
-				Tittle = "Cazar y rastrear",
+				Title = "Cazar y rastrear",
 				PreCondition = new Consequences{
 					MainText = "Cuando *Disciernes realidades** estudiando los signos dejados por criaturas pasajeras, tienes ventaja.\r\n\r\nCuando *sigues el rastro de una criatura**, tira +SAB:"
 				},
@@ -1071,7 +1071,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_Shoot, DWStats.DW_DEX)
 			{
-				Tittle = "Disparo preparado",
+				Title = "Disparo preparado",
 				PreCondition = new Consequences{
 					MainText = "Cuando preparas un disparo con calma, inflige daño o tira +DES"
 				},
@@ -1087,21 +1087,21 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_Stealthy, DWStats.DW_None)
 			{
-				Tittle = "Sigiloso",
+				Title = "Sigiloso",
 				PreCondition = new Consequences{
 					MainText = "Cuando *Desafíes el peligro**, te *adelantes y explores**  o *Luches como uno** de forma sigilosa. Tienes ventaja. No puedes usar este movimiento si estas sobrecargado"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_FollowMe, DWStats.DW_None)
 			{
-				Tittle = "Sígueme",
+				Title = "Sígueme",
 				PreCondition = new Consequences{
 					MainText = "Cuando guías al grupo mientras se *Adelantan y exploran**, trate un 7-9 como un 10+."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_Friend, DWStats.DW_None)
 			{
-				Tittle = "Compañero animal (elije 1)",
+				Title = "Compañero animal (elije 1)",
 				PreCondition = new Consequences{
 					MainText = "Tira +Feroz para que hagan Saja-Raja.\r\nTira +Inteligente para que disciernan realidades. Y lo que mejor se ajuste para Desafiar el Peligro. Normalmente SOLO te ayudan."
 				},
@@ -1138,21 +1138,21 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Ranger_Adv_Relatives, DWStats.DW_None)
 			{
-				Tittle = "Parientes y amigos",
+				Title = "Parientes y amigos",
 				PreCondition = new Consequences{
 					MainText = "Los gruñidos, ladridos, chirridos y llamadas de las criaturas de lo salvaje son para tí como un lenguaje."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_Adv_Naturalist, DWStats.DW_None)
 			{
-				Tittle = "Naturalista",
+				Title = "Naturalista",
 				PreCondition = new Consequences{
 					MainText = "Cuando *dices conocimiento** sobre lo salvaje o lo natural bestias, tenéis ventaja."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_Adv_HideSun, DWStats.DW_None)
 			{
-				Tittle = "Ocultar el sol",
+				Title = "Ocultar el sol",
 				PreCondition = new Consequences{
 					MainText = "Cuando tiras con un arco, puedes agotar tu munición (marque el siguiente estado de su arma/munición) antes de tirar. Si es así, elige 1:",
 					Options = new List<string>
@@ -1164,14 +1164,14 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_Adv_Horse, DWStats.DW_None)
 			{
-				Tittle = "Caballo de carga",
+				Title = "Caballo de carga",
 				PreCondition = new Consequences{
 					MainText = "Aumenta tu carga máxima en 2 y agréguala a tu equipo indefinido."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Ranger_Adv_Predator, DWStats.DW_None)
 			{
-				Tittle = "Depredador",
+				Title = "Depredador",
 				PreCondition = new Consequences{
 					MainText = "Cuando *disciernes realidades**, puedes preguntarte lo siguiente y, cuando actues sobre la respuesta a cualquiera de las preguntas, inflige +1d4 de daño",
 					Options = new List<string>
@@ -1184,14 +1184,14 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Fighter_Blind, DWStats.DW_None)
 			{
-				Tittle = "Blindado",
+				Title = "Blindado",
 				PreCondition = new Consequences{
 					MainText = "Cuando uses armadura, ignora la etiqueta de torpe."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Fighter_Bend, DWStats.DW_STR)
 			{
-				Tittle = "Curvar barras, levantar puertas",
+				Title = "Curvar barras, levantar puertas",
 				PreCondition = new Consequences{
 					MainText = "Cuando *uses la fuerza bruta para superar un obstáculo inanimado**, tira +FUE."
 				},
@@ -1210,21 +1210,21 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Fighter_Hard, DWStats.DW_CON)
 			{
-				Tittle = "Difícil de matar",
+				Title = "Difícil de matar",
 				PreCondition = new Consequences{
 					MainText = "Cuando tomas tu *último aliento**, puedes elegir tirar +CON en lugar de +nada. Con 12+, inmediatamente recuperas 1 HP."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Fighter_Fright, DWStats.DW_CHA)
 			{
-				Tittle = "Intimidante",
+				Title = "Intimidante",
 				PreCondition = new Consequences{
 					MainText = "Cuando *parlamentas usando violencia o amenazas**, tienes ventaja."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Fighter_Expert, DWStats.DW_None)
 			{
-				Tittle = "Especializaciones de armas",
+				Title = "Especializaciones de armas",
 				PreCondition = new Consequences{
 					MainText = "Elije 2"
 				},
@@ -1285,21 +1285,21 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Fighter_Adv_IronSkin, DWStats.DW_None)
 			{
-				Tittle = "Piel de hierro",
+				Title = "Piel de hierro",
 				PreCondition = new Consequences{
 					MainText = "Obtienes +1 armadura, siempre (acumulable)."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Fighter_Adv_Relentless, DWStats.DW_None)
 			{
-				Tittle = "Despiadado",
+				Title = "Despiadado",
 				PreCondition = new Consequences{
 					MainText = "Cuando *luchas para matar sin piedad ni vacilación**, tienes ventaja para infligir daño."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Fighter_Adv_Conscient, DWStats.DW_None)
 			{
-				Tittle = "Plenamente consciente",
+				Title = "Plenamente consciente",
 				PreCondition = new Consequences{
 					MainText = "Cuando *comience una pelea**, hazle al DJ una pregunta que podrías hacer con *discernir la realidad** y obtén ventaja para actuar según la respuesta\r\n\r\n Cuando uses *discernir la realidad**, agrega a la lista de preguntas que puede hacer:",
 					Options = new List<string>
@@ -1312,14 +1312,14 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Fighter_Adv_Cold, DWStats.DW_None)
 			{
-				Tittle = "Frío como el hielo",
+				Title = "Frío como el hielo",
 				PreCondition = new Consequences{
 					MainText = "Cuando haces algo *manteniendo la calma** y continuando, trata un 6- como un 7-9"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Fighter_Adv_IronEyes, DWStats.DW_None)
 			{
-				Tittle = "Mirada de acero",
+				Title = "Mirada de acero",
 				PreCondition = new Consequences{
 					MainText = "Cuando te *defiendes**, puedes gastar 1 punto para mirar a los ojos a un enemigo y obligarlo a mantenerte la mirada. Tiene desventaja en las tiradas de daño contra ti y tu defendido"
 				}
@@ -1327,7 +1327,7 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Thief_Backstab, DWStats.DW_DEX)
 			{
-				Tittle = "Puñalada por la espalda",
+				Title = "Puñalada por la espalda",
 				PreCondition = new Consequences{
 					MainText = "Cuando *atacas a alguien de cerca y no lo ven venir**, simplemente haz tu daño, o puedes tira +DES y"
 				},
@@ -1345,7 +1345,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Thief_DangerSense, DWStats.DW_INT)
 			{
-				Tittle = "Sentir el peligro",
+				Title = "Sentir el peligro",
 				PreCondition = new Consequences{
 					MainText = "Siempre puedes preguntarle al DJ: “¿Hay una emboscada o una trampa aquí?” Si dice “sí”, tira +INT"
 				},
@@ -1361,14 +1361,14 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Thief_Stealth, DWStats.DW_None)
 			{
-				Tittle = "Sigilo y escóndete en las sombras",
+				Title = "Sigilo y escóndete en las sombras",
 				PreCondition = new Consequences{
 					MainText = "Cuando *desafías el peligro**, *exploras hacia adelante** o *luchas como uno** siendo sigiloso, tienes ventaja. No puedes usar este movimiento si estás cargado."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Thief_Tricks , DWStats.DW_DEX)
 			{
-				Tittle = "Trucos del oficio",
+				Title = "Trucos del oficio",
 				PreCondition = new Consequences{
 					MainText = "Cuando *abres cerraduras o bolsillos o desactivas trampas**, tira +DES:"
 				},
@@ -1377,7 +1377,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Thief_Poison, DWStats.DW_None)
 			{
-				Tittle = "Venenos",
+				Title = "Venenos",
 				HasSubMovements = true,
 				SelectableOptions = new List<SubMovement>
 				{
@@ -1428,14 +1428,14 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Thief_Adv_Feline , DWStats.DW_None)
 			{
-				Tittle = "Felino",
+				Title = "Felino",
 				PreCondition = new Consequences{
 					MainText = "Cuando *no tienes problemas ni sobrecarga**, impones una desventaja en cualquier daño que recibas y que puedas esquivar o rodar"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Thief_Adv_Trickster , DWStats.DW_INT)
 			{
-				Tittle = "Aficionado a la magia",
+				Title = "Aficionado a la magia",
 				PreCondition = new Consequences{
 					MainText = "Cuando *juegues con un dispositivo mágico**, tira +INT"
 				},
@@ -1444,7 +1444,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Thief_Adv_Door , DWStats.DW_INT)
 			{
-				Tittle = "Ojo en la puerta",
+				Title = "Ojo en la puerta",
 				PreCondition = new Consequences{
 					MainText = "Cuando tú y tus aliados *necesiten salir de aquí**, nombra tu ruta de escape y tira +INT"
 				},
@@ -1453,14 +1453,14 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Thief_Adv_Dirty , DWStats.DW_None)
 			{
-				Tittle = "Lucha sucia",
+				Title = "Lucha sucia",
 				PreCondition = new Consequences{
 					MainText = "Cuando *apuñalas por la espalda**, gana ventaja en tu tirada de daño."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Thief_Adv_Cheater , DWStats.DW_None)
 			{
-				Tittle = "Tramposo",
+				Title = "Tramposo",
 				PreCondition = new Consequences{
 					MainText = "Cuando *desafías el peligro siendo engañoso**, trata un 7-9 como un 10+.\r\n\r\nCuando otro jugador Discierne Realidades o usa Parlamentar contigo, no necesitas ser honesto con tus respuestas"
 				}
@@ -1468,7 +1468,7 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Wizard_Spells, DWStats.DW_None)
 			{
-				Tittle = "Hechizos (5 preparados)",
+				Title = "Hechizos (5 preparados)",
 				HasSubMovements = true,
 				SelectableOptions = new List<SubMovement>
 				{
@@ -1518,7 +1518,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Wizard_CastSpell, DWStats.DW_INT)
 			{
-				Tittle = "Lanzar un hechizo",
+				Title = "Lanzar un hechizo",
 				PreCondition = new Consequences{
 					MainText = "Cuando lanzas un hechizo que has preparado, tira +INT"
 				},
@@ -1535,7 +1535,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Wizard_PrepareSpell, DWStats.DW_None)
 			{
-				Tittle = "Preparar hechizos",
+				Title = "Preparar hechizos",
 				PreCondition = new Consequences{
 					MainText = "Cuando *pasas una hora o más tranquilamente estudiando tu libro de hechizos**:",
 					Options = new List<string>
@@ -1547,7 +1547,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Wizard_Ritual, DWStats.DW_None)
 			{
-				Tittle = "Ritual",
+				Title = "Ritual",
 				PreCondition = new Consequences{
 					MainText = "Cuando desees *tejer la magia**, di lo que buscas y cómo planeas hacerlo. El DJ dirá \"Por supuesto, pero...\" y 1-4 de los siguientes. Realiza el ritual y la magia surtirá efecto",
 					Options = new List<string>
@@ -1565,28 +1565,28 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Wizard_Adv_Guardian, DWStats.DW_None)
 			{
-				Tittle = "Guardián Arcano",
+				Title = "Guardián Arcano",
 				PreCondition = new Consequences{
 					MainText = "Mientras tengas al menos 2 hechizos preparados, tienes 2 Armadura."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Wizard_Adv_Detect, DWStats.DW_None)
 			{
-				Tittle = "Detectar mágia",
+				Title = "Detectar mágia",
 				PreCondition = new Consequences{
 					MainText = "Cuando *disciernes realidades**, puedes preguntarte \"¿Qué es mágico aquí? gratis, incluso en un 6-."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Wizard_Adv_Logic, DWStats.DW_INT)
 			{
-				Tittle = "Lógica",
+				Title = "Lógica",
 				PreCondition = new Consequences{
 					MainText = "Cuando *disciernes realidades a través de una observación detallada y la deducción**, tira INT en lugar de SAB."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Wizard_Adv_MoreSpells, DWStats.DW_None)
 			{
-				Tittle = "Nuevos Hechizos",
+				Title = "Nuevos Hechizos",
 				PreCondition = new Consequences{
 					MainText = "Requiere al menos OTRO avance. Agrega a tu libro de hechizos:"
 				},
@@ -1613,7 +1613,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Obliged, DWStats.DW_None)
 			{
-				Tittle = "Obligado por una ley superior",
+				Title = "Obligado por una ley superior",
 				PreCondition = new Consequences{
 					MainText = "Marca 3 juramentos. Cuando violes uno de ellos, elige dos de tus movimientos de paladín. Pierdes esos movimientos hasta que te expíes; (pregúntale al DJ)"
 				},
@@ -1654,7 +1654,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Grace, DWStats.DW_CHA)
 			{
-				Tittle = "Gracia divina",
+				Title = "Gracia divina",
 				PreCondition = new Consequences{
 					MainText = "Cuando *Defiendes**, tira +CAR en lugar de +CON. Además de las opciones habituales, puedes gastar tus puntos en:",
 					Options = new List<string>
@@ -1666,21 +1666,21 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Eyes, DWStats.DW_None)
 			{
-				Tittle = "ojos despejados",
+				Title = "ojos despejados",
 				PreCondition = new Consequences{
 					MainText = "Cuando oras pidiendo guía, aunque sea por un momento, puedes preguntarle al DJ \"¿qué es el mal aquí?\" y obtén una respuesta honesta"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_NoFear, DWStats.DW_None)
 			{
-				Tittle = "Inmune al miedo",
+				Title = "Inmune al miedo",
 				PreCondition = new Consequences{
 					MainText = "Cuando tires para resistir o actuar a pesar del miedo, no tires; automáticamente tienes un 10+."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Hurt, DWStats.DW_STR)
 			{
-				Tittle = "Herir",
+				Title = "Herir",
 				PreCondition = new Consequences{
 					MainText = "Cuando golpees una cosa de maldad sobrenatural, tira +FUE. Haz daño y elige 1",
 					Options= new List<string>
@@ -1696,35 +1696,35 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Paladin_Adv_Aura, DWStats.DW_None)
 			{
-				Tittle = "Aura de coraje",
+				Title = "Aura de coraje",
 				PreCondition = new Consequences{
 					MainText = "Cuando te mantienes firme en la batalla, a aquellos aliados que pueden verte o escucharte no les afectan ni el miedo o la duda"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Adv_Charge, DWStats.DW_None)
 			{
-				Tittle = "A la Carga!",
+				Title = "A la Carga!",
 				PreCondition = new Consequences{
 					MainText = "Cuando tú y quien te siga cargáis hacia la batalla, obtenéis +1 de armadura e infligís +1d4 de daño en el intercambio inicial"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Adv_Defender, DWStats.DW_None)
 			{
-				Tittle = "Defensor acérrimo",
+				Title = "Defensor acérrimo",
 				PreCondition = new Consequences{
 					MainText = "Cuando *Defiendes**, tienes +1 puntos. Incluso con un 6-, tienes 1 punto."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Adv_Walk, DWStats.DW_None)
 			{
-				Tittle = "Paseo por el valle",
+				Title = "Paseo por el valle",
 				PreCondition = new Consequences{
 					MainText = "No te afectan los venenos ni las enfermedades."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Paladin_Adv_Window, DWStats.DW_WIS)
 			{
-				Tittle = "Ventana al alma",
+				Title = "Ventana al alma",
 				PreCondition = new Consequences{
 					MainText = "Cuando mires a los ojos de otro, tira +SAB. Mientras estés en su presencia, gasta puntos que consigas, 1-por-1, para preguntar a su jugador/el DJ",
 					Options = new List<string>
@@ -1740,21 +1740,21 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Wielder_Valor, DWStats.DW_None)
 			{
-				Tittle = "Valor",
+				Title = "Valor",
 				PreCondition = new Consequences{
 					MainText = "Cuando *desafías el peligro corriendo, saltando, trepando, o dando tumbos**, tienes ventaja. No puedes usar este movimiento si estás Cargado"
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Wielder_Measure, DWStats.DW_None)
 			{
-				Tittle = "Tomarle las medidas",
+				Title = "Tomarle las medidas",
 				PreCondition = new Consequences{
 					MainText = "Cuando te tomas un momento para evaluar a un PNJ, puedes preguntar al DJ \"¿Qué van a hacer?\" y obtener una respuesta honesta."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Wielder_Weapon, DWStats.DW_None)
 			{
-				Tittle = "Tu arma",
+				Title = "Tu arma",
 				PreCondition = new Consequences{
 					MainText = "Elije 1, no cuenta para la carga."
 				},
@@ -1802,21 +1802,21 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_Wielder_Adv_Keep, DWStats.DW_None)
 			{
-				Tittle = "Sigue luchando!",
+				Title = "Sigue luchando!",
 				PreCondition = new Consequences{
 					MainText = "Cuando se reduciría a 0 PG, puedes elegir marcar una debilidad en su lugar."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Wielder_Adv_Pain, DWStats.DW_None)
 			{
-				Tittle = "Siente el dolor!",
+				Title = "Siente el dolor!",
 				PreCondition = new Consequences{
 					MainText = "Cuando manejas Tu arma y luchas para matar, tira el daño con ventaja."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_Wielder_Adv_Voices, DWStats.DW_CHA)
 			{
-				Tittle = "Voces",
+				Title = "Voces",
 				PreCondition = new Consequences{
 					MainText = "Cuando *consultes a los espíritus atados a Tu Arma**, tira +CAR"
 				},
@@ -1831,7 +1831,7 @@ public class DWMovesService : MovesServiceBase
 			},
 			new DWMove (DWMovementIDs.DW_Wielder_Adv_Power, DWStats.DW_CHA)
 			{
-				Tittle = "Pozo de poder",
+				Title = "Pozo de poder",
 				PreCondition = new Consequences{
 					MainText = "Elige un hechizo del libreto de mago o clérigo: Cuando uses Tu arma para lanzar este hechizo, tira +CAR"
 				},
@@ -1895,21 +1895,21 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_ALL_Adv_ImproveStat1, DWStats.DW_None)
 			{
-				Tittle = "Mejorar característica",
+				Title = "Mejorar característica",
 				PreCondition = new Consequences{
 					MainText = "Aumenta una de tus estadísticas en +1 (max +2)."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_ALL_Adv_ImproveStat2, DWStats.DW_None)
 			{
-				Tittle = "Mejorar característica",
+				Title = "Mejorar característica",
 				PreCondition = new Consequences{
 					MainText = "Aumenta una de tus estadísticas en +1 (max +2)."
 				}
 			},
 			new DWMove (DWMovementIDs.DW_ALL_Adv_SuperiorStat, DWStats.DW_None)
 			{
-				Tittle = "Característica superior",
+				Title = "Característica superior",
 				PreCondition = new Consequences{
 					MainText = "Requiere: mejorar característica y al menos otro avance\r\nAumenta una de tus estadísticas en +1(max +3)."
 				}
@@ -1917,27 +1917,27 @@ public class DWMovesService : MovesServiceBase
 
 			new DWMove (DWMovementIDs.DW_RawSTR, DWStats.DW_STR)
 			{
-				Tittle = "Fuerza"
+				Title = "Fuerza"
 			},
 			new DWMove (DWMovementIDs.DW_RawDEX, DWStats.DW_DEX)
 			{
-				Tittle = "Destreza"
+				Title = "Destreza"
 			},
 			new DWMove (DWMovementIDs.DW_RawCON, DWStats.DW_CON)
 			{
-				Tittle = "Constitución"
+				Title = "Constitución"
 			},
 			new DWMove (DWMovementIDs.DW_RawINT, DWStats.DW_INT)
 			{
-				Tittle = "Inteligencia"
+				Title = "Inteligencia"
 			},
 			new DWMove (DWMovementIDs.DW_RawWIS, DWStats.DW_WIS)
 			{
-				Tittle = "Sabiduria"
+				Title = "Sabiduria"
 			},
 			new DWMove (DWMovementIDs.DW_RawCHA, DWStats.DW_CHA)
 			{
-				Tittle = "Carisma"
+				Title = "Carisma"
 			}
 	};
 
@@ -1946,21 +1946,21 @@ public class DWMovesService : MovesServiceBase
 	{
 		DWMovementIDs ID = (DWMovementIDs)(object)_ID;
 
-		var m = AllMovements.Find(x => x.ID == ID) ?? new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet) { Tittle = "Unknown movement" };
+		var m = AllMovements.Find(x => x.ID == ID) ?? new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet) { Title = "Unknown movement" };
 		if (m is not null)
 			return m;
 		else
-			return new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet) { Tittle = $"Movimiento {ID.ToUI(this)} no encontrado" };
+			return new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet) { Title = $"Movimiento {ID.ToUI(this)} no encontrado" };
 	}
 	public DWMove GetMovement(DWMovementIDs ID)
 	{
-		return AllMovements.Find(x => x.ID == ID) ?? new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet) { Tittle=$"Move {ID.ToString()} cannot be found"};
+		return AllMovements.Find(x => x.ID == ID) ?? new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet) { Title=$"Move {ID.ToString()} cannot be found"};
 	}
 
 	public override IMove GetMovement<TMovIDs>(TMovIDs _ID)
 	{
 		DWMovementIDs ID = (DWMovementIDs)(object)_ID;
-		return AllMovements.Find(x => x.ID == ID) ?? new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet) { Tittle = "Unknown movement" };
+		return AllMovements.Find(x => x.ID == ID) ?? new DWMove(DWMovementIDs.DW_NotSet, DWStats.DW_NotSet) { Title = "Unknown movement" };
 	}
 }
 

@@ -11,7 +11,7 @@ public class DWMove : BaseMove<DWMovementIDs, DWStats>
 {
 	public DWMove(DWMovementIDs IDs, DWStats roll) : base(IDs, roll)
 	{
-		Tittle = "Not Set";
+		Title = "Not Set";
 	}
 
 	public List<SubMovement> SelectableOptions = new List<SubMovement>();

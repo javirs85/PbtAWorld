@@ -38,6 +38,7 @@ public class DataBaseController : IDataBaseController
 				AvailableGames.DI => "imgs/GameCovers/DinoIsland.png",
 				AvailableGames.DW => "imgs/GameCovers/DungeonWorld.png",
 				AvailableGames.US => "imgs/GameCovers/UrbanShadows.png",
+				AvailableGames.SV => "imgs/GameCovers/ScumAndVillainy.png",
 				_ => ""
 			};
 		}

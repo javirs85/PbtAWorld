@@ -22,7 +22,7 @@
 						<div><i class="bi bi-square"></i></div>
 					}
 				}
-				@Move.Tittle
+				@Move.Title
 					
 				@if (Dmove.Roll == DinoStates.D_Fit)
 				{
@@ -177,7 +177,7 @@
 			@if (IsSelectable && !IsSelected)
 			{
 				<button class="btn btn-primary" 
-					@onclick=@(() => {Player.PurchaseMove(Move); Game.ShowToastOnAllClients($"{Player.Name} aprendió {Move.Tittle}");})>
+					@onclick=@(() => {Player.PurchaseMove(Move); Game.ShowToastOnAllClients($"{Player.Name} aprendió {Move.Title}");})>
 					Comprar <br />Movimiento
 				</button>
 			}
@@ -236,7 +236,7 @@
 
 @code {
 	[Parameter] public string? PackID { get; set; } = null;
-	[Parameter] public DinoMove Move { get; set; } = new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set" };
+	[Parameter] public DinoMove Move { get; set; } = new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Title = "Move not set" };
 	[Parameter] public bool StartsOpen { get; set; } = false;
 	[Parameter] public bool AllowMultipleSelection { get; set; } = false;
 	[Parameter] public IRollReport LastRoll { get; set; }
@@ -246,7 +246,7 @@
 	bool IsSelectable => Move.ForClass != DinoClasses.NotSet;
 	bool IsSelected => Player.AllPurchasedMoves.Contains(Move.ID);
 
-	private DinoMove Dmove => (Move as DinoMove) ?? new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Move not set"};
+	private DinoMove Dmove => (Move as DinoMove) ?? new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Title = "Move not set"};
 
 
 	protected override void OnParametersSet()

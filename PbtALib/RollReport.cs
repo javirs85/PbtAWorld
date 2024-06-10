@@ -78,7 +78,7 @@ public abstract class RollReport<T_ID, T_Stats> : IRollReport
 		get
 		{
 			if (!string.IsNullOrEmpty(LocalTittle)) return LocalTittle;
-			return Moves?.GetMovement<T_ID>(MoveId).Tittle ?? $"Cannot find move's tittle {MoveId} @ RollReport::MoveTittle";
+			return Moves?.GetMovement<T_ID>(MoveId).Title ?? $"Cannot find move's tittle {MoveId} @ RollReport::MoveTittle";
 		}
 	}
 	public abstract string StatString { get; set; }

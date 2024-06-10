@@ -48,7 +48,7 @@ public class DinoMovesService : MovesServiceBase
     {
         new DinoMove(DinoMoveIDs.D_Run, DinoStates.D_Fit)
         {
-            Tittle = "Corre!",
+            Title = "Corre!",
 			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
             { 
@@ -74,7 +74,7 @@ public class DinoMovesService : MovesServiceBase
         },
         new DinoMove(DinoMoveIDs.D_Hide, DinoStates.D_Clever)
         {
-            Tittle = "Escóndete!",
+            Title = "Escóndete!",
 			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
@@ -95,7 +95,7 @@ public class DinoMovesService : MovesServiceBase
         },
         new DinoMove(DinoMoveIDs.D_DoIt, DinoStates.D_Steady)
         {
-            Tittle = "Simplemente Hazlo!",
+            Title = "Simplemente Hazlo!",
 			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
@@ -116,7 +116,7 @@ public class DinoMovesService : MovesServiceBase
         },
          new DinoMove(DinoMoveIDs.D_ManUp, DinoStates.D_Fit)
         {
-            Tittle = "Échale valor!",
+            Title = "Échale valor!",
 			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
@@ -137,7 +137,7 @@ public class DinoMovesService : MovesServiceBase
         },
          new DinoMove(DinoMoveIDs.D_LookThere, DinoStates.D_Clever)
         {
-            Tittle = "Mira allí!",
+            Title = "Mira allí!",
 			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
@@ -159,7 +159,7 @@ public class DinoMovesService : MovesServiceBase
         },
          new DinoMove(DinoMoveIDs.D_TakeMyHand, DinoStates.D_MC)
         {
-            Tittle = "Toma mi Mano!",
+            Title = "Toma mi Mano!",
 			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
@@ -185,7 +185,7 @@ public class DinoMovesService : MovesServiceBase
         },
         new DinoMove(DinoMoveIDs.D_Fight, DinoStates.D_Weapon)
         {
-            Tittle = "Lucha!",
+            Title = "Lucha!",
 			TypeOfMovement = MovementType.DangerMove,
 			PreCondition = new Consequences
 			{
@@ -215,7 +215,7 @@ public class DinoMovesService : MovesServiceBase
     {
         new DinoMove(DinoMoveIDs.D_LayLand, DinoStates.D_Clever)
         {
-            Tittle = "Reconocer el terreno",
+            Title = "Reconocer el terreno",
 			TypeOfMovement = MovementType.SafetyMove,
 			PreCondition = new Consequences
 			{
@@ -232,7 +232,7 @@ public class DinoMovesService : MovesServiceBase
         },
         new DinoMove(DinoMoveIDs.D_Instruct, DinoStates.D_Steady)
         {
-            Tittle = "Instruir",
+            Title = "Instruir",
 			TypeOfMovement = MovementType.SafetyMove,
 			PreCondition = new Consequences
 			{
@@ -255,7 +255,7 @@ public class DinoMovesService : MovesServiceBase
         },
         new DinoMove(DinoMoveIDs.D_Scavenge, DinoStates.D_Clever)
         {
-            Tittle = "Rebuscar",
+            Title = "Rebuscar",
 			TypeOfMovement = MovementType.SafetyMove,
 			PreCondition = new Consequences
 			{
@@ -276,7 +276,7 @@ public class DinoMovesService : MovesServiceBase
         },
         new DinoMove(DinoMoveIDs.D_Casualty, DinoStates.D_NoRoll)
         {
-            Tittle = "Caído",
+            Title = "Caído",
 			TypeOfMovement = MovementType.SafetyMove,
 			PreCondition = new Consequences
 			{
@@ -295,7 +295,7 @@ public class DinoMovesService : MovesServiceBase
     {
         new DinoMove(DinoMoveIDs.D_Doc_TreatWounds, DinoStates.D_MC)
         {
-            Tittle = "Tratar Heridas",
+            Title = "Tratar Heridas",
             ForClass =DinoClasses.Doctor,
 			TypeOfMovement = MovementType.ClassMove,
 			PreCondition = new Consequences
@@ -323,7 +323,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Doc_BackFromTheBrink, DinoStates.D_Story)
 		{
-			Tittle = "De Vuelta del Abismo",
+			Title = "De Vuelta del Abismo",
 			ForClass = DinoClasses.Doctor,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -334,7 +334,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Doc_HealTyself, DinoStates.D_Story)
 		{
-			Tittle = "Curarse a sí mismo",
+			Title = "Curarse a sí mismo",
 			ForClass = DinoClasses.Doctor,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -345,7 +345,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Doc_Veterinarian, DinoStates.D_Story)
 		{
-			Tittle = "Veterinario",
+			Title = "Veterinario",
 			ForClass = DinoClasses.Doctor,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -362,7 +362,7 @@ public class DinoMovesService : MovesServiceBase
         {
             ForClass = DinoClasses.Engineer,
 			TypeOfMovement = MovementType.ClassMove,
-			Tittle = "Chapuzas",
+			Title = "Chapuzas",
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Siempre que improvisas una solución temporal a un problema, tira + Inteligencia."
@@ -388,7 +388,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Eng_Construct, DinoStates.D_Clever)
         {
-	        Tittle = "Construir",
+	        Title = "Construir",
 	        ForClass = DinoClasses.Engineer,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -417,7 +417,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Eng_TheNuclearOption, DinoStates.D_Clever)
 		{
-			Tittle = "La Opción Nuclear",
+			Title = "La Opción Nuclear",
 			ForClass = DinoClasses.Engineer,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -451,7 +451,7 @@ public class DinoMovesService : MovesServiceBase
         {
             ForClass = DinoClasses.Hunter,
 			TypeOfMovement = MovementType.ClassMove,
-			Tittle = "Rastreador",
+			Title = "Rastreador",
             PreCondition = new Consequences
             {
                 MainText = "Cuando estudias tu entorno inmediato en busca de huellas, tira + Inteligencia.\n\nEn caso de éxito, sabes qué animales han estado aquí recientemente (aunque es posible que no sepas las especies exactas de dinosaurios) y el tamaño de sus grupos."
@@ -479,7 +479,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Hun_Trapper, DinoStates.D_Clever)
         {
-	        Tittle = "Trampero",
+	        Title = "Trampero",
 	        ForClass = DinoClasses.Hunter,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -508,7 +508,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Hun_ItsTooQuiet, DinoStates.D_NoRoll)
         {
-	        Tittle = "Demasiado silencio...",
+	        Title = "Demasiado silencio...",
 	        ForClass = DinoClasses.Hunter,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -523,7 +523,7 @@ public class DinoMovesService : MovesServiceBase
     {
         new DinoMove(DinoMoveIDs.D_Kid_IKnowThis, DinoStates.D_NoRoll)
         {
-            Tittle = "¡Yo Sé Esto!",
+            Title = "¡Yo Sé Esto!",
             ForClass = DinoClasses.Kid,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = false,
@@ -534,7 +534,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Kid_aaaaah, DinoStates.D_NoRoll)
 		{
-			Tittle = "¡Ahhhhhhhhhhh!",
+			Title = "¡Ahhhhhhhhhhh!",
 			ForClass = DinoClasses.Kid,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = false,
@@ -545,7 +545,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Kid_InspireHeroism, DinoStates.D_NoRoll)
         {
-	        Tittle = "Inspirar Heroísmo",
+	        Title = "Inspirar Heroísmo",
 	        ForClass = DinoClasses.Kid,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -556,7 +556,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Kid_GoodListener, DinoStates.D_NoRoll)
         {
-	        Tittle = "Buen alumno",
+	        Title = "Buen alumno",
 	        ForClass = DinoClasses.Kid,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -573,7 +573,7 @@ public class DinoMovesService : MovesServiceBase
         {
 	        ForClass = DinoClasses.Paleontologist,
 			TypeOfMovement = MovementType.ClassMove,
-			Tittle = "Experto en Dinosaurios",
+			Title = "Experto en Dinosaurios",
 	        PreCondition = new Consequences
 	        {
 		        MainText = "Cuando recurres a tu conocimiento para lidiar con un dinosaurio real, tira + Inteligencia.\n\nEn caso de éxito, puedes identificar su especie, sexo y si es herbívoro o carnívoro."
@@ -601,7 +601,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Pal_LizardBrain, DinoStates.D_NoRoll)
         {
-	        Tittle = "Cerebro de Lagarto",
+	        Title = "Cerebro de Lagarto",
 	        ForClass = DinoClasses.Paleontologist,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -612,7 +612,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Pal_CuriosityKilledTheQuetzalcoatlus, DinoStates.D_NoRoll)
         {
-	        Tittle = "La Curiosidad Mató al Quetzalcoatlus",
+	        Title = "La Curiosidad Mató al Quetzalcoatlus",
 	        ForClass = DinoClasses.Paleontologist,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -623,7 +623,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Pal_Polymath, DinoStates.D_Clever)
         {
-	        Tittle = "Polímata",
+	        Title = "Polímata",
 	        ForClass = DinoClasses.Paleontologist,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -650,7 +650,7 @@ public class DinoMovesService : MovesServiceBase
     {
 		new DinoMove(DinoMoveIDs.D_Sol_KillOrBeKilled, DinoStates.D_Steady)
         {
-	        Tittle = "Matar o Morir",
+	        Title = "Matar o Morir",
 			ForClass = DinoClasses.Soldier,
 			TypeOfMovement = MovementType.ClassMove,
 			PreCondition = new Consequences
@@ -672,7 +672,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Sol_LeaveNoOneBehind, DinoStates.D_NoRoll)
 		{
-			Tittle = "No Dejar a Nadie Atrás",
+			Title = "No Dejar a Nadie Atrás",
 			ForClass = DinoClasses.Soldier,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -683,7 +683,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Sol_GunToYourHead, DinoStates.D_NoRoll)
         {
-	        Tittle = "Pistola en la Cabeza",
+	        Title = "Pistola en la Cabeza",
 	        ForClass = DinoClasses.Soldier,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -694,7 +694,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Sol_CloseQuartersExpert, DinoStates.D_NoRoll)
         {
-	        Tittle = "Experto en Combate Cercano",
+	        Title = "Experto en Combate Cercano",
 	        ForClass = DinoClasses.Soldier,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -709,7 +709,7 @@ public class DinoMovesService : MovesServiceBase
     {
         new DinoMove(DinoMoveIDs.D_Sur_BeenAroundTheBlock, DinoStates.D_Clever)
         {
-            Tittle = "He estado allí...",
+            Title = "He estado allí...",
 			TypeOfMovement = MovementType.ClassMove,
 			ForClass = DinoClasses.Survivor,
 			PreCondition = new Consequences
@@ -732,7 +732,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		 new DinoMove(DinoMoveIDs.D_Sur_SetHouse, DinoStates.D_Clever)
 		{
-			Tittle = "Establece tu cabaña",
+			Title = "Establece tu cabaña",
 			TypeOfMovement = MovementType.ClassMove,
 			ForClass = DinoClasses.Survivor,
 			PreCondition = new Consequences
@@ -742,7 +742,7 @@ public class DinoMovesService : MovesServiceBase
 		},
 		new DinoMove(DinoMoveIDs.D_Sur_HomewardBound, DinoStates.D_Clever)
         {
-            Tittle = "De Regreso a Casa",
+            Title = "De Regreso a Casa",
 			ForClass = DinoClasses.Survivor,
 			TypeOfMovement = MovementType.ClassMove,
 			PreCondition = new Consequences
@@ -769,7 +769,7 @@ public class DinoMovesService : MovesServiceBase
         },
         new DinoMove(DinoMoveIDs.D_Sur_Hoarder, DinoStates.D_Clever)
         {
-            Tittle = "Acumulador",
+            Title = "Acumulador",
 			ForClass = DinoClasses.Survivor,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -797,7 +797,7 @@ public class DinoMovesService : MovesServiceBase
         },
 		new DinoMove(DinoMoveIDs.D_Sur_FadeAway, DinoStates.D_NoRoll)
         {
-	        Tittle = "Desvanecerse",
+	        Title = "Desvanecerse",
 			ForClass = DinoClasses.Survivor,
 			TypeOfMovement = MovementType.ClassMove,
 			IsAdvancedMove = true,
@@ -824,10 +824,10 @@ public class DinoMovesService : MovesServiceBase
         AllMoves.AddRange(SoldierMoves);
         AllMoves.AddRange(SurvivorMoves);
 
-		AllMoves.Add(new DinoMove(DinoMoveIDs.D_RawClever, DinoStates.D_Clever) { Tittle = "Inteligencia" });
-		AllMoves.Add(new DinoMove(DinoMoveIDs.D_RawFit, DinoStates.D_Fit) { Tittle = "Forma física" });
-		AllMoves.Add(new DinoMove(DinoMoveIDs.D_RawSteady, DinoStates.D_Steady) { Tittle = "Calma" });
-		AllMoves.Add(new DinoMove(DinoMoveIDs.D_2d6, DinoStates.D_NoRoll) { Tittle = "2d6" });
+		AllMoves.Add(new DinoMove(DinoMoveIDs.D_RawClever, DinoStates.D_Clever) { Title = "Inteligencia" });
+		AllMoves.Add(new DinoMove(DinoMoveIDs.D_RawFit, DinoStates.D_Fit) { Title = "Forma física" });
+		AllMoves.Add(new DinoMove(DinoMoveIDs.D_RawSteady, DinoStates.D_Steady) { Title = "Calma" });
+		AllMoves.Add(new DinoMove(DinoMoveIDs.D_2d6, DinoStates.D_NoRoll) { Title = "2d6" });
 	}
 
 	public override IMove GetMovement<TMovIDs, TClases>(TMovIDs ID, TClases archetype)
@@ -838,6 +838,6 @@ public class DinoMovesService : MovesServiceBase
 	public override IMove GetMovement<TMovIDs>(TMovIDs _ID)
 	{
 		DinoMoveIDs ID = (DinoMoveIDs)(object)_ID;
-		return AllMoves.Find(x => x.ID == ID) ?? new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Tittle = "Unknown movement" };
+		return AllMoves.Find(x => x.ID == ID) ?? new DinoMove(DinoMoveIDs.notSet, DinoStates.D_NotSet) { Title = "Unknown movement" };
 	}
 }

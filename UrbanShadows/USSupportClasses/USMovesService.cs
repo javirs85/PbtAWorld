@@ -11,7 +11,7 @@ public class USMovesService : MovesServiceBase
 	{
 		AllMovements.AddRange(GenerateBasicMovments());
 
-		AllMovements.Add(new USMove(USMoveIDs.B_LiberarPoder, USAttributes.Soul) { Archetipe = AvailableArchetypes.All, Tittle = "Liberar tu poder" });
+		AllMovements.Add(new USMove(USMoveIDs.B_LiberarPoder, USAttributes.Soul) { Archetipe = AvailableArchetypes.All, Title = "Liberar tu poder" });
 
 		AllMovements.AddRange(GenerateFactionMovements());
 		AllMovements.AddRange(GenerateDebtMovements());
@@ -66,13 +66,13 @@ public class USMovesService : MovesServiceBase
 		AllMovements.AddRange(GenerateVampUniqueMoves());
 		AllMovements.AddRange(GenerateVeteranUniqueMoves());
 
-		AllMovements.Add(new USMove(USMoveIDs.rawBlood, USAttributes.Blood) { Tittle = "Sangre" });
-		AllMovements.Add(new USMove(USMoveIDs.rawHeart, USAttributes.Heart) { Tittle = "Corazón" });
-		AllMovements.Add(new USMove(USMoveIDs.rawSoul, USAttributes.Soul) { Tittle = "Espíritu" });
-		AllMovements.Add(new USMove(USMoveIDs.rawMortal, USAttributes.Mortality) { Tittle = "Mortalis" });
-		AllMovements.Add(new USMove(USMoveIDs.rawNight, USAttributes.Night) { Tittle = "Noche" });
-		AllMovements.Add(new USMove(USMoveIDs.rawPower, USAttributes.Power) { Tittle = "Poder" });
-		AllMovements.Add(new USMove(USMoveIDs.raw2d6, USAttributes.None) { Tittle = "2d6" });
+		AllMovements.Add(new USMove(USMoveIDs.rawBlood, USAttributes.Blood) { Title = "Sangre" });
+		AllMovements.Add(new USMove(USMoveIDs.rawHeart, USAttributes.Heart) { Title = "Corazón" });
+		AllMovements.Add(new USMove(USMoveIDs.rawSoul, USAttributes.Soul) { Title = "Espíritu" });
+		AllMovements.Add(new USMove(USMoveIDs.rawMortal, USAttributes.Mortality) { Title = "Mortalis" });
+		AllMovements.Add(new USMove(USMoveIDs.rawNight, USAttributes.Night) { Title = "Noche" });
+		AllMovements.Add(new USMove(USMoveIDs.rawPower, USAttributes.Power) { Title = "Poder" });
+		AllMovements.Add(new USMove(USMoveIDs.raw2d6, USAttributes.None) { Title = "2d6" });
 
 		AllLio.AddRange(GenerateAwakenLIO());
 		AllLio.AddRange(GenerateHunterLIO());
@@ -120,7 +120,7 @@ public class USMovesService : MovesServiceBase
 			return original;
 		}
 
-		return AllMovements.Find(x => x.ID == ID) ?? new USMove(USMoveIDs.NotSet, USAttributes.None) { Tittle = "Unknown movement" };
+		return AllMovements.Find(x => x.ID == ID) ?? new USMove(USMoveIDs.NotSet, USAttributes.None) { Title = "Unknown movement" };
 	}
 	USMove GetArchetypeBasedLetItOutMovement(AvailableArchetypes archetype)
 	{
@@ -129,7 +129,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
 			IsImproved = false,
-			Tittle = "Liberar tu poder",
+			Title = "Liberar tu poder",
 			PreCondition = new Consequences
 			{
 				MainText = "Tira con Espíritu. Con 7+ márcate corrupción y el Master te dirá cómo el efecto de tu poder es costoso, limitado o inestable. Con un 10+ elije ignorar la corrupción o las complicaciones.",
@@ -140,7 +140,7 @@ public class USMovesService : MovesServiceBase
 			}
 		};
 
-		m.Tittle = "Liberar tu poder";
+		m.Title = "Liberar tu poder";
 
 
 
@@ -150,7 +150,7 @@ public class USMovesService : MovesServiceBase
 	public override IMove GetMovement<TMovIDs>(TMovIDs _ID)
 	{
 		USMoveIDs ID = (USMoveIDs)(object)_ID;
-		return AllMovements.Find(x => x.ID == ID) ?? new USMove(USMoveIDs.NotSet, USAttributes.None) { Tittle = "Unknown movement" };
+		return AllMovements.Find(x => x.ID == ID) ?? new USMove(USMoveIDs.NotSet, USAttributes.None) { Title = "Unknown movement" };
 	}
 
 
@@ -164,7 +164,7 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
-			Tittle = "Lanzar un ataque",
+			Title = "Lanzar un ataque",
 			IsImproved = false,
 			PreCondition = new Consequences
 			{
@@ -197,7 +197,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
 			IsImproved = false,
-			Tittle = "Escapar de una situación",
+			Title = "Escapar de una situación",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando *aproveches una oportunidad** para escapar de una situación, tira con Sangre."
@@ -224,7 +224,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
 			IsImproved = false,
-			Tittle = "Persuadir a un PNJ",
+			Title = "Persuadir a un PNJ",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando persuades  a un *PNJ** mediante seducción, promesas o amenazas,  tira con Corazón. Si superas la tirada, comparten tu opinión y hacen lo que les pides.",
@@ -243,7 +243,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
 			IsImproved = false,
-			Tittle = "Calar a alguien",
+			Title = "Calar a alguien",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando intentes calar a alguien, tira con Mente. Si superas la tirada, obtienes 2 puntos. Mientras estés interactuando con ese personaje, gasta cada punto en hacerle una pregunta al jugador que lo interpreta. Si pertenecéis a la mismo Circulo, hazle una pregunta más, aunque hayas fallado la tirada."
@@ -271,7 +271,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
 			IsImproved = false,
-			Tittle = "Confundir, distraer o engañar",
+			Title = "Confundir, distraer o engañar",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando intentes confundir, distraer o engañar a alguien, tira con Mente. Si superas la tirada, se lo traga, al menos durante un momento.",
@@ -301,7 +301,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
 			IsImproved = false,
-			Tittle = "Mantener la calma",
+			Title = "Mantener la calma",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando las cosas se pongan serias y mantengas la calma, dile al Maestro de Ceremonias qué situación quieres evitar y tira con Espíritu.",
@@ -325,7 +325,7 @@ public class USMovesService : MovesServiceBase
 			IsSelected = true,
 			IsImproved = false,
 			TicksCircle = true,
-			Tittle = "Ayudar o molestar",
+			Title = "Ayudar o molestar",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando ayudes o te interpongas en el camino de un PJ. *Después de que haya tirado**, tira con su Círculo. Si aciertas, dale un +1 o -2 a su tirada",
@@ -348,7 +348,7 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.FactionMovement,
 			IsSelected = true,
-			Tittle = "Echarse a la calle",
+			Title = "Echarse a la calle",
 			TicksCircle = true,
 			PreCondition = new Consequences
 			{
@@ -369,7 +369,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.FactionMovement,
 			IsSelected = true,
 			TicksCircle = true,
-			Tittle = "Ponerle cara a un nombre",
+			Title = "Ponerle cara a un nombre",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando le pongas cara a un nombre o un nombre a una cara, tira con su Circulo. Si fallas la tirada no lo conoces o tienes una Deuda con él; el MC te dirá cuál de las dos."
@@ -388,7 +388,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.FactionMovement,
 			IsSelected = true,
 			TicksCircle = true,
-			Tittle = "Investigar un lugar de poder",
+			Title = "Investigar un lugar de poder",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando investigues un lugar poderoso, tira con el Circulo a la que pertenezca."
@@ -411,7 +411,7 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.DebtMovements,
 			IsSelected = true,
-			Tittle = "Hacerle un favor a alguien",
+			Title = "Hacerle un favor a alguien",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando le hagas un favor a alguien, *sin recibir nada a cambio** contrae una Deuda contigo."
@@ -421,7 +421,7 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.DebtMovements,
 			IsSelected = true,
-			Tittle = "Saldar una deuda",
+			Title = "Saldar una deuda",
 			TicksCircle = true,
 			PreCondition = new Consequences
 			{
@@ -432,7 +432,7 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.DebtMovements,
 			IsSelected = true,
-			Tittle = "Meterte en sus asuntos",
+			Title = "Meterte en sus asuntos",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando *interfieres en los negocios de alguien**, le debes una Deuda. \r\n"
@@ -443,7 +443,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.DebtMovements,
 			IsSelected = true,
 			TicksCircle = true,
-			Tittle = "Cobrarse una deuda",
+			Title = "Cobrarse una deuda",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te cobres una Deuda, recuérdale a tu deudor por qué está en Deuda contigo."
@@ -479,7 +479,7 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.DebtMovements,
 			IsSelected = true,
-			Tittle = "Negarse a pagar una deuda",
+			Title = "Negarse a pagar una deuda",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te niegues a honrar una Deuda, tira con la diferencia de *estatus* entre tú y tu acreedor.\n\nCon un éxito, te libras de la obligación por ahora, pero sigues debiendo la Deuda. \n\nCon un 7-9, les debes una Deuda adicional o marca corrupción, tú eliges. \n\nSi fallas, no puedes evitar la soga: o honras la Deuda en su totalidad o borras todas las Deudas que te debe su Círculo y tendrás un -1 en curso al Estatus con su Círculo hasta que pase el tiempo.\r\n"
@@ -495,7 +495,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Hunt_01, USAttributes.Blood)
 		{
-			Tittle = "Exterminador",
+			Title = "Exterminador",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -506,7 +506,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Hunt_02, USAttributes.None)
 		{
-			Tittle = "Letal",
+			Title = "Letal",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -517,7 +517,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Hunt_03, USAttributes.Mind)
 		{
-			Tittle = "Leyendo también se aprende",
+			Title = "Leyendo también se aprende",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -536,7 +536,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Hunt_04, USAttributes.Mind)
 		{
-			Tittle = "Piso franco",
+			Title = "Piso franco",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -555,7 +555,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Hunt_05, USAttributes.Blood)
 		{
-			Tittle = "¡Por aquí!",
+			Title = "¡Por aquí!",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -574,7 +574,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Hunt_06, USAttributes.Blood)
 		{
-			Tittle = "¿Quieres tentar a la suerte?",
+			Title = "¿Quieres tentar a la suerte?",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -585,7 +585,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Hunt_07, USAttributes.None)
 		{
-			Tittle = "Preparado para todo",
+			Title = "Preparado para todo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -603,7 +603,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Awak_01, USAttributes.Mind)
 		{
-			Tittle = "Fisgón",
+			Title = "Fisgón",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -631,7 +631,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Awak_02, USAttributes.Mind)
 		{
-			Tittle = "Los deberes hechos",
+			Title = "Los deberes hechos",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -650,7 +650,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Awak_03, USAttributes.Mind)
 		{
-			Tittle = "Conozco a un tío",
+			Title = "Conozco a un tío",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -661,7 +661,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Awak_04, USAttributes.None)
 		{
-			Tittle = "Vengo con amigos",
+			Title = "Vengo con amigos",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -676,7 +676,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Awak_05, USAttributes.Mind)
 		{
-			Tittle = "Tirador avezado",
+			Title = "Tirador avezado",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -687,7 +687,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Awak_06, USAttributes.None)
 		{
-			Tittle = "Duro de pelar",
+			Title = "Duro de pelar",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -706,7 +706,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Vet_01, USAttributes.Mind)
 		{
-			Tittle = "Viejos amigos, viejos favores",
+			Title = "Viejos amigos, viejos favores",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -725,7 +725,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vet_02, USAttributes.None)
 		{
-			Tittle = "Auténtico artista",
+			Title = "Auténtico artista",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -736,7 +736,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vet_03, USAttributes.Mind)
 		{
-			Tittle = "Invertir",
+			Title = "Invertir",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -747,7 +747,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vet_04, USAttributes.None)
 		{
-			Tittle = "¡Ya estoy viejo para estas mierdas!",
+			Title = "¡Ya estoy viejo para estas mierdas!",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -758,7 +758,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vet_05, USAttributes.Mind)
 		{
-			Tittle = "El plan perfecto",
+			Title = "El plan perfecto",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -788,7 +788,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vet_06, USAttributes.Mind)
 		{
-			Tittle = "Sacar la pistola en una pelea de navajas",
+			Title = "Sacar la pistola en una pelea de navajas",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -806,7 +806,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Wolf_01, USAttributes.Blood)
 		{
-			Tittle = "Reconocer el terreno",
+			Title = "Reconocer el terreno",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -825,7 +825,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_02, USAttributes.Blood)
 		{
-			Tittle = "Sabueso",
+			Title = "Sabueso",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -844,7 +844,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_03, USAttributes.None)
 		{
-			Tittle = "Regeneración",
+			Title = "Regeneración",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -859,7 +859,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_04, USAttributes.Heart)
 		{
-			Tittle = "Lobo alfa",
+			Title = "Lobo alfa",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -870,7 +870,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_05, USAttributes.Soul)
 		{
-			Tittle = "Desde el borde del abismo",
+			Title = "Desde el borde del abismo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -885,7 +885,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_06, USAttributes.None)
 		{
-			Tittle = "Temerario",
+			Title = "Temerario",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -903,7 +903,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Vamp_01, USAttributes.Blood)
 		{
-			Tittle = "Hambre eterna",
+			Title = "Hambre eterna",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -929,7 +929,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vamp_02, USAttributes.None)
 		{
-			Tittle = "Irresistible",
+			Title = "Irresistible",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -940,7 +940,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vamp_03, USAttributes.None)
 		{
-			Tittle = "Refugio",
+			Title = "Refugio",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -951,7 +951,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vamp_04, USAttributes.Soul)
 		{
-			Tittle = "Sangre fría",
+			Title = "Sangre fría",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -962,7 +962,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vamp_05, USAttributes.Blood)
 		{
-			Tittle = "Mantener cerca a tus amigos",
+			Title = "Mantener cerca a tus amigos",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -973,7 +973,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Vamp_06, USAttributes.None)
 		{
-			Tittle = "Que corra la voz",
+			Title = "Que corra la voz",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -996,7 +996,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Mage_01, USAttributes.Soul)
 		{
-			Tittle = "Canalizar",
+			Title = "Canalizar",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1017,7 +1017,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Mage_02, USAttributes.Soul)
 		{
-			Tittle = "Sanctasanctórum",
+			Title = "Sanctasanctórum",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1029,7 +1029,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Mage_04, USAttributes.None)
 		{
-			Tittle = "HECHIZO: Rastrear",
+			Title = "HECHIZO: Rastrear",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1040,7 +1040,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Mage_05, USAttributes.None)
 		{
-			Tittle = "HECHIZO: Elementalismo",
+			Title = "HECHIZO: Elementalismo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1051,7 +1051,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Mage_06, USAttributes.None)
 		{
-			Tittle = "HECHIZO: Borrar la memoria",
+			Title = "HECHIZO: Borrar la memoria",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1062,7 +1062,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Mage_07, USAttributes.None)
 		{
-			Tittle = "HECHIZO: Escudo",
+			Title = "HECHIZO: Escudo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1073,7 +1073,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Mage_08, USAttributes.None)
 		{
-			Tittle = "HECHIZO: Manto de oscuridad",
+			Title = "HECHIZO: Manto de oscuridad",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1084,7 +1084,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Mage_09, USAttributes.None)
 		{
-			Tittle = "HECHIZO: Teletransporte",
+			Title = "HECHIZO: Teletransporte",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1095,7 +1095,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Mage_10, USAttributes.None)
 		{
-			Tittle = "HECHIZO: Maleficio",
+			Title = "HECHIZO: Maleficio",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -1113,7 +1113,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Orac_01, USAttributes.Soul)
 		{
-			Tittle = "Predicciones",
+			Title = "Predicciones",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -1124,7 +1124,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Orac_02, USAttributes.Soul)
 		{
-			Tittle = "Psicometría",
+			Title = "Psicometría",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -1147,7 +1147,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Orac_03, USAttributes.None)
 		{
-			Tittle = "Doble vida",
+			Title = "Doble vida",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -1158,7 +1158,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Orac_04, USAttributes.None)
 		{
-			Tittle = "Médium",
+			Title = "Médium",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -1169,7 +1169,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Orac_05, USAttributes.None)
 		{
-			Tittle = "Cueste lo que cueste",
+			Title = "Cueste lo que cueste",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -1180,7 +1180,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Orac_06, USAttributes.None)
 		{
-			Tittle = "Rozar la superficie",
+			Title = "Rozar la superficie",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -1209,7 +1209,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Corrup_01, USAttributes.Blood)
 		{
-			Tittle = "El demonio interior",
+			Title = "El demonio interior",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -1232,7 +1232,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_02, USAttributes.None)
 		{
-			Tittle = "Invocación",
+			Title = "Invocación",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -1243,7 +1243,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_03, USAttributes.Blood)
 		{
-			Tittle = "Lengua de plata",
+			Title = "Lengua de plata",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -1254,7 +1254,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_04, USAttributes.Soul)
 		{
-			Tittle = "Zarcillos en la oscuridad",
+			Title = "Zarcillos en la oscuridad",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -1268,7 +1268,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_05, USAttributes.None)
 		{
-			Tittle = "Frío como el hielo",
+			Title = "Frío como el hielo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -1279,7 +1279,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_06, USAttributes.None)
 		{
-			Tittle = "Duro como el acero",
+			Title = "Duro como el acero",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -1290,7 +1290,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_07, USAttributes.None)
 		{
-			Tittle = "Trabajo demoniaco",
+			Title = "Trabajo demoniaco",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -1324,7 +1324,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Fai_01, USAttributes.None)
 		{
-			Tittle = "Magia feérica",
+			Title = "Magia feérica",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1341,7 +1341,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_02, USAttributes.None)
 		{
-			Tittle = "Un plato que se sirve ahora",
+			Title = "Un plato que se sirve ahora",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1352,7 +1352,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_03, USAttributes.Blood)
 		{
-			Tittle = "Lo llevamos en la sangre",
+			Title = "Lo llevamos en la sangre",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1363,7 +1363,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_04, USAttributes.None)
 		{
-			Tittle = "La balanza de la Justicia",
+			Title = "La balanza de la Justicia",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1374,7 +1374,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_05, USAttributes.None)
 		{
-			Tittle = "Descorrer el Velo",
+			Title = "Descorrer el Velo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1389,7 +1389,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_07, USAttributes.None)
 		{
-			Tittle = "Las palabras se las lleva el viento",
+			Title = "Las palabras se las lleva el viento",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1400,7 +1400,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_08, USAttributes.None)
 		{
-			Tittle = "PODER: Furia salvaje",
+			Title = "PODER: Furia salvaje",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1411,7 +1411,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_09, USAttributes.None)
 		{
-			Tittle = "PODER: La caricia de la Naturaleza",
+			Title = "PODER: La caricia de la Naturaleza",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1422,7 +1422,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_10, USAttributes.None)
 		{
-			Tittle = "PODER: Marchitar",
+			Title = "PODER: Marchitar",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1433,7 +1433,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_11, USAttributes.None)
 		{
-			Tittle = "PODER: Glamour",
+			Title = "PODER: Glamour",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1444,7 +1444,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_12, USAttributes.None)
 		{
-			Tittle = "PODER: Cambio de forma",
+			Title = "PODER: Cambio de forma",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1455,7 +1455,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Fai_13, USAttributes.None)
 		{
-			Tittle = "PODER: Confusión",
+			Title = "PODER: Confusión",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
@@ -1473,7 +1473,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Spe_01, USAttributes.None)
 		{
-			Tittle = "Manifestarse",
+			Title = "Manifestarse",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -1494,7 +1494,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_02, USAttributes.None)
 		{
-			Tittle = "No toleraré que me ignores",
+			Title = "No toleraré que me ignores",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -1505,7 +1505,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_03, USAttributes.None)
 		{
-			Tittle = "Ciudad fantasma",
+			Title = "Ciudad fantasma",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -1516,7 +1516,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_04, USAttributes.None)
 		{
-			Tittle = "Fantasmagoría",
+			Title = "Fantasmagoría",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -1527,7 +1527,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_05, USAttributes.None)
 		{
-			Tittle = "Cuando crees que me ves",
+			Title = "Cuando crees que me ves",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -1538,7 +1538,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_06, USAttributes.None)
 		{
-			Tittle = "Vínculo",
+			Title = "Vínculo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -1556,7 +1556,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Swo_01, USAttributes.Mind)
 		{
-			Tittle = "Proteger y servir",
+			Title = "Proteger y servir",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
@@ -1582,7 +1582,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Swo_02, USAttributes.Mind)
 		{
-			Tittle = "Difícil de esquivar",
+			Title = "Difícil de esquivar",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
@@ -1595,7 +1595,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Swo_03, USAttributes.None)
 		{
-			Tittle = "Enrevesado",
+			Title = "Enrevesado",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
@@ -1606,7 +1606,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Swo_04, USAttributes.Mind)
 		{
-			Tittle = "Aunténtico policía",
+			Title = "Aunténtico policía",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
@@ -1617,7 +1617,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Swo_05, USAttributes.None)
 		{
-			Tittle = "Ajedrez, no damas",
+			Title = "Ajedrez, no damas",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
@@ -1635,7 +1635,7 @@ public class USMovesService : MovesServiceBase
 
 		result.Add(new USMove(USMoveIDs.A_Imp_01, USAttributes.Mind)
 		{
-			Tittle = "Como de costumbre",
+			Title = "Como de costumbre",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Imp,
@@ -1666,7 +1666,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Imp_02, USAttributes.Mind)
 		{
-			Tittle = "Mide tu marca",
+			Title = "Mide tu marca",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
@@ -1683,7 +1683,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Imp_03, USAttributes.None)
 		{
-			Tittle = "Enrevesado",
+			Title = "Enrevesado",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
@@ -1694,7 +1694,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Imp_04, USAttributes.Mind)
 		{
-			Tittle = "Amigos en los bajos fondos",
+			Title = "Amigos en los bajos fondos",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
@@ -1705,7 +1705,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Imp_05, USAttributes.None)
 		{
-			Tittle = "Soy un puto demonio",
+			Title = "Soy un puto demonio",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
@@ -1716,7 +1716,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Imp_06, USAttributes.Mind)
 		{
-			Tittle = "Palabras de comadreja",
+			Title = "Palabras de comadreja",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
@@ -1736,7 +1736,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Hun_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Divide y venceré",
+			Title = "Divide y venceré",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
 			PreCondition = new Consequences
@@ -1747,7 +1747,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Hun_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Difícil de matar",
+			Title = "Difícil de matar",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
 			PreCondition = new Consequences
@@ -1758,7 +1758,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Hun_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Esperando ayuda",
+			Title = "Esperando ayuda",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
 			PreCondition = new Consequences
@@ -1769,7 +1769,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Hun_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Impulso suicida",
+			Title = "Impulso suicida",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Hunter,
 			PreCondition = new Consequences
@@ -1785,7 +1785,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Awa_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Metido hasta el cuello",
+			Title = "Metido hasta el cuello",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
 			PreCondition = new Consequences
@@ -1796,7 +1796,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Awa_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Si no puedes con ellos…",
+			Title = "Si no puedes con ellos…",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
 			PreCondition = new Consequences
@@ -1807,7 +1807,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Awa_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Libre como el viento",
+			Title = "Libre como el viento",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
 			PreCondition = new Consequences
@@ -1818,7 +1818,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Awa_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Manos largas",
+			Title = "Manos largas",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
 			PreCondition = new Consequences
@@ -1834,7 +1834,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Vet_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "De vuelta a las andadas",
+			Title = "De vuelta a las andadas",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
 			PreCondition = new Consequences
@@ -1845,7 +1845,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Vet_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Síndrome de Diógenes",
+			Title = "Síndrome de Diógenes",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
 			PreCondition = new Consequences
@@ -1856,7 +1856,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Vet_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "¿Os pillo en mal momento, cabrones?",
+			Title = "¿Os pillo en mal momento, cabrones?",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
 			PreCondition = new Consequences
@@ -1867,7 +1867,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Vet_04, USAttributes.Mind)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Horribles experimentos",
+			Title = "Horribles experimentos",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Veteran,
 			PreCondition = new Consequences
@@ -1883,7 +1883,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Spe_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Posesión",
+			Title = "Posesión",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
@@ -1894,7 +1894,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Spe_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Telequinesia",
+			Title = "Telequinesia",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
@@ -1905,7 +1905,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Spe_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Pesadilla",
+			Title = "Pesadilla",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
@@ -1916,7 +1916,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Spe_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Sifón",
+			Title = "Sifón",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
@@ -1932,7 +1932,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Wolf_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Uno con la bestia",
+			Title = "Uno con la bestia",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Wolf,
 			PreCondition = new Consequences
@@ -1943,7 +1943,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Wolf_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "La fuerza de la naturaleza",
+			Title = "La fuerza de la naturaleza",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Wolf,
 			PreCondition = new Consequences
@@ -1954,7 +1954,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Wolf_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Sabueso callejero",
+			Title = "Sabueso callejero",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Wolf,
 			PreCondition = new Consequences
@@ -1965,7 +1965,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Wolf_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Territorio conocido",
+			Title = "Territorio conocido",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Wolf,
 			PreCondition = new Consequences
@@ -1981,7 +1981,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Vamp_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Auténtico cazador",
+			Title = "Auténtico cazador",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
 			PreCondition = new Consequences
@@ -1992,7 +1992,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Vamp_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Mantenlos dentro",
+			Title = "Mantenlos dentro",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
 			PreCondition = new Consequences
@@ -2003,7 +2003,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Vamp_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Fake news",
+			Title = "Fake news",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
 			PreCondition = new Consequences
@@ -2014,7 +2014,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Vamp_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Magia de sangre",
+			Title = "Magia de sangre",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Vampire,
 			PreCondition = new Consequences
@@ -2029,7 +2029,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.C_Mage_01, USAttributes.Soul)
 		{
-			Tittle = "Las Artes Oscuras",
+			Title = "Las Artes Oscuras",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -2040,7 +2040,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.C_Mage_02, USAttributes.None)
 		{
-			Tittle = "Sobre un caballo pálido",
+			Title = "Sobre un caballo pálido",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -2051,7 +2051,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.C_Mage_03, USAttributes.None)
 		{
-			Tittle = "Magia negra",
+			Title = "Magia negra",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -2062,7 +2062,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.C_Mage_04, USAttributes.None)
 		{
-			Tittle = "Protección",
+			Title = "Protección",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -2079,7 +2079,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Orac_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Émpata",
+			Title = "Émpata",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
 			PreCondition = new Consequences
@@ -2090,7 +2090,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Orac_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "El ojo que todo lo ve",
+			Title = "El ojo que todo lo ve",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
 			PreCondition = new Consequences
@@ -2101,7 +2101,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Orac_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Oscuro destino",
+			Title = "Oscuro destino",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
 			PreCondition = new Consequences
@@ -2112,7 +2112,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Orac_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Mirada penetrante",
+			Title = "Mirada penetrante",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Oracle,
 			PreCondition = new Consequences
@@ -2128,7 +2128,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Corrupt_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Beneficios adicionales",
+			Title = "Beneficios adicionales",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
 			PreCondition = new Consequences
@@ -2139,7 +2139,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Corrupt_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Justo bajo la superficie",
+			Title = "Justo bajo la superficie",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
 			PreCondition = new Consequences
@@ -2150,7 +2150,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Corrupt_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Innegable",
+			Title = "Innegable",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
 			PreCondition = new Consequences
@@ -2161,7 +2161,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Corrupt_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Desde el Infierno",
+			Title = "Desde el Infierno",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Corrupted,
 			PreCondition = new Consequences
@@ -2177,7 +2177,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Fai_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Aire y oscuridad",
+			Title = "Aire y oscuridad",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
 			PreCondition = new Consequences
@@ -2188,7 +2188,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Fai_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Negociador astuto",
+			Title = "Negociador astuto",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
 			PreCondition = new Consequences
@@ -2199,7 +2199,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Fai_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Gracia supranatural",
+			Title = "Gracia supranatural",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
 			PreCondition = new Consequences
@@ -2210,7 +2210,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Fai_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Todos tenemos una",
+			Title = "Todos tenemos una",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Fair,
 			PreCondition = new Consequences
@@ -2226,7 +2226,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Imp_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Así es como gano yo",
+			Title = "Así es como gano yo",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
 			PreCondition = new Consequences
@@ -2237,7 +2237,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Imp_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Dinero sucio",
+			Title = "Dinero sucio",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
 			PreCondition = new Consequences
@@ -2248,7 +2248,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Imp_03, USAttributes.Heart)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Endulza el trato",
+			Title = "Endulza el trato",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
 			PreCondition = new Consequences
@@ -2259,7 +2259,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Imp_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "En la lista negra",
+			Title = "En la lista negra",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Imp,
 			PreCondition = new Consequences
@@ -2275,7 +2275,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Swo_01, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Un paso por delante",
+			Title = "Un paso por delante",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
 			PreCondition = new Consequences
@@ -2286,7 +2286,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Swo_02, USAttributes.Mind)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Chivatos",
+			Title = "Chivatos",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
 			PreCondition = new Consequences
@@ -2298,7 +2298,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Swo_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Estudiante de las Artes Arcanas",
+			Title = "Estudiante de las Artes Arcanas",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
 			PreCondition = new Consequences
@@ -2309,7 +2309,7 @@ public class USMovesService : MovesServiceBase
 		result.Add(new USMove(USMoveIDs.C_Swo_04, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Tittle = "Asuntos Infernales",
+			Title = "Asuntos Infernales",
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Sworn,
 			PreCondition = new Consequences
@@ -2326,7 +2326,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Hun_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -2337,7 +2337,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Hun_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -2348,7 +2348,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Hun_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Hunter,
@@ -2364,7 +2364,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Awak_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -2375,7 +2375,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Awak_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -2386,7 +2386,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Awak_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Awaken,
@@ -2402,7 +2402,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Vet_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -2413,7 +2413,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Vet_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -2430,7 +2430,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Vet_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Veteran,
@@ -2446,7 +2446,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Spe_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -2457,7 +2457,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Spe_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -2468,7 +2468,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Spe_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Spectre,
@@ -2484,7 +2484,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Wolf_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -2495,7 +2495,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Wolf_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -2506,7 +2506,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Wolf_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Wolf,
@@ -2522,7 +2522,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Vamp_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -2533,7 +2533,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Vamp_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -2544,7 +2544,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Vamp_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -2555,7 +2555,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Vamp_04, USAttributes.None)
 		{
-			Tittle = "Movimiento inicial",
+			Title = "Movimiento inicial",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Vampire,
@@ -2571,7 +2571,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Mage_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Mage,
@@ -2582,7 +2582,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Mage_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Mage,
@@ -2593,7 +2593,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Mage_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Mage,
@@ -2609,7 +2609,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Orac_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -2620,7 +2620,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Orac_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -2631,7 +2631,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Orac_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -2647,7 +2647,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Corrup_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -2658,7 +2658,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Corrup_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -2669,7 +2669,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Corrup_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -2685,7 +2685,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Fai_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -2696,7 +2696,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Fai_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -2707,7 +2707,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Fai_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -2723,7 +2723,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Swo_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Sworn,
@@ -2734,7 +2734,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Swo_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Sworn,
@@ -2745,7 +2745,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Swo_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Sworn,
@@ -2761,7 +2761,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.D_Imp_01, USAttributes.None)
 		{
-			Tittle = "Movimiento de corrupción",
+			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Imp,
@@ -2772,7 +2772,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Imp_02, USAttributes.None)
 		{
-			Tittle = "Movimiento de intimidad",
+			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Imp,
@@ -2783,7 +2783,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.D_Imp_03, USAttributes.None)
 		{
-			Tittle = "Movimiento final",
+			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Imp,
@@ -2800,7 +2800,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.U_Corr_01, USAttributes.Veil)
 		{
-			Tittle = "Trabajo para mi patrón",
+			Title = "Trabajo para mi patrón",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -2819,7 +2819,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Corr_02, USAttributes.None)
 		{
-			Tittle = "Amo y señor",
+			Title = "Amo y señor",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Corrupted,
@@ -2835,7 +2835,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.U_Fae_01, USAttributes.None)
 		{
-			Tittle = "Poder: Caricia de la naturaleza",
+			Title = "Poder: Caricia de la naturaleza",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -2846,7 +2846,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Fae_02, USAttributes.None)
 		{
-			Tittle = "Poder: Marchitar",
+			Title = "Poder: Marchitar",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -2857,7 +2857,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Fae_03, USAttributes.None)
 		{
-			Tittle = "Poder: Encantamientos",
+			Title = "Poder: Encantamientos",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -2868,7 +2868,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Fae_04, USAttributes.None)
 		{
-			Tittle = "Poder: Cambio de forma",
+			Title = "Poder: Cambio de forma",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -2879,7 +2879,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Fae_05, USAttributes.None)
 		{
-			Tittle = "Poder: Bedlam",
+			Title = "Poder: Bedlam",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Fair,
@@ -2895,7 +2895,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.U_Imp_01, USAttributes.None)
 		{
-			Tittle = "Generar una nueva estafa",
+			Title = "Generar una nueva estafa",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Imp,
@@ -2915,7 +2915,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Imp_02, USAttributes.None)
 		{
-			Tittle = "Finalizar una estafa",
+			Title = "Finalizar una estafa",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Imp,
@@ -2968,7 +2968,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.U_Ora_01, USAttributes.Status)
 		{
-			Tittle = "Neceito ayuda",
+			Title = "Neceito ayuda",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -2991,7 +2991,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Ora_02, USAttributes.Soul)
 		{
-			Tittle = "Revelaciones",
+			Title = "Revelaciones",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
 			Archetipe = AvailableArchetypes.Oracle,
@@ -3026,7 +3026,7 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.U_Mage_01, USAttributes.None)
 		{
-			Tittle = "Hechizo: Rastrear",
+			Title = "Hechizo: Rastrear",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -3037,7 +3037,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_02, USAttributes.None)
 		{
-			Tittle = "Hechizo: Elementalismo",
+			Title = "Hechizo: Elementalismo",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -3048,7 +3048,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_03, USAttributes.None)
 		{
-			Tittle = "Hechizo: Enlace",
+			Title = "Hechizo: Enlace",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -3059,7 +3059,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_04, USAttributes.None)
 		{
-			Tittle = "Hechizo: Blindage",
+			Title = "Hechizo: Blindage",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -3070,7 +3070,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_05, USAttributes.None)
 		{
-			Tittle = "Hechizo: Velo",
+			Title = "Hechizo: Velo",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -3081,7 +3081,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_06, USAttributes.None)
 		{
-			Tittle = "Hechizo: Teletransportarse",
+			Title = "Hechizo: Teletransportarse",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -3092,7 +3092,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_07, USAttributes.None)
 		{
-			Tittle = "Hechizo: Baratija",
+			Title = "Hechizo: Baratija",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -3103,7 +3103,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_07, USAttributes.None)
 		{
-			Tittle = "Trabajar en mi sanctum",
+			Title = "Trabajar en mi sanctum",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Mage,
@@ -3132,7 +3132,7 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.U_Swo_01, USAttributes.None)
 			{
-				Tittle = "Juramentado y corruptión",
+				Title = "Juramentado y corruptión",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Sworn,
@@ -3143,7 +3143,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Swo_02, USAttributes.None)
 			{
-				Tittle = "El poder de mi arma",
+				Title = "El poder de mi arma",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Sworn,
@@ -3155,7 +3155,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Swo_03, USAttributes.Mind)
 			{
-				Tittle = "Lo hago por ellos",
+				Title = "Lo hago por ellos",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Sworn,
@@ -3167,7 +3167,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Swo_04, USAttributes.Mind)
 			{
-				Tittle = "Roto",
+				Title = "Roto",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Sworn,
@@ -3185,7 +3185,7 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.U_Vamp_02, USAttributes.None)
 			{
-				Tittle = "Mi refugio mis reglas",
+				Title = "Mi refugio mis reglas",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Vampire,
@@ -3196,7 +3196,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Vamp_01, USAttributes.None)
 			{
-				Tittle = "Mi red",
+				Title = "Mi red",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Vampire,
@@ -3213,7 +3213,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Vamp_03, USAttributes.None)
 			{
-				Tittle = "Saber más",
+				Title = "Saber más",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Vampire,
@@ -3230,7 +3230,7 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.U_Spec_01, USAttributes.None)
 			{
-				Tittle = "Cuidar de ellos",
+				Title = "Cuidar de ellos",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Spectre,
@@ -3241,7 +3241,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_02, USAttributes.None)
 			{
-				Tittle = "Resolver un ancla",
+				Title = "Resolver un ancla",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Spectre,
@@ -3252,7 +3252,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_03, USAttributes.None)
 			{
-				Tittle = "Perder un ancla",
+				Title = "Perder un ancla",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Spectre,
@@ -3263,7 +3263,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_04, USAttributes.None)
 			{
-				Tittle = "Trauma",
+				Title = "Trauma",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Spectre,
@@ -3274,7 +3274,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_05, USAttributes.None)
 			{
-				Tittle = "Heridas",
+				Title = "Heridas",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Spectre,
@@ -3285,7 +3285,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_06, USAttributes.None)
 			{
-				Tittle = "Pasar al otro lado",
+				Title = "Pasar al otro lado",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Spectre,
@@ -3318,7 +3318,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_07, USAttributes.Blood)
 			{
-				Tittle = "Arremeter contra un PNJ",
+				Title = "Arremeter contra un PNJ",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Spectre,
@@ -3337,7 +3337,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_08, USAttributes.Soul)
 			{
-				Tittle = "Comulgar con tus anclas",
+				Title = "Comulgar con tus anclas",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Spectre,
@@ -3362,7 +3362,7 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.U_Vet_01, USAttributes.None)
 			{
-				Tittle = "Mi taller",
+				Title = "Mi taller",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Veteran,
@@ -3385,7 +3385,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Vet_02, USAttributes.None)
 			{
-				Tittle = "Mi creacciones",
+				Title = "Mi creacciones",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Veteran,
@@ -3402,7 +3402,7 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.U_Awa_01, USAttributes.None)
 			{
-				Tittle = "Se han ido",
+				Title = "Se han ido",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Awaken,
@@ -3413,7 +3413,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Awa_02, USAttributes.Heart)
 			{
-				Tittle = "Ocuparme de ellos",
+				Title = "Ocuparme de ellos",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Awaken,
@@ -3429,7 +3429,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Awa_03, USAttributes.Soul)
 			{
-				Tittle = "Mi kit",
+				Title = "Mi kit",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.Awaken,
@@ -3814,7 +3814,7 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.CityStatus1_01, USAttributes.Status)
 			{
-				Tittle = "Debilitar la posición de alguien",
+				Title = "Debilitar la posición de alguien",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -3833,7 +3833,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityStatus1_02, USAttributes.Status)
 			{
-				Tittle = "Hacer correr la voz",
+				Title = "Hacer correr la voz",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -3856,7 +3856,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityStatus1_03, USAttributes.Status)
 			{
-				Tittle = "Consulta a sus contactos",
+				Title = "Consulta a sus contactos",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -3883,7 +3883,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityStatus1_04, USAttributes.Status)
 			{
-				Tittle = "Ocuparte de tus asusntos",
+				Title = "Ocuparte de tus asusntos",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -3903,7 +3903,7 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.CityStatus2_01, USAttributes.Status)
 			{
-				Tittle = "Reunir las fuerzas de una facción",
+				Title = "Reunir las fuerzas de una facción",
 				TypeOfMovement = MovementTypes.CityMoveStatus2,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -3922,7 +3922,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityStatus2_02, USAttributes.Status)
 			{
-				Tittle = "Reclamar",
+				Title = "Reclamar",
 				TypeOfMovement = MovementTypes.CityMoveStatus2,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -3951,7 +3951,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityStatus2_03, USAttributes.Status)
 			{
-				Tittle = "Reclutar nuevos aliados",
+				Title = "Reclutar nuevos aliados",
 				TypeOfMovement = MovementTypes.CityMoveStatus2,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -3978,7 +3978,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityStatus2_04, USAttributes.Status)
 			{
-				Tittle = "Reclamar estatus 3",
+				Title = "Reclamar estatus 3",
 				TypeOfMovement = MovementTypes.CityMoveStatus2,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -4006,7 +4006,7 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.CityFaction_01, USAttributes.None)
 			{
-				Tittle = "Atacar abiertamente a una facción",
+				Title = "Atacar abiertamente a una facción",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -4025,7 +4025,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityFaction_02, USAttributes.None)
 			{
-				Tittle = "Consolidar el control",
+				Title = "Consolidar el control",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -4045,7 +4045,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityFaction_03, USAttributes.None)
 			{
-				Tittle = "Localizar a alguien",
+				Title = "Localizar a alguien",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -4066,7 +4066,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityFaction_04, USAttributes.None)
 			{
-				Tittle = "Incitar al adversario",
+				Title = "Incitar al adversario",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -4080,7 +4080,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityFaction_05, USAttributes.None)
 			{
-				Tittle = "Apoderarse por la fuerza",
+				Title = "Apoderarse por la fuerza",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -4100,7 +4100,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityFaction_06, USAttributes.None)
 			{
-				Tittle = "Buscar en la ciduad",
+				Title = "Buscar en la ciduad",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,
@@ -4120,7 +4120,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityFaction_07, USAttributes.None)
 			{
-				Tittle = "Ofrecer pasaje",
+				Title = "Ofrecer pasaje",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
 				Archetipe = AvailableArchetypes.All,

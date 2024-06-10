@@ -209,7 +209,7 @@ public class DinoCharacter : PbtACharacter
 	{
 		if(!AllPurchasedMoves.Contains(move.ID))	
 			AllPurchasedMoves.Add(move.ID);
-		await StoreChangeOnBD($"{Name} adquirió {move.Tittle}");
+		await StoreChangeOnBD($"{Name} adquirió {move.Title}");
 	}
 
 	private void InitClass()

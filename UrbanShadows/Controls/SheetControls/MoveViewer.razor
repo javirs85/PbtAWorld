@@ -10,7 +10,7 @@
 	@oncontextmenu:stopPropagation=true>
 	<div class="Box">
 		<div class="TextContainer">
-			<div class="TextTitle">@Move.Tittle</div>
+			<div class="TextTitle">@Move.Title</div>
 			@if (Move.HasRoll() && !MasterView)
 			{
 				<div class="RollDetails">(@Move.Roll.ToUI().ToLower()@rollNumber)</div>
@@ -173,7 +173,7 @@
 <!--Advacnce movement modal-->
 <div class="FullScreenModal @(IsShowingFullScreenModal?"":"HideModal")" @onclick=CloseFullScreenModal>
 	<div class="ModalBody">
-		<p>Ahora mismo <strong>@Move.Tittle</strong> está <span style="font-weight:bold;">@(Move.IsImproved ? "Avanzado" : "Normal")</span></p>
+		<p>Ahora mismo <strong>@Move.Title</strong> está <span style="font-weight:bold;">@(Move.IsImproved ? "Avanzado" : "Normal")</span></p>
 		<p class="mt-4 mb-1">Como dejamos el movimiento?</p>
 		<div class="d-flex gap-2">
 			<button class="btn btn-outline-light" style="width: 50%;" @onclick=MakeMoveNOTAdvanced @onclick:stopPropagation=true>Movimiento normal</button>

@@ -209,7 +209,7 @@ public static class DWExtesions
 			DWStats.DW_DEX => "destreza",
 			DWStats.DW_CON => "constitución",
 			DWStats.DW_INT => "inteligencia",
-			DWStats.DW_WIS => "sabiduría",
+			DWStats.DW_WIS => "Perspicacia",
 			DWStats.DW_CHA => "carisma",
 			DWStats.DW_DorS => "FUE o DES",
 			DWStats.DW_CON_Plus2 => "CON+2",
@@ -243,7 +243,7 @@ public static class DWExtesions
 	public static string ToUI(this DWMovementIDs id, DWMovesService moves)
 	{
 		var m = moves.GetMovement(id);
-		if (m is not null) return m.Tittle;
+		if (m is not null) return m.Title;
 		else return $"move {id} is not in the database";
 	}
 }

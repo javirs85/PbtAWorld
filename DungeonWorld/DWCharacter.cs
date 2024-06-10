@@ -109,7 +109,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 						"Fama: Asegurarte de que otros difundan tu nombre",
 						"Teatro: Provocar conflictos entre otros.",
 						"Romance: Compartir un momento apasionado con otr@",
-						"Sabiduría: Un PNJ actúa según tu consejo honesto."
+						"Perspicacia: Un PNJ actúa según tu consejo honesto."
 					};
 				break;
 			case DWClasses.DW_Cleric:
@@ -731,7 +731,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 						},
 						new Background
 						{
-							Title = "Impregnado de sabiduría",
+							Title = "Impregnado de Perspicacia",
 							Movements = new List<string>
 							{
 								"Cuando inspeccionas por primera vez una obra de magia o artificio, puedes preguntarle al DJ 2 lo siguiente:\r\n• ¿Quién hizo esto y hace cuánto tiempo?\r\n• ¿Qué hace?\r\n• ¿Cómo puedo activarlo o repararlo?\r\n• ¿Qué pasa aquí que no es lo que parece?\r\n",
@@ -803,7 +803,7 @@ public class DWCharacter : PbtALib.PbtACharacter
 							Title = "Orden Sagrada",
 							Movements = new List<string>
 							{
-								"¿Por qué es conocida su orden? (elige 3)\r\ncapítulos por doquier, celo fanático, santas reliquias, honor, influencia, ritos místicos, popularidad, guerreros hábiles, tesoros de sabiduría, riqueza",
+								"¿Por qué es conocida su orden? (elige 3)\r\ncapítulos por doquier, celo fanático, santas reliquias, honor, influencia, ritos místicos, popularidad, guerreros hábiles, tesoros de Perspicacia, riqueza",
 								"Cuando *aprovecha la reputación de tu orden**, obtienes ventaja para *Parlamentar**.",
 								"Cuando *dices conocimiento sobre tu orden**, trata un 6- como un 7-9.",
 								"Cuando *tienes lo que necesitas**, puedes producir artículos que reflejan las características de tu orden"

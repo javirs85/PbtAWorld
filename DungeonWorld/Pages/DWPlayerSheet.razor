@@ -836,12 +836,12 @@ else
 		if (!Player.ClassMovments.Contains(mov.ID))
 		{
 			Player.ClassMovments.Add(mov.ID);
-			await Game.StoreChangesOnCharacter(Player, $"añadió {mov.Tittle}");
+			await Game.StoreChangesOnCharacter(Player, $"añadió {mov.Title}");
 		}
 		else
 		{
 			Player.ClassMovments.Remove(mov.ID);
-			await Game.StoreChangesOnCharacter(Player, $"quitó {mov.Tittle}");
+			await Game.StoreChangesOnCharacter(Player, $"quitó {mov.Title}");
 		}
 
 		ClassMovements.Clear();
@@ -857,12 +857,12 @@ else
 		if(!Player.ClassAdvancedMovments.Contains(mov.ID))
 		{
 			Player.ClassAdvancedMovments.Add(mov.ID);
-			await Game.StoreChangesOnCharacter(Player, $"añadió {mov.Tittle}");
+			await Game.StoreChangesOnCharacter(Player, $"añadió {mov.Title}");
 		}
 		else
 		{
 			Player.ClassAdvancedMovments.Remove(mov.ID);
-			await Game.StoreChangesOnCharacter(Player, $"quitó {mov.Tittle}");
+			await Game.StoreChangesOnCharacter(Player, $"quitó {mov.Title}");
 		}
 
 		AvancedClassMovements.Clear();

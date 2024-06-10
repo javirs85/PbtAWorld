@@ -11,7 +11,7 @@ public interface IMove
 	bool IsSelected { get; set; }
 	bool HasRoll();
 	string ToUI();
-	string Tittle { get; set; }
+	string Title { get; set; }
 	Consequences PreCondition { get; set; }
 	Consequences ConsequencesOn79 { get; set; }
 	Consequences ConsequencesOn10 { get; set; }
@@ -48,7 +48,7 @@ public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 	public TIDPack ID => _me;
 	public TStatsPack Roll => _roll;
 	public bool IsSelected { get; set; }
-	public string Tittle { get; set; } = "";
+	public string Title { get; set; } = "";
 	public Consequences PreCondition { get; set; } = new();
 	public Consequences ConsequencesOn79 { get; set; } = new();
 	public Consequences ConsequencesOn10 { get; set; } = new();

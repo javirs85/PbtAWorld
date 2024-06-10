@@ -92,6 +92,10 @@
 		{
 			return ((AvailableArchetypes)classID).ToUI();
 		}
+		else if (Meta.SelectedGame == AvailableGames.SV)
+		{
+			return ((SVClasses)classID).ToUI();
+		}
 		else
 			return "Wrong SelectedGame at FromClassIDToUI";
 	}
