@@ -37,7 +37,7 @@ namespace UrbanShadows
 
 		public int CrewQuality { get; set; } = 0;
 		public int MaxCrewQuality = 3;
-		public 
+		 
 
 		public List<string> PayingMethods = new List<string>
 		{
