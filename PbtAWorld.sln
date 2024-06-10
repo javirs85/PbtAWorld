@@ -17,8 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PbtADBConnector", "PbtADBCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanShadows", "UrbanShadows\UrbanShadows.csproj", "{FBED24E0-157B-4EA5-A88B-768C56931F97}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PbtADB", "PbtADB\PbtADB.sqlproj", "{799652BC-7360-44EA-8832-8AF3FF7851EB}"
-EndProject
+
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScumAndVillainy", "ScumAndVillainiRazor\ScumAndVillainy.csproj", "{88CB098F-341C-4424-A79D-4F9BB32CEACC}"
 EndProject
 Global
