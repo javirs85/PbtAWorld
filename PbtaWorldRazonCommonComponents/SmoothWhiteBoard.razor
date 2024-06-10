@@ -592,7 +592,7 @@ else
 				var t = service.SelectToken(e.OffsetX, e.OffsetY);
 				if (t is not null)
 				{
-					if (t.Monster is not null)
+					if (t.Monster is not null && t.Status != TokenStatus.Hidden)
 					{
 						hoveredX = (float)e.OffsetX;
 						hoveredY = (float)e.OffsetY;
