@@ -35,7 +35,7 @@ public class SVMovesService : MovesServiceBase
 		new SVMove(SVMoveIDs.Tinker, SVStats.NotSet)
 		{
 			Title = "Manitas",
-			Description =  "Cuando trabajas en un reloj con *Trastear** o *Hackear** o cuando *Estudias** unos planos, llena +1 segmento",
+			Description =  "Cuando trabajas en un mecanismo con *Trastear** o *Hackear** o cuando *Estudias** unos planos, llena +1 segmento",
 			Details = "Obtienes este segmento extra sin importar si es una actividad de 'tiempo libre' o no. Esto quire decir que superar seguridad en un trabajo o hacer un arreglo rápido mientras escapamos es más fácil para tí que para cualquier otro."
 		},
 		new SVMove(SVMoveIDs.BailandoWireAndMechTape, SVStats.NotSet)
@@ -263,7 +263,7 @@ public class SVMovesService : MovesServiceBase
 		},
 		new SVMove(SVMoveIDs.Physicker, SVStats.NotSet)
 		{
-			Title = "Físico",
+			Title = "Doctor",
 			Description = "Puedes *estudiar** una enfermedad, heridas o un cadáver, y *recopilar información** de una escena del crimen. Además, tu tripulación obtiene *+1d** en *tiradas de recuperación**. Esta habilidad a menudo representa una formación formal, que te brinda una manera de entender forensemente un cadáver o deconstruir científicamente una enfermedad. El bono a la recuperación para tu tripulación solo se aplica si ayudas a tratar heridas o lesiones en algún momento durante la recuperación.",
 			Details = "Esta habilidad a menudo representa una formación formal, que te brinda una manera de entender forensemente un cadáver o deconstruir científicamente una enfermedad. El bono a la recuperación para tu tripulación solo se aplica si ayudas a tratar heridas o lesiones en algún momento durante la recuperación."
 		},

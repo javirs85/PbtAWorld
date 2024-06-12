@@ -1,3 +1,144 @@
-﻿body
-{
+﻿.SVPlayerSheet {
+    font-family: Trench;
+    background:black;
+    color:white;
+    width:100%;
+    height:100%;
+    padding-left:10px;
+    display:flex;
+}
+    .SVPlayerSheet > div{
+        display:flex;
+        flex-direction:column;
+        flex: 1 1;
+    }
+
+    .debug {
+        display: flex;
+        margin-top: 15px;
+    }
+    .debug > div {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid gray;
+        font-family: Roboto;
+        font-size: 12px;
+        padding: 5px;
+    }
+
+.TraumaBox{
+    display:flex;
+    gap:10px;
+    font-family:sans-serif;
+    color:#ffffffaa;
+}
+
+.ActiveTrauma {
+    background: #7f0303;
+    padding: 5px;
+    border: 1px solid #db2727;
+}
+.UnactiveTrauma {
+    background: #390c0c;
+    opacity: 0.5;
+    padding: 5px;
+    border: 1px solid #b72323;
+    flex: 1 1;
+}
+
+.abilitiesContainer {
+    margin: 0 10px;
+    margin-top:15px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    overflow-y: auto;
+}
+.abilitiesContainer div{
+    border-width: 1px;
+    border-style: solid;
+}
+
+.AddButton {
+    width: 50px;
+    height: 50px;
+    color: #665efb;
+    opacity:0.75;
+    cursor:pointer;
+}
+.AddButton:hover{
+    opacity:1;
+}
+
+.CircularButton {
+    display: flex;
+    font-size: 50px;
+    justify-content: center;
+    align-items: center;
+    width: 82px;
+    height: 100%;
+    opacity:0.75;
+    cursor:pointer;
+}
+.CircularButton:hover{
+    opacity:1;
+}
+
+.HarmBox {
+    display: flex;
+    flex-direction: column;
+    border: white;
+    margin: 0 10px;
+    margin-bottom: 0px;
+}
+
+.TableHeader {
+    width: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-family: system-ui;
+}
+.TableCell {
+    flex:1 1;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.RecoveryBox {
+    width: 83px;
+    height: 79px;
+    background: #093d04;
+    padding: 5px;
+    padding: 0 5px 15px 5px;
+    border-radius: 5px;
+    display: flex;
+}
+
+.CredBox {
+    width: 58px;
+    height: 79px;
+    background: rgb(90 52 6);
+    padding: 0px 5px 10px;
+    border-radius: 5px;
+}
+
+.CashBox {
+    width: 242px;
+    padding: 5px;
+    position: relative;
+    z-index: 2;
+}
+.FakeMarker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgb(103 65 12);
+    width: 25px;
+    height: 100%;
+    z-index: -1;
 }

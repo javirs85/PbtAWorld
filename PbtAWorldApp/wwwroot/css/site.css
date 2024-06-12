@@ -1,5 +1,22 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+@font-face {
+    font-family: FuturisticArmour;
+    src: url("../fonts/FuturisticArmour.otf") format("opentype")
+}
+@font-face {
+    font-family: Uncracked;
+    src: url("../fonts/Uncracked.otf") format("opentype")
+}
+@font-face {
+    font-family: Trench;
+    src: url("../fonts/Trench.otf") format("opentype")
+}
+
+.Uncracked {
+    font-family: Uncracked;
+    font-size:30px;
+}
 
 .borderlessInput {
     outline: none !important;

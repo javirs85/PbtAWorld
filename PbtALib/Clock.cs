@@ -9,6 +9,14 @@ namespace PbtALib;
 
 public class Clock
 {
+	public Clock() { }
+	public Clock(string title, int steps)
+	{
+		Title = title;
+		Steps = new List<StepItem>();
+		for (int i = 0; i < steps; i++) Steps.Add(new StepItem { Id = i + 1, Text = "" });
+	}
+
 	public ClocksManager Controller { get; set; } = new();
 
 	public int Status { get; set; } = 0;

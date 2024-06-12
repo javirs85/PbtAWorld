@@ -1,0 +1,211 @@
+﻿
+<div class="d-flex">
+	<div class="d-flex flex-column">
+		<div class="d-flex">
+			<SkewedHeader Text="@HeaderText" />
+			<SkewedList ListSize="6" @bind-Value="RelatedXP"/>
+		</div>
+		<div class="d-flex flex-column p-2">
+			<div class="d-flex flex-column gap-0">
+				<div class="d-flex gap-2">
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub1Stat,1);})
+						style="border-right:1px solid #a4a0ed; padding-right:5px;">
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub1,0)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub1Stat,2);})>
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub1,1)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub1Stat,3);})>
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub1,2)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center StatName">
+						<div>@Sub1Stat.ToUI()</div>
+					</div>
+					
+				</div>
+				<div class="d-flex gap-2">
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub2Stat,1);})
+						style="border-right:1px solid #a4a0ed; padding-right:5px;">
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub2,0)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub2Stat,2);})>
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub2,1)" points="0,0 20,10 0,20" />
+						</svg>
+					</div><div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub2Stat,3);})>
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub2,2)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center StatName">
+						<div>@Sub2Stat.ToUI()</div>
+					</div>
+				</div>
+				<div class="d-flex gap-2">
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub3Stat,1);})
+						style="border-right:1px solid #a4a0ed; padding-right:5px;">
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub3,0)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub3Stat,2);})>
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub3,1)" points="0,0 20,10 0,20" />
+						</svg>
+					</div><div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub3Stat,3);})>
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub3,2)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center StatName">
+						<div>@Sub3Stat.ToUI()</div>
+					</div>
+				</div>
+				<div class="d-flex gap-2">
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub4Stat,1);})
+						style="border-right:1px solid #a4a0ed; padding-right:5px;">
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub4,0)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub4Stat,2);})>
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub4,1)" points="0,0 20,10 0,20" />
+						</svg>
+					</div><div class="d-flex align-items-center" @onclick=@(()=>{Click(Sub4Stat,3);})>
+						<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+							<polygon class="@CheckValue(Sub4,2)" points="0,0 20,10 0,20" />
+						</svg>
+					</div>
+					<div class="d-flex align-items-center StatName">
+						<div>@Sub4Stat.ToUI()</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public SVCharacter Player { get; set; } = new SVCharacter { Name = "ERROR" };
+	[Parameter] public SVStats MainStat { get; set; } = SVStats.Insight;
+	private int _sub1 = 1;
+	private int _sub2 = 1;
+	private int _sub3 = 1;
+	private int _sub4 = 1;
+	[Parameter]
+	public int Sub1
+	{
+		get { return _sub1; }
+		set
+		{
+			if (_sub1 != value)
+			{
+				_sub1 = value;
+				Sub1Changed.InvokeAsync(value);
+			}
+		}
+	}
+	[Parameter]
+	public int Sub2
+	{
+		get { return _sub2; }
+		set
+		{
+			if (_sub2 != value)
+			{
+				_sub2 = value;
+				Sub2Changed.InvokeAsync(value);
+			}
+		}
+	}
+	[Parameter]
+	public int Sub3
+	{
+		get { return _sub3; }
+		set
+		{
+			if (_sub3 != value)
+			{
+				_sub3 = value;
+				Sub3Changed.InvokeAsync(value);
+			}
+		}
+	}
+	[Parameter]
+	public int Sub4
+	{
+		get { return _sub4; }
+		set
+		{
+			if (_sub4 != value)
+			{
+				_sub4 = value;
+				Sub4Changed.InvokeAsync(value);
+			}
+		}
+	}
+	[Parameter] public SVStats Sub1Stat { get; set; } = SVStats.Sway;
+	[Parameter] public SVStats Sub2Stat { get; set; } = SVStats.Sway;
+	[Parameter] public SVStats Sub3Stat { get; set; } = SVStats.Sway;
+	[Parameter] public SVStats Sub4Stat { get; set; } = SVStats.Sway;
+	private int _relatedXP = 2;
+	[Parameter] public int RelatedXP { 
+		get { return _relatedXP; } 
+		set
+		{
+			if(_relatedXP != value)
+			{
+				_relatedXP = value;
+				RelatedXPChanged.InvokeAsync(value);
+			}
+		} 
+	}
+	[Parameter] public int ListSize { get; set; } = 6;
+
+	[Parameter] public EventCallback<int> RelatedXPChanged { get; set; }
+	[Parameter] public EventCallback<int> Sub1Changed { get; set; }
+	[Parameter] public EventCallback<int> Sub2Changed { get; set; }
+	[Parameter] public EventCallback<int> Sub3Changed { get; set; }
+	[Parameter] public EventCallback<int> Sub4Changed { get; set; }
+
+	private string HeaderText => MainStat.ToUI(true);
+
+	private void Click(SVStats stat, int clickedValue)
+	{
+		int currentValue = 0;
+
+		if (stat == Sub1Stat) currentValue = Sub1;
+		else if (stat == Sub2Stat) currentValue = Sub2;
+		else if (stat == Sub3Stat) currentValue = Sub3;
+		else if (stat == Sub4Stat) currentValue = Sub4;
+
+		if (currentValue == clickedValue) clickedValue--;
+		else if (clickedValue == 1 && currentValue == 1) clickedValue = 0;
+		else if (clickedValue == 1 && currentValue == 0) clickedValue = 1;
+
+		if (clickedValue != currentValue)
+		{
+			if (stat == Sub1Stat) Sub1 = clickedValue;
+			else if (stat == Sub2Stat) Sub2 = clickedValue;
+			else if (stat == Sub3Stat) Sub3 = clickedValue;
+			else if (stat == Sub4Stat) Sub4 = clickedValue;
+		}
+	}
+
+	private string CheckValue(int s, int v)
+	{
+		if (s > v)
+			return "UsedTriangle";
+		else
+			return "NotUsedTriangle";
+	}
+}

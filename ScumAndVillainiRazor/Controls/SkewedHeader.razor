@@ -1,0 +1,13 @@
+﻿<div class="skewOut @Color.ToString()">
+	<div class="skewIn @Color.ToString()">
+		<div class="BlockHeader" style="width:@(ForzedWidth)px;">@Text</div>
+	</div>
+	<div class="FakeCover @Color.ToString()" />
+</div>
+
+@code {
+	[Parameter] public string Text { get; set; } = "Tittle";
+	[Parameter] public int ForzedWidth { get; set; } = 154;
+	public enum AvilableColors {Blue, Red, Green}
+	[Parameter] public AvilableColors Color { get; set; } = AvilableColors.Blue;
+}

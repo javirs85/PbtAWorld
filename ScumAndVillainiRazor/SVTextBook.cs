@@ -489,7 +489,7 @@ public class SVTextBook : BaseTextBook
 
 
 
-public static class Extensions
+public static class SVExtensions
 {
 	public static string ToUI(this SVClasses c) => c switch
 	{
@@ -503,25 +503,38 @@ public static class Extensions
 		_ => "Not Set"
 	};
 
-	public static string ToUI(this SVStats c) => c switch
+	public static string ToUI(this SVStats c, bool Simplify = false)
 	{
-		SVStats.Attune => "Sintonizar",
-		SVStats.Command => "Comandar",
-		SVStats.Consort => "Conversar",
-		SVStats.Doctor => "Sanar",
-		SVStats.hack => "Hackear",
-		SVStats.Helm => "Pilotar",
-		SVStats.Rig => "Trastear",
-		SVStats.Scramble => "Maniobrar",
-		SVStats.Scrap => "Luchar",
-		SVStats.Skulk => "Acechar",
-		SVStats.Study => "Estudiar",
-		SVStats.Sway => "Persuadir",
-		SVStats.Insight => "Perspicacia",
-		SVStats.Prowess => "Fisicalidad",
-		SVStats.Resolve => "Resolución",
-		_ => "Not set"
-	};
+		var txt = c switch
+		{
+			SVStats.Attune => "Sintonizar",
+			SVStats.Command => "Comandar",
+			SVStats.Consort => "Conversar",
+			SVStats.Doctor => "Sanar",
+			SVStats.Hack => "Hackear",
+			SVStats.Helm => "Pilotar",
+			SVStats.Rig => "Trastear",
+			SVStats.Scramble => "Maniobrar",
+			SVStats.Scrap => "Luchar",
+			SVStats.Skulk => "Acechar",
+			SVStats.Study => "Estudiar",
+			SVStats.Sway => "Persuadir",
+			SVStats.Insight => "Perspicacia",
+			SVStats.Prowess => "Fisicalidad",
+			SVStats.Resolve => "Resolución",
+			_ => "Not set"
+		};
+		if (Simplify)
+		{
+			txt = txt.Replace('á', 'a');
+			txt = txt.Replace('é', 'e');
+			txt = txt.Replace('í', 'i');
+			txt = txt.Replace('ó', 'o');
+			txt = txt.Replace('ú', 'u');
+		}
+
+		return txt;
+	}
 
 	public static string ToDefinition(this SVStats c) => c switch
 	{
@@ -529,7 +542,7 @@ public static class Extensions
 		SVStats.Command => "Cuando *Comandas**, impones obediencia con tu fuerza de personalidad.\r\nPodrías intimidar o amenazar para conseguir lo que deseas. Podrías liderar una acción con PNJs. Podrías ordenar a la gente que haga lo que quieres (aunque *Persuadir** podría ser mejor).",
 		SVStats.Consort => "Cuando *Conversas**, socializas con amigos y contactos. Podrías obtener acceso a recursos, información, personas o lugares. Podrías causar una buena impresión o ganarte a alguien con tu encanto y estilo. Podrías hacer nuevos amigos o conectar con tu herencia o antecedentes. Podrías intentar dirigir a tus amigos con presión social (aunque *Comandar** podría ser mejor).",
 		SVStats.Doctor => "Cuando *Sanas**, atiendes las necesidades de otro ofreciendo ayuda y consuelo, o examinas el mundo de manera científica.\r\nPodrías tratar las heridas de alguien. Podrías analizar la composición de una sustancia para aprender cómo funciona. Podrías reconfortar a alguien en angustia (pero *Socializar** podría ser mejor).",
-		SVStats.hack => "Cuando *Hackeas**, violas los sistemas de seguridad de las computadoras o anulas sus controles.\r\nPodrías acceder a una consola de datos para encontrar a un ser cautivo en alguna parte de la estación. Podrías desordenar los sistemas de control de un dron para evitar que dispare contra ti. Podrías anular los controles de una puerta para que se abra (aunque *Trastear** podría ser mejor).",
+		SVStats.Hack => "Cuando *Hackeas**, violas los sistemas de seguridad de las computadoras o anulas sus controles.\r\nPodrías acceder a una consola de datos para encontrar a un ser cautivo en alguna parte de la estación. Podrías desordenar los sistemas de control de un dron para evitar que dispare contra ti. Podrías anular los controles de una puerta para que se abra (aunque *Trastear** podría ser mejor).",
 		SVStats.Helm => "Cuando *Pilotar**, pilotas un vehículo o utilizas sus armas. Podrías trazar un salto a través de un oscuro corredor del hiperespacio. Podrías zambullirte por un cañón para escapar de una nave perseguidora. Podrías disparar cuádruple láser a piratas hostiles. Podrías redirigir la energía de la nave para resistir al fuego (aunque *Trastear** podría ser mejor).",
 		SVStats.Rig => "Cuando *Trasteas** mecanismos, modificas cómo funciona un mecanismo existente o creas uno nuevo.\r\nPodrías desactivar una trampa. Podrías reparar un sistema dañado de una nave. Podrías abrir una caja fuerte. Podrías sobrealimentar un motor. Podrías programar una bomba para que detone más tarde. Podrías forzar una puerta abierta (aunque *Hackear** podría ser mejor).",
 		SVStats.Scramble => "Cuando *Maniobras**, levantas, trepas, saltas, corres o nadas, usualmente ya sea para alejarte o acercarte al peligro.\r\nPodrías saltar sobre un torno al escapar de las autoridades. Podrías escalar el lado de un acantilado para acercarte a una base secreta. Podrías esquivar disparos de bláster mientras cruzas el hangar para llegar a tu nave. Podrías perseguir a un objetivo que estás siguiendo (aunque *Acechar** podría ser mejor).",
@@ -598,12 +611,13 @@ public static class Extensions
 
 	public static SVMoveIDs GetStartingAbility(this SVClasses c) => c switch
 	{
-		SVClasses.Mechanic => SVMoveIDs.BailandoWireAndMechTape,
+		SVClasses.Mechanic => SVMoveIDs.Tinker,
 		SVClasses.muscle => SVMoveIDs.Unstoppable,
 		SVClasses.mystic => SVMoveIDs.TheWay,
 		SVClasses.pilot => SVMoveIDs.AcePilot,
 		SVClasses.scoundrel => SVMoveIDs.Serendipitous,
-		SVClasses.speaker => SVMoveIDs.ImADoctorNotA,
+		SVClasses.speaker => SVMoveIDs.AirOfRespectability,
+		SVClasses.stitch => SVMoveIDs.ImADoctorNotA,
 		_ => SVMoveIDs.NotSet
 	};
 	
@@ -631,7 +645,7 @@ public static class Extensions
 		_ => new List<SVItemIDs> { }
 	};
 
-	public static string ToUi(this Heritages heritage) => heritage switch
+	public static string ToUI(this Heritages heritage) => heritage switch
 	{
 		Heritages.Imperial => "Imperial",
 		Heritages.Spacer => "Espacial",
@@ -639,6 +653,7 @@ public static class Extensions
 		Heritages.Manufactured => "Manufacturado",
 		Heritages.Wanderer => "Nómada",
 		Heritages.Xeno => "Xeno",
+		Heritages.NotSet => "---",
 		_ => ""
 	};
 	public static string GetDescription(this Heritages heritage) => heritage switch
@@ -661,7 +676,8 @@ public static class Extensions
 		Backgrounds.Military => "Militar",
 		Backgrounds.Noble => "Noble",
 		Backgrounds.Syndicate => "Sindicato",
-		_ => ""
+        Backgrounds.NotSet => "---",
+		_ => "--"
 	};
 	public static string GetDescription(this Backgrounds background) => background switch
 	{
@@ -672,9 +688,9 @@ public static class Extensions
 		Backgrounds.Military => "Un soldado de la Hegemonía, mercenario, operativo de inteligencia, estratega, instructor de entrenamiento, etc.",
 		Backgrounds.Noble => "Viviendo la vida de lujo, como un diletante, alguien atrapado en la política de las Casas, etc.",
 		Backgrounds.Syndicate => "Parte de una banda criminal organizada, desde el vigilante más bajo hasta un antiguo señor del crimen derrocado.",
-		_ => ""
+		_ => "--"
 	};
-	public static string ToUi(this Vices vice) => vice switch
+	public static string ToUI(this Vices vice) => vice switch
 	{
 		Vices.Faith => "Fe",
 		Vices.Gambling => "Juego",
@@ -683,6 +699,7 @@ public static class Extensions
 		Vices.Pleasure => "Placer",
 		Vices.Stupor => "Estupor",
 		Vices.Weird => "Extraño",
+		Vices.NotSet => "---",
 		_ => ""
 	};
 	public static string GetDescription(this Vices vice) => vice switch
@@ -719,8 +736,22 @@ public static class Extensions
 		_ => 8
 	};
 
-	public static string ToUi(this Traumas t) => t switch
+	public static string ToUI(this Traumas t) => t switch
 	{
+		Traumas.NoTrauma => " - ",
+		Traumas.Cold => "Helado",
+		Traumas.haunted => "Atormentado",
+		Traumas.Obsessed => "Obsesionado",
+		Traumas.Paranoid => "Paranoia",
+		Traumas.Reckless => "Temerario",
+		Traumas.Soft => "Blando",
+		Traumas.Unstable => "Volátil",
+		Traumas.Vicious => "Perverso",
+		_ => ""
+	};
+	public static string ToDescription(this Traumas t) => t switch
+	{
+		Traumas.NoTrauma => "Todo está en orden ... de momento ...",
 		Traumas.Cold => "No te conmueven los llamamientos emocionales ni los lazos sociales.",
 		Traumas.haunted => "A menudo te pierdes en ensoñaciones, reviviendo horrores pasados, viendo cosas de tu pasado o que otros pueden no ver.",
 		Traumas.Obsessed => "Estás cautivado por una sola cosa: una actividad, una persona, un objetivo, una ideología.",

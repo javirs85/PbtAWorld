@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PbtALib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,7 +10,8 @@ namespace ScumAndVillainy;
 
 public class SVCharacter : PbtALib.PbtACharacter
 {
-	private SVClasses _profession;
+
+	private SVClasses _profession = SVClasses.NotSet;
 
 	public SVClasses Profession
 	{
@@ -23,29 +25,39 @@ public class SVCharacter : PbtALib.PbtACharacter
 		}
 	}
 
+	public Clock Recovery { get; set; } = new Clock("Curación", 6);
+
 	public string Alias { get; set; } = "Alias";
 	public string Look { get; set; } = "Apariencia";
 
 	public Heritages Heritage { get; set; } = Heritages.NotSet;
 	public Backgrounds Background { get; set; } = Backgrounds.NotSet;
-	public string BackgroundDetail { get; set; } = "Detalle de tu trasfondo";
 
 	public string HowXP = string.Empty;
-	public List<SVMoveIDs> SelectedAbilities = new();
-	public List<SVItemIDs> SelectedItems = new();
+	public List<SVMoveIDs> SelectedAbilities { get; set; } = new();
+	public List<SVItemIDs> SelectedItems { get; set; } = new();
 
 	public bool UsedArmorNormal { get; set; } = false;
 	public bool UsedArmorSpecial { get; set; } = false;
 	public bool UsedArmorHeavy { get; set; } = false;
 
 	public Vices Vice { get; set; } = Vices.NotSet;
-	public List<Traumas> Traumas { get; set; } = new List<Traumas>();
+	public List<Traumas> Traumas { get; set; } = new List<Traumas> { ScumAndVillainy.Traumas.NoTrauma, ScumAndVillainy.Traumas.NoTrauma , ScumAndVillainy.Traumas.NoTrauma , ScumAndVillainy.Traumas.NoTrauma };
 
 	public List<SVNPC> Friends { get; set; } = new();
 	public List<SVItemIDs> ActiveItems { get; set; } = new();
 
 	#region stats
-	public int Doctor { get; set; } = 0;
+
+	private int _doctor;
+
+	public int Doctor
+	{
+		get { return _doctor; }
+		set { _doctor = value; }
+	}
+
+
 	public int Hack { get; set; } = 0;
 	public int Rig { get; set; } = 0;
 	public int Study { get; set; } = 0;
@@ -96,6 +108,14 @@ public class SVCharacter : PbtALib.PbtACharacter
 		}
 	}
 
+	public int GetXP(SVStats stat)
+	{
+		if (stat == SVStats.Insight) return InsightXP;
+		else if (stat == SVStats.Prowess) return ProwessXP;
+		else if (stat == SVStats.Resolve) return ResolveXP;
+		else return 0;
+	}
+
 	public override int GetBonus<T>(T statsEnum)
 	{
 		if (typeof(T) == typeof(SVStats))
@@ -112,7 +132,7 @@ public class SVCharacter : PbtALib.PbtACharacter
 		return stat switch
 		{
 			SVStats.Doctor => Doctor,
-			SVStats.hack => Hack,
+			SVStats.Hack => Hack,
 			SVStats.Rig => Rig,
 			SVStats.Study => Study,
 			SVStats.Insight => Insight,
@@ -136,7 +156,7 @@ public class SVCharacter : PbtALib.PbtACharacter
 		switch (stat)
 		{
 			case SVStats.Doctor: Doctor = i; break;
-			case SVStats.hack: Hack = i; break;
+			case SVStats.Hack: Hack = i; break;
 			case SVStats.Rig: Rig = i; break;
 			case SVStats.Study: Study = i; break;
 
@@ -155,7 +175,8 @@ public class SVCharacter : PbtALib.PbtACharacter
 	public int Stress { get; set; } = 0;
 	public string Harm1A { get; set; } = string.Empty;
 	public string Harm1B { get; set; } = string.Empty;
-	public string Harm2 { get; set; } = string.Empty;
+	public string Harm2A { get; set; } = string.Empty;
+	public string Harm2B { get; set; } = string.Empty;
 	public string Harm3 { get; set; } = string.Empty;
 
 	public MaxLoads SelectedMaxLoad { get; set; } = MaxLoads.NotSet;
@@ -165,22 +186,21 @@ public class SVCharacter : PbtALib.PbtACharacter
 	public int ProwessXP { get; set; } = 0;
 	public int ResolveXP { get; set; }= 0;
 	
-	public int CRED { get; set;} = 0;
-	private int _stash = 0;
-	public int STASH { get; }
+	public Clock CRED { get; set;} = new Clock("Créditos", 4);
+	public Clock STASH { get; set; } = new Clock("Alijo", 40);
 	public void RetrieveStash()
 	{
-		if (STASH >= 2)
+		if (STASH.Status >= 2)
 		{
-			_stash -= 2;
-			CRED++;
+			STASH.Status -= 2;
+			CRED.Status ++;
 		}
 	}
 	public void MoveToStash()
 	{
-		if(CRED >= 1) {
-			_stash++;
-			CRED--;
+		if(CRED.Status >= 1) {
+			STASH.Status++;
+			CRED.Status--;
 		}
 	}
 
