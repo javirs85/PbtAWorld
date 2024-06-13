@@ -3,7 +3,7 @@
 
 @if(IsExpanded)
 {
-	<div class="ability @(IsVeteran?"VeteranAbility":"")">
+	<div class="ability @(IsVeteran?"VeteranAbility":"")" style="@(Grow?"flex-grow: 1;":"flex-grow: none;")">
 		<div class="d-flex align-items-center gap-1">
 			<div class="fs-4" style="color:#FFFFFFCC;">@Title</div>
 			<i class="bi bi-caret-up ExpandButton" onclick="@(()=>{IsExpanded = false;})"></i>
@@ -14,7 +14,7 @@
 }
 else
 {
-	<div class="ability @(IsVeteran?"VeteranAbility":"")">
+	<div class="ability @(IsVeteran?"VeteranAbility":"")" style="@(Grow?"flex-grow: 1;":"flex-grow: none;")">
 		<div class="d-flex align-items-center gap-1">
 			<div class="fs-4" style="color:#FFFFFFCC;">@Title</div>
 			<i class="bi bi-caret-down ExpandButton" onclick="@(()=>{IsExpanded = true;})"></i>
@@ -29,6 +29,7 @@ else
 	[Parameter] public SVMoveIDs MoveID { get; set; } = SVMoveIDs.NotSet;
 	[Parameter] public EventCallback<Tuple<string, string>> ShowHelp { get; set; }
 	[Parameter] public bool IsExpanded { get; set; } = false;
+	[Parameter] public bool Grow { get; set; } = false;
 
 	private bool IsVeteran = false;
 	private string Title

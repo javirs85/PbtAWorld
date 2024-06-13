@@ -48,16 +48,14 @@
 
 .abilitiesContainer {
     margin: 0 10px;
-    margin-top:15px;
+    margin-top: 15px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 2px;
     overflow-y: auto;
-}
-.abilitiesContainer div{
-    border-width: 1px;
-    border-style: solid;
+    background: #252e4a;
+    flex: 1 1;
 }
 
 .AddButton {
@@ -89,8 +87,9 @@
     display: flex;
     flex-direction: column;
     border: white;
-    margin: 0 10px;
+    margin: 0 8px;
     margin-bottom: 0px;
+    background: #073003;
 }
 
 .TableHeader {
@@ -109,36 +108,30 @@
     padding: 0 10px;
 }
 
+.ArmorBox {
+    background: #093d04;
+    border-left: 1px solid #238519;
+    border-right: 1px solid #238519;
+}
+
 .RecoveryBox {
     width: 83px;
-    height: 79px;
-    background: #093d04;
+    height: 100%;
+    background: #073003;
+    border-bottom: 1px solid #238519;
     padding: 5px;
-    padding: 0 5px 15px 5px;
-    border-radius: 5px;
+    padding: 0 5px 5px 5px;
     display: flex;
 }
 
 .CredBox {
     width: 58px;
-    height: 79px;
+    height: 100%;
     background: rgb(90 52 6);
-    padding: 0px 5px 10px;
-    border-radius: 5px;
+    display:flex;
+    flex-direction:column;
 }
 
-.CashBox {
-    width: 242px;
-    padding: 5px;
-    position: relative;
-    z-index: 2;
-}
-.FakeMarker {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: rgb(103 65 12);
-    width: 25px;
-    height: 100%;
-    z-index: -1;
+.EquipeBox{
+
 }

@@ -1,0 +1,77 @@
+﻿@if(IsExpanded)
+{
+	<div class="d-flex flex-column justify-content-between StashContainer">
+		<div class="CashBox">
+			<div style="z-index:10;">
+				<SVClockViewer clock="Player.STASH" HideTitle=true />
+			</div>
+			<div class="FakeMarker" />
+		</div>
+		<div class="d-flex justify-content-between ps-1">
+			<i class="bi bi-caret-@(IsExpanded?"up":"down")-square-fill hoverable" @onclick=Toggle></i>
+			<span class="ms-1">Alijo</span>
+			<HelperStarter HelperInvoked="ShowHelp"
+						   Title="Cash y Alijo"
+						   HelpText=@StashExplanation ForcedOpacity="75" />
+			<span style="background:rgb(103 65 12); padding:0 5px 0 5px;">Calidad de vida</span>
+		</div>
+	</div>
+}
+else
+{
+	<div class="StashContainer d-flex flex-column">
+		<div class="d-flex gap-2 ">
+			<i class="bi bi-caret-@(IsExpanded?"up":"down")-square-fill hoverable" @onclick=Toggle></i>
+			<div class="d-flex justify-content-evenly flex-fill">
+				<div>
+					Alijo: @Player.STASH.Status
+				</div>
+				<div>
+					Calidad de vida: @(Player.STASH.Status / 10)
+				</div>
+			</div>
+		</div>
+		<div class="d-flex flex-column ms-4">
+			<div><i class="bi bi-arrow-right-square hoverable me-2" @onclick=Save></i>Guardar dinero (1x1)</div>
+			<div><i class="bi bi-arrow-left-square hoverable me-2" @onclick=Retrieve></i> Extraer dinero (2 x 1 CRED)</div>
+		</div>
+	</div>	
+}
+
+@code {
+	[Parameter] public SVCharacter Player { get; set; } = new();
+	[Parameter] public EventCallback<Tuple<string,string>> ShowHelp { get; set; }
+	[Parameter] public EventCallback UpdateUI { get; set; }
+
+	bool IsExpanded = false;
+	private string StashExplanation = "Tu alijo es el dinero que estás guardando para retirarte.\nEl valor de Alijo en el momento de retirar tu personaje determinará la calidad de su retiro.\n\nEstá guardado a buen recaudo y sacar dinero de aquí cuesta 2 CRED por cada CRED que saques.\n\nPor otra parte, la última columna determina tu posición económica actual, cuando tengas que saber cuanto suelto llevas en los bolsillos, tira 1d por cada fila completa en tu Alijo (0-4d)";
+
+	async Task Save()
+	{
+		Player.MoveToStash();
+		await UpdateUI.InvokeAsync();
+	}
+	async Task Retrieve()
+	{
+		Player.RetrieveStash();
+		await UpdateUI.InvokeAsync();
+	}
+
+	void Toggle()
+	{
+		IsExpanded = !IsExpanded;
+	}
+
+	int Quality
+	{
+		get
+		{
+			int s = Player.STASH.Status;
+			if (s <= 10) return 0;
+			if (s <= 20) return 1;
+			if (s <= 30) return 2;
+			if (s <= 40) return 3;
+			return 0;
+		}
+	}
+}

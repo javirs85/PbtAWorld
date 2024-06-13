@@ -1,4 +1,5 @@
 ﻿@using ScumAndVillainy.Controls
+@using static ScumAndVillainy.SVTextBook
 @inject NavigationManager NavigationManager
 @inject SVGameController Game
 @inject ImagesService ImagesCenter
@@ -17,14 +18,14 @@
 {
 	<div class="FullScreenModal" @onclick=CloseAbilitySelector>
 		<div class="ModalBody" style="align-items: stretch;" @onclick:stopPropagation>
-			<div class="CloseButton" />
+			<div class="CloseButton hoverable" style="pointer-events:none;"/>
 			<h2>Seleccione habilidades</h2>
 			@if(!_isShowingAllAbilities)
 			{
 				@foreach (var ab in Player.Profession.AvailableAbilities())
 				{
 					<div class="d-flex gap-3">
-						<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp"/>
+						<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp" Grow="true"/>
 						<div>
 							@if (Player.SelectedAbilities.Contains(ab))
 							{
@@ -54,7 +55,7 @@
 						@foreach (var ab in cl.AvailableAbilities())
 						{
 							<div class="d-flex gap-3">
-								<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp"/>
+								<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp" Grow=true />
 								<div>
 									@if (Player.SelectedAbilities.Contains(ab))
 									{
@@ -241,23 +242,23 @@
 	</div>
 	<div class="d-flex flex-column pt-2">
 		<div class="HarmBox">
-			<div class="d-flex" style="border:1px solid #a13131; height:48px; border-radius:10px 10px 0 0;">
+			<div class="d-flex" style="border:1px solid #238519; height:48px;">
 				<div class="TableHeader ps-2">3</div>
 				<div class="TableCell"><HiddeableInput @bind-Value=Player.Harm3 /></div>
 				<div class="d-flex justify-content-center" style="width: 46px; align-items: center;"><HelperStarter HelperInvoked="ShowHelp" HelpText="Necesitas ayuda para todo" Title="Daño nivel 3" ForcedOpacity="75" /></div>
 			</div>
-			<div class="d-flex" style="border:1px solid #a13131; border-top:none; border-bottom:none; height:48px;">
+			<div class="d-flex" style="border:1px solid #238519; border-top:none; border-bottom:none; height:48px;">
 				<div class="TableHeader ps-2"> 2</div>
 				<div class="d-flex flex-grow-1">
-					<div class="TableCell" style="border-right:1px solid #a13131;"><HiddeableInput @bind-Value=Player.Harm2A /></div>
+					<div class="TableCell" style="border-right:1px solid #238519;"><HiddeableInput @bind-Value=Player.Harm2A /></div>
 					<div class="TableCell"><HiddeableInput @bind-Value=Player.Harm2B /></div>
 				</div>
 				<div class="d-flex justify-content-center" style="width: 46px; align-items: center;">-1d</div>
 			</div>
-			<div class="d-flex" style="border:1px solid #a13131; height:48px; border-radius:0 0 10px 10px;">
+			<div class="d-flex" style="border:1px solid #238519; height:48px;">
 				<div class="TableHeader ps-2">1</div>
 				<div class="d-flex flex-grow-1">
-					<div class="TableCell" style=" border-right:1px solid #a13131;">
+					<div class="TableCell" style=" border-right:1px solid #238519;">
 						<HiddeableInput @bind-Value=Player.Harm1A/>
 					</div>
 					<div class="TableCell">
@@ -267,7 +268,7 @@
 				<div class="d-flex text-center" style="width: 46px;">poco<br />efecto</div>
 			</div>
 		</div>
-		<div class="ArmorBox d-flex mx-2 mt-2">
+		<div class="ArmorBox d-flex mx-2 px-2 pt-2">
 			<div class="d-flex align-items-center">Armadura 
 				@if(Player.UsedArmorNormal)
 				{
@@ -299,46 +300,94 @@
 				}
 			</div>
 		</div>
-		<div class="d-flex mt-2 mx-2 justify-content-between">
+		<div class="d-flex pt-2 mx-2 justify-content-between" style="	background:#093d04;
+																		border-left: 1px solid #238519;
+																		border-right: 1px solid #238519;">
 			<div class="d-flex flex-column gap-2">
-				<div class="RecoveryBox">
-					<SVClockViewer clock="Player.Recovery" />
+				<div class="RecoveryBox d-flex flex-column align-items-center">
+					<span>Curación</span>
+					<CircularClock clock="Player.Recovery" Width="55" Color="#207817" BackColor="#052102" HideTitle=true />
 				</div>
 			</div>
-			<div class="CredBox">
-				<span class="d-flex justify-content-center">Ca$h</span>
-				<SVClockViewer clock="Player.CRED" HideTitle=true />
-			</div>
-			<div class="d-flex flex-column justify-content-between">
-				<div class="CashBox">
-					<div style="z-index:10;">
-						<SVClockViewer clock="Player.STASH" HideTitle=true />
+			<div class="d-flex gap-0" style="   background: rgb(69 39 3);
+												border: 1px solid #af7201;">
+				<div class="CredBox flex-fill">
+					<span class="d-flex justify-content-center">CRED</span>
+					<div class="d-flex mt-1">
+						<SVClockViewer clock="Player.CRED" HideTitle=true />
 					</div>
-					<div class="FakeMarker"/>
 				</div>
-				<div class="d-flex justify-content-between">
-					<span class="ms-1">Alijo</span>
-					<HelperStarter HelperInvoked="ShowHelp"
-								   Title="Cash y Alijo"
-								   HelpText=@StashExplanation ForcedOpacity="75" />
-					<span style="background:rgb(103 65 12); padding:0 5px 0 5px;">Calidad de vida</span>
+				<div style="border-left:1px solid #ffa5008a; padding-left:5px;">
+					<StashViewer Player="Player" UpdateUI="UpdateUI"/>
 				</div>
 			</div>
 			
 		</div>
 		<div class="abilitiesContainer">
+			<div class="d-flex">
+				<div class="fs-4 flex-fill d-flex align-items-end ps-2">Habilidades especiales</div>
+				<div class="d-flex gap-2 align-items-center pe-2" style="color: #665efb;">
+					<i class="bi bi-plus-square fs-3 hoverable d-flex" @onclick=OpenAbilitySelector></i>
+					<i class="bi bi-arrows-expand fs-3 hoverable d-flex" @onclick=@(()=>{StartAbilitiesMaximized = !StartAbilitiesMaximized;})></i>
+				</div>
+			</div>
+			
 			@foreach(var ab in Player.SelectedAbilities)
 			{
 				<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp" IsExpanded=StartAbilitiesMaximized />
 			}
-			<div class="AddButton d-flex gap-2" style="width:100%; justify-content: center; border:none!important;" >
-				<i class="bi bi-plus-square fs-2" @onclick=OpenAbilitySelector></i>
-				<i class="bi bi-arrows-expand fs-2" @onclick=@(()=>{StartAbilitiesMaximized = !StartAbilitiesMaximized;})></i>
-			</div>
+			
 		</div>
 	</div>
 	<div class="d-flex flex-column">
-		Ship1
+		<div class="EquipeBox">
+			<div class="d-flex align-items-center">
+				<div class="fs-3">Equipo</div>
+				<div class="d-flex flex-fill justify-content-evenly">
+					<div class="d-flex align-items-center gap-2 hoverable"
+						 style="@(Player.SelectedMaxLoad == MaxLoads.Light?"opacity:100%!important":"")"
+						@onclick="@(()=>{Player.SelectedMaxLoad = MaxLoads.Light;})">
+						<i class="bi bi@(Player.SelectedMaxLoad == MaxLoads.Light?"-x":"")-square"></i>
+						<span>Ligero (3)</span>
+					</div>
+					<div class="d-flex align-items-center gap-2 hoverable" style="@(Player.SelectedMaxLoad == MaxLoads.Normal?"opacity:100%!important":"")" @onclick="@(()=>{Player.SelectedMaxLoad = MaxLoads.Normal;})">
+						<i class="bi bi@((Player.SelectedMaxLoad == MaxLoads.Normal)?"-x":"")-square"></i>
+						<span>Normal (5)</span>
+					</div>
+					<div class="d-flex align-items-center gap-2 hoverable" style="@(Player.SelectedMaxLoad == MaxLoads.Heavy?"opacity:100%!important":"")" @onclick="@(()=>{Player.SelectedMaxLoad = MaxLoads.Heavy;})">
+						<i class="bi bi@((Player.SelectedMaxLoad == MaxLoads.Heavy)?"-x":"")-square"></i>
+						<span>Pesado (6)</span>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex flex-column gap-2">
+				@foreach(var e in Player.Profession.AvailableItems())
+				{
+					<div class="d-flex align-items-center gap-1 hoverable"
+						 style="font-family: system-ui; @(Player.SelectedItems.Contains(e)?"opacity:1!important;":"")"
+						 @onclick=@(()=>{UpdateEquipe(e);})>
+						<div>
+							@if (Player.SelectedItems.Contains(e))
+							{
+								<i class="bi bi-check-square"></i>
+							}
+							else
+							{
+								<i class="bi bi-square"></i>
+							}
+						</div>
+						<div>
+							@FromIDtoItem(e).Name
+						</div>
+						<div>
+							<HelperStarter HelperInvoked="ShowHelp"
+										   Title=@FromIDtoItem(e).Name
+										   HelpText="@FromIDtoItem(e).Description" ForcedOpacity="75" />
+						</div>
+					</div>
+				}
+			</div>
+		</div>
 	</div>
 	<div class="d-flex flex-column">
 		Ship2
@@ -355,8 +404,8 @@
 	private bool StartAbilitiesMaximized = true;
 
 	HelpPanel helpPanel = new();
+	SVTextBook? Book = null;
 
-	private string StashExplanation = "Tu alijo es el dinero que estás guardando para retirarte.\nEl valor de Alijo en el momento de retirar tu personaje determinará la calidad de su retiro.\n\nEstá guardado a buen recaudo y sacar dinero de aquí cuesta 2 CRED por cada CRED que saques.\n\nPor otra parte, la última columna determina tu posición económica actual, cuando tengas que saber cuanto suelto llevas en los bolsillos, tira 1d por cada fila completa en tu Alijo (0-4d)";
 
 	protected async override void OnParametersSet()
 	{
@@ -368,8 +417,21 @@
 		Game.NewInfoToast += ShowInfo;
 
 		CharacterSelectorService.SetPeople(Game.People);
+		Book = Game.TextBook as SVTextBook;
+
+		if (Player.SelectedAbilities.Count > 3) StartAbilitiesMaximized = false;
 	}
-	
+
+	private async Task UpdateUI() => await InvokeAsync(StateHasChanged);
+
+	private SVItem FromIDtoItem(SVItemIDs ID)
+	{
+		if(Book is not null)
+		{
+			return Book.Items.Find(x => x.ID == ID) ?? new SVItem{Name = "Error"};
+		}
+		return new SVItem { Name = "No book" };
+	}
 
 	private SVMove GetMove(SVMoveIDs id) => Moves.GetMovement(id) as SVMove ?? new SVMove(id, SVStats.NotSet) { Title = $"Error for {id.ToString()}" };
 
@@ -414,5 +476,22 @@
 				return cl;
 		}
 		return SVClasses.NotSet;
+	}
+
+	void UpdateEquipe(SVItemIDs id)
+	{
+		if(Player.SelectedItems.Contains(id))
+			Player.SelectedItems.Remove(id);
+		else
+		{
+			var max = Player.SelectedMaxLoad.GetMaxLoad();
+			var sel = Player.SelectedItems.Count;
+			if(sel >= max)
+			{
+				Toaster.ShowError($"Solo cargar tener {max} items");
+			}
+			else
+				Player.SelectedItems.Add(id);
+		}			
 	}
 }
