@@ -1,0 +1,12 @@
+﻿@using static ScumAndVillainy.Controls.SkewedHeader
+<div class="Tick @Color.ToString()" @onclick=Clicked>
+	<div class=" @(IsTicked?"Ticked":"")">
+
+	</div>
+</div>
+
+@code {
+	[Parameter] public AvilableColors Color { get; set; } = AvilableColors.Blue;
+	[Parameter] public bool IsTicked { get; set; }
+	[Parameter] public EventCallback Clicked { get; set; }
+}

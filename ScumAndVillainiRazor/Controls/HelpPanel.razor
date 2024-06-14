@@ -1,0 +1,47 @@
+﻿@if (IsVisible)
+{
+	<div class="BackDrop" style="position:fixed; top:0; left:0; right:0; bottom:0; background:#000000b3; z-index: 1000; cursor:pointer; display: flex; justify-content:center; align-items:center;" @onclick=Hide>
+		<div style="    position: fixed;
+						width:80%; height:80%;
+						background: #01091c;
+						border: 1px solid #255ad5;
+						color: white;
+						min-width: 200px;
+						min-height: 100px;
+						margin-right:40px;
+						padding: 20px;">
+			<div style="position:absolute; top:0px; right:5px; cursor:pointer; font-size:30px;">
+				<i class="bi bi-x" @onclick=Hide></i>
+			</div>
+			<div class="d-flex flex-column">
+				<div class="fs-2"><DecodedString Value="@Title" /></div>
+				<DecodedString Value="@Text" />
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter] public string Text { get; set; } = string.Empty;
+	[Parameter] public string Title { get; set; } = string.Empty;
+
+	public void Show()
+	{
+		IsVisible = true;
+	}
+	public async Task Show(string title, string _text)
+	{
+		Text = _text;
+		Title = title;
+		IsVisible = true;
+		await InvokeAsync(StateHasChanged);
+	}
+
+	public async Task Hide()
+	{
+		IsVisible = false;
+		await InvokeAsync(StateHasChanged);
+	}
+
+	bool IsVisible = false;
+}

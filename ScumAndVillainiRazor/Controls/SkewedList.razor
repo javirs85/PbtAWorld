@@ -1,0 +1,73 @@
+﻿@using static ScumAndVillainy.Controls.SkewedHeader
+<div class="d-flex gap-1">
+	@if(ListSize > 0)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>0) Clicked=@(()=>{ClickAt(0);}) />
+	}
+	@if (ListSize > 1)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>1) Clicked=@(()=>{ClickAt(1);}) />
+	}
+	@if (ListSize > 2)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>2) Clicked=@(()=>{ClickAt(2);}) />
+	}
+	@if(ListSize > 3)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>3) Clicked=@(()=>{ClickAt(3);}) />
+	}
+	@if (ListSize > 4)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>4) Clicked=@(()=>{ClickAt(4);}) />
+	}
+	@if (ListSize > 5)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>5) Clicked=@(()=>{ClickAt(5);}) />
+	}
+	@if (ListSize > 6)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>6) Clicked=@(()=>{ClickAt(6);}) />
+	}
+	@if (ListSize > 7)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>7) Clicked=@(()=>{ClickAt(7);}) />
+	}
+	@if (ListSize > 8)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>8) Clicked=@(()=>{ClickAt(8);}) />
+	}
+	@if (ListSize > 9)
+	{
+		<SkewerdListItem Color=Color IsTicked=@(Value>9) Clicked=@(()=>{ClickAt(9);}) />
+	}
+</div>
+
+@code {
+	[Parameter] public AvilableColors Color { get; set; } = AvilableColors.Blue;
+
+	[Parameter] public int ListSize { get; set; }
+	private int _value = 0;
+	[Parameter] public int Value { get { return _value; } 
+		set
+		{
+			if (_value != value)
+			{
+				_value = value;
+				ValueChanged.InvokeAsync(value);
+			}
+		}
+	}
+	[Parameter] public EventCallback<int> ValueChanged { get; set; }
+
+	private void ClickAt(int i)
+	{
+		if(Value > i)
+		{
+			Value--;
+		}
+		else
+		{
+			Value++;
+		}
+	}
+}

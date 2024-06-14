@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+
+@if(EditMode)
+{
+	<div style="font-family: sans-serif;">
+		<EditForm Model="this" @onfocusout=@(()=>{EditMode = false;})>
+			<InputText class="form-control " @bind-Value="Value"/>
+		</EditForm>
+	</div>
+}
+else
+{
+	if(Value == "" || string.IsNullOrEmpty(Value))
+	{
+		<div @onclick="@(()=>{EditMode = true;})">
+			<i class="bi bi-pencil opacity-50"></i>
+		</div>
+	}
+	else
+	{
+		<div @onclick="@(()=>{EditMode = true;})">
+			@Value
+		</div>
+	}
+}
+
+@code {
+	private string _value = string.Empty;
+
+	[Parameter] public string Value
+	{
+		get { return _value; }
+		set {
+			if (_value == value) return;
+			_value = value;
+			ValueChanged.InvokeAsync(value);
+		}
+	}
+
+	[Parameter] public EventCallback<string> ValueChanged { get; set; }
+	[Parameter] public bool EditMode { get; set; } = false;
+}

@@ -1,0 +1,22 @@
+﻿.BlockHeader {
+    font-weight: bold;
+    font-size: 22px;
+    padding: 0 15px;
+    width: auto;
+}
+
+.StatName {
+    font-family: Trench;
+    font-size: 25px;
+    line-height: 28px;
+    margin-top: 2px;
+}
+
+.UsedTriangle {
+    fill: #a4a0ed;
+}
+.NotUsedTriangle {
+    fill: #211e47;
+    stroke-width: 1px;
+    stroke: #302d6d;
+}

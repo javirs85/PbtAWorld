@@ -1,0 +1,32 @@
+﻿
+.Tick {
+    transform: skewX(-20deg);
+    border: 2px solid #665efb;
+    width: 15px;
+    margin-top: -2px;
+    height: calc(100% + 4px);
+    cursor:pointer;
+}
+    .Tick:hover {
+        background: #272551;
+    }
+.Tick>div:hover{
+    filter:brightness(1.5);
+}
+
+.Ticked {
+    width: 100%;
+    height: 100%;
+    background: #665efb;
+}
+
+
+.Tick.Red {
+    border: 2px solid #db2727;
+}
+    .Tick.Red:hover {
+        background: #3d0b0b;
+    }
+    .Tick.Red > .Ticked {
+        background: #7f0303 !important;
+    }

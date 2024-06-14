@@ -1,34 +1,418 @@
-﻿<h3>SVPlayerSheet</h3>
+﻿@using ScumAndVillainy.Controls
+@inject NavigationManager NavigationManager
+@inject SVGameController Game
+@inject ImagesService ImagesCenter
+@inject IToastService Toaster
+@inject SVMovesService Moves
+@inject LastRollViewerService LastRollViewer
+@inject CharacterSelectorService CharacterSelectorService
+@inject VTTService VTT
+@inject WhiteBoard.WhiteBoardService WhiteBoardService
+@inject VTTLocalManagerService VTTViewer
+@inject IDataBaseController Meta;
 
-	@Player.Name
+<HelpPanel @ref="helpPanel" />
+
+@if(_isShowingAbilitySelector)
+{
+	<div class="FullScreenModal" @onclick=CloseAbilitySelector>
+		<div class="ModalBody" style="align-items: stretch;" @onclick:stopPropagation>
+			<div class="CloseButton" />
+			<h2>Seleccione habilidades</h2>
+			@if(!_isShowingAllAbilities)
+			{
+				@foreach (var ab in Player.Profession.AvailableAbilities())
+				{
+					<div class="d-flex gap-3">
+						<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp"/>
+						<div>
+							@if (Player.SelectedAbilities.Contains(ab))
+							{
+								<i class="bi bi-x-circle CircularButton" style="color:red;" @onclick=@(()=>{RemoveAbility(ab);})></i>
+							}
+							else
+							{
+								<i class="bi bi-plus-circle CircularButton" style="color:green;" @onclick=@(()=>{AddAbility(ab);})></i>
+							}
+						</div>
+					</div>
+				}
+				<div class="d-flex gap-2 align-items-center">
+					<i class="bi bi-plus-circle CircularButton" style="color:green;" @onclick=@(()=>{_isShowingAllAbilities = true;})></i>
+					<div>
+						<b>Veterano:</b> Añade un máximo de 3 habilidades de otros libretos
+					</div>
+				</div>
+			}
+			else
+			{
+				@foreach (SVClasses cl in Enum.GetValues(typeof(SVClasses)))
+				{
+					@if(cl != SVClasses.NotSet && cl != SVClasses.All)
+					{
+						<h3>@cl.ToUI()</h3>
+						@foreach (var ab in cl.AvailableAbilities())
+						{
+							<div class="d-flex gap-3">
+								<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp"/>
+								<div>
+									@if (Player.SelectedAbilities.Contains(ab))
+									{
+										<i class="bi bi-x-circle CircularButton" style="color:red;" @onclick=@(()=>{RemoveAbility(ab);})></i>
+									}
+									else
+									{
+										<i class="bi bi-plus-circle CircularButton" style="color:green;" @onclick=@(()=>{AddAbility(ab);})></i>
+									}
+								</div>
+							</div>
+						}
+					}					
+				}
+			}
+		</div>
+	</div>
+}
+
+<div class="SVPlayerSheet">
+	<div class="d-flex flex-column" style="max-width:292px; overflow-y:auto; overflow-x:hidden;">
+		<div class="d-flex flex-column flex-grow-1">
+			<div style="display:flex; align-items:center; font-size: 20px;">
+				<div style="font-size:30px!important; font-weight:bold">
+					<HiddeableInput @bind-Value="Player.Name" />
+				</div>
+				<div class="ms-2">"</div>
+				<HiddeableInput @bind-Value="Player.Alias" />
+				<div class="me-2">"</div>
+				<div>El @Player.Profession.ToUI()</div>
+			</div>
+			@* <div style="font-size:16px!important; margin-top:-15px; opacity:0.5;">
+				<HiddeableInput @bind-Value="Player.Look" />
+			</div> *@
+			<div class="d-flex justify-content-between">
+				<div class="d-flex gap-1">
+					<HideableComboBox TEnum="Backgrounds" @bind-CurrentValue=Player.Background />
+					<HelperStarter HelperInvoked="ShowHelp"
+								   Title=@(@"Trasfondo: " +Player.Background.ToUI())
+								   HelpText="@Player.Background.GetDescription()" ForcedOpacity="75" />
+				</div>
+				<div class="d-flex gap-1">
+					<HideableComboBox TEnum="Heritages" @bind-CurrentValue=Player.Heritage />
+					<HelperStarter HelperInvoked="ShowHelp"
+								   Title=@(@"Herencia: " +Player.Heritage.ToUI())
+								   HelpText="@Player.Heritage.GetDescription()" ForcedOpacity="75" />
+				</div>				
+				<div class="d-flex gap-1">
+					<HideableComboBox TEnum="Vices" @bind-CurrentValue=Player.Vice />
+					<HelperStarter HelperInvoked="ShowHelp"
+								   Title=@(@"Vicio: " +Player.Vice.ToUI())
+								   HelpText="@Player.Vice.GetDescription()" ForcedOpacity="75" />
+				</div>
+			</div>
+			@* <div style="display:flex; margin-top:10px;">
+				<div style="display:flex; gap:5px; flex:1 1;">
+					<div class="d-flex flex-column">
+						<span class="d-flex align-items-center gap-1" style="opacity: 0.5; line-height:8px;">
+							Herencia <HelperStarter HelperInvoked="ShowHelp"
+											Title=@(@"Herencia: " +Player.Heritage.ToUI())
+											 HelpText="@Player.Heritage.GetDescription()" ForcedOpacity="75" />
+						</span>
+						<div class="d-flex" style="font-size:20px;">
+							<HideableComboBox TEnum="Heritages" @bind-CurrentValue=Player.Heritage />
+						</div>
+					</div>
+				</div>
+				<div style="display:flex;justify-content: center; gap:5px; flex:1 1;">
+					<div class="d-flex flex-column">
+						<span class="d-flex align-items-center gap-1" style="opacity: 0.5; line-height:8px;">
+							Trasfondo <HelperStarter HelperInvoked="ShowHelp"
+											 Title=@(@"Trasfondo: " +Player.Background.ToUI())
+											  HelpText="@Player.Background.GetDescription()" ForcedOpacity="75" />
+						</span>
+						<div class="d-flex" style="font-size:20px;">
+							<HideableComboBox TEnum="Backgrounds" @bind-CurrentValue=Player.Background />
+						</div>
+					</div>
+				</div>
+				<div style="display:flex;justify-content: flex-end; gap:5px; flex:1 1; ">
+					<div class="d-flex flex-column">
+						<span class="d-flex align-items-center gap-1" style="opacity: 0.5; line-height:8px;">
+							Vicio <HelperStarter HelperInvoked="ShowHelp"
+										  Title=@(@"Trasfondo: " +Player.Vice.ToUI())
+										  HelpText="@Player.Vice.GetDescription()" ForcedOpacity="75" />
+						</span>
+						<div class="d-flex" style="font-size:20px;">
+							<HideableComboBox TEnum="Vices" @bind-CurrentValue=Player.Vice />
+						</div>
+					</div>
+				</div>
+			</div>
+			 *@
+		</div>
+
+		<div class="d-flex flex-column  flex-grow-1">
+		<StatBlock 
+			Player="Player"
+			MainStat="SVStats.Insight"
+				   @bind-RelatedXP="Player.InsightXP"
+				   Sub1Stat="SVStats.Doctor"
+				   Sub2Stat="SVStats.Hack"
+				   Sub3Stat="SVStats.Rig"
+				   Sub4Stat="SVStats.Study"
+				   @bind-Sub1="Player.Doctor"
+				   @bind-Sub2="Player.Hack"
+				   @bind-Sub3="Player.Rig"
+				   @bind-Sub4="Player.Study" />
+		<StatBlock
+			Player="Player"
+			MainStat="SVStats.Prowess"
+				   @bind-RelatedXP="Player.ProwessXP"
+				   Sub1Stat="SVStats.Helm"
+				   Sub2Stat="SVStats.Scramble"
+				   Sub3Stat="SVStats.Scrap"
+				   Sub4Stat="SVStats.Skulk"
+				   @bind-Sub1="Player.Helm"
+				   @bind-Sub2="Player.Scramble"
+				   @bind-Sub3="Player.Scrap"
+				   @bind-Sub4="Player.Skulk" />
+		<StatBlock 
+			Player="Player"
+			MainStat="SVStats.Resolve"
+				   @bind-RelatedXP="Player.ResolveXP"
+				   Sub1Stat="SVStats.Attune"
+				   Sub2Stat="SVStats.Command"
+				   Sub3Stat="SVStats.Consort"
+				   Sub4Stat="SVStats.Sway"
+				   @bind-Sub1="Player.Attune"
+				   @bind-Sub2="Player.Command"
+				   @bind-Sub3="Player.Consort"
+				   @bind-Sub4="Player.Sway" />
+			<div class="d-flex">
+				<SkewedHeader Text="XP" ForzedWidth="115" />
+				<SkewedList ListSize="8" @bind-Value="Player.PlaybookXP" />
+			</div>
+			
+		</div>
+
+		<div class="d-flex flex-column  flex-grow-1">
+			<div class="d-flex mt-2">
+				<SkewedHeader Text="Estres" Color=SkewedHeader.AvilableColors.Red ForzedWidth="97" />
+				<SkewedList ListSize="9" Color=SkewedHeader.AvilableColors.Red @bind-Value="Player.Stress" />
+			</div>
+			<div class="d-flex mt-1 gap-1" style="margin-left:-2px; width: 279px;">
+				<div class="TraumaBox @(Player.Traumas.Count > 0 && Player.Traumas[0] != Traumas.NoTrauma?"ActiveTrauma":"UnactiveTrauma")">
+					<HideableComboBox TEnum="Traumas" @bind-CurrentValue=Player.Traumas[0] />
+					@if (Player.Traumas[0] != Traumas.NoTrauma)
+					{
+						<HelperStarter HelperInvoked="ShowHelp" 
+							Title=@(@"Trauma: " +Player.Traumas[0].ToUI())
+							HelpText="@Player.Traumas[0].ToDescription()" />
+					}
+				</div>
+				<div class="TraumaBox @(Player.Traumas.Count>1&&Player.Traumas[1]!=Traumas.NoTrauma?"ActiveTrauma":"UnactiveTrauma")">
+					@Player.Traumas[1].ToUI()
+					@if (Player.Traumas[1] != Traumas.NoTrauma)
+					{
+						<HelperStarter HelperInvoked="ShowHelp"
+									   Title=@(@"Trauma: " +Player.Traumas[1].ToUI())
+									   HelpText="@Player.Traumas[1].ToDescription()" />
+					}
+				</div>
+				<div class="TraumaBox @(Player.Traumas.Count>2&&Player.Traumas[2]!=Traumas.NoTrauma?"ActiveTrauma":"UnactiveTrauma")">
+					@Player.Traumas[2].ToUI()
+					@if (Player.Traumas[2] != Traumas.NoTrauma)
+					{
+						<HelperStarter HelperInvoked="ShowHelp"
+									   Title=@(@"Trauma: " +Player.Traumas[2].ToUI())
+									   HelpText="@Player.Traumas[2].ToDescription()" />
+					}
+				</div>
+				<div class="TraumaBox @(Player.Traumas.Count>3&&Player.Traumas[3]!=Traumas.NoTrauma?"ActiveTrauma":"UnactiveTrauma")">
+					@Player.Traumas[3].ToUI()
+					@if (Player.Traumas[3] != Traumas.NoTrauma)
+					{
+						<HelperStarter HelperInvoked="ShowHelp"
+									   Title=@(@"Trauma: " +Player.Traumas[3].ToUI())
+									   HelpText="@Player.Traumas[3].ToDescription()" />
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex flex-column pt-2">
+		<div class="HarmBox">
+			<div class="d-flex" style="border:1px solid #a13131; height:48px; border-radius:10px 10px 0 0;">
+				<div class="TableHeader ps-2">3</div>
+				<div class="TableCell"><HiddeableInput @bind-Value=Player.Harm3 /></div>
+				<div class="d-flex justify-content-center" style="width: 46px; align-items: center;"><HelperStarter HelperInvoked="ShowHelp" HelpText="Necesitas ayuda para todo" Title="Daño nivel 3" ForcedOpacity="75" /></div>
+			</div>
+			<div class="d-flex" style="border:1px solid #a13131; border-top:none; border-bottom:none; height:48px;">
+				<div class="TableHeader ps-2"> 2</div>
+				<div class="d-flex flex-grow-1">
+					<div class="TableCell" style="border-right:1px solid #a13131;"><HiddeableInput @bind-Value=Player.Harm2A /></div>
+					<div class="TableCell"><HiddeableInput @bind-Value=Player.Harm2B /></div>
+				</div>
+				<div class="d-flex justify-content-center" style="width: 46px; align-items: center;">-1d</div>
+			</div>
+			<div class="d-flex" style="border:1px solid #a13131; height:48px; border-radius:0 0 10px 10px;">
+				<div class="TableHeader ps-2">1</div>
+				<div class="d-flex flex-grow-1">
+					<div class="TableCell" style=" border-right:1px solid #a13131;">
+						<HiddeableInput @bind-Value=Player.Harm1A/>
+					</div>
+					<div class="TableCell">
+						<HiddeableInput @bind-Value=Player.Harm1B />
+					</div>
+				</div>
+				<div class="d-flex text-center" style="width: 46px;">poco<br />efecto</div>
+			</div>
+		</div>
+		<div class="ArmorBox d-flex mx-2 mt-2">
+			<div class="d-flex align-items-center">Armadura 
+				@if(Player.UsedArmorNormal)
+				{
+					<i class="bi bi-shield-slash-fill fs-3" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorNormal = false;})></i>
+				}
+				else
+				{
+					<i class="bi bi-shield fs-3" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorNormal = true;})></i>
+				}				
+			</div>
+			<div class="d-flex flex-grow-1 justify-content-center align-items-center">Pesada 
+				@if (Player.UsedArmorHeavy)
+				{
+					<i class="bi bi-shield-slash-fill fs-3" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorHeavy = false;})></i>
+				}
+				else
+				{
+					<i class="bi bi-shield fs-3" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorHeavy = true;})></i>
+				}
+			</div>
+			<div class="d-flex text-end align-items-center">Especial 
+				@if (Player.UsedArmorSpecial)
+				{
+					<i class="bi bi-shield-slash-fill fs-3" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorSpecial = false;})></i>
+				}
+				else
+				{
+					<i class="bi bi-shield fs-3" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorSpecial = true;})></i>
+				}
+			</div>
+		</div>
+		<div class="d-flex mt-2 mx-2 justify-content-between">
+			<div class="d-flex flex-column gap-2">
+				<div class="RecoveryBox">
+					<SVClockViewer clock="Player.Recovery" />
+				</div>
+			</div>
+			<div class="CredBox">
+				<span class="d-flex justify-content-center">Ca$h</span>
+				<SVClockViewer clock="Player.CRED" HideTitle=true />
+			</div>
+			<div class="d-flex flex-column justify-content-between">
+				<div class="CashBox">
+					<div style="z-index:10;">
+						<SVClockViewer clock="Player.STASH" HideTitle=true />
+					</div>
+					<div class="FakeMarker"/>
+				</div>
+				<div class="d-flex justify-content-between">
+					<span class="ms-1">Alijo</span>
+					<HelperStarter HelperInvoked="ShowHelp"
+								   Title="Cash y Alijo"
+								   HelpText=@StashExplanation ForcedOpacity="75" />
+					<span style="background:rgb(103 65 12); padding:0 5px 0 5px;">Calidad de vida</span>
+				</div>
+			</div>
+			
+		</div>
+		<div class="abilitiesContainer">
+			@foreach(var ab in Player.SelectedAbilities)
+			{
+				<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp" IsExpanded=StartAbilitiesMaximized />
+			}
+			<div class="AddButton d-flex gap-2" style="width:100%; justify-content: center; border:none!important;" >
+				<i class="bi bi-plus-square fs-2" @onclick=OpenAbilitySelector></i>
+				<i class="bi bi-arrows-expand fs-2" @onclick=@(()=>{StartAbilitiesMaximized = !StartAbilitiesMaximized;})></i>
+			</div>
+		</div>
+	</div>
+	<div class="d-flex flex-column">
+		Ship1
+	</div>
+	<div class="d-flex flex-column">
+		Ship2
+	</div>
+</div>
+
+
+
 @code {
 	[Parameter] public SVCharacter Player { get; set; } = new();
 
+	private bool _isShowingAbilitySelector = false;
+	private bool _isShowingAllAbilities = false;
+	private bool StartAbilitiesMaximized = true;
+
+	HelpPanel helpPanel = new();
+
+	private string StashExplanation = "Tu alijo es el dinero que estás guardando para retirarte.\nEl valor de Alijo en el momento de retirar tu personaje determinará la calidad de su retiro.\n\nEstá guardado a buen recaudo y sacar dinero de aquí cuesta 2 CRED por cada CRED que saques.\n\nPor otra parte, la última columna determina tu posición económica actual, cuando tengas que saber cuanto suelto llevas en los bolsillos, tira 1d por cada fila completa en tu Alijo (0-4d)";
+
+	protected async override void OnParametersSet()
+	{
+		if (Player is null) Player = new();
+
+		VTT.Players = Game.Players;
+
+		Game.NewInfoToast -= ShowInfo;
+		Game.NewInfoToast += ShowInfo;
+
+		CharacterSelectorService.SetPeople(Game.People);
+	}
 	
 
-	// protected async override void OnParametersSet()
-	// {
-	// 	if (Player is null) Player = new(Moves);
+	private SVMove GetMove(SVMoveIDs id) => Moves.GetMovement(id) as SVMove ?? new SVMove(id, SVStats.NotSet) { Title = $"Error for {id.ToString()}" };
 
-	// 	VTT.Players = Game.Players;
+	private async Task ShowHelp(Tuple<string, string> data)
+	{
+		await helpPanel.Show(data.Item1, data.Item2);
 
-	// 	Game.NewInfoToast -= ShowInfo;
-	// 	Game.NewInfoToast += ShowInfo;
 
-	// 	Game.OnNewRoll -= ShowLastRoll;
-	// 	Game.OnNewRoll += ShowLastRoll;
+		await Game.StoreChangesOnCharacter(Player, "Saving to cloud");
+	}
 
-	// 	Game.AllDebts.Clear();
-	// 	Game.AllDebts.Add(new Debt
-	// 		{
-	// 			ID = Guid.NewGuid(),
-	// 			Amount = 1,
-	// 			PayingID = this.Player.ID,
-	// 			ReceivingID = this.Player.ID,
-	// 			Reason = "Because this is Sparta"
-	// 		});
+	private void ShowInfo(object? sender, string msg) => Toaster.ShowInfo(msg);
 
-	// 	ChargeListsOnScreen();
-	// 	CharacterSelectorService.SetPeople(Game.People);
-	// }
+	private void OpenAbilitySelector()
+	{
+		_isShowingAbilitySelector = true;
+	}
+	private void CloseAbilitySelector()
+	{
+		_isShowingAbilitySelector = false;
+		_isShowingAllAbilities = false;
+	}
+
+	void AddAbility(SVMoveIDs id)
+	{
+		Player.SelectedAbilities.Add(id);
+		CloseAbilitySelector();
+	}
+	void RemoveAbility(SVMoveIDs id)
+	{
+		Player.SelectedAbilities.Remove(id);
+		CloseAbilitySelector();
+	}
+
+	SVClasses GetClassFromAbility(SVMoveIDs id)
+	{
+		foreach(SVClasses cl in Enum.GetValues(typeof(SVClasses)))
+		{
+			if (cl.GetStartingAbility() == id)
+				return cl;
+			if (cl.AvailableAbilities().Contains(id))
+				return cl;
+		}
+		return SVClasses.NotSet;
+	}
 }

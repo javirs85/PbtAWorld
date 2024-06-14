@@ -1,0 +1,74 @@
+﻿@using System.Reflection
+@typeparam TEnum
+
+<div>
+    @if (!_isEditing)
+    {
+        <div @onclick="StartEditing">@ToCuteScreenText((TEnum)CurrentValue)</div>
+    }
+    else
+    {
+        <div @onfocusout=OnSelectionChanged style="font-family:system-ui;">
+            <select class="form-select" @bind="CurrentValue">
+                @foreach (var value in Enum.GetValues(typeof(TEnum)))
+                {
+                    <option value="@value">@ToCuteScreenText((TEnum)value)</option>
+                }
+            </select>
+        </div> 
+    }
+</div>
+
+@code {
+    private bool _isEditing = false;
+
+    private TEnum _currentValue;
+
+    [Parameter] public TEnum CurrentValue
+    {
+        get { return _currentValue; }
+        set { 
+            _currentValue = value;
+            _isEditing = false;
+        }
+    }
+    
+
+    [Parameter]
+    public EventCallback<TEnum> CurrentValueChanged { get; set; }
+
+    private void StartEditing()
+    {
+        _isEditing = true;
+    }
+
+    private async Task OnSelectionChanged()
+    {
+        await CurrentValueChanged.InvokeAsync(CurrentValue);
+
+        _isEditing = false;
+    }
+
+    private async Task HandleSelectionChange(ChangeEventArgs e)
+    {
+        CurrentValue = (TEnum)Enum.Parse(typeof(TEnum), e.Value.ToString());
+        await OnSelectionChanged();
+    }
+
+    private void MyMethod() { }
+
+    private string ToCuteScreenText(TEnum item)
+    {
+        MethodInfo toUIMethod = typeof(SVExtensions).GetMethod("ToUI", new[] { typeof(TEnum) });
+        if (toUIMethod != null)
+        {
+            // Invoke the ToUI method if available
+            return (string)toUIMethod.Invoke(null, new object[] { item });
+        }
+        else
+        {
+            // Fallback to ToString if ToUI method is not available
+            return item.ToString();
+        }
+    }
+}

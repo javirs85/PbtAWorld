@@ -7,7 +7,7 @@ namespace ScumAndVillainy;
 
 public enum SVMoves { }
 public enum SVClasses { Mechanic, muscle, mystic, pilot, scoundrel, speaker, stitch, NotSet, All }
-public enum SVStats { Attune, Command, Consort, Doctor, hack, Helm, Rig, Scramble, Scrap, Skulk, Study, Sway, Insight, Prowess, Resolve, NotSet }
+public enum SVStats { Attune, Command, Consort, Doctor, Hack, Helm, Rig, Scramble, Scrap, Skulk, Study, Sway, Insight, Prowess, Resolve, NotSet }
 public enum SVItemIDs
 {
 	Armor, Blaster, Comm, Detonator, Hacking, HeavyBlaster, IllicitDrugs, Medkit, MeleeWeapon, RepairTools, Spacesuit, SpyGear,
@@ -36,7 +36,7 @@ public enum Heritages { Imperial, Spacer, Colonist, Manufactured, Wanderer, Xeno
 public enum Backgrounds { Academic, Labor, Cult, Guilder, Military, Noble, Syndicate, NotSet}
 public enum Vices { Faith, Gambling, Luxury, Obligation, Pleasure, Stupor, Weird, NotSet}
 public enum MaxLoads { Light, Normal, Heavy, NotSet}
-public enum Traumas { Cold, haunted, Obsessed, Paranoid, Reckless, Soft, Unstable, Vicious}
+public enum Traumas { NoTrauma, Cold, haunted, Obsessed, Paranoid, Reckless, Soft, Unstable, Vicious}
 
 
 
