@@ -361,30 +361,18 @@
 				</div>
 			</div>
 			<div class="d-flex flex-column gap-2">
-				@foreach(var e in Player.Profession.AvailableItems())
+				@foreach (var e in Player.Profession.AvailableItems()
+									.OrderByDescending(x => FromIDtoItem(x).IsFine)
+									.OrderByDescending(x => FromIDtoItem(x).Load))
 				{
-					<div class="d-flex align-items-center gap-1 hoverable"
-						 style="font-family: system-ui; @(Player.SelectedItems.Contains(e)?"opacity:1!important;":"")"
-						 @onclick=@(()=>{UpdateEquipe(e);})>
-						<div>
-							@if (Player.SelectedItems.Contains(e))
-							{
-								<i class="bi bi-check-square"></i>
-							}
-							else
-							{
-								<i class="bi bi-square"></i>
-							}
-						</div>
-						<div>
-							@FromIDtoItem(e).Name
-						</div>
-						<div>
-							<HelperStarter HelperInvoked="ShowHelp"
-										   Title=@FromIDtoItem(e).Name
-										   HelpText="@FromIDtoItem(e).Description" ForcedOpacity="75" />
-						</div>
-					</div>
+					<SVItemViewer Item="@FromIDtoItem(e)" ShowHelp="ShowHelp" Player="Player" Book="Book"/>
+				}
+				<h5>Equipo común</h5>
+				@foreach (var e in Book.StandardItems
+									.OrderByDescending(x => FromIDtoItem(x).IsFine)
+									.OrderByDescending(x => FromIDtoItem(x).Load))
+				{
+					<SVItemViewer Item="@FromIDtoItem(e)" ShowHelp="ShowHelp" Player="Player" Book="Book" />
 				}
 			</div>
 		</div>
@@ -478,20 +466,5 @@
 		return SVClasses.NotSet;
 	}
 
-	void UpdateEquipe(SVItemIDs id)
-	{
-		if(Player.SelectedItems.Contains(id))
-			Player.SelectedItems.Remove(id);
-		else
-		{
-			var max = Player.SelectedMaxLoad.GetMaxLoad();
-			var sel = Player.SelectedItems.Count;
-			if(sel >= max)
-			{
-				Toaster.ShowError($"Solo cargar tener {max} items");
-			}
-			else
-				Player.SelectedItems.Add(id);
-		}			
-	}
+	
 }

@@ -1,0 +1,89 @@
+﻿@using static ScumAndVillainy.SVTextBook
+@inject IToastService Toaster
+@inject SVGameController Game
+
+<div class="d-flex align-items-center gap-1 ">
+	<div class="d-flex align-items-center gap-1 hoverable"
+		 style="font-family: system-ui; @(Player.SelectedItems.Contains(Item.ID)?"opacity:1!important;":"")"
+		 @onclick=@(()=>{UpdateEquipe(Item);})>
+		<div class="d-flex gap-1">
+			@if (Item.Load == 0)
+			{
+				@if (Player.SelectedItems.Contains(Item.ID))
+				{
+					<i class="bi bi-check-square"></i>
+				}
+				else
+				{
+					<i class="bi bi-square"></i>
+				}
+				<div>[-- sin peso]</div>
+			}
+			else
+			{
+				@for (int i = 0; i < Item.Load; ++i)
+				{
+					@if (Player.SelectedItems.Contains(Item.ID))
+					{
+						<i class="bi bi-check-square-fill"></i>
+					}
+					else
+					{
+						<i class="bi bi-square"></i>
+					}
+				}
+			}
+		</div>
+		<div>
+			<div class="d-flex gap-1" style="@(Item.IsFine?"font-weight:bold;":"font-weight: 100;")">
+				<DecodedString Value="@Item.Name" />
+			</div>
+		</div>
+	</div>
+
+	<div style="line-height:10px;">
+		<HelperStarter HelperInvoked="ShowHelp"
+					   Title=@Item.Name
+					   HelpText="@Item.Description" ForcedOpacity="75" />
+	</div>
+</div>
+
+@code {
+	[Parameter] public SVItem Item { get; set; } = new();
+	[Parameter] public SVCharacter Player { get; set; } = new();
+	[Parameter] public EventCallback<Tuple<string,string>> ShowHelp { get; set; }
+	[Parameter] public SVTextBook Book { get; set; }
+
+	
+
+	void UpdateEquipe(SVItem item)
+	{
+		if (Player.SelectedItems.Contains(item.ID))
+			Player.SelectedItems.Remove(item.ID);
+		else
+		{
+			var max = Player.SelectedMaxLoad.GetMaxLoad();
+
+			var sel = 0;
+			foreach (var eq in Player.SelectedItems) sel += FromIDtoItem(eq).Load;
+			var newLoad = Item.Load;
+
+			if (sel + newLoad > max)
+			{
+				Toaster.ShowError($"Solo cargar tener {max} items");
+			}
+			else
+				Player.SelectedItems.Add(item.ID);
+		}
+	}
+
+	private SVItem FromIDtoItem(SVItemIDs ID)
+	{
+		if (Book is not null)
+		{
+			return Book.Items.Find(x => x.ID == ID) ?? new SVItem { Name = "Error" };
+		}
+		return new SVItem { Name = "No book" };
+	}
+
+}

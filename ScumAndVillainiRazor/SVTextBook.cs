@@ -17,6 +17,7 @@ public class SVTextBook : BaseTextBook
 		public string Name = string.Empty;
 		public string Description= string.Empty;
 		public string FlavorText = string.Empty;
+		public bool IsFine => Name.Contains("FINO") || Name.Contains("FINOS") || Name.Contains("FINAS") || Name.Contains("FINA");
 		public int Load = 0;
 	}
 
@@ -26,72 +27,84 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.Armor,
+			Load=2,
 			Name = "Armadura",
 			Description = "Muy evidente, protección completa. Detiene unos pocos rayos. Rechaza un cuchillo sin darse cuenta. Potenciada. Ayuda en el movimiento."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.Blaster,
+			Load=1,
 			Name = "Blaster",
 			Description = "Dispara rayos de plasma caliente. Precisa solo a corta distancia. Hace ruidos de \"pew pew\" (obligatorio). Viene en una variedad de formas. ¿Cómo personalizas la tuya?"
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.Comm,
+			Load=0,
 			Name = "Comunicador",
 			Description = "Tiene varias bandas, probablemente algunas cifradas. Funciona solo dentro de la órbita."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.Hacking,
+			Load=1,
 			Name = "Herramientas de Hackeo",
 			Description = "Cubierta, pinzas de empalme, conectores y puertos, descifradores de teclado, software especializado, chips modificados personalizados, diccionarios de arcoíris, exploits automatizados. Todo lo que un hacker en crecimiento necesita."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.Detonator,
+			Load=1,
 			Name = "Detonador",
 			Description = "Arma explosiva extremadamente mortal. Cabe en la palma de la mano y puede ser lanzada. Se encarga de esas puertas blindadas que las pistolas pesadas no pueden manejar. Ilegal. No deberías tener esto. No, en serio."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.HeavyBlaster,
+			Load=2,
 			Name = "Blaster Pesado",
 			Description = "Puede causar un considerable daño a vehículos y cosas como puertas sin blindaje. Tiene alrededor de una docena de disparos. Causará daño serio y escabroso a las personas. Ilegal."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.IllicitDrugs,
+			Load=0,
 			Name = "Drogas Ilícitas",
 			Description = "¿Cuál es tu veneno, vaquero del espacio? Para uso personal, atrapar una recompensa peligrosa o entretenimiento mientras viajas entre planetas."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.Medkit,
+			Load=2,
 			Name = "Botiquín",
 			Description = "Sangre para algunas razas comunes, gasas, inyector anti radiación, bisturí láser, antisépticos, hilo, analgésicos."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.MeleeWeapon,
+			Load=1,
 			Name = "Arma de Combate Cuerpo a Cuerpo",
 			Description = "Afilada. Contundente. Puntiaguda. Apuñaladora. Cortante. De diferentes tamaños. Algunas vienen con bordes láser. Algunas vibran... oh. Baterías incluidas."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.RepairTools,
+			Load=1,
 			Name = "Herramientas de Reparación",
 			Description = "Cosas que necesitas para arreglar motores de naves, speeders, autos voladores y similares. Herramientas para empalmar consolas y ajustar maquinaria. Martillos, soldadores, destornilladores, llaves, cargadores de baterías, pintores de aerosol."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.Spacesuit,
+			Load=2,
 			Name = "Traje Espacial",
 			Description = "Algo de protección contra la radiación, supervivencia en atmósferas tóxicas, EVA. Medio día de oxígeno (o cualquier otro gas, líquido o sustancia que respires)."
 		},
 		new SVItem
 		{
 			ID = SVItemIDs.SpyGear,
+			Load=1,
 			Name = "Equipo de Espionaje",
 			Description = "Disfraces, moduladores de voz, mini cámaras, escáneres térmicos, huellas dactilares falsas y filtros de audio."
 		},
@@ -99,7 +112,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineHackingRig,
-			Name = "Equipo fino de hackers",
+			Name = "Equipo FINO de hackers",
 			Description = "Gafas de visualización, exploits no publicados, chips fuera de mercado sobrecargados, vampiros digitales ópticos, Hackear va tanto de software como de hardware. Quien mantiene tu equipo?",
 			FlavorText = "Quien mantiene tu equipo? Escribes tus propios programas o alguien te mantiene al dia? Alguna decoración en tu kit?",
 			Load = 1
@@ -107,7 +120,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineShipRepairTools,
-			Name = "Herramientas de Reparación de Naves de Calidad",
+			Name = "Herramientas FINAS para la Reparación de Naves",
 			Description = "Llaves de torsión asistidas por energía, un taladro sónico, sondas de prueba, calibradores de energía, una remachadora. ¿Es este un conjunto de elementos o los recogiste uno a uno?",
 			FlavorText = "¿Es este un conjunto de elementos o los recogiste uno a uno? ¿Quién mantiene tu equipo?",
 			Load = 2
@@ -144,7 +157,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.Krieger,
-			Name = "Krieger, una pistola bláster fina",
+			Name = "Krieger, una pistola bláster FINA",
 			Description = "Como amigo o aliado, esta pistola característica se puede usar durante el tiempo libre para amenazar o intimidar. Como enemigo, alguien más lo posee y lleva una bala para ti.",
 			FlavorText = "¿Conoces esta pistola íntimamente, de dónde o por qué?",
 			Load = 1
@@ -152,7 +165,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.Vera,
-			Name = "Vera, un rifle de francotirador fino",
+			Name = "Vera, un rifle de francotirador FINO",
 			Description = "Un auto-bloqueo completo con gatillo personalizado, doble cartucho, medidor exhaustivo. Puede disparar municiones místicas.",
 			FlavorText = "¿Lo personalizaste tú mismo, lo encargaste especialmente, lo quitaste de un cuerpo o es un regalo de alguien?",
 			Load = 2
@@ -160,7 +173,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.Zmei,
-			Name = "Zmei, un lanzallamas fino",
+			Name = "Zmei, un lanzallamas FINO",
 			Description = "Para aquellos momentos en que realmente necesitas calentar las cosas. Configuraciones para regular y extra crujiente. No es fácil de ocultar.",
 			FlavorText = "Las complicaciones al ser disparado pueden incluir la ruptura de los tanques de combustible. ¿Qué calcomanías o marcas tiene?",
 			Load = 2
@@ -168,7 +181,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.Sunder,
-			Name = "Sunder, una vibro-cuchilla fina",
+			Name = "Sunder, una vibro-cuchilla FINA",
 			Description = "Corta a través de casi cualquier material. Decorada.",
 			FlavorText = "¿Cuchillo o espada de duelo? ¿Qué diseño está grabado en la hoja? ¿Lo reclamaste o lo ganaste legítimamente?",
 			Load = 1
@@ -184,7 +197,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineMartialArtsStyle,
-			Name = "Estilo de artes marciales fino",
+			Name = "Estilo de artes marciales FINO",
 			Description = "Tu propia mezcla personalizada de técnicas de combate, única como una huella dactilar.",
 			FlavorText = "¿Dónde y con quién entrenaste por primera vez? ¿Cómo se llama tu estilo? ¿Has tenido algún alumno?",
 			Load = 0
@@ -201,7 +214,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineMeleeWeapon,
-			Name = "Arma cuerpo a cuerpo fina",
+			Name = "Arma cuerpo a cuerpo FINA",
 			Description = "Un arma antigua que actúa como una extensión de tu cuerpo. En la era de los blásteres, las espadas y lanzas son vestigios pintorescos de la cultura y la costumbre en su mayor parte. Pero los poderes de La Fuerza parecen interactuar obstinadamente con la tecnología avanzada.Cada orden mística mantiene elementos anacrónicos y los usa de diferentes maneras.",
 			FlavorText = "¿Tienes tal arma? Si es así, ¿qué entrenamiento has tenido con ella y cómo la usas?",
 			Load = 2
@@ -250,7 +263,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineCustomizedSpacesuit,
-			Name = "Traje espacial personalizado fino",
+			Name = "Traje espacial personalizado FINO",
 			Description = "Decals geniales, baliza de emergencia, algo de empuje. Te mantendrá vivo en el espacio o cuando tu cabina reciba un disparo. Te permite moverte un poco e incluso puede extender los saltos en la atmósfera.",
 			FlavorText = "¿Qué parches o arte personalizado tienes en el tuyo, y qué significa?",
 			Load = 2
@@ -258,7 +271,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineSmallUrbot,
-			Name = "Urbot pequeño fino",
+			Name = "Urbot pequeño FINO",
 			Description = "Un pequeño Urbot que apoya la pilotaje y puede transportar algunas cosas. Parece inquietantemente consciente. Se supone que los Urbots deben ser borrados aproximadamente una vez al año. ¿Cuánto tiempo ha pasado desde que llevaste el tuyo al Gremio de Ingenieros para tal procedimiento? ¿Cuál es su designación y qué peculiaridades de personalidad tiene? ¿Cómo es su chasis y cómo te ayuda a pilotar?",
 			FlavorText = "¿Te lo dieron los místicos que te entrenaron, lo encontraste cuando eras niño, o lo recogiste en tus viajes? ¿Qué hace? Discute sus poderes, costos y efectos secundarios con tu grupo (para más información sobre los artefactos de Precursores, consulta la página 268).",
 			Load = 2
@@ -266,7 +279,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineMechanicsKit,
-			Name = "Kit de mecánica fino",
+			Name = "Kit de mecánica FINO",
 			Description = "Escáneres de mano, kit de parches de casco, surtido de herramientas de mano. Todo lo que necesitas para parchear un vehículo y hacerlo volar de nuevo. ¿Qué herramienta acabas de recoger? ¿Cuál has personalizado?",
 			FlavorText = " ",
 			Load = 1
@@ -299,7 +312,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineBlasterPistol,
-			Name = "Pistola bláster fino",
+			Name = "Pistola bláster FINO",
 			Description = "Personalizado o extraño. Puede disparar munición mística. ¿Qué disparan? ¿Dónde los conseguiste en tus viajes? ¿Les pusiste nombre?",
 			FlavorText = " ",
 			Load = 1 // or 2 if it's a matching pair
@@ -307,7 +320,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineBlasterPistolPair,
-			Name = "Par de bláster fino",
+			Name = "Par de bláster FINO",
 			Description = "Personalizado o extraño. Puede disparar munición mística. ¿Qué disparan? ¿Dónde los conseguiste en tus viajes? ¿Les pusiste nombre?",
 			FlavorText = " ",
 			Load = 2 // or 2 if it's a matching pair
@@ -315,7 +328,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineCoat,
-			Name = "Abrigo fino",
+			Name = "Abrigo FINO",
 			Description = "Pesado pero bien hecho y bien cuidado. Distintivo y con historia. ¿Dónde conseguiste este abrigo? ¿Fue un regalo, una compra impulsiva o algo que ganaste en una apuesta? ¿Está decorado con algún emblema o logotipo?",
 			FlavorText = "Asegúrate de que tenga un aspecto o color memorable.",
 			Load = 1
@@ -348,7 +361,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineClothes,
-			Name = "Ropa fina",
+			Name = "Ropa FINA",
 			Description = "Sarongs de seda, trajes, finas capas azules. Destacas y siempre estás vestido para la ocasión. Nadie confundirá esto con un disfraz. ¿Cuál es tu conjunto favorito?",
 			FlavorText = " ",
 			Load = 1
@@ -365,7 +378,7 @@ public class SVTextBook : BaseTextBook
 		{
 			ID = SVItemIDs.LuxuryItemSmall,
 			Name = "Artículo de lujo",
-			Description = "Brandies finos, pequeños pero pensativos regalos, especias y perfumes, instrumentos finos, juegos populares, etc. Estos pueden tener tamaños variados. Cada vez que lleves uno de estos en el trabajo, explica qué es y por qué es lujoso.",
+			Description = "Brandies FINOs, pequeños pero pensativos regalos, especias y perfumes, instrumentos FINOs, juegos populares, etc. Estos pueden tener tamaños variados. Cada vez que lleves uno de estos en el trabajo, explica qué es y por qué es lujoso.",
 			FlavorText = " ",
 			Load = 0 // or 1 or 2 depending on size
 		},
@@ -373,7 +386,7 @@ public class SVTextBook : BaseTextBook
 		{
 			ID = SVItemIDs.LuxuryItemMedium,
 			Name = "Artículo de lujo",
-			Description = "Brandies finos, pequeños pero pensativos regalos, especias y perfumes, instrumentos finos, juegos populares, etc. Estos pueden tener tamaños variados. Cada vez que lleves uno de estos en el trabajo, explica qué es y por qué es lujoso.",
+			Description = "Brandies FINOs, pequeños pero pensativos regalos, especias y perfumes, instrumentos FINOs, juegos populares, etc. Estos pueden tener tamaños variados. Cada vez que lleves uno de estos en el trabajo, explica qué es y por qué es lujoso.",
 			FlavorText = " ",
 			Load = 1 // or 1 or 2 depending on size
 		},
@@ -381,7 +394,7 @@ public class SVTextBook : BaseTextBook
 		{
 			ID = SVItemIDs.LuxuryItemLarge,
 			Name = "Artículo de lujo",
-			Description = "Brandies finos, pequeños pero pensativos regalos, especias y perfumes, instrumentos finos, juegos populares, etc. Estos pueden tener tamaños variados. Cada vez que lleves uno de estos en el trabajo, explica qué es y por qué es lujoso.",
+			Description = "Brandies FINOs, pequeños pero pensativos regalos, especias y perfumes, instrumentos FINOs, juegos populares, etc. Estos pueden tener tamaños variados. Cada vez que lleves uno de estos en el trabajo, explica qué es y por qué es lujoso.",
 			FlavorText = " ",
 			Load = 2 // or 1 or 2 depending on size
 		},
@@ -397,7 +410,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineMedkit,
-			Name = "Equipo médico fino",
+			Name = "Equipo médico FINO",
 			Description = "Mejor surtido que el estándar. Grapas para la piel, escáneres de mano para diagnóstico, sinteflesh, estabilizadores óseos, hipos en spray, antídoto (para bestias alienígenas peligrosas) y una selección más amplia de medicamentos.",
 			FlavorText = "¿Hay marcas distintivas en tu equipo médico?",
 			Load = 2
@@ -405,7 +418,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineBedsideManner,
-			Name = "Manera de tratar a los pacientes fina",
+			Name = "Manera de tratar a los pacientes FINA",
 			Description = "Encanto que tranquiliza a los pacientes. Algunos curanderos nunca se molestan en traer esto.",
 			FlavorText = "¿Sabes cómo relacionarte con mucha gente? ¿Compartes muchas anécdotas? ¿Proyectas una actitud de habilidad segura?",
 			Load = 0
@@ -413,7 +426,7 @@ public class SVTextBook : BaseTextBook
 		new SVItem
 		{
 			ID = SVItemIDs.FineClothing,
-			Name = "Ropa fina",
+			Name = "Ropa FINA",
 			Description = "Un traje o atuendo para cenas elegantes y la alta sociedad. ",
 			FlavorText = "¿Es esto un vestigio de tu pasado o algo que has adquirido para cuando necesitas asegurar financiamiento para tu trabajo de médico?",
 			Load = 1
