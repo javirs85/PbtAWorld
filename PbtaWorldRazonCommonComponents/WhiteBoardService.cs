@@ -15,6 +15,7 @@ public class WhiteBoardService
 	public List<Prop> Props = new();
 	public static IGameController? Game;
 
+	public List<Clock> Clocks = new();
 
 
 	string RootBattleMapsURL = "./wwwroot/imgs/VTT/BattleMaps/";
@@ -171,6 +172,11 @@ public class WhiteBoardService
 		}
 	}
 
+	public void ForzeUpdateInAllClients()
+	{
+		foreach (var c in Clocks) c.UpdateUI();
+		Update();
+	}
 	void Update(object? sender, EventArgs e) => Update();
 	private void Update() => UpdateUI?.Invoke(this, EventArgs.Empty);
 

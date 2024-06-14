@@ -1,0 +1,117 @@
+﻿<div class="d-flex flex-column align-items-center">
+	@if(!HideTitle)
+	{
+		<div class="fs-2">@clock.Title</div>
+	}	
+	<div class="CircularClockContainer"
+		 style="width:@(Width)px;
+		height:@(Width)px;
+		min-height:@(Width)px;
+		max-height:@(Width)px;"
+		 @onclick=Clicked>
+		<div class="UpperLines">
+			@foreach (var l in lines)
+			{
+				<div class="line" style="transform:rotate(@(l.degs)deg);"></div>
+			}
+		</div>
+
+		<div class="LeftHalfMovingPart  d-flex" style="transform: rotate(@(LeftSideDegs)deg);">
+			<div class="flex-fill" style="background:@(Color)"></div>
+			<div class="flex-fill"></div>
+		</div>
+		<div class="LeftHalfCover" style="background:@BackColor; opacity:@(ShowLefttCover?"1":"0");">
+		</div>
+		<div class="RightHalfMovingPart  d-flex" style="transform: rotate(@(RightSideDegs)deg);">
+			<div class="flex-fill"></div>
+			<div class="flex-fill" style="background:@(Color)"></div>
+		</div>
+		<div class="RightHalfCover" style="background:@BackColor;">
+		</div>
+
+		<div class="Floor" style="background:@BackColor;"></div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public float Width { get; set; } = 200;
+	[Parameter] public string Color { get; set; } = "green";
+	[Parameter] public Clock clock { get; set; } = new Clock("Test", 6);
+	[Parameter] public string BackColor { get; set; } = "#000";
+	[Parameter] public bool HideTitle { get; set; } = false;
+
+	string debug = "";
+	double lineSteps = 0;
+
+	private class Line
+	{
+		public int degs = 0;
+	}
+
+	private List<Line> lines = new();
+
+	protected override void OnParametersSet()
+	{
+		clock.Status = 4;
+		int n = clock.Steps.Count;
+		lineSteps = 360 / n ;
+
+		for(int i =0; i<n; ++i)
+		{
+			lines.Add(new Line { degs = (int)lineSteps* i });
+		}
+	}
+
+	private int deg;
+	int RightSideDegs = 0;
+	int LeftSideDegs = 0;
+	bool ShowLefttCover = true;
+
+	public int Deg
+	{
+		get { return deg; }
+		set { 
+			deg = value;
+			if (deg < 0) deg = 0;
+			if (deg > 360) deg = 360;
+			if(deg < 180)
+			{
+				LeftSideDegs = deg;
+				RightSideDegs = 0;
+				ShowLefttCover = true;
+			}
+			else
+			{
+				ShowLefttCover = false;
+				LeftSideDegs = 180;
+				RightSideDegs = deg-180;
+			}
+			StateHasChanged();
+		}
+	}
+
+	void Clicked(MouseEventArgs e)
+	{
+		double x = e.OffsetX;
+		double y = e.OffsetY;
+
+		double maxY = Width;
+		double maxX = Width;
+
+		double centerX = maxX / 2.0;
+		double centerY = maxY / 2.0;
+
+		double dx = centerX - x;
+		double dy = centerY - y;
+
+		double angle = Math.Atan2(dy, dx) * (180 / Math.PI);
+
+		angle -= 90.0;
+		if (angle < 0) angle += 360.0;
+
+		if (angle > Deg) Deg += (int)lineSteps;
+		else Deg -= (int)lineSteps;
+
+		debug = $"click ({e.OffsetX}, {e.OffsetY}), centerX{centerX}, centerY{centerY}, dx:{dx} dy:{dy} => {angle}deg";
+	}
+}

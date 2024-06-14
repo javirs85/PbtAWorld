@@ -4,7 +4,7 @@
 @if(EditMode)
 {
 	<div style="font-family: sans-serif;">
-		<EditForm Model="this" @onfocusout=@(()=>{EditMode = false;})>
+		<EditForm Model="this" @onfocusout=@(()=>{EditMode = false; EditFinished.InvokeAsync();})>
 			<InputText class="form-control " @bind-Value="Value"/>
 		</EditForm>
 	</div>
@@ -39,5 +39,6 @@ else
 	}
 
 	[Parameter] public EventCallback<string> ValueChanged { get; set; }
+	[Parameter] public EventCallback EditFinished{ get; set; }
 	[Parameter] public bool EditMode { get; set; } = false;
 }

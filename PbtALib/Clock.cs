@@ -10,6 +10,10 @@ namespace PbtALib;
 public class Clock
 {
 	public Clock() { }
+
+	public event EventHandler? UpdateRequested;
+	public void UpdateUI() => UpdateRequested?.Invoke(this, EventArgs.Empty);
+
 	public Clock(string title, int steps)
 	{
 		Title = title;
@@ -24,6 +28,7 @@ public class Clock
 	public List<StepItem> Steps { get; set; } = new();
 	public string LastEvent => Steps.Last().Text;
 	public int Count => Steps.Count;
+	public string Color { get; set; } = "red";
 
 	public void MoveStatusUp()
 	{

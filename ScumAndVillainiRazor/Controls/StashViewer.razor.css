@@ -1,0 +1,21 @@
+﻿.CashBox {
+    width: 242px;
+    padding: 5px;
+    position: relative;
+    z-index: 2;
+}
+
+.FakeMarker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgb(103 65 12);
+    width: 25px;
+    height: 100%;
+    z-index: -1;
+}
+
+.StashContainer{
+    width: 242px;
+    height:100%;
+}
