@@ -7,23 +7,33 @@
 		<div class="d-flex flex-column">
 			<HiddeableInput @bind-Value=clock.Title EditFinished="SpreadUpdate"/>
 			<div class="d-flex">
-				<i class="bi bi-trash3" @onclick=DeleteMe></i>
-				<i class="bi bi-send" @onclick=SpreadUpdate></i>
-				<i class="bi bi-@(clock.Color=="red"?"circle-fill":"circle")" style="color:red;" @onclick=@(()=>{clock.Color = "red";})></i>
-				<i class="bi bi-@(clock.Color=="#20666d"?"circle-fill":"circle")" style="color:#20666d;" @onclick=@(()=>{clock.Color = "#20666d";})></i>
-				<i class="bi bi-@(clock.Color=="green"?"circle-fill":"circle")" style="color:green;" @onclick=@(()=>{clock.Color = "green";})></i>
-
+				<i class="bi bi-trash3 hoverable" @onclick=DeleteMe></i>
+				<i class="bi bi-send hoverable" @onclick=SpreadUpdate></i>
+				<i class="bi bi-@(clock.Color=="red"?"circle-fill":"circle") hoverable" style="color:red;" @onclick=@(()=>{clock.Color = "red";})></i>
+				<i class="bi bi-@(clock.Color=="#20666d"?"circle-fill":"circle") hoverable" style="color:#20666d;" @onclick=@(()=>{clock.Color = "#20666d";})></i>
+				<i class="bi bi-@(clock.Color=="green"?"circle-fill":"circle") hoverable" style="color:green;" @onclick=@(()=>{clock.Color = "green";})></i>
+				@if(clock.IsSecret)
+				{
+					<i class="bi bi-incognito hoverable" @onclick=@(()=>{clock.IsSecret = false;})></i>
+				}
+				else
+				{
+					<i class="bi bi-eye hoverable" @onclick=@(()=>{clock.IsSecret = true;})></i>
+				}
+				
 			</div>
 		</div>
 	}
 	else
 	{
-		@if (!HideTitle)
+		@if (!HideTitle && !(clock.IsSecret && !IsMaster))
 		{
 			<div class="fs-5 text-center">@clock.Title</div>
 		}
 	}
-	<div class="CircularClockContainer"
+	@if(IsMaster || !clock.IsSecret)
+	{
+		<div class="CircularClockContainer"
 		 style="width:@(Width)px;
 		height:@(Width)px;
 		min-height:@(Width)px;
@@ -62,6 +72,7 @@
 
 		<div class="Floor" style="background:@BackColor;"></div>
 	</div>
+	}
 </div>
 
 @code {
