@@ -30,6 +30,19 @@ public class Clock
 	public int Count => Steps.Count;
 	public string Color { get; set; } = "red";
 
+	private bool _isSecret = false;
+
+	public bool IsSecret
+	{
+		get { return _isSecret; }
+		set 
+		{
+			_isSecret = value;
+			UpdateUI();
+		}
+	}
+
+
 	public void MoveStatusUp()
 	{
 		if (Status < Steps.Count - 1) Status++;
