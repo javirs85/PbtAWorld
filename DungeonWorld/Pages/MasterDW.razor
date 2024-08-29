@@ -16,7 +16,7 @@
 }
 else if(_ShowingCast)
 {
-	<PeopleViewr GameID="@Meta.SelectedSeason.CampaignGuid" People="@Game.People" IsMaster=true ExitRequested=@(()=>{_ShowingCast = false;})/>
+	<PeopleViewr GameID="@Meta.SelectedSeason.CampaignGuid" IsMaster=true ExitRequested=@(()=>{_ShowingCast = false;})/>
  	@* <CharacterSelector CloseRequest="@(()=>{_ShowingCast = false;})"/> *@
 }
 @if(_ShowingRolls)

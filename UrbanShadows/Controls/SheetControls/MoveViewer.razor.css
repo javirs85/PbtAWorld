@@ -87,6 +87,10 @@
 .DiceButton {
     width: 28px !important;
     height: 28px !important;
+    opacity: 0.12 !important;
+}
+.DiceButton:hover{
+    opacity: 0.25 !important;
 }
 
 .Box {
@@ -114,7 +118,7 @@
 
 .ImagesContainer {
     display: flex;
-    gap: 5px;
+    gap: 0px;
     align-items: center;
 }
 
@@ -126,8 +130,6 @@
     font-size: 14px;
     font-weight: 300;
 }
-
-.ImageIcon
 
 .Innactive{
     /*opacity:50%; */

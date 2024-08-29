@@ -15,7 +15,7 @@
 }
 else
 {
-	<div class="d-flex">
+	<div class="d-flex align-items-center">
 		@Text
 		<i class="bi bi-pencil ms-2 opacity-25 clickMe" @onclick=Start @onclick:stopPropagation=true @onclick:preventDefault=true></i>
 	</div>
@@ -30,6 +30,9 @@ else
 	[Parameter]
 	public EventCallback<string> TextChanged { get; set; }
 
+	[Parameter]
+	public EventCallback EditFinished { get; set; }
+
 	string initial = "";
 	void Start()
 	{
@@ -40,6 +43,7 @@ else
 	void Finish()
 	{
 		IsEditing = false;
+		EditFinished.InvokeAsync();
 	}
 
 	async Task Cancel()

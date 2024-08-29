@@ -1,4 +1,5 @@
 ﻿@inject USGameController Game
+@inject USMovesService Moves
 
 <div class="PbtASystemContainer StatViewer @(IsCircle?"StatViewerCircle":"") @(IsTick?"CircleTick":"")" 
 	@onclick=OpenFullScreenModal
@@ -37,6 +38,9 @@
 						@(IsTick ? "Desmarcar" : "Marcar") círculo
 					</button>
 				}
+				<button class="btn btn-outline-light mt-2" style="border-radius:50px;" @onclick=Roll>
+					Tirar
+				</button>
 			</div>
 		</div>
 	</div>
@@ -150,6 +154,21 @@
 	{
 		Value = Player.GetAttribute(Attr);
 		Status = Player.GetStatusInCircle(Attr);
+	}
+
+	async Task Roll()
+	{
+		USMoveIDs m = USMoveIDs.rawBlood;
+		if (Attr == USAttributes.Heart) m = USMoveIDs.rawHeart;
+		if (Attr == USAttributes.Mind) m = USMoveIDs.rawMind;
+		if (Attr == USAttributes.Soul) m = USMoveIDs.rawSoul;
+		if (Attr == USAttributes.Mortality) m = USMoveIDs.rawMortal;
+		if (Attr == USAttributes.Night) m = USMoveIDs.rawNight;
+		if (Attr == USAttributes.Power) m = USMoveIDs.rawPower;
+		if (Attr == USAttributes.Veil) m = USMoveIDs.rawVeil;
+
+		Game.Roll(Player.ID, Moves.GetMovement<USMoveIDs>(m), Attr, m, Player.GetAttribute(Attr));
+			
 	}
 
 }

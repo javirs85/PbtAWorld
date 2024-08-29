@@ -4,7 +4,6 @@
     color:white;
     width:100%;
     height:100%;
-    padding-left:10px;
     display:flex;
 }
     .SVPlayerSheet > div{
@@ -47,15 +46,15 @@
 }
 
 .abilitiesContainer {
-    margin: 0 10px;
     margin-top: 15px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 2px;
     overflow-y: auto;
-    background: #252e4a;
+    background: #01131f;
     flex: 1 1;
+    border: 1px solid #15374e;
 }
 
 .AddButton {
@@ -132,6 +131,11 @@
     flex-direction:column;
 }
 
-.EquipeBox{
-
+.EquipeHeader {
+    background: #2F2F2F;
+    font-size: 20px;
+    padding: 5px;
+}
+.LoadItem {
+    padding:10px;
 }

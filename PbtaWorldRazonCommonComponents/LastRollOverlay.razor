@@ -93,14 +93,14 @@
 				{
 					<div @onclick=Hide
 						 class="LastRollHeader">
-						<h4 class="text-light">@LastRoll.MoveTittle</h4>
+						<h4 class="text-light">@LastRoll.Movement.Title</h4>
 						<i class="bi bi-x-lg text-light fs-2"></i>
 					</div>
 					<div class="LastRollContainer BoxPack" style="background:@GetBackgroundTag(LastRoll);">
 							
 						<div>
 							@LastRoll.Roller <span class="small opacity-50">tira </span>
-							@LastRoll.MoveTittle <span class="small opacity-50">con </span> 
+							@LastRoll.Movement.Title <span class="small opacity-50">con </span> 
 							@if(LastRoll.RollType == RollTypes.Roll_Simple)
 							{
 								@LastRoll.StatString
@@ -164,7 +164,7 @@
 							{
 								<div class="d-flex mb-2">
 									<div>
-										<span class="LastRoll.MovementRangeMarker">@("<6"):</span>
+										<span class="LastRoll MovementRangeMarker">@("<6"):</span>
 									</div/> 
 									<div>
 										@LastRoll.Movement.ConsequencesOn6.MainText
@@ -184,7 +184,7 @@
 							{
 								<div class="d-flex mb-2">
 									<div>
-										<span class="LastRoll.MovementRangeMarker">7-9:</span>
+										<span class="LastRoll MovementRangeMarker">7-9:</span>
 									</div/> 
 									<div>
 										@LastRoll.Movement.ConsequencesOn79.MainText
@@ -204,7 +204,7 @@
 							{
 								<div class="d-flex">
 									<div>
-										<span class="LastRoll.MovementRangeMarker">>10:</span>
+										<span class="LastRoll MovementRangeMarker">>10:</span>
 									</div/> 
 									<div>
 										@LastRoll.Movement.ConsequencesOn10.MainText
@@ -212,6 +212,26 @@
 										{
 											<ul>
 												@foreach (var entry in LastRoll.Movement.ConsequencesOn10.Options)
+												{
+													<li><DecodedString Value="@entry" /></li>
+												}
+											</ul>
+										}
+									</div>
+								</div>
+							}
+							@if (LastRoll.Movement.AdvancedConsequences != null && LastRoll.Movement.AdvancedConsequences.MainText != "")
+							{
+								<div class="d-flex">
+									<div>
+										<span class="LastRoll MovementRangeMarker">12+:</span>
+									</div/> 
+									<div>
+										@LastRoll.Movement.AdvancedConsequences.MainText
+										@if (LastRoll.Movement.AdvancedConsequences.Options != null && LastRoll.Movement.AdvancedConsequences.Options.Count > 0)
+										{
+											<ul>
+												@foreach (var entry in LastRoll.Movement.AdvancedConsequences.Options)
 												{
 													<li><DecodedString Value="@entry" /></li>
 												}

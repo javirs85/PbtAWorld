@@ -246,4 +246,6 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	{
 		ImageToShowToAllPlayers?.Invoke(this, url);
 	}
+
+
 }

@@ -11,9 +11,13 @@
 @inject MoveSelector.MoveSelectorService  MSelector
 @inject LastRollViewerService LastRollViewerService
 @inject CharacterSelectorService CharacterSelectorService
+@inject IDataBaseController Meta;
 @inject VTTService VTT
 
 <MoveSelector />
+
+	
+
 <EditForm Model="Player">
 	<div class="BigContainer d-flex">
 		<div class="LeftColumn">
@@ -42,8 +46,11 @@
 			@if (Player.IsNightTick == true && Player.IsMortalisTick == true && Player.IsPowerTick == true && Player.IsVeilTick == true)
 			{
 				<div class="w-100 p-2 d-flex justify-content-center" style="background: #360b0b;">
-					<div class="RoundButton IntegratedRed">
+					<div class="RoundButton IntegratedRed" @onclick=ShowCircleAdvances>
 						Obtener mejora
+					</div>
+					<div class="RoundButton IntegratedRed" @onclick=ResetCircles>
+						Reset
 					</div>
 				</div>
 			}
@@ -149,23 +156,15 @@
 								ForceUpdate="Update" />
 						}
 				</div>
-				
-			</div>
-			<div class="InnerColumnPack CircleMoves">
-				<div class="InnerColumnHeader" style="cursor: pointer;"
-				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-					Movimientos de círculo
+				<div class="LetItOutBox">
+					@foreach(var m in Player.LIOs)
+					{
+						<div>@Moves.AllLio.Find(x=>x.ID==m)?.Text</div>
+					}
 				</div>
-				@if (CurrentFocusDetail != FocusOnDetailed.Basic)
-				{
-					<div class="InnerColumContent">
-						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionMovement))
-						{
-							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Circle)) ForceUpdate="Update" />
-						}
-				</div>
-				}
 			</div>
+			
+			
 			<div class="InnerColumnPack Deuda">
 				<div class="InnerColumnHeader" style="cursor: pointer;"
 				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
@@ -184,9 +183,8 @@
 		</div>
 		<div class="InnerColumn" style="@(CurrentFocus==FocusOn.secondColumn?"flex:2!important;":"flex:1!important")">
 			<div class="InnerColumnPack PlayBookMoves">
-				<div class="InnerColumnHeader" style="cursor: pointer;"
-					@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-					Movimientos de @Player.Archetype.ToUI()
+				<div class="InnerColumnHeader d-flex align-items-center gap-1" style="cursor: pointer;">
+					Movimientos de @Player.Archetype.ToUI()  (al menos 3) <i class="bi bi-exposure fs-4 editButton" @onclick=SelectPlaybookMoves></i>
 				</div>
 				
 				<div class="InnerColumContent">
@@ -194,17 +192,13 @@
 					{
 						<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Playbook)) ForceUpdate="Update" />
 					}
-					<div class="RoundedGrayButton" @onclick=SelectPlaybookMoves>
-						Cambiar movimientos de @Player.Archetype.ToUI() 
-					</div>							
-					
 				</div>
 				
 			</div>
 			<div class="InnerColumnPack CorruptionMoves">
-				<div class="InnerColumnHeader" style="cursor: pointer;"
+				<div class="InnerColumnHeader  d-flex align-items-center gap-1" style="cursor: pointer;"
 				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-					Movimientos de Corrupción
+					Movimientos de Corrupción <i class="bi bi-exposure fs-4 editButton" @onclick=SelectNewCorruptionMove></i>
 				</div>
 				@if (CurrentFocusDetail != FocusOnDetailed.Playbook)
 				{
@@ -213,57 +207,58 @@
 						{
 							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Corruption)) ForceUpdate="Update" />
 						}
-						<div class="RoundedGrayButton" @onclick=SelectNewCorruptionMove>
-							Cambiar movimientos de Corrupción 
+					</div>
+				}
+			</div>
+			@if(UniqueMovesOnScreen.Count != 0)
+			{
+				<div class="InnerColumnPack EspecialesPlaybook">
+					<div class="InnerColumnHeader" style="cursor: pointer;"
+						@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+						Movimientos especiales de @Player.Archetype.ToUI()
+					</div>
+					@if (CurrentFocusDetail == FocusOnDetailed.nowhere || CurrentFocus == FocusOn.firstColumn || CurrentFocusDetail == FocusOnDetailed.Unique)
+					{
+						<div class="InnerColumContent">
+							@foreach (var m in UniqueMovesOnScreen)
+							{
+								<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Unique)) ForceUpdate="Update" />
+							}
 						</div>
-						
-					</div>
-				}
-			</div>
-			<div class="InnerColumnPack EspecialesPlaybook">
-				<div class="InnerColumnHeader" style="cursor: pointer;"
-					@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-					Movimientos especiales de @Player.Archetype.ToUI()
+					}
 				</div>
-				@if (CurrentFocusDetail == FocusOnDetailed.nowhere || CurrentFocus == FocusOn.firstColumn || CurrentFocusDetail == FocusOnDetailed.Unique)
+			}
+
+			<div class="InnerColumnPack CircleMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;"
+					 @onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+					Movimientos de círculo
+				</div>
+				@if (CurrentFocusDetail != FocusOnDetailed.Basic)
 				{
 					<div class="InnerColumContent">
-						@foreach (var m in UniqueMovesOnScreen)
+						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionMovement))
 						{
-							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Unique)) ForceUpdate="Update" />
+							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Circle)) ForceUpdate="Update" />
 						}
 					</div>
 				}
 			</div>
-			<div class="InnerColumnPack DramaMoves">
-				<div class="InnerColumnHeader" style="cursor: pointer;"
-				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-					Movimientos de drama
-				</div>
-				@if (CurrentFocusDetail == FocusOnDetailed.nowhere || CurrentFocus == FocusOn.firstColumn || CurrentFocusDetail == FocusOnDetailed.Drama)
-				{
-					<div class="InnerColumContent">
-						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DramaticMovement && x.Archetipe == Player.Archetype))
-						{
-							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Drama)) ForceUpdate="Update" />
-						}
-					</div>
-				}
-			</div>
+			
+			
 		</div>
-		<div class="InnerColumn" style="@(CurrentFocus==FocusOn.thirdColumn?"flex:2!important;":"flex:1!important")">
+		<div class="InnerColumn" style="gap:0px !important;">
 			<div class="PLAYBOOK UNIQUES InnerColumnPack">
-				<div class="InnerColumnHeader">@Player.ArchetypeUniqueTittle1</div>
+				<div class="InnerColumnHeader d-flex align-items-center gap-1">
+					@Player.ArchetypeUniqueTittle1
+					<i class="bi bi-arrow-down-circle fs-4 editButton" data-bs-toggle="collapse"
+					   data-bs-target="#Unique1original"></i>
+				</div>
 				<div class="InnerColumContent">
-					<InputTextArea class="form-control"  style="outline:none; border: none; background: black; color:white;"
+					<InputTextArea class="form-control" style="outline:none; border: none; background: black; color:#7d7d7d;"
 					@bind-Value=Unique1Screen />
 				</div>
 				<div>
-					<div class="RoundedGrayButton" 
-						data-bs-toggle="collapse" 
-						data-bs-target="#Unique1original" @onclick=ToggleThridColumn>
-						mostrar texto original
-					</div>
 					<div id="Unique1original" class="collapse">
 						<DecodedString Value="@Player.ArchetypeUniqueBody1" />
 					</div>
@@ -272,18 +267,17 @@
 			@if (!string.IsNullOrEmpty(Player.ArchetypeUniqueTittle2))
 			{
 				<div class="InnerColumnPack">
-					<div class="InnerColumnHeader">@Player.ArchetypeUniqueTittle2</div>
+					<div class="InnerColumnHeader d-flex align-items-center gap-1">
+						@Player.ArchetypeUniqueTittle2
+						<i class="bi bi-arrow-down-circle fs-4 editButton" data-bs-toggle="collapse"
+						   data-bs-target="#Unique2original"></i>
+					</div>
 					<div class="InnerColumContent">
 						<InputTextArea class="form-control" 
 						style="outline:none; border: none; background: black; color:white;" 
 						@bind-Value=Unique2Screen />
 					</div>
 					<div>
-						<div class="RoundedGrayButton"
-							 data-bs-toggle="collapse"
-							 data-bs-target="#Unique2original">
-							mostrar texto original
-						</div>
 						<div id="Unique2original" class="collapse">
 							<DecodedString Value="@Player.ArchetypeUniqueBody2" />
 						</div>
@@ -292,29 +286,54 @@
 			}	
 			<div class="DEBTS InnerColumnPack">
 				<div class="InnerColumnHeader">Deudas</div>
-				<div class="InnerColumContent">
-					<span>Se me debe:</span>
-					@foreach(var deb in Game.AllDebts.Where(x=>x.ReceivingID == Player.ID))
-					{
-						<DebtViewer Debt="deb" ForceUpdateUI="Update" />
-					}
-					<span>Debo:</span>
-					@foreach (var deb in Game.AllDebts.Where(x => x.PayingID == Player.ID))
-					{
-						<DebtViewer Debt="deb" ForceUpdateUI="Update" />
-					}
+				<div class="InnerColumContent" style="gap: 0 !important;">
+					<div class="d-flex align-items-center gap-1" style="cursor: pointer;">
+						Se me debe: <i class="bi bi-plus-circle fs-4 editButton" @onclick=AddToGetPaidDebt></i>
+					</div>
+					<div class="d-flex flex-wrap">
+						@foreach(var deb in Game.AllDebts.Where(x=>x.ReceivingID == Player.ID).OrderBy(x=>x.PayingID))
+						{
+							<DebtViewer Debt="deb" Mode="DebtViewer.PayingMode.ToPay" ForceUpdateUI="Update" MinimalisticMode="true" />
+						}
+					</div>
+					<div class="d-flex align-items-center gap-1 mt-1" style="cursor: pointer;">
+						Debo: <i class="bi bi-plus-circle fs-4 editButton" @onclick=AddToPayDebt></i>
+					</div>
+					<div class="d-flex flex-wrap">
+						@foreach (var deb in Game.AllDebts.Where(x => x.PayingID == Player.ID).OrderBy(x => x.ReceivingID))
+						{
+							<DebtViewer Debt="deb" Mode="DebtViewer.PayingMode.ToBePaid" ForceUpdateUI="Update" MinimalisticMode="true" />
+						}
+					</div>
 				</div>
 			</div>
+
+			@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DramaticMovement && x.Archetipe == Player.Archetype))
+			{
+				@if (m.Title.Contains("intimi") || m.Title.Contains("inicial") || m.Title.Contains("final"))
+				{
+					<div class="InnerColumnPack DramaMoves">
+						<div class="InnerColumnHeader">
+
+							@m.Title
+
+						</div>
+						<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
+							@m.PreCondition.MainText
+						</div>
+					</div>
+				}
+			}
 		</div>
 		<div class="RightColumn">
-			<div class="RightColumnButton" @onclick=@(async ()=>{await SelectCharacterFromCast();})><i class="bi bi-people-fill"></i></div>
+			<div class="RightColumnButton" @onclick=SelectCharacterFromCast><i class="bi bi-people-fill"></i></div>
 		</div>
 	</div>
 </EditForm>
 
 <!--Modals-->
 <!-- Circle Upgrades Modal -->
-<div class="FullScreenModal d-flex flex-column justify-content-center @(IsShowingAdvances?"":"HideModal")" @onclick=HideCircleAdvances>
+<div class="FullScreenModal CircleUpgrades d-flex flex-column justify-content-center @(IsShowingAdvances?"":"HideModal")" @onclick=HideCircleAdvances>
 	<div class="CloseButton"></div>
 	<div class="ModalBody Darker" style="" @onclick:stopPropagation=true>
 		<div class="d-flex align-items-center justify-content-center gap-5">
@@ -348,7 +367,7 @@
 </div>
 
 <!-- Corruption Upgrades Modal -->
-<div class="FullScreenModal d-flex flex-column justify-content-center @(IsShowingCorruptionAdvances?"":"HideModal")" @onclick=HideCorruptionAdvances>
+<div class="FullScreenModal CorruptionUpgrades d-flex flex-column justify-content-center @(IsShowingCorruptionAdvances?"":"HideModal")" @onclick=HideCorruptionAdvances>
 	<div class="CloseButton"></div>
 	<div class="ModalBody" @onclick:stopPropagation=true>
 		<div class="d-flex flex-column align-items-center justify-content-start mb-3 w-100 h-100">
@@ -366,7 +385,7 @@
 </div>
 
 <!-- MoveViewer Modal -->
-<div class="FullScreenModal d-flex flex-column justify-content-center @(IsShowingOneMove?"":"HideModal")" @onclick=HideMoveViewer>
+<div class="FullScreenModal FullScreenMoveViewer d-flex flex-column justify-content-center @(IsShowingOneMove?"":"HideModal")" @onclick=HideMoveViewer>
 	<div class="CloseButton"></div>
 	<div class="ModalBody" style="height:80%; width:80%; background:transparent; border:none;">
 		<div class="d-flex flex-column align-items-center justify-content-start mt-5 w-100 h-100">
@@ -394,6 +413,8 @@
 	private FocusOnDetailed CurrentFocusDetail = FocusOnDetailed.nowhere;
 
 	private bool IsShowingAdvances = false;
+	private bool IsShowingOldRolls = false;
+	private bool IsShowingPeople = false;
 
 	public string Unique1Screen
 	{
@@ -471,34 +492,28 @@
 
 		VTT.Players = Game.Players;
 
-		Game.NewInfoToast -= ShowInfo;
-		Game.NewInfoToast += ShowInfo;
-
-		Game.OnNewRoll -= ShowLastRoll;
-		Game.OnNewRoll += ShowLastRoll;
-
-		Game.AllDebts.Clear();
-		Game.AllDebts.Add(new Debt
-		{
-			ID = Guid.NewGuid(),
-			Amount =1,
-			PayingID = this.Player.ID,
-			ReceivingID = this.Player.ID,
-			Reason = "Because this is Sparta"
-		});
-
 		ChargeListsOnScreen();
-		CharacterSelectorService.SetPeople(Game.People);
+	}
+
+	private void ShowPeople()
+	{
+		IsShowingPeople = true;
 	}
 
 	private async Task SelectCharacterFromCast()
 	{
-		var ch = await CharacterSelectorService.StartSelection();
+		var selected = await CharacterSelectorService.StartSelection();
+
+		// IsShowingPeople = true;
+		// StateHasChanged();
+		// var ch = await PeopleViewerRef.SelectCharacter();
+		// IsShowingPeople = false;
 	}
 
 	private void ShowLastRoll(object? sender, IRollReport report)
 	{
-		LastRollViewerService.Show(report);
+		//LastRollViewerService.Show(report);
+		IsShowingOldRolls = true;
 		InvokeAsync(() => { StateHasChanged(); });
 	}
 
@@ -648,7 +663,7 @@
 		MoveSelector.MovesPack firstOption = new();
 		firstOption.Title = Player.Archetype.ToUI();
 		foreach (var m in Moves.AllMovements.Where(
-			x=>x.Archetipe == Player.Archetype && 
+			x => x.Archetipe == Player.Archetype &&
 			x.TypeOfMovement == MovementTypes.CorruptionMovement))
 		{
 			MoveSelector.MovesPackItem item = new();
@@ -662,10 +677,10 @@
 		}
 		options.Add(firstOption);
 
-		foreach(AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		foreach (AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
 		{
-			if(arc == Player.Archetype) continue;
-			if(arc == AvailableArchetypes.All) continue;
+			if (arc == Player.Archetype) continue;
+			if (arc == AvailableArchetypes.All) continue;
 			if (arc == AvailableArchetypes.NotSet) continue;
 
 			firstOption = new();
@@ -693,7 +708,7 @@
 		Player.SelectedCorruptionMoves.Clear();
 		CorruptionMovesOnScreen.Clear();
 
-		foreach(var option in options)
+		foreach (var option in options)
 		{
 			foreach (var move in option.Moves)
 			{
@@ -708,6 +723,72 @@
 		}
 
 		await Game.StoreChangesOnCharacter(Player, "Actualizó sus movimientos de corrupción");
+		StateHasChanged();
+	}
+
+	private async Task SelectNewLIOMove()
+	{
+		List<MoveSelector.MovesPack> options = new();
+
+		MoveSelector.MovesPack firstOption = new();
+		firstOption.Title = Player.Archetype.ToUI();
+		foreach (var m in Moves.AllLio.Where(
+			x=>x.Archetype == Player.Archetype))
+		{
+			MoveSelector.MovesPackItem item = new();
+			if (Player.SelectedCorruptionMoves.Contains(m.ID))
+				item.IsAlreadySelected = true;
+			else
+				item.IsAlreadySelected = false;
+
+			item.move = m;
+			firstOption.Moves.Add(item);
+		}
+		options.Add(firstOption);
+
+		foreach(AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		{
+			if(arc == Player.Archetype) continue;
+			if(arc == AvailableArchetypes.All) continue;
+			if (arc == AvailableArchetypes.NotSet) continue;
+
+			firstOption = new();
+			firstOption.Title = arc.ToUI();
+			foreach (var m in Moves.AllLio.Where(
+				x => x.Archetype == arc))
+			{
+				MoveSelector.MovesPackItem item = new();
+				if (Player.SelectedCorruptionMoves.Contains(m.ID))
+					item.IsAlreadySelected = true;
+				else
+					item.IsAlreadySelected = false;
+
+				item.move = m;
+				firstOption.Moves.Add(item);
+			}
+
+			options.Add(firstOption);
+		}
+
+
+		await MSelector.StartSelection(options);
+
+		Player.LIOs.Clear();
+
+		foreach(var option in options)
+		{
+			foreach (var move in option.Moves)
+			{
+				if (move.IsAlreadySelected)
+				{
+					var m = move.move as USMove;
+					Player.LIOs.Add(m.ID);
+				}
+
+			}
+		}
+
+		await Game.StoreChangesOnCharacter(Player, "Actualizó sus movimientos de dejarlo salir");
 		StateHasChanged();
 	}
 
@@ -786,7 +867,20 @@
 	void HideCorruptionAdvances() => IsShowingCorruptionAdvances = false;
 	private bool IsShowingOneMove = false;
 	void ShowMoveViewer() => IsShowingOneMove = true;
-	void HideMoveViewer() => IsShowingOneMove = false;
+	void HideMoveViewer(){
+		IsShowingOneMove = false;
+		InvokeAsync(StateHasChanged);
+	}
+
+	async Task ResetCircles()
+	{
+		Player.IsMortalisTick = false;
+		Player.IsNightTick = false;
+		Player.IsPowerTick = false;
+		Player.IsVeilTick = false;
+
+		await Game.StoreChangesOnCharacter(Player, "Limpió sus círculos tras avanzar su ficha");
+	}
 
 	async Task ToggleAdvance(Advance adv, KindsOfAdvance kind)
 	{
@@ -815,5 +909,38 @@
 		}
 
 		await Game.StoreChangesOnCharacter(Player, "Usó "+adv.Text);
+	}
+
+	private async Task AddToGetPaidDebt()
+	{
+		var ToWhom = await CharacterSelectorService.StartSelection();
+
+		var d = new Debt
+			{
+				Amount = 1,
+				PayingID = ToWhom.ID,
+				ReceivingID = Player.ID,
+				Reason = "Por qué?"
+			};
+
+		await Game.StoreDebt(d);
+
+		StateHasChanged();
+	}
+	private async Task AddToPayDebt()
+	{
+		var ToWhom = await CharacterSelectorService.StartSelection();
+
+		var d = new Debt
+			{
+				Amount = 1,
+				PayingID = Player.ID,
+				ReceivingID = ToWhom.ID,
+				Reason = "Por qué?"
+			};
+
+		await Game.StoreDebt(d);
+
+		StateHasChanged();
 	}
 }

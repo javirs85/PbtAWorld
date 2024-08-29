@@ -45,7 +45,11 @@
     display: flex;
     padding: 5px 40px;
     border-radius: 40px;
-    
+    opacity:0.5;
+    cursor:pointer;
+}
+.RoundButton:hover{
+    opacity:1;
 }
 .IntegratedRed {
     background: black;
@@ -219,4 +223,19 @@
 }
 .RightColumnButton:hover{
     opacity: 1;
+}
+
+.LetItOutBox div{
+    margin:5px;
+    font-size:14px;
+    background:black;
+    padding:5px;
+}
+.editButton {
+    color: #5cff5c !important;
+    opacity: 0.3;
+    cursor: pointer;
+}
+.editButton:hover{
+    opacity:0.5;
 }

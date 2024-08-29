@@ -1,4 +1,5 @@
 ﻿using PbtALib;
+using System.Reflection;
 
 namespace UrbanShadows;
 
@@ -67,6 +68,7 @@ public class USMovesService : MovesServiceBase
 		AllMovements.AddRange(GenerateVeteranUniqueMoves());
 
 		AllMovements.Add(new USMove(USMoveIDs.rawBlood, USAttributes.Blood) { Title = "Sangre" });
+		AllMovements.Add(new USMove(USMoveIDs.rawMind, USAttributes.Mind) { Title = "Mente" });
 		AllMovements.Add(new USMove(USMoveIDs.rawHeart, USAttributes.Heart) { Title = "Corazón" });
 		AllMovements.Add(new USMove(USMoveIDs.rawSoul, USAttributes.Soul) { Title = "Espíritu" });
 		AllMovements.Add(new USMove(USMoveIDs.rawMortal, USAttributes.Mortality) { Title = "Mortalis" });
@@ -164,7 +166,7 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
-			Title = "Lanzar un ataque",
+			Title = "Llevarlo a la violecia",
 			IsImproved = false,
 			PreCondition = new Consequences
 			{
@@ -601,99 +603,90 @@ public class USMovesService : MovesServiceBase
 	{
 		var result = new List<USMove>();
 
-		result.Add(new USMove(USMoveIDs.A_Awak_01, USAttributes.Mind)
-		{
-			Title = "Fisgón",
-			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Awaken,
-			PreCondition = new Consequences
-			{
-				MainText = " Cuando estés ojo avizor por si hay problemas, tira con Mente. " +
-				 "Mientras estés ahí, gasta los puntos obtenidos para hacerle preguntas al Maestro de Ceremonias, una por cada punto."
-			},
-			ConsequencesOn79 = new Consequences
-			{
-				MainText = "Con un 7-9, obtienes 1 punto."
-			},
-			ConsequencesOn10 = new Consequences
-			{
-				MainText = "Cuando estés ojo avizor por si hay problemas, tira con Mente.",
-				Options = new List<string>
-					{
-						"¿Cuál es la mejor vía de entrada o salida de que dispongo?",
-						"¿Quién o qué hay aquí que no sea lo que parece?",
-						"¿Qué ha pasado aquí recientemente?",
-						"¿Cuál es el mayor peligro que hay aquí para mí?",
-						"¿De quién es este territorio?"
-					}
-			}
-		});
-		result.Add(new USMove(USMoveIDs.A_Awak_02, USAttributes.Mind)
-		{
-			Title = "Los deberes hechos",
-			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Awaken,
-			PreCondition = new Consequences
-			{
-				MainText = "Cuando le pongas cara al nombre de alguien con importancia política (a tu juicio), tira con Mente en vez de Facción. Si fallas, tus fisgoneos ya te han metido en problemas con esa persona y sabe que has estado metiéndote en sus asuntos."
-			},
-			ConsequencesOn79 = new Consequences
-			{
-				MainText = "Si superas la tirada, sabes un secreto peligroso sobre él o sus maquinaciones políticas."
-			},
-			ConsequencesOn10 = new Consequences
-			{
-				MainText = "Con un 10+, sabes cómo usar esta información como influencia; además, tiene una Deuda contigo, apúntatela.",
-			}
-		});
-		result.Add(new USMove(USMoveIDs.A_Awak_03, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Awak_01, USAttributes.Heart)
 		{
 			Title = "Conozco a un tío",
+			TypeOfMovement = MovementTypes.ArchetipeMovement,
+			IsSelected = true,
+			Archetipe = AvailableArchetypes.Awaken,
+			PreCondition = new Consequences
+			{
+				MainText = "Cuando te *echas a la calle** para conseguir lo que necesitas de un miembro de tu Círculo, tira con *Corazón** en lugar de con su Círculo"
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Con un 7-9, tu lista mejora:",
+				Options = new List<string> {
+					"La persona a la que acudes ya tiene problemas propios con los que lidiar.",
+					"Lo que necesitas tiene un coste mayor de lo que esperabas.",
+					"Como sea que los encuentres requiere que ofrezcas una Deuda a un intermediario."
+				}
+			}
+		});
+		result.Add(new USMove(USMoveIDs.A_Awak_02, USAttributes.None)
+		{
+			Title = "Encantador, no sincero",
+			TypeOfMovement = MovementTypes.ArchetipeMovement,
+			IsSelected = true,
+			Archetipe = AvailableArchetypes.Awaken,
+			PreCondition = new Consequences
+			{
+				MainText = "+1 Corazón (Max 3)"
+			}
+		});
+		result.Add(new USMove(USMoveIDs.A_Awak_03, USAttributes.None)
+		{
+			Title = "La guarida del león",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te eches a la calle o le pongas cara a un nombre de la Mortalidad, tira con Mente en vez de Facción."
+				MainText = "Cuando accedes a una zona segura dentro de un santuario, punto de reunión o lugar de poder, puedes *Estudiarla** como si hubieras sacado un 12+.\r\n\r\n Si el lugar está controlado por un Circulo distinto al tuyo, también encuentras pruebas incriminatorias que implican a un PNJ poderoso (a tu elección) dentro de ese círculo.\n\rEntregarle las pruebas a él (o a uno de sus enemigos) cuenta como cobrar una deuda.",
+				Options =new List<string>
+				{
+					"Con un acierto, ves bajo la superficie hasta la realidad que hay debajo; el MC revelará un área, PNJ u objeto situado dentro que no es lo que parece.",
+					"Con un 10+, tu perspicacia revela mucho sobre la política y los planes del Círculo; haz al MC una pregunta sobre el Círculo y tira con +1 cuando actúes según la respuesta."
+				}
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Awak_04, USAttributes.None)
 		{
-			Title = "Vengo con amigos",
+			Title = "Esta es mi ciudad",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te cobres una Deuda de un personaje no jugador, añade esta opción a la lista:",
+				MainText = "Cuando conciertas una reunión con un individuo poderoso o peligroso en un espacio mundano abarrotado (museo, restaurante, etc) obten dos puntos que puedes gastar 1 por 1 para:",
 				Options = new List<string>
-					{
-						"Te apoye en una situación peligrosa."
-					}
+				{
+					"+1 para escapara de la situación",
+					"crea una abertura para que tú u otro personaje escape de la situación",
+					"elije por el MC cuando escapes y saques un 7-9"
+				}
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Awak_05, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Awak_05, USAttributes.Heart)
 		{
-			Title = "Tirador avezado",
+			Title = "Con piel de cordero",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando lances un ataque con un arma de fuego,  tira con Mente en vez de Sangre."
+				MainText = "Cuando engañes, distraigas o mientras con alguien con quien has compartido previamente un momento de intimidad, tira con *Corazón** en lugar de mente."
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Awak_06, USAttributes.None)
+		result.Add(new USMove(USMoveIDs.A_Awak_06, USAttributes.Heart)
 		{
-			Title = "Duro de pelar",
+			Title = "De una forma u otra",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = AvailableArchetypes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te metas en problemas mientras sigues una pista,  obtienes armadura+1."
+				MainText = "Cuando supliques ayuda a un miembro de tu Círculo ante una situación apremiante, tira con *Corazón**.\r\nCon un éxito, aceptan ayudarte o te deben una deuda, a su elección.\r\nCon un 10+, su culpabilidad es palpable: si se niegan y te deben una deuda tienes +1 constante contra ellos mientras tengas la deuda.\r\nCon un fallo estás expuesto y vulnerable, son libres de hacer lo que quieran... y tú marcas corrupción si ignoran tu súplica."
 			}
 		});
 
@@ -1330,7 +1323,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = AvailableArchetypes.Fair,
 			PreCondition = new Consequences
 			{
-				MainText = "Siempre que uses un poder feérico, elige 1 opción:",
+				MainText = "Elije 3 poderes (movimientos PODER). Siempre que uses un poder feérico, elige 1 opción:",
 				Options = new List<string>
 					{
 						"Márcate corrupción.",
@@ -1496,7 +1489,7 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "No toleraré que me ignores",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
+			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
 			{
@@ -1507,7 +1500,7 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "Ciudad fantasma",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
+			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
 			{
@@ -1518,7 +1511,7 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "Fantasmagoría",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
+			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
 			{
@@ -1529,7 +1522,7 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "Cuando crees que me ves",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
+			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
 			{
@@ -1540,7 +1533,7 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "Vínculo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
+			IsSelected = false,
 			Archetipe = AvailableArchetypes.Spectre,
 			PreCondition = new Consequences
 			{
@@ -1642,22 +1635,13 @@ public class USMovesService : MovesServiceBase
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando pase el tiempo -o al principio de la partida- tira con Mente. Con un acierto, tus operaciones habituales generan un nuevo plan o proporcionan una oportunidad para avanzar en uno de tus planes existentes, tú eliges.",
-				Options = new List<string>
-					{
-						"¿cuál es mi ruta de escape / entrada / salida?",
-						"¿qué enemigo es más vulnerable a mí?",
-						"¿qué debo vigilar?",
-						"¿Cuál es la verdadera posición de mi enemigo?",
-						"¿en quién no puedo confiar?",
-
-					}
 			},
 			ConsequencesOn10 = new Consequences
 			{
 				MainText = "Con un 10+, también eliges 1:",
 				Options = new List<string>
 					{
-						"- Un cliente leal revela los secretos de un poderoso PNJ, a tu elección.",
+						"Un cliente leal revela los secretos de un poderoso PNJ, a tu elección.",
 						"Un PNJ que te debe una deuda aparece para cumplir con su obligación.",
 						"Un PNJ de estatus 3 de tu círculo te ofrece una deuda por tus servicios.",
 					}
@@ -1672,13 +1656,26 @@ public class USMovesService : MovesServiceBase
 			Archetipe = AvailableArchetypes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando loas a alguien, añade las siguientes preguntas a la lista:",
+				MainText = "Cuando *Lees a alguien**, cambia tu lista de opciones. Haz tus dos preguntas y tira"
+				
+			},
+			ConsequencesOn10 = new Consequences { MainText = "Haz dos preguntas de la lista sin que te pregunten a tí"},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Haz dos preguntas, y responde a una",
 				Options = new List<string>
 				{
-					"¿Qué necesidad apremiante tienes que yo podría resolver?",
-					"¿Qué es lo más valioso que ofrecería en venta?"
+					"¿Quien mueve los hilos de tu personaje?",
+					"¿Cuál es el problema de tu personaje con _____",
+					"¿Qué espera conseguir tu personaje de _____?",
+					"¿Qué le preocupa a tu personaje que vaya a ocurrir?",
+					"¿Cómo podría llevar a tu personaje a _____?",
+					"¿Cómo podría poner a tu personaje en mi Deuda?",
+					"*¿Qué necesidad apremiante tienes que yo podría resolver?**",
+					"*¿Qué es lo más valioso que ofrecería en venta?**"				
 				}
 			},
+			AdvancedConsequences = new Consequences { MainText = "Puedes preguntar lo que quieras sin limitarte a la lista"},
 			ConsequencesOn6 = new Consequences { MainText = "Si fallas, pregunta 1 de esta lista, pero parecerás sospechoso o sórdido, tú eliges." }
 		});
 		result.Add(new USMove(USMoveIDs.A_Imp_03, USAttributes.None)

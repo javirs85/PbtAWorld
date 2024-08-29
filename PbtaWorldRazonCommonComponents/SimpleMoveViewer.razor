@@ -17,7 +17,7 @@
 			@Move.Title
 		</button>
 	</h2>
-	<div class="MoveBody accordion-collapse collapse" id=@("collapsing"+Move.IDText+string.Concat(Move.IDText.Where(c => !char.IsWhiteSpace(c))))>
+	<div class="MoveBody accordion-collapse collapse" id=@("collapsing"+string.Concat(Move.IDText.Where(c => !char.IsWhiteSpace(c))))>
 
 		<div class="accordion-body">
 			<DecodedString Value="@Move.PreCondition.MainText" />

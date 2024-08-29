@@ -1,6 +1,7 @@
 ﻿using PbtADBConnector;
 using PbtALib;
 using System;
+using System.Text.Json;
 
 namespace UrbanShadows;
 
@@ -60,17 +61,34 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 			throw new Exception("tried to store a character that is not DWCharacter at DWGameController");
 	}
 
+	public async Task LoadAllDebts()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID}";
+		var path = $"{Folder}/Debts.json";
+		var json = await File.ReadAllTextAsync(path);
+		AllDebts = JsonSerializer.Deserialize<List<Debt>>(json) ?? new();
+	}
+
 	public async Task StoreDebt(Debt d) {
 		if (!AllDebts.Contains(d))
 		{
 			AllDebts.Add(d);
+			ShowToastOnAllClients($"{GetCharacterByID(d.PayingID).Name} contrajo una deuda con {GetCharacterByID(d.ReceivingID).Name}");
 		}
+
+		var Folder = $"wwwroot/GameImages/{SessionID}";
+		var path = $"{Folder}/Debts.json";
+		var json = System.Text.Json.JsonSerializer.Serialize(AllDebts);
+
+		await System.IO.File.WriteAllTextAsync(path, json);
+
 		RequestUpdateToUIOnClients();
 	}
 	public async Task DeleteDebt(Debt d) {
 		if (AllDebts.Contains(d))
 		{
 			AllDebts.Remove(d);
+			ShowToastOnAllClients($"{GetCharacterByID(d.PayingID).Name} pagó una deuda a {GetCharacterByID(d.ReceivingID).Name}");
 		}
 		RequestUpdateToUIOnClients();
 	}

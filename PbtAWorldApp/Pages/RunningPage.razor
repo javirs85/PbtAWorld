@@ -14,8 +14,20 @@
 @inject USMovesService USMoves
 @inject LastRollViewerService LastRollViewerService
 @inject CharacterSelectorService CharacterSelectorService
+@inject IToastService Toaster;
+
+@if (IsShowingOldRolls)
+{
+	<LastRollOverlay OnExitRequest="@(()=>{IsShowingOldRolls = false;})" />
+}
 
 
+<div style="@(IsShowingPeople?"":"opacity:0; width:0; display:none;")">
+	<PeopleViewr @ref=PeopleViewerRef
+				GameID="@Meta.SelectedSeason.CampaignGuid"
+				IsMaster=false
+				ExitRequested=@(()=>{IsShowingPeople = false;}) />
+</div>
 
 @if(SelectedGame == AvailableGames.DI)
 {
@@ -51,6 +63,12 @@ else if(SelectedGame == AvailableGames.SV)
 	UrbanShadows.USCharacterSheet USPlayer;
 	SVCharacter SVPlayer;
 
+	IPeopleCast People;
+	List<PbtACharacter> Players;
+
+	private bool IsShowingOldRolls = false;
+	private bool IsShowingPeople = false;
+
 	AvailableGames SelectedGame = AvailableGames.NotSet;
 
 	private bool AlreadySet = false;
@@ -69,6 +87,10 @@ else if(SelectedGame == AvailableGames.SV)
 
 		data = await Meta.CharactersDB.GetSerializedDateForPlayer(SelectedCharacterID);
 
+		CharacterSelectorService.Show -= ShowPeople;
+		CharacterSelectorService.Show += ShowPeople;
+		CharacterSelectorService.Hide -= HidePeople;
+		CharacterSelectorService.Hide += HidePeople;
 
 
 		if (localGameId == AvailableGames.DI)
@@ -76,6 +98,8 @@ else if(SelectedGame == AvailableGames.SV)
 			DinoPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoCharacter>(data);
 			DinoPlayer.Game = DinoGame;
 			Meta.SelectedPlayer = DinoPlayer;
+			People = DinoGame.People;
+			Players = DinoGame.Players;
 		}
 		else if(localGameId == AvailableGames.DW)
 		{
@@ -85,14 +109,35 @@ else if(SelectedGame == AvailableGames.SV)
 			Meta.SelectedSeason.Players.Add(DWPlayer);
 			Meta.SelectedPlayer = DWPlayer;
 			DWGame.SessionID = Meta.SelectedSeason.CampaignGuid;
-			CharacterSelectorService.Campaign = DWGame.People;
+			CharacterSelectorService.People = DWGame.People;
+			People = DWGame.People;
+			Players = DWGame.Players;
 		}
 		else if(localGameId == AvailableGames.US)
 		{
 			USPlayer = System.Text.Json.JsonSerializer.Deserialize<UrbanShadows.USCharacterSheet>(data);
 			USPlayer?.ConnectoToMovesService(USMoves);
-			CharacterSelectorService.Campaign = USGame.People;
 			Meta.SelectedPlayer = USPlayer;
+
+			USGame.UpdateUI -= ForzeUpdate;
+			USGame.UpdateUI += ForzeUpdate;
+			USGame.OnNewRoll -= ShowLastRoll;
+			USGame.OnNewRoll += ShowLastRoll;
+			USGame.NewInfoToast -= ShowInfo;
+			USGame.NewInfoToast += ShowInfo;
+
+			People = USGame.People;
+			Players = USGame.Players;
+
+
+			USGame.SessionID = Meta.SelectedSeason.CampaignGuid;
+			CharacterSelectorService.People = USGame.People;
+			CharacterSelectorService.SetPeople(USGame.People);
+
+			await USGame.LoadAllDebts();
+
+			USGame.Players.Clear();
+
 			foreach(var p in Meta.SelectedSeason.Players)
 			{
 				var str = await Meta.CharactersDB.GetSerializedDateForPlayer(p.ID);
@@ -112,13 +157,40 @@ else if(SelectedGame == AvailableGames.SV)
 			SVPlayer = System.Text.Json.JsonSerializer.Deserialize<SVCharacter>(data);
 			Meta.SelectedPlayer = SVPlayer;
 			SVGame.SessionID = Meta.SelectedSeason.CampaignGuid;
-			CharacterSelectorService.Campaign = SVGame.People;
+			CharacterSelectorService.People = SVGame.People;
+			People = SVGame.People;
+			Players = SVGame.Players;
 		}
 
 
+		CharacterSelectorService.People = People;
+		CharacterSelectorService.Players = Players;
 		LastRollViewerService.SetGameMode(localGameId);
 
 		//we perform the update in the UI
 		SelectedGame = localGameId;
 	}
+
+	private PeopleViewr PeopleViewerRef;
+
+	private void ForzeUpdate(object? s, EventArgs e) => InvokeAsync(StateHasChanged);
+
+	private void ShowPeople(object? sender, CharacterSelectorService.SelectionModes e)
+	{
+		IsShowingPeople = true;
+		InvokeAsync(StateHasChanged);
+	}
+	private void HidePeople(object? sender, EventArgs e)
+	{
+		IsShowingPeople = false;
+		InvokeAsync(StateHasChanged);
+	}
+
+	private void ShowLastRoll(object? sender, IRollReport report)
+	{
+		//LastRollViewerService.Show(report);
+		IsShowingOldRolls = true;
+		InvokeAsync(() => { StateHasChanged(); });
+	}
+	private void ShowInfo(object? sender, string msg) => Toaster.ShowInfo(msg);
 }
