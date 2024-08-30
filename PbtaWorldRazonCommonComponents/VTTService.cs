@@ -361,6 +361,7 @@ public class Token
 					else if (str == "DW_Paladin") ID = VTTTokens.Paladin;
 					else if (str == "DW_Wielder") ID = VTTTokens.Wielder;
 				}
+				
 			}
 		}
 	}

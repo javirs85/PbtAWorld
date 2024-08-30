@@ -62,9 +62,9 @@ else
 	{
 		var ch = await Selector.StartSelection();
 		if (Mode == PayingMode.ToPay)
-			Debt.ReceivingID = ch.ID;
-		else
 			Debt.PayingID = ch.ID;
+		else
+			Debt.ReceivingID = ch.ID;
 
 		await Game.StoreDebt(Debt);
 		StateHasChanged();

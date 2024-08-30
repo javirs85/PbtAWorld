@@ -326,7 +326,11 @@
 			}
 		</div>
 		<div class="RightColumn">
-			<div class="RightColumnButton" @onclick=SelectCharacterFromCast><i class="bi bi-people-fill"></i></div>
+			<div class="RightColumnButton" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
+			<div class="RightColumnButton" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
+			<div class="RightColumnButton" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
+			<div class="RightColumnButton" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass-split"></i></div>
+			<div class="RightColumnButton" @onclick=OpenVTTRequested><i class="bi bi-globe-europe-africa"></i></div>
 		</div>
 	</div>
 </EditForm>
@@ -401,6 +405,13 @@
 
 
 @code {
+	[Parameter] public EventCallback OpenPeopleViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenImageManagerRequested { get; set; }
+	[Parameter] public EventCallback OpenLastRollViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenClocksViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenVTTRequested { get; set; }
+	
+
 	USMove? SelectedMovement = null;
 	private List<USMove> BasicMovesOnScreen = new();
 	private List<USMove> PlaybookMovesOnScreen = new();
@@ -503,11 +514,6 @@
 	private async Task SelectCharacterFromCast()
 	{
 		var selected = await CharacterSelectorService.StartSelection();
-
-		// IsShowingPeople = true;
-		// StateHasChanged();
-		// var ch = await PeopleViewerRef.SelectCharacter();
-		// IsShowingPeople = false;
 	}
 
 	private void ShowLastRoll(object? sender, IRollReport report)
@@ -607,11 +613,11 @@
 		}
 		options.Add(firstOption);
 
-		foreach (AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		foreach (US_Classes arc in Enum.GetValues(typeof(US_Classes)))
 		{
 			if (arc == Player.Archetype) continue;
-			if (arc == AvailableArchetypes.All) continue;
-			if (arc == AvailableArchetypes.NotSet) continue;
+			if (arc == US_Classes.All) continue;
+			if (arc == US_Classes.NotSet) continue;
 
 			firstOption = new();
 			firstOption.Title = arc.ToUI();
@@ -677,11 +683,11 @@
 		}
 		options.Add(firstOption);
 
-		foreach (AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		foreach (US_Classes arc in Enum.GetValues(typeof(US_Classes)))
 		{
 			if (arc == Player.Archetype) continue;
-			if (arc == AvailableArchetypes.All) continue;
-			if (arc == AvailableArchetypes.NotSet) continue;
+			if (arc == US_Classes.All) continue;
+			if (arc == US_Classes.NotSet) continue;
 
 			firstOption = new();
 			firstOption.Title = arc.ToUI();
@@ -746,11 +752,11 @@
 		}
 		options.Add(firstOption);
 
-		foreach(AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		foreach(US_Classes arc in Enum.GetValues(typeof(US_Classes)))
 		{
 			if(arc == Player.Archetype) continue;
-			if(arc == AvailableArchetypes.All) continue;
-			if (arc == AvailableArchetypes.NotSet) continue;
+			if(arc == US_Classes.All) continue;
+			if (arc == US_Classes.NotSet) continue;
 
 			firstOption = new();
 			firstOption.Title = arc.ToUI();

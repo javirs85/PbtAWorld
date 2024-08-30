@@ -1,0 +1,36 @@
+﻿@using PbtALib;
+@using UrbanShadows.Controls
+@using UrbanShadows.Pages
+@using static PbtaWorldRazonCommonComponents.CharacterSelector;
+@using static PbtaWorldRazonCommonComponents.LastRollOverlay;
+
+@inject IToastService Toaster;
+@inject NavigationManager Navigation
+@inject USGameController Game
+@inject USMovesService Moves
+@inject MoveSelector.MoveSelectorService MSelector
+@inject LastRollViewerService LastRollViewerService
+@inject CharacterSelectorService CharacterSelectorService
+@inject IDataBaseController Meta;
+@inject VTTService VTT
+
+<EditForm Model="Player">
+	<div class="BigContainer d-flex">
+		<div class="RightColumn">
+			<div class="RightColumnButton" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
+			<div class="RightColumnButton" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
+			<div class="RightColumnButton" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
+			<div class="RightColumnButton" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass"></i></div>
+			<div class="RightColumnButton" @onclick=OpenVTTRequested><i class="bi bi-globe-europe-africa"></i></div>
+		</div>
+	</div>
+
+</EditForm>
+@code {
+	[Parameter] public USCharacterSheet Player { get; set; }
+	[Parameter] public EventCallback OpenPeopleViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenImageManagerRequested { get; set; }
+	[Parameter] public EventCallback OpenLastRollViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenClocksViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenVTTRequested { get; set; }
+}

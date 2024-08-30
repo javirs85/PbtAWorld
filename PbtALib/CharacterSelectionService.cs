@@ -31,6 +31,14 @@ public class CharacterSelectorService
 	public void FinishSelection(ICharacter character)
 	{
 		Hide.Invoke(this, EventArgs.Empty);
-		tcs.SetResult(character);
+		CurrentMode = SelectionModes.none;
+		try
+		{
+			tcs.SetResult(character);
+		}catch (Exception ex)
+		{
+
+		}
+		
 	}
 }

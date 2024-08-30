@@ -147,99 +147,103 @@
 					</div>
 			
 						<div class="MoveDetails">
-							@if (LastRoll.Movement.PreCondition != null && LastRoll.Movement.PreCondition.MainText != "")
-							{
-								<DecodedString Value=@LastRoll.Movement.PreCondition.MainText />
-							}
-							@if (LastRoll.Movement.PreCondition.Options != null && LastRoll.Movement.PreCondition.Options.Count > 0)
-							{
-								<ul style="padding-left:20px;">
-									@foreach (var entry in LastRoll.Movement.PreCondition.Options)
-									{
-										<li><DecodedString Value="@entry" /></li>
-									}
-								</ul>
-							}
-							@if (LastRoll.Movement.ConsequencesOn6 != null && LastRoll.Movement.ConsequencesOn6.MainText != "")
-							{
-								<div class="d-flex mb-2">
-									<div>
-										<span class="LastRoll MovementRangeMarker">@("<6"):</span>
-									</div/> 
-									<div>
-										@LastRoll.Movement.ConsequencesOn6.MainText
-										@if (LastRoll.Movement.ConsequencesOn6.Options != null && LastRoll.Movement.ConsequencesOn6.Options.Count > 0)
+							<div class="">
+								@if (LastRoll.Movement.PreCondition != null && LastRoll.Movement.PreCondition.MainText != "")
+								{
+									<DecodedString Value=@LastRoll.Movement.PreCondition.MainText />
+								}
+								@if (LastRoll.Movement.PreCondition.Options != null && LastRoll.Movement.PreCondition.Options.Count > 0)
+								{
+									<ul style="padding-left:20px;">
+										@foreach (var entry in LastRoll.Movement.PreCondition.Options)
 										{
-											<ul>
-												@foreach (var entry in LastRoll.Movement.ConsequencesOn6.Options)
-												{
-													<li><DecodedString Value="@entry" /></li>
-												}
-											</ul>
+											<li><DecodedString Value="@entry" /></li>
 										}
+									</ul>
+								}
+							</div>
+							<div class="p-3">
+								@if (LastRoll.Movement.ConsequencesOn6 != null && LastRoll.Movement.ConsequencesOn6.MainText != "")
+								{
+									<div class="d-flex mb-2">
+										<div>
+											<span class="LastRoll MovementRangeMarker">@("<6"):</span>
+										</div/> 
+										<div>
+											<DecodedString Value="@LastRoll.Movement.ConsequencesOn6.MainText" />
+											@if (LastRoll.Movement.ConsequencesOn6.Options != null && LastRoll.Movement.ConsequencesOn6.Options.Count > 0)
+											{
+												<ul>
+													@foreach (var entry in LastRoll.Movement.ConsequencesOn6.Options)
+													{
+														<li><DecodedString Value="@entry" /></li>
+													}
+												</ul>
+											}
+										</div>
 									</div>
-								</div>
-							}
-							@if (LastRoll.Movement.ConsequencesOn79 != null && LastRoll.Movement.ConsequencesOn79.MainText != "")
-							{
-								<div class="d-flex mb-2">
-									<div>
-										<span class="LastRoll MovementRangeMarker">7-9:</span>
-									</div/> 
-									<div>
-										@LastRoll.Movement.ConsequencesOn79.MainText
-										@if (LastRoll.Movement.ConsequencesOn79.Options != null && LastRoll.Movement.ConsequencesOn79.Options.Count > 0)
-										{
-											<ul>
-												@foreach (var entry in LastRoll.Movement.ConsequencesOn79.Options)
-												{
-													<li><DecodedString Value="@entry" /></li>
-												}
-											</ul>
-										}
+								}
+								@if (LastRoll.Movement.ConsequencesOn79 != null && LastRoll.Movement.ConsequencesOn79.MainText != "")
+								{
+									<div class="d-flex mb-2">
+										<div>
+											<span class="LastRoll MovementRangeMarker">7-9:</span>
+										</div/> 
+										<div>
+											<DecodedString Value="@LastRoll.Movement.ConsequencesOn79.MainText" />										
+											@if (LastRoll.Movement.ConsequencesOn79.Options != null && LastRoll.Movement.ConsequencesOn79.Options.Count > 0)
+											{
+												<ul>
+													@foreach (var entry in LastRoll.Movement.ConsequencesOn79.Options)
+													{
+														<li><DecodedString Value="@entry" /></li>
+													}
+												</ul>
+											}
+										</div>
 									</div>
-								</div>
-							}
-							@if (LastRoll.Movement.ConsequencesOn10 != null && LastRoll.Movement.ConsequencesOn10.MainText != "")
-							{
-								<div class="d-flex">
-									<div>
-										<span class="LastRoll MovementRangeMarker">>10:</span>
-									</div/> 
-									<div>
-										@LastRoll.Movement.ConsequencesOn10.MainText
-										@if (LastRoll.Movement.ConsequencesOn10.Options != null && LastRoll.Movement.ConsequencesOn10.Options.Count > 0)
-										{
-											<ul>
-												@foreach (var entry in LastRoll.Movement.ConsequencesOn10.Options)
-												{
-													<li><DecodedString Value="@entry" /></li>
-												}
-											</ul>
-										}
+								}
+								@if (LastRoll.Movement.ConsequencesOn10 != null && LastRoll.Movement.ConsequencesOn10.MainText != "")
+								{
+									<div class="d-flex">
+										<div>
+											<span class="LastRoll MovementRangeMarker">>10:</span>
+										</div/> 
+										<div>
+											<DecodedString Value="@LastRoll.Movement.ConsequencesOn10.MainText" />	
+											@if (LastRoll.Movement.ConsequencesOn10.Options != null && LastRoll.Movement.ConsequencesOn10.Options.Count > 0)
+											{
+												<ul>
+													@foreach (var entry in LastRoll.Movement.ConsequencesOn10.Options)
+													{
+														<li><DecodedString Value="@entry" /></li>
+													}
+												</ul>
+											}
+										</div>
 									</div>
-								</div>
-							}
-							@if (LastRoll.Movement.AdvancedConsequences != null && LastRoll.Movement.AdvancedConsequences.MainText != "")
-							{
-								<div class="d-flex">
-									<div>
-										<span class="LastRoll MovementRangeMarker">12+:</span>
-									</div/> 
-									<div>
-										@LastRoll.Movement.AdvancedConsequences.MainText
-										@if (LastRoll.Movement.AdvancedConsequences.Options != null && LastRoll.Movement.AdvancedConsequences.Options.Count > 0)
-										{
-											<ul>
-												@foreach (var entry in LastRoll.Movement.AdvancedConsequences.Options)
-												{
-													<li><DecodedString Value="@entry" /></li>
-												}
-											</ul>
-										}
+								}
+								@if (LastRoll.Movement.AdvancedConsequences != null && LastRoll.Movement.AdvancedConsequences.MainText != "")
+								{
+									<div class="d-flex">
+										<div>
+											<span class="LastRoll MovementRangeMarker">12+:</span>
+										</div/> 
+										<div>
+											<DecodedString Value="@LastRoll.Movement.AdvancedConsequences.MainText" />
+											@if (LastRoll.Movement.AdvancedConsequences.Options != null && LastRoll.Movement.AdvancedConsequences.Options.Count > 0)
+											{
+												<ul>
+													@foreach (var entry in LastRoll.Movement.AdvancedConsequences.Options)
+													{
+														<li><DecodedString Value="@entry" /></li>
+													}
+												</ul>
+											}
+										</div>
 									</div>
-								</div>
-							}
+								}
+							</div>
 						</div>
 				}
 				else if (LastRoll is not null && LastRoll.IsRaw == true)

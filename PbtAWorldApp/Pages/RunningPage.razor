@@ -14,20 +14,35 @@
 @inject USMovesService USMoves
 @inject LastRollViewerService LastRollViewerService
 @inject CharacterSelectorService CharacterSelectorService
+@inject ImagesService ImagesService
 @inject IToastService Toaster;
 
 @if (IsShowingOldRolls)
 {
 	<LastRollOverlay OnExitRequest="@(()=>{IsShowingOldRolls = false;})" />
 }
-
-
-<div style="@(IsShowingPeople?"":"opacity:0; width:0; display:none;")">
-	<PeopleViewr @ref=PeopleViewerRef
-				GameID="@Meta.SelectedSeason.CampaignGuid"
-				IsMaster=false
-				ExitRequested=@(()=>{IsShowingPeople = false;}) />
+else if(IsShowingClocks)
+{
+	<ClocksViewer Clocks="Clocks" IsMaster=IsMaster RequestCloseClocksViewer="@(()=>{IsShowingClocks = false;})" />
+}
+<div style="@(IsShowingImagesManager?"":"display:none;")">
+	<ImagesManager GameId="@Meta.SelectedSeason.CampaignGuid" IsMaster=IsMaster CloseRequest="@(()=>{IsShowingImagesManager = false;})" />
 </div>
+<div style="@(IsShowingVTT?"":"display:none;")">
+	@if(SelectedGame == AvailableGames.US)
+	{
+		<SmoothWhiteBoard SelectedGame="SelectedGame" Character="USPlayer" USCLass="USPlayer.Archetype" />
+	}	
+</div>
+
+
+@if(IsShowingPeople)
+{
+	<PeopleViewr GameID="@Meta.SelectedSeason.CampaignGuid"
+				 IsMaster=IsMaster
+				 ExitRequested=@(()=>{IsShowingPeople = false;}) />
+}
+
 
 @if(SelectedGame == AvailableGames.DI)
 {
@@ -47,7 +62,24 @@ else if(SelectedGame == AvailableGames.DW)
 }
 else if(SelectedGame == AvailableGames.US)
 {
-	<UrbanShadows.Pages.USRunningPage Player="USPlayer" />
+	@if(USPlayer.Archetype == US_Classes.Master)
+	{
+		<UrbanShadows.Pages.MasterPage Player="USPlayer"
+										  OpenImageManagerRequested="ShowImages"
+										  OpenLastRollViewerRequested="ShowLastRoll"
+										  OpenPeopleViewerRequested="ShowPeople" 
+										  OpenClocksViewerRequested="OpenClocks"
+										  OpenVTTRequested="OpenVTT"/>
+	}
+	else
+	{
+		<UrbanShadows.Pages.USRunningPage Player="USPlayer"
+										  OpenImageManagerRequested="ShowImages"
+										  OpenLastRollViewerRequested="ShowLastRoll"
+										  OpenPeopleViewerRequested="ShowPeople"
+										  OpenClocksViewerRequested="OpenClocks"
+										  OpenVTTRequested="OpenVTT" />
+	}
 }
 else if(SelectedGame == AvailableGames.SV)
 {
@@ -58,6 +90,16 @@ else if(SelectedGame == AvailableGames.SV)
 	[Parameter] public string SelectedGameString { get; set; } = "NotSet";
 	[Parameter] public Guid SelectedCharacterID { get; set; } = new Guid();
 
+	private bool IsMaster
+	{
+		get
+		{
+			if (SelectedGame == AvailableGames.US && USPlayer.Archetype == US_Classes.Master) return true;
+			if (SelectedGame == AvailableGames.DW && DWPlayer.Profession == DWClasses.DW_Master) return true;
+			return false;
+		}
+	}
+
 	DinoCharacter DinoPlayer;
 	DungeonWorld.DWCharacter DWPlayer;
 	UrbanShadows.USCharacterSheet USPlayer;
@@ -67,7 +109,12 @@ else if(SelectedGame == AvailableGames.SV)
 	List<PbtACharacter> Players;
 
 	private bool IsShowingOldRolls = false;
+	private bool IsShowingClocks = false;
+	private bool IsShowingImagesManager = false;
+	private bool IsShowingVTT = false;
 	private bool IsShowingPeople = false;
+
+	private ClocksManager Clocks;
 
 	AvailableGames SelectedGame = AvailableGames.NotSet;
 
@@ -92,6 +139,9 @@ else if(SelectedGame == AvailableGames.SV)
 		CharacterSelectorService.Hide -= HidePeople;
 		CharacterSelectorService.Hide += HidePeople;
 
+		ImagesService.ForceFullScreenImageOnPlayers -= ShowImages;
+		ImagesService.ForceFullScreenImageOnPlayers += ShowImages;
+
 
 		if (localGameId == AvailableGames.DI)
 		{
@@ -112,6 +162,7 @@ else if(SelectedGame == AvailableGames.SV)
 			CharacterSelectorService.People = DWGame.People;
 			People = DWGame.People;
 			Players = DWGame.Players;
+			Clocks = DWGame.Clocks;
 		}
 		else if(localGameId == AvailableGames.US)
 		{
@@ -128,7 +179,7 @@ else if(SelectedGame == AvailableGames.SV)
 
 			People = USGame.People;
 			Players = USGame.Players;
-
+			Clocks = USGame.Clocks;
 
 			USGame.SessionID = Meta.SelectedSeason.CampaignGuid;
 			CharacterSelectorService.People = USGame.People;
@@ -142,8 +193,8 @@ else if(SelectedGame == AvailableGames.SV)
 			{
 				var str = await Meta.CharactersDB.GetSerializedDateForPlayer(p.ID);
 				var usp = System.Text.Json.JsonSerializer.Deserialize<UrbanShadows.USCharacterSheet>(str);
-				if(usp.Archetype == AvailableArchetypes.NotSet)
-					usp.Archetype = (AvailableArchetypes)Enum.ToObject(typeof(AvailableArchetypes), usp.EncodedClass);
+				if(usp.Archetype == US_Classes.NotSet)
+					usp.Archetype = (US_Classes)Enum.ToObject(typeof(US_Classes), usp.EncodedClass);
 				USGame.Players.Add(usp);
 				usp.IsNPC = false;
 				var circle = USGame.People.Circles.Find(x => x.Name == usp.Circle.ToString());
@@ -171,10 +222,18 @@ else if(SelectedGame == AvailableGames.SV)
 		SelectedGame = localGameId;
 	}
 
-	private PeopleViewr PeopleViewerRef;
-
 	private void ForzeUpdate(object? s, EventArgs e) => InvokeAsync(StateHasChanged);
-
+	private void OpenClocks()
+	{
+		IsShowingClocks = true;
+		InvokeAsync(StateHasChanged);
+	} 
+	private void OpenVTT()
+	{
+		IsShowingVTT = true;
+		InvokeAsync(StateHasChanged);
+	}
+	private void ShowPeople() => ShowPeople(null, CharacterSelectorService.SelectionModes.none);
 	private void ShowPeople(object? sender, CharacterSelectorService.SelectionModes e)
 	{
 		IsShowingPeople = true;
@@ -185,6 +244,28 @@ else if(SelectedGame == AvailableGames.SV)
 		IsShowingPeople = false;
 		InvokeAsync(StateHasChanged);
 	}
+
+	private void ShowImages(object? s, PbtAImage e)
+	{
+		if(!IsMaster)
+		{
+			IsShowingImagesManager = true;
+			InvokeAsync(StateHasChanged);
+		}
+	}
+
+	private void ShowImages()
+	{
+		IsShowingImagesManager = true;
+		InvokeAsync(StateHasChanged);
+	}
+	private void HideImages()
+	{
+		IsShowingImagesManager = false;
+		InvokeAsync(StateHasChanged);
+	}
+
+	private void ShowLastRoll() => ShowLastRoll(null, null);
 
 	private void ShowLastRoll(object? sender, IRollReport report)
 	{

@@ -11,17 +11,16 @@ public class USCharacterSheet : PbtACharacter
 	public USCharacterSheet() { }
 	public USCharacterSheet(USMovesService _moves) => Moves = _moves;
 
-
-	private AvailableArchetypes _archetype;
-	public AvailableArchetypes Archetype { get { return _archetype; } 
+	private US_Classes _archetype;
+	public US_Classes Archetype { get { return _archetype; } 
 		set 
 		{
 			_archetype = value;
 			this.EncodedClass = (int)_archetype;
+			this.ClassString = value.ToString();
 			InitArchetype(Moves);
 		} 
 	}
-
 
 	public string Details { get; set; } = "";
 	public string Kind { get; set; } = "Noy set";
@@ -82,11 +81,16 @@ public class USCharacterSheet : PbtACharacter
 	{
 		get
 		{
+			try { 
 			return Moves.AllMovements.Where(x=> 
 					x.TypeOfMovement == MovementTypes.DramaticMovement && 
 					x.Archetipe == Archetype)
-				.ToList()[0]
-				.PreCondition.MainText;
+				.ToList()[0]?
+				.PreCondition.MainText ?? "No move";
+			}catch(Exception e)
+			{
+				return "No move";
+			}
 		}
 	}
 
@@ -103,7 +107,7 @@ public class USCharacterSheet : PbtACharacter
 		InitialQuestions.Clear();
 		switch (Archetype)
 		{
-			case AvailableArchetypes.Hunter:
+			case US_Classes.Hunter:
 				Circle = Circles.Mortalis;
 				LIOs.Add(USMoveIDs.LIO_Hunter_01);
 				LIOs.Add(USMoveIDs.LIO_Hunter_02);
@@ -128,7 +132,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Alguien te ha reclutado para protegerlos de algo peligroso. Te deben una deuda.");
 				Equipe = "Un departamento de mierda, una camioneta pick-up o un muscle car, un celular\r\nUn símbolo de su sociedad (es decir, tatuaje, moneda, inscripción)\r\nTu arsenal: 3 armas personalizadas (detalle)\r\n";
 				break;
-			case AvailableArchetypes.Awaken:
+			case US_Classes.Awaken:
 				Circle = Circles.Mortalis;
 				LIOs.Add(USMoveIDs.LIO_Awa_01);
 				LIOs.Add(USMoveIDs.LIO_Awa_02);
@@ -153,7 +157,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Estás aprovechando la mierda que tienes sobre alguien para obtener su ayuda para desmantelar un esquema sobrenatural que apunta a mortales inocentes. Tú le debes una deuda.");
 				Equipe = "Un apartamento pequeño, un auto usado, un teléfono inteligente.\r\n1 arma de autodefensa:\r\n Beretta de 9 mm (2 daños muy cerca)\r\n Taser (mano para aturdir y dañar)\r\n Navaja automática (mano de 2 daños ocultable)\r\n";
 				break;
-			case AvailableArchetypes.Veteran:
+			case US_Classes.Veteran:
 				Circle = Circles.Mortalis;
 				LIOs.Add(USMoveIDs.LIO_Vet_01);
 				LIOs.Add(USMoveIDs.LIO_Vet_02);
@@ -178,7 +182,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Alguien sigue sacándote las castañas del fuego cuando te olvidas de que estás jubilado. Les debes una Deuda.");
 				Equipe = "Un apartamento o un almacén escondido, un coche práctico o una vieja camioneta, un teléfono teléfono inteligente, un taller (detalle).\r\nUn arma de confianza de elección:\r\nBeretta 9mm (2-arma cerca ruidosa)\r\nEscopeta de bombeo (3-arma cerca ruidosa recarga escabrosa)\r\nRevólver Magnum (3-daño cerca ruidosa recarga)\r\n";
 				break;
-			case AvailableArchetypes.Vampire:
+			case US_Classes.Vampire:
 				Circle = Circles.Noche;
 				LIOs.Add(USMoveIDs.LIO_Vamp_01);
 				LIOs.Add(USMoveIDs.LIO_Vamp_02);
@@ -203,7 +207,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Alguien te ha vendido recientemente a uno de tus enemigos. Has evitado lo peor de sus ataques, pero tu traidor te debe una Deuda; añádelo a tu Red.");
 				Equipe = "Un apartamento aislado, un coche cómodo, un smartphone. \r\nUn arma elegante de elección:\r\nDual Colt Double Eagles (3-daño cerca ruidoso)\r\nEspada (3-arma mano escabrosa)\r\nWalther PPK (2-arma cerca recarga ocultable)\r\n";
 				break;
-			case AvailableArchetypes.Wolf:
+			case US_Classes.Wolf:
 				Circle = Circles.Noche;
 				LIOs.Add(USMoveIDs.LIO_Wolf_01);
 				LIOs.Add(USMoveIDs.LIO_Wolf_02);
@@ -228,7 +232,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Alguien vive en tu territorio, beneficiándose de tu protección. Te debe una deuda.");
 				Equipe = "Una bolsa de lona con tus efectos personales, un celular de mierda.\r\nElige dos armas prácticas:\r\nRevólver de punta chata (recarga cerca ruidosa 2-daño ocultable)\r\nBeretta de 9 mm (2-daño cerca ruidoso)\r\nNavaja mariposa (ocultable mano 2-daño)\r\nMachete (mano escabroso 3-daño)\r\nBate de béisbol (aturdimiento mano 2-daño)\r\n";
 				break;
-			case AvailableArchetypes.Spectre:
+			case US_Classes.Spectre:
 				Circle = Circles.Noche;
 				LIOs.Add(USMoveIDs.LIO_Spect_01);
 				LIOs.Add(USMoveIDs.LIO_Spect_02);
@@ -253,7 +257,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Alguien casi destruyó una de sus anclas una vez, quizás por accidente o por descuido. Pregúntales qué pasó. Te deben 2 deudas.");
 				Equipe = "Lo que sea que haya en tu persona cuando moriste, aunque sean versiones espirituales de cada uno";
 				break;
-			case AvailableArchetypes.Sworn:
+			case US_Classes.Sworn:
 				Circle = Circles.Poder;
 				LIOs.Add(USMoveIDs.LIO_Sworn_01);
 				LIOs.Add(USMoveIDs.LIO_Sworn_02);
@@ -278,7 +282,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Tu servicio te obligó a castigar o matar al aliado o amigo de alguien en nombre de tus amos. Tienes una deuda con ellos.");
 				Equipe = "Una casa o apartamento de lujo, un coche de lujo, un teléfono inteligente caro \r\nUn arma de respaldo de elección\r\nBeretta de 9 mm (2 daños cerca de ruidoso)\r\nCuchillo de caza (ocultable a mano de 2 daños)\r\nEscopeta recortada (2-daño cerca recarga ruidosa escabrosa ocultable)\r\n";
 				break;
-			case AvailableArchetypes.Mage:
+			case US_Classes.Mage:
 				Circle = Circles.Poder;
 				LIOs.Add(USMoveIDs.LIO_Mage_01);
 				LIOs.Add(USMoveIDs.LIO_Mage_02);
@@ -303,7 +307,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Estás ayudando a alguien a ocultar un secreto peligroso a los miembros poderosos de su Círculo. Te deben una deuda.");
 				Equipe = "Un bonito apartamento o una casa sencilla, un coche cutre, un móvil decente y un santuario (detalle).\r\nUn arma útil de elección:\r\nRevólver de punta chata (recarga cerca ruidosa 2-daño ocultable)\r\nGlock de 9 mm (2-daño cerca ruidosa)\r\nEspada (mano 3-daño escabrosa)\r\n";
 				break;
-			case AvailableArchetypes.Oracle:
+			case US_Classes.Oracle:
 				Circle = Circles.Poder;
 				LIOs.Add(USMoveIDs.LIO_Orac_01);
 				LIOs.Add(USMoveIDs.LIO_Orac_02);
@@ -328,7 +332,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Alguien interfirió en tu destino. Te deben una Deuda. Diles que si les has perdonado-te deben otra Deuda si aún guardas rencor por sus acciones");
 				Equipe = "Todo lo proporcionado por tu benefactor (detállalo), y elije dos juegos de herramientas proféticas: \r\nObjetos adivinatorios (es decir, baraja de tarot, bola de cristal, juego de runas, etc.)\r\nInstrumentos rituales (por ejemplo, un athame, un pentáculo, etc.)\r\nTomos raros y grimorios (por ejemplo, pergaminos perdidos, libros secretos, etc.)\r\n";
 				break;
-			case AvailableArchetypes.Fair:
+			case US_Classes.Fair:
 				Circle = Circles.Velo;
 				LIOs.Add(USMoveIDs.LIO_Fae_01);
 				LIOs.Add(USMoveIDs.LIO_Fae_02);
@@ -353,7 +357,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Encomendaste a alguien una tarea importante y peligrosa. Pregúnteles si tuvieron éxito o fracasaron. Si tuvieron éxito, les debes una deuda. Si fallaron, te deben una deuda.");
 				Equipe = "Una casa o departamento cómodo, un auto decente, un teléfono inteligente\r\nUna reliquia de tu tierra\r\nUn símbolo de tu corte (sol, luna, tormenta, invierno, primavera, etc.)\r\n";
 				break;
-			case AvailableArchetypes.Corrupted:
+			case US_Classes.Corrupted:
 				LIOs.Add(USMoveIDs.LIO_Corrupt_01);
 				LIOs.Add(USMoveIDs.LIO_Corrupt_02);
 				LIOs.Add(USMoveIDs.LIO_Corrupt_03);
@@ -378,7 +382,7 @@ public class USCharacterSheet : PbtACharacter
 				InitialDebs.Add("Has herido o matado a un buen amigo o aliado de alguien por orden de tu patrón demoníaco. Tienes una deuda con ellos.");
 				Equipe = "Una casa o un apartamento, un coche, un smartphone. \r\nUn arma brutal de elección:\r\nPorra plegable (2-daño ocultable).\r\nBeretta 9mm (2-daño cerca)\r\nEscopeta larga (3-daño cerca ruidoso escabroso)\r\nEspada (3-daño mano escabroso)\r\n";
 				break;
-			case AvailableArchetypes.Imp:
+			case US_Classes.Imp:
 				Circle = Circles.Velo;
 				LIOs.Add(USMoveIDs.LIO_Imp_01);
 				LIOs.Add(USMoveIDs.LIO_Imp_02);
@@ -585,49 +589,49 @@ public class USCharacterSheet : PbtACharacter
 
 			switch (Archetype)
 			{
-				case AvailableArchetypes.Awaken:
+				case US_Classes.Awaken:
 					result.Add(new Advance { Text = "Un movimiento de otro arquetipo", ID = 4, IsUsed = AdvancesNormalBools[4] });
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 5, IsUsed = AdvancesNormalBools[5] });
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 6, IsUsed = AdvancesNormalBools[6] });
 					result.Add(new Advance { Text = "Empieza una nueva relación mortal", ID = 7, IsUsed = AdvancesNormalBools[7] });
 					break;
-				case AvailableArchetypes.Veteran:
+				case US_Classes.Veteran:
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 4, IsUsed = AdvancesNormalBools[4] });
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 5, IsUsed = AdvancesNormalBools[5] });
 					result.Add(new Advance { Text = $"Unirse o liderar una manada", ID = 6, IsUsed = AdvancesNormalBools[6] });
 					result.Add(new Advance { Text = "Cambia tu círculo", ID = 7, IsUsed = AdvancesNormalBools[7] });
 					break;
-				case AvailableArchetypes.Wolf:
+				case US_Classes.Wolf:
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 4, IsUsed = AdvancesNormalBools[4] });
 					result.Add(new Advance { Text = "Unirse o liderar una manada", ID = 5, IsUsed = AdvancesNormalBools[5] });
 					result.Add(new Advance { Text = $"Añade dos características a tu taller", ID = 6, IsUsed = AdvancesNormalBools[6] });
 					result.Add(new Advance { Text = "Cambia tu círculo", ID = 7, IsUsed = AdvancesNormalBools[7] });
 					break;
 
-				case AvailableArchetypes.Sworn:
+				case US_Classes.Sworn:
 					result.Add(new Advance { Text = "Un movimiento de otro arquetipo", ID = 4, IsUsed = AdvancesNormalBools[4] });
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 5, IsUsed = AdvancesNormalBools[5] });
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 6, IsUsed = AdvancesNormalBools[6] });
 					result.Add(new Advance { Text = "Status en poder: 2", ID = 7, IsUsed = AdvancesNormalBools[7] });
 					break;
-				case AvailableArchetypes.Mage:
+				case US_Classes.Mage:
 					result.Add(new Advance { Text = "Un movimiento de otro arquetipo", ID = 4, IsUsed = AdvancesNormalBools[4] });
 					result.Add(new Advance { Text = $"Añade 2 catacterísticas a tu Sanctum", ID = 5, IsUsed = AdvancesNormalBools[5] });
 					result.Add(new Advance { Text = $"Aprende 3 hechízos nuevos", ID = 6, IsUsed = AdvancesNormalBools[6] });
 					result.Add(new Advance { Text = "Cambia tu círculo", ID = 7, IsUsed = AdvancesNormalBools[7] });
 					break;
-				case AvailableArchetypes.Spectre:
-				case AvailableArchetypes.Fair:
-				case AvailableArchetypes.Oracle:
-				case AvailableArchetypes.Hunter:
-				case AvailableArchetypes.Corrupted:
-				case AvailableArchetypes.Vampire:
+				case US_Classes.Spectre:
+				case US_Classes.Fair:
+				case US_Classes.Oracle:
+				case US_Classes.Hunter:
+				case US_Classes.Corrupted:
+				case US_Classes.Vampire:
 					result.Add(new Advance { Text = "Un movimiento de otro arquetipo", ID = 4, IsUsed = AdvancesNormalBools[4] });
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 5, IsUsed = AdvancesNormalBools[5] });
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 6, IsUsed = AdvancesNormalBools[6] });
 					result.Add(new Advance { Text = "Cambia tu círculo", ID = 7, IsUsed = AdvancesNormalBools[7] });
 					break;
-				case AvailableArchetypes.Imp:
+				case US_Classes.Imp:
 					result.Add(new Advance { Text = "Un movimiento de otro arquetipo", ID = 4, IsUsed = AdvancesNormalBools[4] });
 					result.Add(new Advance { Text = $"Nuevo movimiento de {Archetype.ToUI()}", ID = 5, IsUsed = AdvancesNormalBools[5] });
 					result.Add(new Advance { Text = "Cambia tu círculo", ID = 6, IsUsed = AdvancesNormalBools[6] });
@@ -648,7 +652,7 @@ public class USCharacterSheet : PbtACharacter
 
 			switch (Archetype)
 			{
-				case AvailableArchetypes.Hunter:
+				case US_Classes.Hunter:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -658,7 +662,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Consigue un taller (Veterano)", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Awaken:
+				case US_Classes.Awaken:
 					result.Add(new Advance { ID=0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID=1,Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID=2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -668,7 +672,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cambia tu círculo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Veteran:
+				case US_Classes.Veteran:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -678,7 +682,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Retira tu personaje a salvo", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Vampire:
+				case US_Classes.Vampire:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -688,7 +692,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Retira tu personaje a salvo", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Wolf:
+				case US_Classes.Wolf:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -698,7 +702,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Retira tu personaje a salvo", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Spectre:
+				case US_Classes.Spectre:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -708,7 +712,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cruza al otro lado", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Retira a salvo a tu personaje", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Sworn:
+				case US_Classes.Sworn:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[2] });
@@ -718,7 +722,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Retira tu personaje a salvo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Mage:
+				case US_Classes.Mage:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -728,7 +732,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Retira tu personaje a salvo", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Oracle:
+				case US_Classes.Oracle:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -738,7 +742,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Retira a salvo a tu personaje", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Fair:
+				case US_Classes.Fair:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -748,7 +752,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Retira a salvo a tu personaje", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Corrupted:
+				case US_Classes.Corrupted:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "Status 2 en tu própio círculo", IsUsed = AdvancesExtraBools[2] });
@@ -758,7 +762,7 @@ public class USCharacterSheet : PbtACharacter
 					result.Add(new Advance { ID = 6, Text = "Cambia de arquetipo", IsUsed = AdvancesExtraBools[6] });
 					result.Add(new Advance { ID = 7, Text = "Borra un trabajo de tu contrato", IsUsed = AdvancesExtraBools[7] });
 					break;
-				case AvailableArchetypes.Imp:
+				case US_Classes.Imp:
 					result.Add(new Advance { ID = 0, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[0] });
 					result.Add(new Advance { ID = 1, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[1] });
 					result.Add(new Advance { ID = 2, Text = "+1 a cualquier círculo (max +3)", IsUsed = AdvancesExtraBools[2] });

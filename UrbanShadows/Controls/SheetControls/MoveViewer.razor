@@ -335,9 +335,9 @@
 	private void OpenLIOSelectionModal() { 
 		IsSLioSelectingModalON = true;
 		LIOs.Clear();
-		foreach (var arc in Enum.GetValues(typeof(AvailableArchetypes)).Cast<AvailableArchetypes>())
+		foreach (var arc in Enum.GetValues(typeof(US_Classes)).Cast<US_Classes>())
 		{
-			if (arc != AvailableArchetypes.All && arc != AvailableArchetypes.NotSet && arc != Player.Archetype)
+			if (arc != US_Classes.All && arc != US_Classes.NotSet && arc != Player.Archetype)
 			{
 				LIOs.Add(new LIOsPack
 					{
@@ -457,11 +457,11 @@
 		}
 		options.Add(firstOption);
 
-		foreach (AvailableArchetypes arc in Enum.GetValues(typeof(AvailableArchetypes)))
+		foreach (US_Classes arc in Enum.GetValues(typeof(US_Classes)))
 		{
 			if (arc == Player.Archetype) continue;
-			if (arc == AvailableArchetypes.All) continue;
-			if (arc == AvailableArchetypes.NotSet) continue;
+			if (arc == US_Classes.All) continue;
+			if (arc == US_Classes.NotSet) continue;
 
 			firstOption = new();
 			firstOption.Title = arc.ToUI();

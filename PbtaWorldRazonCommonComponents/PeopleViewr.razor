@@ -47,7 +47,8 @@
 											<div class="FactionBody">
 												@foreach(PbtACharacter ch in f.Members)
 												{
-													<div class="CharacterBox" @onclick=@(()=>{CharacterSelectorService.FinishSelection(ch);})>
+													<div class="@(CharacterSelectorService.CurrentMode == CharacterSelectorService.SelectionModes.character?"CharacterBox":"")" 
+														@onclick=@(()=>{CharacterSelectorService.FinishSelection(ch);})>
 														@if(HasImage(ch))
 														{
 															<ImageCard Image="GetImage(ch)" IsMaster=IsMaster ForcedSize="150" />
@@ -101,7 +102,6 @@
 					{
 						<button class="btn btn-primary" @onclick=AddNewCircle>Add circle</button>
 						<button class="btn btn-primary" @onclick=SaveChanges>Save changes</button>
-						<button class="btn btn-primary" @onclick=@(()=>{IsMaster = false;})>Exit master mode</button>
 						<a href="@($"/GameImages/{GameID.ToString()}/People.json")">Download json</a>
 						<EditForm Model="this">
 							<InputFile OnChange="LoadPeopleJson" class="form-control" style="background: var(--bs-gray-700); border: none; color: white;" />
@@ -109,7 +109,7 @@
 					}
 					else
 					{
-						<button class="btn btn-primary" @onclick=@(()=>{IsMaster = true;})>Edit mode</button>
+						
 					}
 				</div>
 			}

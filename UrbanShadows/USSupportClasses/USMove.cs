@@ -7,7 +7,7 @@ public class LIO : IMove
 {
 	public string Text { get; set; } = "";
 	public USMoveIDs ID { get; set; }
-	public AvailableArchetypes Archetype { get; set; }
+	public US_Classes Archetype { get; set; }
     public bool IsSelected { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public string Title { get => Text; set => Text = value; }
     public Consequences PreCondition { get => new Consequences { MainText = Text }; set => throw new NotImplementedException(); }
@@ -68,5 +68,5 @@ public class USMove : PbtALib.BaseMove<USMoveIDs, USAttributes>
 	public bool IsSelected { get; set; } = false;
 	public bool IsImproved { get; set; } = false;
 	public MovementTypes TypeOfMovement = MovementTypes.NotSet;
-	public AvailableArchetypes Archetipe = AvailableArchetypes.All;
+	public US_Classes Archetipe = US_Classes.All;
 }

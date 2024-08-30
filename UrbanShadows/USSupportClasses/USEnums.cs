@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PbtALib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace UrbanShadows;
 public enum Circles { NotSet, Mortalis, Noche, Poder, Velo }
 public enum FactionStatuses { NotSet, Creciendo, Manteniendo, Menguando }
 public enum USAttributes{ Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, Circle, None, Status}
-public enum AvailableArchetypes{ NotSet, Hunter, Awaken, Veteran, Vampire, Wolf, Spectre, Sworn, Mage, Oracle, Fair, Corrupted, Imp, All }
+
 public enum KindsOfAdvance { Normal, Extra, Corruption };
 public enum PayingMode { ToPay, ToBePaid };
 public enum MovementTypes
@@ -117,22 +118,23 @@ public static class EnumExtensions
 		};
 	}
 
-	public static string ToUI(this AvailableArchetypes arq)
+	public static string ToUI(this US_Classes arq)
 	{
 		return arq switch
 		{
-			AvailableArchetypes.Hunter => "Cazador",
-			AvailableArchetypes.Awaken => "Despertado",
-			AvailableArchetypes.Fair => "Hada",
-			AvailableArchetypes.Mage => "Mago",
-			AvailableArchetypes.Veteran => "Veterano",
-			AvailableArchetypes.Vampire => "Vampiro",
-			AvailableArchetypes.Corrupted => "Corrompido",
-			AvailableArchetypes.Oracle => "Oraculo",
-			AvailableArchetypes.Wolf => "Hombre Lobo",
-			AvailableArchetypes.Spectre => "Espectro",
-			AvailableArchetypes.Imp => "Duencedillo",
-			AvailableArchetypes.Sworn => "Juramentado",
+			US_Classes.Hunter => "Cazador",
+			US_Classes.Awaken => "Despertado",
+			US_Classes.Fair => "Hada",
+			US_Classes.Mage => "Mago",
+			US_Classes.Veteran => "Veterano",
+			US_Classes.Vampire => "Vampiro",
+			US_Classes.Corrupted => "Corrompido",
+			US_Classes.Oracle => "Oraculo",
+			US_Classes.Wolf => "Hombre Lobo",
+			US_Classes.Spectre => "Espectro",
+			US_Classes.Imp => "Duencedillo",
+			US_Classes.Sworn => "Juramentado",
+			US_Classes.Master => "Master",
 			_ => $"Unknown arquetipe ToUI: {arq.ToString()}"
 		};
 	}

@@ -137,6 +137,7 @@ FloatingCoverDefault {
 }
 
 .MovementRangeMarker {
+    display: block;
     width: 31px;
     text-align: right;
     padding-right: 5px;

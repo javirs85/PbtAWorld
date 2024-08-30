@@ -51,6 +51,8 @@ public enum DWClasses
 	DW_NotSet, DW_Master
 }
 
+public enum US_Classes { NotSet, Hunter, Awaken, Veteran, Vampire, Wolf, Spectre, Sworn, Mage, Oracle, Fair, Corrupted, Imp, All, Master }
+
 
 public static class ExtensionsEnum
 {

@@ -4,21 +4,16 @@
 @using static WhiteBoard.WhiteBoardService
 @inject WhiteBoardService service
 
-@if (_ShowingMonsterSelector)
+@if (IsMaster && _ShowingMonsterSelector)
 {
+	<div>TESTING!</div>
 	<MonsterSelector Game="Game" CloseClicked="@(()=>{_ShowingMonsterSelector = false;})"/>
 }
 else
 {
-	
 	<div class="ButtonsDrawer d-flex gap-1 align-items-center m-1" style="position:absolute; z-index:500;">
 		@if(IsMaster)
 		{
-			<!--
-				<button class="btn btn-primary" @onclick=StartWall>StartWall</button>
-				<button class="btn btn-primary" @onclick=service.Clear>Clear all</button>
-				<button class="btn btn-primary" @onclick=@(()=>{UsingAttentionMarker = !UsingAttentionMarker;})>Attention</button>
-			-->
 			@if (DrawModeOn)
 			{
 				<div class="p-2" style="@(isDrawing?"background: red; color: white;":"background:green; color:white;")">[D] Drawing</div>
@@ -98,46 +93,47 @@ else
 		}
 		
 	</div>
-
-	<div class="DefinitionsSelector">
-		@if(ShowMoves)
-		{
-			<div class="d-flex flex-column h-100" style="width: 580px;">
-				<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Monsters</button>
-				<div class="p-1">
-					@if(SelectedTokens.Count >= 1 && SelectedTokens[0].Monster is not null && SelectedTokens[0].Monster.Moves is not null)
-					{
-						<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title = @SelectedTokens[0].Monster.Name, Moves = SelectedTokens[0].Monster.Moves})" />
-					}
-					@if(VTTService.Game is not null && VTTService.Game.TextBook is not null && VTTService.Game.TextBook.MasterMovesPacks is not null)
-					{
-						@foreach (var pack in VTTService.Game?.TextBook?.MasterMovesPacks)
+	@if(IsMaster)
+	{
+		<div class="DefinitionsSelector">
+			@if(ShowMoves)
+			{
+				<div class="d-flex flex-column h-100" style="width: 580px;">
+					<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Monsters</button>
+					<div class="p-1">
+						@if(SelectedTokens.Count >= 1 && SelectedTokens[0].Monster is not null && SelectedTokens[0].Monster.Moves is not null)
 						{
-							<MasterMovePackViewer MovesPack="@pack" />
+							<MasterMovePackViewer MovesPack="@(new MasterMovePack {Title = @SelectedTokens[0].Monster.Name, Moves = SelectedTokens[0].Monster.Moves})" />
 						}
-					}				
+						@if(VTTService.Game is not null && VTTService.Game.TextBook is not null && VTTService.Game.TextBook.MasterMovesPacks is not null)
+						{
+							@foreach (var pack in VTTService.Game?.TextBook?.MasterMovesPacks)
+							{
+								<MasterMovePackViewer MovesPack="@pack" />
+							}
+						}				
+					</div>
 				</div>
-			</div>
-		}
-		else //Show monsters
-		{
-			<div class="d-flex flex-column h-100">
-				<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Moves</button>
-				<button class="btn btn-primary" @onclick=@(()=>{_ShowingMonsterSelector = true;})>Monster selector</button>
-				@if (Game is not null && Game.MonsterDefinitionsInCurrentScene is not null)
-				{
-					@foreach (var md in Game.MonsterDefinitionsInCurrentScene)
+			}
+			else //Show monsters
+			{
+				<div class="d-flex flex-column h-100">
+					<button class="btn btn-dark" @onclick=@(()=>{ShowMoves = !ShowMoves;})>Moves</button>
+					<button class="btn btn-primary" @onclick=@(()=>{_ShowingMonsterSelector = true;})>Monster selector</button>
+					@if (Game is not null && Game.MonsterDefinitionsInCurrentScene is not null)
 					{
-						<div class="@(SelectedTokens.Any() &&  md.ID == SelectedTokens[0]?.Monster?.ID?"MonsterCardSelected":"MonsterCardNotSelected")">
-							<div class="AddToFightButton" @onclick=@(()=>{AddToFight(md);})><i class="bi bi-gitlab text-danger"></i></div>
-							<EnemyCard Game="Game" monster="md" />
-						</div>
+						@foreach (var md in Game.MonsterDefinitionsInCurrentScene)
+						{
+							<div class="@(SelectedTokens.Any() &&  md.ID == SelectedTokens[0]?.Monster?.ID?"MonsterCardSelected":"MonsterCardNotSelected")">
+								<div class="AddToFightButton" @onclick=@(()=>{AddToFight(md);})><i class="bi bi-gitlab text-danger"></i></div>
+								<EnemyCard Game="Game" monster="md" />
+							</div>
+						}
 					}
-				}
-			</div>
-		}
-	</div>
-
+				</div>
+			}
+		</div>
+	}
 	<div class="WhiteCanvas"	 
 		style="@($"top: {@GlobalTop}px; left: {GlobalLeft}px;") width:@(service.BattleMapWidth+"px"); height:@(service.BattleMapHeight+"px")">
 
@@ -360,7 +356,9 @@ else
 
 @code {
 	[Parameter] public PbtACharacter Character { get; set; } = new();
-	[Parameter] public DWClasses MyClass { get; set; } = DWClasses.DW_Bard;
+	[Parameter] public DWClasses DWClass { get; set; } = DWClasses.DW_Bard;
+	[Parameter] public AvailableGames SelectedGame { get; set; } = AvailableGames.DW;
+	[Parameter] public US_Classes USCLass { get; set; } = US_Classes.Vampire;
 	[Parameter] public PbtALib.ifaces.IGameController? Game { get; set; }
 	[Parameter] public EventCallback ExitRequested { get; set; }
 
@@ -384,7 +382,14 @@ else
 	private bool ShowingOptionsPanelForSelectedItems = true;
 
 
-	bool IsMaster => MyClass == DWClasses.DW_Master;
+	bool IsMaster {
+		get
+		{
+			if (SelectedGame == AvailableGames.DW) return DWClass == DWClasses.DW_Master;
+			else if (SelectedGame == AvailableGames.US) return USCLass == US_Classes.Master;
+			else return false;
+		}
+	}
 	Token? MyToken = null;
 
 	List<Token> SelectedTokens = new();
@@ -471,14 +476,14 @@ else
 			}
 			else if (e.Button == 2)
 			{
-				service.ShowPlayerAttention(MyClass, new Point(e));
+				service.ShowPlayerAttention(DWClass, new Point(e));
 			}
 		}
 		else //is master
 		{
 			if (UsingAttentionMarker)
 			{
-				service.ShowPlayerAttention(MyClass, new Point(e));
+				service.ShowPlayerAttention(DWClass, new Point(e));
 			}
 			else
 			{
@@ -744,7 +749,7 @@ else
 	async Task Join()
 	{
 		MyToken = await service.StartForPlayer(Character);
-		if (MyClass != DWClasses.DW_Master)
+		if (!IsMaster)
 			SelectedTokens.Add(MyToken);
 		Random rnd = new();
 		var x = 40 + rnd.Next(-20 + 40);
