@@ -11,13 +11,14 @@ public class USCharacterSheet : PbtACharacter
 	public USCharacterSheet() { }
 	public USCharacterSheet(USMovesService _moves) => Moves = _moves;
 
-	private US_Classes _archetype;
+	public override string ClassString => _archetype.ToString();
+
+    private US_Classes _archetype;
 	public US_Classes Archetype { get { return _archetype; } 
 		set 
 		{
 			_archetype = value;
 			this.EncodedClass = (int)_archetype;
-			this.ClassString = value.ToString();
 			InitArchetype(Moves);
 		} 
 	}

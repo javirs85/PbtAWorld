@@ -2,6 +2,7 @@
 using PbtALib;
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace UrbanShadows;
 
@@ -65,6 +66,11 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 	{
 		var Folder = $"wwwroot/GameImages/{SessionID}";
 		var path = $"{Folder}/Debts.json";
+		if(!File.Exists(path))
+		{
+            var sj = System.Text.Json.JsonSerializer.Serialize(AllDebts);
+            await System.IO.File.WriteAllTextAsync(path, sj);
+        } 
 		var json = await File.ReadAllTextAsync(path);
 		AllDebts = JsonSerializer.Deserialize<List<Debt>>(json) ?? new();
 	}

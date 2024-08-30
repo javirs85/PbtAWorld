@@ -20,13 +20,14 @@ public class DWCharacter : PbtALib.PbtACharacter
             if (value != _profession)
 			{
 				_profession = value;
-				ClassString = _profession.ToString();
 				Init();
 			}
 		}
 	}
 
-	private int _hp = 0;
+	public override string ClassString => Profession.ToString();
+
+    private int _hp = 0;
 	public override int HP
 	{
 		get => _hp;

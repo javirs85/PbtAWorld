@@ -24,6 +24,8 @@ public class PbtACharacter : ICharacter
 
 	public string SerializedData { get; set; } = string.Empty;
 
+	public virtual string ClassString { get; } = string.Empty;
+
 	public void Init() {
 		InitInternal();
 		IsInitialized = true;
