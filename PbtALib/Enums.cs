@@ -42,7 +42,8 @@ public enum VTTTokens
 	Gold, RedPotion,GreenPotion, FogOfWar, Bultos, Bush1, Bush2, Bush3, Bush4, BushMini1, BushMini2, BushMini3, Firepit,
 	FirepitOff, Outcrop, Rock1, Rock2, Rock3, Rock4, Stomp1, Stomp2, Tent, Tent2, Tent3,
 	Tree1, Tree2, Corner, Door_Round, Door_Square, DoorSmall, PilarRound, PilarSquare, Door_Big,
-	Chest, Throne, Crate_Small, Barrel, Storage, Statue_Hands, Statue_Shield, Stairs
+	Chest, Throne, Crate_Small, Barrel, Storage, Statue_Hands, Statue_Shield, Stairs,
+	USHunter, USAWaken, USVeteran, USVampire, USWolf, USSpecter, USWizard, USOracle, USSworn, USTainted, USImp, USFair
 }
 
 public enum DWClasses

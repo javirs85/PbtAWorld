@@ -360,7 +360,19 @@ public class Token
 					else if (str == "DW_Mage") ID = VTTTokens.Mage;
 					else if (str == "DW_Paladin") ID = VTTTokens.Paladin;
 					else if (str == "DW_Wielder") ID = VTTTokens.Wielder;
-				}
+					else if (str == "Hunter") ID = VTTTokens.USHunter;
+					else if (str == "Awaken") ID = VTTTokens.USAWaken;
+					else if (str == "Veteran") ID = VTTTokens.USVeteran;
+					else if (str == "Vampire") ID = VTTTokens.USVampire;
+					else if (str == "Wolf") ID = VTTTokens.USWolf;
+					else if (str == "Spectre") ID = VTTTokens.USSpecter;
+					else if (str == "Sworn") ID = VTTTokens.USSworn;
+					else if (str == "Mage") ID = VTTTokens.USWizard;
+					else if (str == "Oracle") ID = VTTTokens.USOracle;
+					else if (str == "Fair") ID = VTTTokens.USFair;
+					else if (str == "Corrupted") ID = VTTTokens.USTainted;
+					else if (str == "Imp") ID = VTTTokens.USImp;
+                }
 				
 			}
 		}

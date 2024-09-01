@@ -65,6 +65,10 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 	public async Task LoadAllDebts()
 	{
 		var Folder = $"wwwroot/GameImages/{SessionID}";
+		if(!Directory.Exists(Folder))
+		{
+			Directory.CreateDirectory(Folder);
+		}
 		var path = $"{Folder}/Debts.json";
 		if(!File.Exists(path))
 		{
