@@ -23,6 +23,18 @@ public class WhiteBoardService
 	public string MapImageURL => "/imgs/VTT/BattleMaps/" + MapImageName;
 	public string WallsJasonFile => RootBattleMapsURL + MapImageName.Substring(0, MapImageName.IndexOf('.'))+".json";
 
+	private AvailableGames _currentGame = AvailableGames.DW;
+	public AvailableGames CurrentGame
+	{
+		get => _currentGame;
+		set
+		{
+			_currentGame = value;
+			if (_currentGame == AvailableGames.DW) MapImageName = "UDT_DungeonRectificed.jpg";
+			else if (_currentGame == AvailableGames.US) MapImageName = "USDarkAsphalt.jpg";
+		}
+	}
+
 
 	private string _mapImageName;
 	public string MapImageName
@@ -48,7 +60,7 @@ public class WhiteBoardService
 	public List<Marker> MarkerPositions = new();
 	public class Marker
 	{
-		public DWClasses Color;
+		public string EncodedClass = "DW_Bard";
 		public Point Position = new();
 		public bool IsFlashing = false;
 	}
@@ -119,9 +131,9 @@ public class WhiteBoardService
 		}
 	}
 
-	public async Task ShowPlayerAttention(DWClasses color, Point p)
+	public async Task ShowPlayerAttention(string _encodedClass, Point p)
 	{
-		var marker = MarkerPositions.Find(x => x.Color == color);
+		var marker = MarkerPositions.Find(x => x.EncodedClass == _encodedClass);
 		if (marker is not null)
 		{
 			marker.Position = p;
@@ -129,7 +141,7 @@ public class WhiteBoardService
 		}
 		else
 		{
-			marker = new Marker { Color = color, Position = p, IsFlashing = true };
+			marker = new Marker { EncodedClass = _encodedClass, Position = p, IsFlashing = true };
 			MarkerPositions.Add(marker);
 		}
 

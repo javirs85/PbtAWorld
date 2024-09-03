@@ -1,0 +1,50 @@
+﻿@inject WhiteBoard.WhiteBoardService service
+
+<div class="ClocksTray" style="@(IsMaster?"top:90px;":"")">
+	<div class="Exit hoverable">
+		RELOJES
+		<i class="bi bi-x-circle" @onclick="CloseRequest"></i>
+	</div>
+	@foreach (var cl in service.Clocks)
+	{
+		<FitDClockViewer clock="cl"
+						 IsMaster=IsMaster
+						 Width="90"
+						 SpreadUpdate="service.ForzeUpdateInAllClients"
+						 DeleteMe="@(()=>{RemoveClock(cl);})" />
+	}
+	@if (IsMaster)
+	{
+		<div class="d-flex justify-content-evenly fs-2" style="border-top:1px solid gray">
+			<i class="bi bi-4-circle hoverable" @onclick=AddClock4></i>
+			<i class="bi bi-6-circle hoverable" @onclick=AddClock6></i>
+			<i class="bi bi-8-circle hoverable" @onclick=AddClock8></i>
+		</div>
+	}
+</div>
+
+@code {
+	[Parameter] public bool IsMaster { get; set; } = false;
+	[Parameter] public EventCallback CloseRequest { get; set; }
+
+	private void AddClock4()
+	{
+		service.Clocks.Add(new Clock("Title", 4));
+		service.ForzeUpdateInAllClients();
+	}
+	private void AddClock6()
+	{
+		service.Clocks.Add(new Clock("Title", 6));
+		service.ForzeUpdateInAllClients();
+	}
+	private void AddClock8()
+	{
+		service.Clocks.Add(new Clock("Title", 8));
+		service.ForzeUpdateInAllClients();
+	}
+	private void RemoveClock(Clock cl)
+	{
+		service.Clocks.Remove(cl);
+		service.ForzeUpdateInAllClients();
+	}
+}

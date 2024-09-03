@@ -1,0 +1,28 @@
+﻿.ClocksTray {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 400px;
+    z-index: 700;
+    background: black;
+    box-shadow: black 1px 1px 14px;
+    color:white;
+    min-height:100px;
+    border-radius:1em;
+    border:1px solid gray;
+}
+
+.Exit {
+    display: flex;
+    justify-content: space-between;
+    margin: 7px;
+    margin-right: 11px;
+}
+
+.hoverable{
+    cursor:pointer;
+    opacity:0.5;
+}
+.hoverable:hover{
+    opacity:1;
+}

@@ -1094,7 +1094,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
-				MainText = "asta 1 punto para hacerle 1 - daño(perforante) a alguien a cualquier distancia.Para ello necesitas una muestra de su pelo, sangre o saliva.",
+				MainText = "Gasta 1 punto para hacerle 1 - daño(perforante) a alguien a cualquier distancia.Para ello necesitas una muestra de su pelo, sangre o saliva.",
 			}
 		});
 

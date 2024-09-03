@@ -157,9 +157,9 @@ else
 			{
 				<div class="AttentionMarker" style="@($"top: {marker.Position.Y}px; left: {marker.Position.X}px;")">
 					<div class="FlashingContainer" style="opacity: @(marker.IsFlashing?"1":"0")">
-						<div class="AttentionCore @marker.Color" />
+						<div class="AttentionCore @marker.EncodedClass" />
 						<div class="AttentionMarkerCircle1  Flashing"></div>
-						<div class="AttentionMarkerCircle2  Flashing @marker.Color"></div>
+						<div class="AttentionMarkerCircle2  Flashing @marker.EncodedClass"></div>
 						<div class="AttentionMarkerCircle3  Flashing"></div>
 					</div>
 				</div>
@@ -345,21 +345,19 @@ else
 						<circle r="10" cx="@line.AnchorPoint.X" cy="@line.AnchorPoint.Y" fill="blue" stroke="white" />
 					}
 				}
-
-
 			</svg>
 		</div>
 	</div>
-
 }
 
 @code {
 	[Parameter] public PbtACharacter Character { get; set; } = new();
-	[Parameter] public DWClasses DWClass { get; set; } = DWClasses.DW_Bard;
+	//[Parameter] public string OwnerStringClass { get; set; } ="DW_Bard";
 	[Parameter] public AvailableGames SelectedGame { get; set; } = AvailableGames.DW;
-	[Parameter] public US_Classes USCLass { get; set; } = US_Classes.Vampire;
 	[Parameter] public PbtALib.ifaces.IGameController? Game { get; set; }
 	[Parameter] public EventCallback ExitRequested { get; set; }
+
+	public string OwnerStringClass => Character.ClassString;
 
 	bool _ShowingMonsterSelector = false;
 	bool _ShowingMonsterImage = false;
@@ -384,8 +382,8 @@ else
 	bool IsMaster {
 		get
 		{
-			if (SelectedGame == AvailableGames.DW) return DWClass == DWClasses.DW_Master;
-			else if (SelectedGame == AvailableGames.US) return USCLass == US_Classes.Master;
+			if (SelectedGame == AvailableGames.DW) return OwnerStringClass == "DW_Master";
+			else if (SelectedGame == AvailableGames.US) return OwnerStringClass == "Master";
 			else return false;
 		}
 	}
@@ -475,14 +473,14 @@ else
 			}
 			else if (e.Button == 2)
 			{
-				service.ShowPlayerAttention(DWClass, new Point(e));
+				service.ShowPlayerAttention(OwnerStringClass, new Point(e));
 			}
 		}
 		else //is master
 		{
 			if (UsingAttentionMarker)
 			{
-				service.ShowPlayerAttention(DWClass, new Point(e));
+				service.ShowPlayerAttention(OwnerStringClass, new Point(e));
 			}
 			else
 			{

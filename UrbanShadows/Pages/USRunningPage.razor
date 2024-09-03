@@ -18,7 +18,8 @@
 
 	
 
-<EditForm Model="Player">
+<div class="MainSheetDiv" style="display:@(IsShowingVTT?"none":"") ;">
+	<EditForm Model="Player">
 	<div class="BigContainer d-flex">
 		<div class="LeftColumn">
 			<div class="LeftColumnHeader">
@@ -146,15 +147,15 @@
 					Movimientos básicos
 				</div>
 				
-					<div class="InnerColumContent">
-						@foreach (var m in BasicMovesOnScreen)
-						{
-							<MoveViewer ID="m.ID" 
-								Player=Player 
-								IsSelected=false 
-								Clicked=@(_ => Select(m, FocusOnDetailed.Basic)) 
-								ForceUpdate="Update" />
-						}
+				<div class="InnerColumContent">
+					@foreach (var m in BasicMovesOnScreen)
+					{
+						<MoveViewer ID="m.ID" 
+							Player=Player 
+							IsSelected=false 
+							Clicked=@(_ => Select(m, FocusOnDetailed.Basic)) 
+							ForceUpdate="Update" />
+					}
 				</div>
 				<div class="LetItOutBox">
 					@foreach(var m in Player.LIOs)
@@ -273,9 +274,9 @@
 						   data-bs-target="#Unique2original"></i>
 					</div>
 					<div class="InnerColumContent">
-						<InputTextArea class="form-control" 
-						style="outline:none; border: none; background: black; color:white;" 
-						@bind-Value=Unique2Screen />
+						<InputTextArea class="form-control"
+										   style="outline:none; border: none; background: black; color:#7d7d7d;"
+										   @bind-Value=Unique2Screen />
 					</div>
 					<div>
 						<div id="Unique2original" class="collapse">
@@ -330,12 +331,74 @@
 			<div class="RightColumnButton" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
 			<div class="RightColumnButton" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
 			<div class="RightColumnButton" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass-split"></i></div>
-			<div class="RightColumnButton" @onclick=OpenVTTRequested><i class="bi bi-globe-europe-africa"></i></div>
+			<div class="RightColumnButton" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
 		</div>
 	</div>
 </EditForm>
-
+</div>
 <!--Modals-->
+<!--VTT MiniSheet-->
+<div class="VTTMiniSheet" style="display:@(IsShowingVTT?"block":"none")">
+	<div class="Exit">
+		<i class="bi bi-x-circle" @onclick="HideVTT"></i>
+	</div>
+
+	<div class="InnerColumContent">
+		@foreach (var m in BasicMovesOnScreen)
+		{
+			<MoveViewer ID="m.ID"
+						Player=Player
+						IsSelected=false
+						Clicked=@(_ => Select(m, FocusOnDetailed.Basic))
+						ForceUpdate="Update" />
+		}
+	</div>
+	<div class="InnerColumnPack PlayBookMoves">
+		<div class="InnerColumnHeader d-flex align-items-center gap-1" style="cursor: pointer;">
+			Movimientos de @Player.Archetype.ToUI() 
+		</div>
+
+		<div class="InnerColumContent">
+			@foreach (var m in PlaybookMovesOnScreen)
+			{
+				<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Playbook)) ForceUpdate="Update" />
+			}
+		</div>
+
+	</div>
+	<div class="InnerColumnPack CorruptionMoves">
+		<div class="InnerColumnHeader  d-flex align-items-center gap-1" style="cursor: pointer;">
+			Movimientos de Corrupción 
+		</div>
+		@if (CurrentFocusDetail != FocusOnDetailed.Playbook)
+		{
+			<div class="InnerColumContent">
+				@foreach (var m in CorruptionMovesOnScreen)
+				{
+					<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Corruption)) ForceUpdate="Update" />
+				}
+			</div>
+		}
+	</div>
+	@if (UniqueMovesOnScreen.Count != 0)
+	{
+		<div class="InnerColumnPack EspecialesPlaybook">
+			<div class="InnerColumnHeader" style="cursor: pointer;"
+				 @onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+				Movimientos especiales de @Player.Archetype.ToUI()
+			</div>
+			@if (CurrentFocusDetail == FocusOnDetailed.nowhere || CurrentFocus == FocusOn.firstColumn || CurrentFocusDetail == FocusOnDetailed.Unique)
+			{
+				<div class="InnerColumContent">
+					@foreach (var m in UniqueMovesOnScreen)
+					{
+						<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Unique)) ForceUpdate="Update" />
+					}
+				</div>
+			}
+		</div>
+	}
+</div>
 <!-- Circle Upgrades Modal -->
 <div class="FullScreenModal CircleUpgrades d-flex flex-column justify-content-center @(IsShowingAdvances?"":"HideModal")" @onclick=HideCircleAdvances>
 	<div class="CloseButton"></div>
@@ -410,7 +473,19 @@
 	[Parameter] public EventCallback OpenLastRollViewerRequested { get; set; }
 	[Parameter] public EventCallback OpenClocksViewerRequested { get; set; }
 	[Parameter] public EventCallback OpenVTTRequested { get; set; }
-	
+	[Parameter] public EventCallback CloseVTTRequested { get; set; }
+
+	private void OpenVTTInternal()
+	{
+		IsShowingVTT = true;
+		OpenVTTRequested.InvokeAsync();
+	}
+	private void HideVTT()
+	{
+		IsShowingVTT = false;
+		CloseVTTRequested.InvokeAsync();
+	}
+
 
 	USMove? SelectedMovement = null;
 	private List<USMove> BasicMovesOnScreen = new();
@@ -426,6 +501,7 @@
 	private bool IsShowingAdvances = false;
 	private bool IsShowingOldRolls = false;
 	private bool IsShowingPeople = false;
+	private bool IsShowingVTT = false;
 
 	public string Unique1Screen
 	{

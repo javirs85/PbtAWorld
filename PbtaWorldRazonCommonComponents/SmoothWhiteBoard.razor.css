@@ -150,6 +150,45 @@
     }
 }
 
+.Master{
+    background:gold;
+}
+.Imp {
+    background: #015501;
+}
+
+.Vampire {
+    background: #551818;
+}
+.Spectre {
+    background: #0e80ab;
+}
+.Hunter {
+    background: #1b1b7b;
+}
+.Awaken{
+    background: orange;
+}
+.Wolf {
+    background: #19223e;
+}
+.Sworn {
+    background: #81b6e9;
+}
+.Mage {
+    background: #711071;
+}
+.Oracle {
+    background: #dbae74;
+}
+.Fair {
+    background: #9a0045;
+}
+.Corrupted {
+    background: #a10001;
+}
+
+
 .DW_Cleric {
     background: #515021;
 }
