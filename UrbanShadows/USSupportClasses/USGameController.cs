@@ -13,24 +13,9 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 	private USMovesService moves;
 	public USGameController(USMovesService _moves, IDataBaseController _db, LastRollViewerService lrvs) : base(_moves, _db, lrvs)
 	{
-		//LastRoll = new USRollReport(_moves);
-		//moves = _moves;
-
-		//People = new USPeople(_db);
-
-		//USFaction f = new USFaction
-		//{
-		//	Name = "Invierno",
-		//	Members = new List<PbtACharacter>
-		//	{
-		//		new PNJ {Name = "amparo", ID = Guid.NewGuid()},
-		//		new PNJ {Name = "lolo", ID = Guid.NewGuid()},
-		//		new PNJ {Name = "sergio", ID = Guid.NewGuid()},
-		//		new PNJ {Name = "john", ID = Guid.NewGuid()},
-		//	}
-		//};
-		//People.Circles[3].Factions.Add(f);
-    }
+		TextBook = new USTextBook();
+		LastRoll = new USRollReport(moves);
+	}
 	protected override void CreateNewRollReport()
 	{
 		LastRoll = new USRollReport(moves);

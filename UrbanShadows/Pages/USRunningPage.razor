@@ -185,8 +185,27 @@
 		<div class="InnerColumn" style="@(CurrentFocus==FocusOn.secondColumn?"flex:2!important;":"flex:1!important")">
 			<div class="InnerColumnPack PlayBookMoves">
 				<div class="InnerColumnHeader d-flex align-items-center gap-1" style="cursor: pointer;">
-					Movimientos de @Player.Archetype.ToUI()  (al menos 3) <i class="bi bi-exposure fs-4 editButton" @onclick=SelectPlaybookMoves></i>
-				</div>
+					Movimientos de @Player.Archetype.ToUI()  
+						@if (Player.Archetype == US_Classes.Oracle || Player.Archetype == US_Classes.Sworn || Player.Archetype == US_Classes.Wolf)
+						{
+							@if (PlaybookMovesOnScreen.Count < 2)
+							{
+								<span class="fs-2">Elije DOS</span>
+							}
+						}
+						else if (Player.Archetype == US_Classes.Mage)
+						{
+
+						}
+						else
+						{
+							@if (PlaybookMovesOnScreen.Count < 3)
+							{
+								<span class="fs-2">Elije TRES</span>
+							}
+						}
+						<i class="bi bi-exposure fs-4 editButton" @onclick=SelectPlaybookMoves></i>
+					</div>
 				
 				<div class="InnerColumContent">
 					@foreach (var m in PlaybookMovesOnScreen)
@@ -197,8 +216,7 @@
 				
 			</div>
 			<div class="InnerColumnPack CorruptionMoves">
-				<div class="InnerColumnHeader  d-flex align-items-center gap-1" style="cursor: pointer;"
-				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+				<div class="InnerColumnHeader  d-flex align-items-center gap-1" style="cursor: pointer;">
 					Movimientos de Corrupción <i class="bi bi-exposure fs-4 editButton" @onclick=SelectNewCorruptionMove></i>
 				</div>
 				@if (CurrentFocusDetail != FocusOnDetailed.Playbook)
@@ -320,7 +338,7 @@
 
 						</div>
 						<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
-							@m.PreCondition.MainText
+							<DecodedString Value="@m.PreCondition.MainText" />
 						</div>
 					</div>
 				}
@@ -332,6 +350,7 @@
 			<div class="RightColumnButton" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
 			<div class="RightColumnButton" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass-split"></i></div>
 			<div class="RightColumnButton" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
+				<div class="RightColumnButton" @onclick=ShowCharacterCreationModal><i class="bi bi-person-circle"></i></div>
 		</div>
 	</div>
 </EditForm>
@@ -341,6 +360,10 @@
 <div class="VTTMiniSheet" style="display:@(IsShowingVTT?"block":"none")">
 	<div class="Exit">
 		<i class="bi bi-x-circle" @onclick="HideVTT"></i>
+	</div>
+	<div class="ClocksMini">
+		<i class="bi bi-circle " @onclick="HideVTT"></i>
+		<i class="bi bi-hourglass-split" style="font-size: 17px; top: -2px; left: 8px;" @onclick="OpenClocksViewerRequested"></i>
 	</div>
 
 	<div class="InnerColumContent">
@@ -398,6 +421,13 @@
 			}
 		</div>
 	}
+</div>
+
+<!-- Character creation Modal -->
+<div class="FullScreenModal CharacterCreationPage d-flex flex-column justify-content-center @(IsShowingCharacterCreationModal?"":"HideModal")" 
+	@onclick=HideCharacterCreationModal>
+	<div class="CloseButton"></div>
+	<CharacterCreationPage Player="Player" Game="Game"/>
 </div>
 <!-- Circle Upgrades Modal -->
 <div class="FullScreenModal CircleUpgrades d-flex flex-column justify-content-center @(IsShowingAdvances?"":"HideModal")" @onclick=HideCircleAdvances>
@@ -480,11 +510,13 @@
 		IsShowingVTT = true;
 		OpenVTTRequested.InvokeAsync();
 	}
+
 	private void HideVTT()
 	{
 		IsShowingVTT = false;
 		CloseVTTRequested.InvokeAsync();
 	}
+
 
 
 	USMove? SelectedMovement = null;
@@ -502,6 +534,8 @@
 	private bool IsShowingOldRolls = false;
 	private bool IsShowingPeople = false;
 	private bool IsShowingVTT = false;
+	private bool IsShowingClocks = false;
+	private bool IsShowingCharacterCreationModal = false;
 
 	public string Unique1Screen
 	{
@@ -944,6 +978,8 @@
 
 	void ShowCircleAdvances() => IsShowingAdvances = true;
 	void HideCircleAdvances() => IsShowingAdvances = false;
+	void ShowCharacterCreationModal() => IsShowingCharacterCreationModal = true;
+	void HideCharacterCreationModal() => IsShowingCharacterCreationModal = false;
 	private bool IsShowingCorruptionAdvances = false;
 	void ShowCorruptionAdvances() => IsShowingCorruptionAdvances = true;
 	void HideCorruptionAdvances() => IsShowingCorruptionAdvances = false;

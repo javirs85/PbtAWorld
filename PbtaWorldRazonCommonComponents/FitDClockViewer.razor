@@ -39,7 +39,7 @@
 		height:@(Width)px;
 		min-height:@(Width)px;
 		max-height:@(Width)px;"
-		 @onclick=Clicked>
+		 @onclick=Clicked @onclick:stopPropagation @onclick:preventDefault>
 		<div class="UpperLines">
 			@foreach (var l in lines)
 			{
@@ -108,16 +108,18 @@
 				lines.Add(new Line { degs = (int)lineSteps * i });
 			}
 		}
-		
+
 		if(!IsMaster)
 		{
 
 			clock.UpdateRequested -= RePaint;
 			clock.UpdateRequested += RePaint;
 		}
+
+		RePaint();
 	}
 
-	private void RePaint(object s, EventArgs? e) => RePaint();
+	public void RePaint(object s, EventArgs? e) => RePaint();
 
 	private int deg;
 	int RightSideDegs = 0;

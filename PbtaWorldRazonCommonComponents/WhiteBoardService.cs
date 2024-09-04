@@ -9,8 +9,10 @@ namespace WhiteBoard;
 public class WhiteBoardService
 {
 	public event EventHandler UpdateUI;
+	public event EventHandler OpenClocksTryForAllClients;
 	public event EventHandler<Tuple<DWClasses, Point>> FlashAttentionMarker;
 	public event EventHandler<Guid> StoreChangesInCharacterSheet;
+	public event EventHandler<Token> ForceSelection;
 	public List<Token> Tokens = new();
 	public List<Prop> Props = new();
 	public static IGameController? Game;
@@ -128,6 +130,7 @@ public class WhiteBoardService
 		if (minDistance < 30)
 		{
 			drawnLines.Remove(SelectedLine);
+			Update();
 		}
 	}
 
@@ -188,9 +191,12 @@ public class WhiteBoardService
 	{
 		foreach (var c in Clocks) c.UpdateUI();
 		Update();
+		OpenClocksTryForAllClients(this, EventArgs.Empty);
 	}
 	void Update(object? sender, EventArgs e) => Update();
 	private void Update() => UpdateUI?.Invoke(this, EventArgs.Empty);
+
+	public void OpenClocksInPlayers() => OpenClocksTryForAllClients.Invoke(this, EventArgs.Empty);
 
 	public async Task<Token> StartForPlayer(PbtACharacter character)
 	{
@@ -247,7 +253,25 @@ public class WhiteBoardService
 		t.UpdateNeeeded += Update;
 		Tokens.Add(t);
 
+		ForceSelection?.Invoke(this, t);
+		Update();
+
 		return t;
+	}
+
+	public void AddTokenFromPeople(ICharacter dude)
+	{
+		var t = new Token { 
+			ID = VTTTokens.FromICharacter, 
+			ComesFromImageName = dude.Name,
+			X = 50, Y = 50, 
+			Status = TokenStatus.Hidden };
+		t.UpdateNeeeded -= Update;
+		t.UpdateNeeeded += Update;
+		Tokens.Add(t);
+
+		ForceSelection?.Invoke(this, t);
+		Update();
 	}
 
 

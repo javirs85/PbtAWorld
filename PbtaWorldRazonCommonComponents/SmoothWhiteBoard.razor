@@ -73,25 +73,6 @@ else
 		}
 	</div>
 
-	<div class="ClocksTray" style="@(IsMaster?"top:90px;":"")">
-		@foreach(var cl in service.Clocks)
-		{
-			<FitDClockViewer clock="cl"
-				IsMaster=IsMaster
-				Width="90"
-				SpreadUpdate="service.ForzeUpdateInAllClients" 
-				DeleteMe="@(()=>{RemoveClock(cl);})"/>
-		}
-		@if(IsMaster)
-		{
-			<div class="d-flex justify-content-evenly fs-2" style="border-top:1px solid gray">
-				<i class="bi bi-4-circle hoverable" @onclick=AddClock4></i>
-				<i class="bi bi-6-circle hoverable" @onclick=AddClock6></i>
-				<i class="bi bi-8-circle hoverable" @onclick=AddClock8></i>
-			</div>
-		}
-		
-	</div>
 	@if(IsMaster)
 	{
 		<div class="DefinitionsSelector">
@@ -188,70 +169,10 @@ else
 				}
 				else
 				{
-					<div class="VTTToken 
-						@(IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
-						@(SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")"
-						style="
-							top:@(t.Y+"px"); left:@(t.X+"px"); 
-							width: @(t.SizePixels+"px");
-							height: @(t.SizePixels+"px");
-							border-radius:@(t.SizePixels+"px");
-							background-image:url(@("imgs/VTT/Tokens"+t.SizePixels+".png"));
-							background-position-x:@(t.ImgX+"px"); 
-							background-position-y:@(t.ImgY+"px");">
-						<div class="TokenStatus @(IsMaster?"Master_"+t.Status.ToString():"Player_"+t.Status.ToString())
-							@(SelectedTokens.Find(x => x.Guid == t.Guid) != null?"Selected":"")">
-						</div>
-						@if(t.Status != TokenStatus.Dead && t.maxHP != 0)
-						{
-							<div class="LifeContainer">
-								<div class="LifeBar" style="width:@(t.PercentageLife)%; background:@(t.LifeBarColor);"></div>
-							</div>
-						}
-						@if (IsMaster && SelectedTokens.Contains(t) && ShowingOptionsPanelForSelectedItems)
-						{
-							<div class="PropTools Token" @onclick="@(()=>{Console.WriteLine("tests");})" @onclick:preventDefault @onclick:stopPropagation>
-								<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(t); SelectedTokens.Remove(t);})><i class="bi bi-trash3"></i></button>
-								<EditForm Model="t">
-									<div class="d-flex gap-1 bg-dark text-white align-items-center ">
-										<label>MaxHP</label>
-										<InputNumber @bind-Value=t.maxHP style="width:40px;"/>
-										<label>HP</label>
-										<InputNumber @bind-Value=t.HP style="width:40px;" />
-									</div>
-									<InputSelect class="form-select" @bind-Value=t.Status>
-										@foreach (var v in Enum.GetValues(typeof(TokenStatus)))
-										{
-											<option value="@v">@v</option>
-										}
-									</InputSelect>
-									<InputSelect class="form-select" @bind-Value=t.Size>
-										@foreach (var v in Enum.GetValues(typeof(Token.Sizes)))
-										{
-											<option value="@v">@v</option>
-										}
-									</InputSelect>
-									<InputSelect class="form-select" @bind-Value=t.ID>
-										@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
-										{
-											<option value="@v">@v</option>
-										}
-									</InputSelect>
-									<InputSelect class="form-select" @bind-Value=t.MonsterKeyCode>
-										@if(Game is not null)
-										{
-											@foreach (var m in Game.MonsterDefinitionsInCurrentScene)
-											{
-												<option value="@m.ID">@m.Name</option>
-											}
-										}											
-									</InputSelect>
-								</EditForm>
-							</div>
-						}
-
-						<div class="NameContainer">@t.Character?.Name</div>
-					</div>
+					<VTTTokenViewer 
+						Token="t" Game="Game" IsMaster=IsMaster 
+						SelectedTokens="SelectedTokens"
+						ShowingOptionsPanelForSelectedItems=ShowingOptionsPanelForSelectedItems />
 				}
 			}
 			@foreach (var p in service.Props)
@@ -288,14 +209,16 @@ else
 					</div>
 				</div>
 			}
-
-			<div class="ToolsReminder">
-				<div style="border:1px solid red;
-						padding:10px; border-radius:7px;
-						@(_ShouldShowImageOnHover?"background:red; color:black;":"background:black;color:red; ")">
-					[I] mages
+			@if(SelectedGame == AvailableGames.DW)
+			{
+				<div class="ToolsReminder">
+					<div style="border:1px solid red;
+							padding:10px; border-radius:7px;
+							@(_ShouldShowImageOnHover?"background:red; color:black;":"background:black;color:red; ")">
+						[I] mages
+					</div>
 				</div>
-			</div>
+			}			
 		}
 		
 
@@ -395,34 +318,27 @@ else
 
 	VisibilityCalculator Calculator = new();
 
-	protected override void OnParametersSet()
+	protected async override Task OnInitializedAsync()
 	{
 		service.UpdateUI -= UpdateUi;
 		service.UpdateUI += UpdateUi;
 
 		service.FlashAttentionMarker -= FlashAttentionMarker;
 		service.FlashAttentionMarker += FlashAttentionMarker;
+
+		service.ForceSelection -= ForceSelection;
+		service.ForceSelection += ForceSelection;
+
+		if (!IsMaster)
+			await Join();
 	}
 
-	private void AddClock4()
+	private void ForceSelection(object? sender, Token t)
 	{
-		service.Clocks.Add(new Clock("Title", 4));
-		service.ForzeUpdateInAllClients();
-	}
-	private void AddClock6()
-	{
-		service.Clocks.Add( new Clock("Title", 6)); 
-		service.ForzeUpdateInAllClients();
-	}
-	private void AddClock8()
-	{
-		service.Clocks.Add(new Clock("Title", 8));
-		service.ForzeUpdateInAllClients();
-	}
-	private void RemoveClock(Clock cl)
-	{
-		service.Clocks.Remove(cl);
-		service.ForzeUpdateInAllClients();
+		if(SelectedTokens.Count > 0)
+			if(SelectedTokens[0].X != 50 || SelectedTokens[0].Y != 50)
+				SelectedTokens.Clear();
+		SelectedTokens.Add(t);
 	}
 
 	public void Start(PbtACharacter character)
@@ -431,9 +347,10 @@ else
 	}
 
 	private void UpdateUi(object? sender, EventArgs e) 
-	{
-		if(MyToken is not null)
-			viewMask = Calculator.GetVisibilityArea(MyToken.X+30, MyToken.Y+30, service.Walls); InvokeAsync(StateHasChanged);
+	{/*
+	if(MyToken is not null)
+	viewMask = Calculator.GetVisibilityArea(MyToken.X+30, MyToken.Y+30, service.Walls); InvokeAsync(StateHasChanged);
+	*/
 		InvokeAsync(StateHasChanged);
 	}
 
@@ -684,15 +601,25 @@ else
 			else { DrawModeOn = true; UsingAttentionMarker = false; }
 		}
 
-		else if(key == "KeyA")
+		else if (key == "KeyA")
 		{
 			DrawModeOn = false;
 			IsDeleting = false;
 			UsingAttentionMarker = !UsingAttentionMarker;
 		}
-
 		else if (key == "KeyK")
-			foreach (var t in SelectedTokens) t.Status = TokenStatus.Dead;
+			foreach (var t in SelectedTokens)
+				if (t.Status != TokenStatus.Dead) t.Status = TokenStatus.Dead;
+				else t.Status = TokenStatus.Normal;
+		else if(key == "KeyC")
+		{
+			service.Tokens.RemoveAll(x=> x.Status == TokenStatus.Dead);
+		}
+		else if(key == "KeyE")
+		{
+			SelectedTokens.Clear();
+			SelectedTokens.AddRange(service.Tokens);
+		}
 
 		else if (key.Contains("Digit") || key.Contains("Numpad"))
 			TryToMakeGroup(key);

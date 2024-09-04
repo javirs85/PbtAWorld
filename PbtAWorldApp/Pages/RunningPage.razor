@@ -150,8 +150,11 @@ else if(SelectedGame == AvailableGames.SV)
 		ImagesService.ForceFullScreenImageOnPlayers -= ShowImages;
 		ImagesService.ForceFullScreenImageOnPlayers += ShowImages;
 
-
+		VTTService.UpdateUI -= ForceUpdate;
+		VTTService.UpdateUI += ForceUpdate;
 		WhiteBoardService.CurrentGame = localGameId;
+		WhiteBoardService.OpenClocksTryForAllClients -= OpenClocks;
+		WhiteBoardService.OpenClocksTryForAllClients += OpenClocks;
 
 
 		if (localGameId == AvailableGames.DI)
@@ -181,8 +184,8 @@ else if(SelectedGame == AvailableGames.SV)
 			USPlayer?.ConnectoToMovesService(USMoves);
 			Meta.SelectedPlayer = USPlayer;
 
-			USGame.UpdateUI -= ForzeUpdate;
-			USGame.UpdateUI += ForzeUpdate;
+			USGame.UpdateUI -= ForceUpdate;
+			USGame.UpdateUI += ForceUpdate;
 			USGame.OnNewRoll -= ShowLastRoll;
 			USGame.OnNewRoll += ShowLastRoll;
 			USGame.NewInfoToast -= ShowInfo;
@@ -238,7 +241,8 @@ else if(SelectedGame == AvailableGames.SV)
 		SelectedGame = localGameId;
 	}
 
-	private void ForzeUpdate(object? s, EventArgs e) => InvokeAsync(StateHasChanged);
+	private void ForceUpdate(object? s, EventArgs e) => InvokeAsync(StateHasChanged);
+	private void OpenClocks(object? sender, EventArgs e) => OpenClocks();
 	private void OpenClocks()
 	{
 		IsShowingClocks = true;

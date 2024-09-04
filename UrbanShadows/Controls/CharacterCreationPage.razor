@@ -1,0 +1,161 @@
+﻿@using PbtALib
+@inject USMovesService Moves
+
+<div class="back" style="" @onclick:stopPropagation=true>
+	<div>
+		Suma uno a un atributo
+		<div class="ItemSelector">
+			<div class="@(SelectedAttribute == USAttributes.Blood?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Blood);})>Sangre @Player.Blood</div>
+			<div class="@(SelectedAttribute == USAttributes.Heart?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Heart);})>Corazón @Player.Heart</div>
+			<div class="@(SelectedAttribute == USAttributes.Mind?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Mind);})>Mente @Player.Mind</div>
+			<div class="@(SelectedAttribute == USAttributes.Soul?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Soul);})>Espíritu @Player.Spirit</div>
+		</div>
+	</div>
+	<div>
+		Suma uno a un Círculo
+		<div class="ItemSelector">
+			<div class="@(SelectedCircle == USAttributes.Mortality?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Mortality);})>Mortalis @Player.Mortalis</div>
+			<div class="@(SelectedCircle == USAttributes.Night?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Night);})>Noche @Player.Night</div>
+			<div class="@(SelectedCircle == USAttributes.Power?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Power);})>Poder @Player.Power</div>
+			<div class="@(SelectedCircle == USAttributes.Veil?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Veil);})>Velo @Player.Veil</div>
+		</div>
+	</div>
+	<div class="InnerColumnPack PlayBookMoves">
+		<div class="InnerColumnHeader d-flex align-items-center gap-1" style="cursor: pointer;">
+			Movimientos de @Player.Archetype.ToUI()
+		</div>
+		@if(Player.SelectedArchetypeMoves.Count < ExpectedNumberOfMoves)
+		{
+			<div class="d-flex flex-column">
+				@foreach (var m in PlaybookMovesOnScreen)
+				{
+					<div class="d-flex align-items-stretch" style="border:1px solid gray;">
+						<div class="d-flex align-items-center justify-content-center" style="width:40px;">
+							@if (Player.SelectedArchetypeMoves.Contains(m.ID))
+							{
+								<i class="bi bi-check2-square fs-2" @onclick=@(async()=>{await RemoveMove(m);})></i>
+							}
+							else
+							{
+								<i class="bi bi-square fs-4" @onclick=@(async()=>{await AddMove(m);})></i>
+							}
+						</div>
+						<div class="flexOccupy">
+							<MoveViewer ID="m.ID" Player=Player IsSelected=true Clicked=@(_ => {}) ForceUpdate="Update" />
+						</div>
+					</div>
+				}
+			</div>
+		}
+		else
+		{
+			<div class="d-flex flex-column">
+				@foreach (USMove m in Player.SelectedArchetypeMoves.Select(x=>Moves.GetMovement(x)))
+				{
+					<div class="d-flex align-items-stretch" style="border:1px solid gray;">
+						<div class="d-flex align-items-center justify-content-center" style="width:40px;">
+							@if (Player.SelectedArchetypeMoves.Contains(m.ID))
+							{
+								<i class="bi bi-check2-square fs-2" @onclick=@(async()=>{await RemoveMove(m);})></i>
+							}
+							else
+							{
+								<i class="bi bi-square fs-4" @onclick=@(async()=>{await AddMove(m);})></i>
+							}
+						</div>
+						<div class="flexOccupy">
+							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => {}) ForceUpdate="Update" />
+						</div>
+					</div>
+				}
+			</div>
+		}
+
+	</div>
+</div>
+
+@code {
+	[Parameter] public USCharacterSheet Player { get; set; } = new();
+	[Parameter] public USGameController? Game { get; set; } = null;
+
+	private List<USMove> PlaybookMovesOnScreen = new();
+
+	private int ExpectedNumberOfMoves
+	{
+		get
+		{
+			if (Player.Archetype == US_Classes.Oracle || Player.Archetype == US_Classes.Sworn || Player.Archetype == US_Classes.Wolf)
+			{
+				return 2;
+			}
+			else if (Player.Archetype == US_Classes.Mage)
+			{
+				return 0;
+			}
+			else
+			{
+				return 3;
+			}
+		}
+	}
+
+	protected override void OnParametersSet()
+	{
+		PlaybookMovesOnScreen.Clear();
+		PlaybookMovesOnScreen.AddRange(Moves.AllMovements.Where(
+			x => x.Archetipe == Player.Archetype &&
+			x.TypeOfMovement == MovementTypes.ArchetipeMovement));
+	}
+
+	private async Task SelectPlaybookMoves(){}
+
+	private void Update() => InvokeAsync(StateHasChanged);
+
+	private async Task AddMove(USMove m)
+	{
+		Player.SelectedArchetypeMoves.Add(m.ID);
+		await StoreChanges($"{Player.Name} añadió {m.Title}");
+		Update();
+	}
+
+	private async Task RemoveMove(USMove m)
+	{
+		if(Player.SelectedArchetypeMoves.Contains(m.ID))
+		{
+			Player.SelectedArchetypeMoves.Remove(m.ID);
+			await StoreChanges($"{Player.Name} quitó {m.Title}");
+			Update();
+		}		
+	}
+
+
+
+	USAttributes SelectedAttribute = USAttributes.None;
+	USAttributes SelectedCircle = USAttributes.None;
+	private async Task ChangeAttribute(USAttributes newAttribute)
+	{
+		if (newAttribute != SelectedAttribute)
+		{
+			Player.SetAttribute(SelectedAttribute, Player.GetAttribute(SelectedAttribute) - 1);
+			SelectedAttribute = newAttribute;
+			Player.SetAttribute(SelectedAttribute, Player.GetAttribute(SelectedAttribute) + 1);
+			await StoreChanges($"Cambió su {newAttribute.ToString()} a {Player.GetAttribute(SelectedAttribute)}");
+		}
+	}
+	private async Task ChangeCircle(USAttributes newAttribute)
+	{
+		if (newAttribute != SelectedCircle)
+		{
+			Player.SetAttribute(SelectedCircle, Player.GetAttribute(SelectedCircle) - 1);
+			SelectedCircle = newAttribute;
+			Player.SetAttribute(SelectedCircle, Player.GetAttribute(SelectedCircle) + 1);
+			await StoreChanges($"Cambió su {SelectedCircle.ToString()} a {Player.GetAttribute(SelectedCircle)}");
+		}
+	}
+
+	private async Task StoreChanges(string text)
+	{
+		if(Game is not null)
+			await Game.StoreChangesOnCharacter(Player, text);
+	}
+}

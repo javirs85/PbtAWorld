@@ -31,6 +31,7 @@ public enum DiceTypes
 
 public enum VTTTokens
 {
+	FromICharacter,
 	WhiteLady1,WhiteLady2, WhiteLady3,
 	WhiteMale1, WhiteMale2, WhiteMale3,
 	BoxGray, BoxRed,BoxBlue,

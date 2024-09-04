@@ -95,7 +95,8 @@ public enum USMoveIDs
 	CityFaction_05,
 	CityFaction_06,
 	CityFaction_07,
-	CityStatus1_04
+	CityStatus1_04,
+	D_Orac_04
 }
 
 public static class EnumExtensions

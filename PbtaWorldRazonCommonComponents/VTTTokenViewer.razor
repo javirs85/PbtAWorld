@@ -1,0 +1,116 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inject WhiteBoard.WhiteBoardService service
+@inject ImagesService ImagesService
+
+<div class="VTTToken 
+	@(IsMaster?"Master_"+Token.Status.ToString():"Player_"+Token.Status.ToString())
+	@(SelectedTokens.Find(x => x.Guid == Token.Guid) != null?"Selected":"")"
+	style="
+		top:@(Token.Y+"px"); left:@(Token.X+"px"); 
+		width: @(Token.SizePixels+"px");
+		height: @(Token.SizePixels+"px");
+		border-radius:@(Token.SizePixels+"px");
+		background-image:url(@ImagePath);
+		background-position-x:@(Token.ImgX+"px"); 
+		background-position-y:@(Token.ImgY+"px");
+		@(Token.ComesFromImage?"background-size:contain;":"")
+		position: @(isOUTSIDEMap?"relative":"absolute");">
+	<div class="TokenStatus @(IsMaster?"Master_"+Token.Status.ToString():"Player_"+Token.Status.ToString())
+		@(SelectedTokens.Find(x => x.Guid == Token.Guid) != null?"Selected":"")">
+	</div>
+	@if(Token.Status != TokenStatus.Dead && Token.maxHP != 0)
+	{
+		<div class="LifeContainer">
+			<div class="LifeBar" style="width:@(Token.PercentageLife)%; background:@(Token.LifeBarColor);"></div>
+		</div>
+	}
+	@if (IsMaster && SelectedTokens.Contains(Token) && ShowingOptionsPanelForSelectedItems)
+	{
+		<div class="PropTools Token" @onclick="@(()=>{Console.WriteLine("tests");})" @onclick:preventDefault @onclick:stopPropagation>
+			<button class="btn btn-danger" @onclick=@(()=>{service.DeleteToken(Token); SelectedTokens.Remove(Token);})><i class="bi bi-trash3"></i></button>
+			<EditForm Model="Token">
+				<div class="d-flex gap-1 bg-dark text-white align-items-center ">
+					<label>MaxHP</label>
+					<InputNumber @bind-Value=Token.maxHP style="width:40px;"/>
+					<label>HP</label>
+					<InputNumber @bind-Value=Token.HP style="width:40px;" />
+				</div>
+				<InputSelect class="form-select" @bind-Value=Token.Status>
+					@foreach (var v in Enum.GetValues(typeof(TokenStatus)))
+					{
+						<option value="@v">@v</option>
+					}
+				</InputSelect>
+				<InputSelect class="form-select" @bind-Value=Token.Size>
+					@foreach (var v in Enum.GetValues(typeof(Token.Sizes)))
+					{
+						<option value="@v">@v</option>
+					}
+				</InputSelect>
+				<InputSelect class="form-select" @bind-Value=Token.ID>
+					@foreach (var v in Enum.GetValues(typeof(VTTTokens)))
+					{
+						<option value="@v">@v</option>
+					}
+				</InputSelect>
+				<InputSelect class="form-select" @bind-Value=Token.MonsterKeyCode>
+					@if(Game is not null)
+					{
+						@foreach (var m in Game.MonsterDefinitionsInCurrentScene)
+						{
+							<option value="@m.ID">@m.Name</option>
+						}
+					}											
+				</InputSelect>
+			</EditForm>
+		</div>
+	}
+
+	
+	@if(Token.ComesFromImage)
+	{
+		<div class="NameContainer">
+			@Token.ComesFromImageName
+		</div>
+	}
+	else
+	{
+		<div class="NameContainer">
+			@Token.Character?.Name
+		</div>
+	}
+</div>
+
+@code 
+{
+	[Parameter] public Token Token { get; set; } = new();
+	[Parameter] public bool IsMaster { get; set; } = false;
+	[Parameter] public List<Token> SelectedTokens { get; set; } = new();
+	[Parameter] public bool ShowingOptionsPanelForSelectedItems { get; set; } = false;
+	[Parameter] public PbtALib.ifaces.IGameController? Game { get; set; }
+	[Parameter] public bool isOUTSIDEMap { get; set; } = false;
+
+
+	private VTTTokens _vtttoken = VTTTokens.WhiteLady1;
+	[Parameter] public VTTTokens VTTToken 
+	{	get{ return _vtttoken; }
+		set
+		{
+			_vtttoken = value;
+			Token.ID = _vtttoken;
+		}
+	}
+
+	private string ImagePath
+	{
+		get
+		{
+			if(Token.ComesFromImage)
+			{
+				return ImagesService.AllImages.Find(x => x.Name == Token.ComesFromImageName)?.src.Replace(" ", "%20") ?? $"imgs/VTT/Tokens{Token.SizePixels}.png";
+			}
+			else
+				return $"imgs/VTT/Tokens{Token.SizePixels}.png";
+		}
+	}
+}

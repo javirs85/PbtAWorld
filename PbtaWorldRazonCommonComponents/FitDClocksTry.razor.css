@@ -2,14 +2,15 @@
     position: fixed;
     top: 10px;
     left: 10px;
-    width: 400px;
+    width: 365px;
     z-index: 700;
-    background: black;
-    box-shadow: black 1px 1px 14px;
-    color:white;
-    min-height:100px;
-    border-radius:1em;
-    border:1px solid gray;
+    background: #230606;
+    box-shadow: #931b1b 1px 1px 14px;
+    color: white;
+    border-radius: 1em;
+    border: 1px solid #933c3c;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
 }
 
 .Exit {
@@ -25,4 +26,18 @@
 }
 .hoverable:hover{
     opacity:1;
+}
+.WrapContent div {
+    margin: 0px;
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 1em;
+}
+
+.Expanded {
+    max-height: 511px;
+}
+
+.Minified {
+    max-height: 40px;
 }

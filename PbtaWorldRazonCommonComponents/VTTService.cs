@@ -129,6 +129,8 @@ public class VTTService
 		Update();
 	}
 
+	
+
 	public Token AddToken(VTTTokens TokenType)
 	{
 		var t = new Token { ID = TokenType, X = 50, Y = 50, Status = TokenStatus.Hidden };
@@ -196,6 +198,10 @@ public class Token
 			UpdateNeeeded?.Invoke(this, EventArgs.Empty);
 		}
 	}
+
+	public bool ComesFromImage => ComesFromImageName != string.Empty;
+	public string ComesFromImageName { get; set; } = string.Empty;
+	private string ComesFromImagePath = "";
 
 
 	private TokenStatus _status = TokenStatus.Normal;
