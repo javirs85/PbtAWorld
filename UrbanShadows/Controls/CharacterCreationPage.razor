@@ -219,13 +219,14 @@
 		</Accordion>
 	</div>
 	<div class="flex-fill">
-		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=false PreventFullScreenMode=true/>
+		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=false PreventFullScreenMode=true ExitRequested="Close" />
 	</div>
 </div>
 
 @code {
 	[Parameter] public USCharacterSheet Player { get; set; } = new();
 	[Parameter] public USGameController? Game { get; set; } = null;
+	[Parameter] public EventCallback CloseMe { get; set; }
 
 	private string FirstColumnWidth = "50%";
 
@@ -308,6 +309,10 @@
 		}
 	}
 
+	private void Close()
+	{
+		CloseMe.InvokeAsync();
+	}
 
 	private async Task ChangeAttribute(USAttributes newAttribute)
 	{

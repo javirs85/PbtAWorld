@@ -455,7 +455,7 @@
 <div class="FullScreenModal CharacterCreationPage d-flex flex-column justify-content-center @(IsShowingCharacterCreationModal?"":"HideModal")" 
 	@onclick=HideCharacterCreationModal>
 	<div class="CloseButton"></div>
-	<CharacterCreationPage Player="Player" Game="Game"/>
+	<CharacterCreationPage Player="Player" Game="Game" CloseMe="HideCharacterCreationModal" />
 </div>
 <!-- Circle Upgrades Modal -->
 <div class="FullScreenModal CircleUpgrades d-flex flex-column justify-content-center @(IsShowingAdvances?"":"HideModal")" @onclick=HideCircleAdvances>
