@@ -805,7 +805,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
-				MainText = "Si al principio de la sesión estás patrullando activamente tu territorio, tira con Sangre. Si fallas o si no prestas atención a tu territorio, la situación se va a pique y tus problemas van cuesta abajo y sin frenos."
+				MainText = "Si al principio de la sesión estás patrullando activamente tu territorio, tira con Sangre. Si no estás patrullando asume que has sacado 6-"
 			},
 			ConsequencesOn79 = new Consequences
 			{
@@ -814,17 +814,18 @@ public class USMovesService : MovesServiceBase
 			ConsequencesOn10 = new Consequences
 			{
 				MainText = "Con un 10 +, tu territorio está seguro y los problemas son mínimos; obtienes + 1 a todas las tiradas para echarte a la calle en tu territorio."
-			}
+			},
+			ConsequencesOn6 = new Consequences { MainText = "la cosa se pone fea y tus problemas se desbocan." }
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_02, USAttributes.Blood)
 		{
 			Title = "Sabueso",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
+			IsSelected = false,
 			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando vayas a la caza de alguien,  tira con Sangre. Si fallas, algo desagradable te encuentra a ti primero."
+				MainText = "Cuando vayas a la caza de alguien,  tira con Sangre."
 			},
 			ConsequencesOn79 = new Consequences
 			{
@@ -833,7 +834,8 @@ public class USMovesService : MovesServiceBase
 			ConsequencesOn10 = new Consequences
 			{
 				MainText = "Con un 10+, obtienes +1 a la siguiente tirada contra él."
-			}
+			},
+			ConsequencesOn6 = new Consequences { MainText= " algo desagradable te encuentra a ti primero." }
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_03, USAttributes.None)
 		{
@@ -3601,6 +3603,12 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Wolf_04,
 				Text = "Aumenta tus sentidos lupinos a niveles supernaturales",
+				Archetype = US_Classes.Wolf
+			},
+			new LIO
+			{
+				ID= USMoveIDs.LIO_Wolf_05,
+				Text = "Requiere REGENERAR: Se te cierran las heridas; cúrate 1-daño.",
 				Archetype = US_Classes.Wolf
 			}
 		};

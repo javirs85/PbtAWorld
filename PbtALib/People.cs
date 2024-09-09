@@ -181,6 +181,15 @@ public class PbtAFaction : IPbtAFaction
 	public Guid ID { get; set; }
 	public string Name { get; set; }
 	public List<PbtACharacter> Members { get; set; } = new();
+	public string Assets { get; set; } = "Assets";
+	public string CurrentlyWorkingOn { get; set; } = "en que están ahora mismo";
+	public int Size { get; set; }
+	public int SizeTemp { get; set; }
+	public int Strength { get; set; }
+	public int StrengthTemp { get; set; }
+	public string SizeExplanation { get; set; } = "por que";
+	public string StrengthExplanation { get; set; } = "por que";
+	public FactionStatuses Status { get; set; } = FactionStatuses.NotSet;
 
 	public void DeleteCharacter(PbtACharacter ch)
 	{

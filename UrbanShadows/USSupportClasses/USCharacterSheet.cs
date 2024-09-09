@@ -33,6 +33,9 @@ public class USCharacterSheet : PbtACharacter
 	public string CurrentGoal { get; set; } = "";
 	public string MasterSeeds { get; set; } = "";
 
+	public USAttributes FavoriteStat { get; set; } = USAttributes.None;
+	public USAttributes FavoriteCircle { get; set; } = USAttributes.None;
+
 	public int Blood { get; set; } = 0;
 	public int Heart { get; set; } = 0;
 	public int Mind { get; set; } = 0;
@@ -215,7 +218,7 @@ public class USCharacterSheet : PbtACharacter
 				LIOs.Add(USMoveIDs.LIO_Wolf_03);
 				LIOs.Add(USMoveIDs.LIO_Wolf_04);
 				ArchetypeUniqueTittle1 = "Tu territorio";
-				ArchetypeUniqueBody1 = "Has reclamado un área de la ciudad como tuya. De forma predeterminada, su territorio cubre una o dos manzanas de la ciudad y tiene el problema: +crimen.\r\nElije2\r\n\r\n\r\n - Tu territorio abarca varias manzanas de la ciudad que has tenido durante años (agrega bendición: + influencia)\r\n - Las personas en tu territorio trabajan duro para mantener las calles seguras (eliminar +crimen)\r\n - Eres ampliamente aceptado como protector de este lugar (añadir bendición: +apoyado)\r\n - Tu territorio incluye terrenos abiertos para que recorras y caces (agrega bendición: +santuario)\r\n - Has hecho un trato con alguien o algo para proteger tu territorio cuando no estás cerca (bendición: +guardian)\r\n\r\n\r\nElije 2\r\n\r\n - Tu territorio le debe lealtad a alguien más poderoso que tú (añade problemas: +obligaciones)\r\n - Un NPC de Estado-3 quiere tu territorio y está trabajando para conseguirlo (agregar problema: +invasión)\r\n - Los mortales en el área están tratando activamente de revitalizar las empresas y la infraestructura locales (agregar problemas: + agitación)\r\n - Tu territorio está plagado de una presencia mística o sobrenatural (añade problemas: +encantado)\r\n - Has ofrecido protección dentro de tu territorio a alguien, y ahora sus problemas son tuyos (agregar problema: +fidelidad)";
+				ArchetypeUniqueBody1 = "Has reclamado un área de la ciudad como tuya. De forma predeterminada, su territorio cubre una o dos manzanas de la ciudad y tiene el problema: +crimen.\r\n\r\nElije2\r\n - Tu territorio abarca varias manzanas de la ciudad que has tenido durante años (agrega bendición: + influencia)\r\n - Las personas en tu territorio trabajan duro para mantener las calles seguras (eliminar +crimen)\r\n - Eres ampliamente aceptado como protector de este lugar (añadir bendición: +apoyado)\r\n - Tu territorio incluye terrenos abiertos para que recorras y caces (agrega bendición: +santuario)\r\n - Has hecho un trato con alguien o algo para proteger tu territorio cuando no estás cerca (bendición: +guardian)\r\n\r\nElije 2\r\n - Tu territorio le debe lealtad a alguien más poderoso que tú (añade problemas: +obligaciones)\r\n - Un NPC de Estado-3 quiere tu territorio y está trabajando para conseguirlo (agregar problema: +invasión)\r\n - Los mortales en el área están tratando activamente de revitalizar las empresas y la infraestructura locales (agregar problemas: + agitación)\r\n - Tu territorio está plagado de una presencia mística o sobrenatural (añade problemas: +encantado)\r\n - Has ofrecido protección dentro de tu territorio a alguien, y ahora sus problemas son tuyos (agregar problema: +fidelidad)";
 				ArchetypeUniqueTittle2 = "Tu Transformación";
 				ArchetypeUniqueBody2 = "De forma predeterminada, puedes cambiar a tu forma de lobo, a voluntad, a la vista de la luna: obtienes armamento natural (2-daño), 1-armadura y todas las cualidades y debilidades que elijas a continuación.\r\n\r\n*Elije 2 cualidades**\r\n - Enorme: gana armadura+1 y daño+1\r\n - Salvaje: tu daño es (ap) y escabroso\r\n - Versátil: +1 en curso para dejarlo salir\r\n - Veloz: toma +1 en curso para escapar\r\n - Astuto: +1 para mantener la calma\r\n - Brutal: cuenta como un grupo pequeño\r\n\r\n\r\nElije 2 debilidades:\r\n\r\n - Las armas plateadas ignoran tu armadura e infligen daño+1 \r\n - A veces pierdes el control mientras te transformas \r\n - A veces te transformas cuando estás estresado o enojado. \r\n - La transformación es breve; la pierdes al final de una escena \r\n - La transformación es violenta y dolorosa; sufres 1-daño (ap)\r\n - La transformación llama la atención de las criaturas sobrenaturales.";
 				Aspect = "ropa holgada, ropa oscura, ropa sucia, ropa táctica";
@@ -415,7 +418,7 @@ public class USCharacterSheet : PbtACharacter
 		if (Moves is not null)
 		{
 			SelectedArchetypeMoves = Moves.GetInitialMovesIDsByArchetype(Archetype);
-			LIOs = (from lio in Moves.AllLio where lio.Archetype == Archetype select lio.ID).ToList();
+			//LIOs = (from lio in Moves.AllLio where lio.Archetype == Archetype select lio.ID).ToList();
 		}
 	}
 

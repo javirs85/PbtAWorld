@@ -6,10 +6,10 @@
 
 <div class="FullScreenModal" @onclick=Hide>
     <div class="ModalBody" @onclick:stopPropagation>
-        @if (CSService.People is not null && CSService.People.Circles.Count > 1)
+        @if (CSService.Game.People is not null && CSService.Game.People.Circles.Count > 1)
         {
             <div class="CirclesPackContainer">
-                @foreach (var c in CSService.People.Circles)
+                @foreach (var c in CSService.Game.People.Circles)
                 {
                     <div class="CircleContainer">
                         <div class="CircleContainerHeader">@c.Name</div>
@@ -214,7 +214,7 @@
 
     private void AddNewFaction(Circle c)
     {
-        var newF = CSService?.People?.AddNewFactionToCircle(c);
+        var newF = CSService?.Game?.People?.AddNewFactionToCircle(c);
 
         SelectedFaction = newF ;
         IsShowingEditFaction = true;
@@ -232,34 +232,34 @@
 
     private async Task UpdateSelectedFaction()
     {
-        if(CSService is not null && CSService.People is not null &&  SelectedFaction is not null)
-            await CSService?.People?.SaveChangesOnFaction(SelectedFaction);
+        if(CSService is not null && CSService.Game.People is not null &&  SelectedFaction is not null)
+            await CSService?.Game?.People?.SaveChangesOnFaction(SelectedFaction);
 
         IsShowingEditFaction = false;
     }
 
     private async Task UpdateSelectedCharacter()
     {
-        if (CSService is not null && CSService.People is not null && SelectedCharacter is not null)
-            await CSService?.People?.SaveChangesOnCharacter(SelectedCharacter);
+        if (CSService is not null && CSService.Game.People is not null && SelectedCharacter is not null)
+            await CSService?.Game?.People?.SaveChangesOnCharacter(SelectedCharacter);
 
         IsShowingEditIChar = false;
     }
 
     private async Task UpdateSelectedICharacter(PbtACharacter ch)
     {
-        await CSService?.People?.SaveChangesOnCharacter(ch);
+        await CSService?.Game?.People?.SaveChangesOnCharacter(ch);
     }
 
     private async Task DeleteSelectedFaction()
     {
-        await CSService?.People?.DeleteFaction(SelectedFaction);
+        await CSService?.Game?.People?.DeleteFaction(SelectedFaction);
         IsShowingEditFaction = false;
     }
 
     private async Task DeleteSelectedCharacter()
     {
-        await CSService?.People?.DeleteCharacter(SelectedCharacter);
+        await CSService?.Game?.People?.DeleteCharacter(SelectedCharacter);
         IsShowingEditIChar = false;
     }
 

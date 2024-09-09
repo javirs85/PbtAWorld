@@ -25,11 +25,11 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
     public SquareMap SquareMap = new SquareMap();
 	public ClocksManager Clocks = new();
 
+	public People People { get; set; }
+	public event EventHandler UpdatePeopleViewerInAllClientsEvent;
 
 	private Random random = new Random();
 	private LastRollViewerService lastRollViewer;
-
-	public IPeopleCast People;
 
 	public GameControllerBase(MovesServiceBase moves, IDataBaseController DB, LastRollViewerService LastRoll)
     {
@@ -247,5 +247,8 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		ImageToShowToAllPlayers?.Invoke(this, url);
 	}
 
-
+	public void UpdatePeopleViewerInAllClients()
+	{
+		UpdatePeopleViewerInAllClientsEvent?.Invoke(this, EventArgs.Empty);
+	}
 }

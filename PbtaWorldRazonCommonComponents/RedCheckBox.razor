@@ -25,6 +25,10 @@
 		<!--img @onclick=InternalClick @onclick:stopPropagation=true class="CheckboxGrayBorder" src="imgs/US/CircularEmpty.png" /-->
 		<div class="CheckboxGrayBorder" @onclick=InternalClick @onclick:stopPropagation=true></div>
 	}
+	else if(Style == Styles.bootstrapDark)
+	{
+		<i class="bi bi-square-fill opacity-75" @onclick=InternalClick @onclick:stopPropagation=true></i>
+	}
 }
 else
 {
@@ -60,10 +64,14 @@ else
 	{
 		<img @onclick=InternalClick @onclick:stopPropagation=true class="CheckboxGrayBorder" src="imgs/US/BloodSplat.png" />
 	}
+	else if (Style == Styles.bootstrapDark)
+	{
+		<i class="bi bi-square opacity-50" @onclick=InternalClick @onclick:stopPropagation=true></i>
+	}
 }
 
 @code {
-	public enum Styles {White, Transparent, Diamond,  DiamondGray, Circular, RED, bloodSplat};
+	public enum Styles {White, Transparent, Diamond,  DiamondGray, Circular, RED, bloodSplat, bootstrapDark};
 
 	[Parameter] public bool Value { get; set; } = false;
 	[Parameter] public EventCallback Clicked { get; set; }

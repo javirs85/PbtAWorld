@@ -1,4 +1,5 @@
-﻿@using PbtALib;
+﻿@using Microsoft.JSInterop
+@using PbtALib;
 @using UrbanShadows.Controls
 @using UrbanShadows.Pages
 @using static PbtaWorldRazonCommonComponents.CharacterSelector;
@@ -13,6 +14,7 @@
 @inject CharacterSelectorService CharacterSelectorService
 @inject IDataBaseController Meta;
 @inject VTTService VTT
+@inject IJSRuntime JS
 
 <MoveSelector />
 
@@ -20,340 +22,366 @@
 
 <div class="MainSheetDiv" style="display:@(IsShowingVTT?"none":"") ;">
 	<EditForm Model="Player">
-	<div class="BigContainer d-flex">
-		<div class="LeftColumn">
-			<div class="LeftColumnHeader">
-				<div class="HeaderInner">
-					<div>@Player.Name</div>
-					<div>-</div>
-					<div>@Player.Archetype.ToUI()</div>
-					<img src="imgs/US/UpgradeButton.svg" class="UpgradeButton" @onclick=ShowCircleAdvances/>
-				</div>
-			</div>
-			<div class="STATS d-flex flex-column">
-				<div class="d-flex">
-					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Blood" Player="Player" UpdateRequested="Update"/></div>
-					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Heart" Player="Player" UpdateRequested="Update" /></div>
-					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Mind" Player="Player" UpdateRequested="Update" /></div>
-					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Soul" Player="Player" UpdateRequested="Update" /></div>
-				</div>
-				<div class="d-flex">
-					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Mortality" Player="Player" UpdateRequested="Update" /></div>
-					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Night" Player="Player" UpdateRequested="Update" /></div>
-					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Power" Player="Player" UpdateRequested="Update" /></div>
-					<div class="flex-grow-1"><StatViewer Attr="USAttributes.Veil" Player="Player" UpdateRequested="Update" /></div>
-				</div>
-			</div>
-			@if (Player.IsNightTick == true && Player.IsMortalisTick == true && Player.IsPowerTick == true && Player.IsVeilTick == true)
-			{
-				<div class="w-100 p-2 d-flex justify-content-center" style="background: #360b0b;">
-					<div class="RoundButton IntegratedRed" @onclick=ShowCircleAdvances>
-						Obtener mejora
-					</div>
-					<div class="RoundButton IntegratedRed" @onclick=ResetCircles>
-						Reset
+		<div class="BigContainer d-flex">
+			<div class="LeftColumn">
+				<div class="LeftColumnHeader">
+					<div class="HeaderInner">
+						<div>@Player.Name</div>
+						<div>-</div>
+						<div>@Player.Archetype.ToUI()</div>
+						<img src="imgs/US/UpgradeButton.svg" class="UpgradeButton" @onclick=ShowCircleAdvances/>
 					</div>
 				</div>
-			}
-			<div class="CORRUPCION d-flex flex-column CorruptionArea Darker">
-				<div class="LeftColumnTittle">CORRUPCIÓN</div>
-				<div style="font-size:14px; text-align:center;">@Player.CorruptionMoveDetail</div>
-				<div class="flex-grow-1 d-flex justify-content-around align-items-center gap-3">
-					<img src="imgs/Icons/Skull_@(Player.Corruption >= 1?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(1)) />
-					<img src="imgs/Icons/Skull_@(Player.Corruption >= 2?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(2)) />
-					<img src="imgs/Icons/Skull_@(Player.Corruption >= 3?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(3)) />
-					<img src="imgs/Icons/Skull_@(Player.Corruption >= 4?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(4)) />
-					<img src="imgs/Icons/Skull_@(Player.Corruption >= 5?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(5)) />
-					<img src="imgs/US/UpgradeButton.svg" class="UpgradeButton" @onclick=ShowCorruptionAdvances/>
-				</div>
-			</div>
-			<div class="DAÑO d-flex flex-column justify-content-center px-4">
-				<div class="LeftColumnTittle  d-flex justify-content-center">DAÑO</div>
-				<div class="d-flex gap-2">
-					<div class="d-flex flex-column flex-grow-1 gap-1 DamageArea Darker">
-						<div class="WoundsContainer Soft">
-							<div class="d-flex w-100 justify-content-around">
-								<div class="Wound SoftInner @(Player.Damage > 0?"WoundMark":"")" @onclick=@(_ => WoundClicked(1))></div>
-							</div>
-							<InputText @bind-Value="WoundsLightText" style="background: #252323; color: white; border: none; outline:none;" />
-						</div>
-						<div class="WoundsContainer Mid">
-							<div class="d-flex w-100 justify-content-around">
-								<div class="Wound MidInner @(Player.Damage > 1?"WoundMark":"")" @onclick=@(_ => WoundClicked(2))></div>
-								<div class="Wound MidInner @(Player.Damage > 2?"WoundMark":"")" @onclick=@(_ => WoundClicked(3))></div>
-							</div>
-							<InputText @bind-Value="WoundsMidText"
-							@onchange=@(()=>{Game?.StoreChangesOnCharacter(Player,"Cambió el detalle de sus herídas.");})  
-								style="background: #252323; color: white; border: none; outline:none;" />
-						</div>
-						<div class="WoundsContainer Hard">
-							<div class="d-flex w-100 justify-content-around">
-								<div class="Wound HardInner @(Player.Damage > 3?"WoundMark":"")" @onclick=@(_ => WoundClicked(4))></div>
-								<div class="Wound HardInner @(Player.Damage > 4?"WoundMark":"")" @onclick=@(_ => WoundClicked(5))></div>
-							</div>
-							<InputText @bind-Value="WoundsHardText" style="background: #252323; color: white; border: none; outline:none;" />
-						</div>
+				<div class="STATS d-flex flex-column">
+					<div class="d-flex">
+						<div class="flex-grow-1"><StatViewer Attr="USAttributes.Blood" Player="Player" UpdateRequested="Update"/></div>
+						<div class="flex-grow-1"><StatViewer Attr="USAttributes.Heart" Player="Player" UpdateRequested="Update" /></div>
+						<div class="flex-grow-1"><StatViewer Attr="USAttributes.Mind" Player="Player" UpdateRequested="Update" /></div>
+						<div class="flex-grow-1"><StatViewer Attr="USAttributes.Soul" Player="Player" UpdateRequested="Update" /></div>
 					</div>
-					<div class="ArmorContainer">
-						<div><InputText @bind-Value="ArmorString" style="width: 40px; border:none;  text-align:center;  outline:none; background:transparent;" /></div>
+					<div class="d-flex">
+						<div class="flex-grow-1"><StatViewer Attr="USAttributes.Mortality" Player="Player" UpdateRequested="Update" /></div>
+						<div class="flex-grow-1"><StatViewer Attr="USAttributes.Night" Player="Player" UpdateRequested="Update" /></div>
+						<div class="flex-grow-1"><StatViewer Attr="USAttributes.Power" Player="Player" UpdateRequested="Update" /></div>
+						<div class="flex-grow-1"><StatViewer Attr="USAttributes.Veil" Player="Player" UpdateRequested="Update" /></div>
 					</div>
 				</div>
-			</div>
-			<div class="SEQUELAS d-flex flex-column mt-4">
-				<div class="LeftColumnTittle w-100 d-flex justify-content-center mb-1">CICATRICES</div>
-				<div class="d-flex flex-column gap-0 px-5" style="color: #bfbfbf;">
-					<div class="d-flex gap-1">
-						<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
-						Value=Player.IsBloodScarUsed
-						Clicked="@(async ()=>{await ToggleScar(USAttributes.Blood);})"
-						/>
-						Destrozado (-1 Sangre)
-					</div>
-					<div class="d-flex gap-1">
-						<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
-						Value=Player.IsHeartScarUsed
-						Clicked="@(async ()=>{await ToggleScar(USAttributes.Heart);})"
-						/>
-						Descorazonado (-1 Corazón)
-					</div>
-					<div class="d-flex gap-1">
-						<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
-						Value=Player.IsMindScarUsed
-						Clicked="@(async ()=>{await ToggleScar(USAttributes.Mind);})"
-						/>
-						Deshecho (-1 Mente)
-					</div>
-					<div class="d-flex gap-1">
-						<RedCheckBox 
-						Style="RedCheckBox.Styles.bloodSplat"
-						Value=Player.IsSoulScarUsed
-						Clicked="@(async ()=>{await ToggleScar(USAttributes.Soul);})"
-						/>
-						Quebrado (-1 Espíritu)
-					</div>
-				</div>
-			</div>
-			<div class="EQUIPO d-flex flex-column mt-4 flex-grow-1">
-				<div class="LeftColumnTittle w-100 d-flex justify-content-center mb-1">EQUIPO</div>
-				<div class="d-flex flex-grow-1 p-3 pt-0">
-					<InputTextArea class="form-control" @bind-Value="EquipeText" style="flex-grow: 1; background: #130202; color:#bfbfbf; outline:none; border:1px solid #4E1212; border-radius:4px;" />
-				</div>
-			</div>
-		</div>
-		<div class="InnerColumn ms-2" style="@(CurrentFocus==FocusOn.firstColumn?"flex:2!important;":"flex:1!important")">
-			<div class="InnerColumnPack BasicMoves">
-				<div class="InnerColumnHeader" style="cursor: pointer;"
-				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-					Movimientos básicos
-				</div>
-				
-				<div class="InnerColumContent">
-					@foreach (var m in BasicMovesOnScreen)
-					{
-						<MoveViewer ID="m.ID" 
-							Player=Player 
-							IsSelected=false 
-							Clicked=@(_ => Select(m, FocusOnDetailed.Basic)) 
-							ForceUpdate="Update" />
-					}
-				</div>
-				<div class="LetItOutBox">
-					@foreach(var m in Player.LIOs)
-					{
-						<div>@Moves.AllLio.Find(x=>x.ID==m)?.Text</div>
-					}
-				</div>
-			</div>
-			
-			
-			<div class="InnerColumnPack Deuda">
-				<div class="InnerColumnHeader" style="cursor: pointer;"
-				@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-					Movimientos de deuda
-				</div>
-				@if (CurrentFocusDetail != FocusOnDetailed.Basic && CurrentFocusDetail != FocusOnDetailed.Circle)
+				@if (Player.IsNightTick == true && Player.IsMortalisTick == true && Player.IsPowerTick == true && Player.IsVeilTick == true)
 				{
-					<div class="InnerColumContent">
-						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DebtMovements))
-						{
-							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.DebtMoves)) ForceUpdate="Update" />
-						}
+					<div class="w-100 p-2 d-flex justify-content-center" style="background: #360b0b;">
+						<div class="RoundButton IntegratedRed" @onclick=ShowCircleAdvances>
+							Obtener mejora
+						</div>
+						<div class="RoundButton IntegratedRed" @onclick=ResetCircles>
+							Reset
+						</div>
 					</div>
 				}
-			</div>
-		</div>
-		<div class="InnerColumn" style="@(CurrentFocus==FocusOn.secondColumn?"flex:2!important;":"flex:1!important")">
-			<div class="InnerColumnPack PlayBookMoves">
-				<div class="InnerColumnHeader d-flex align-items-center gap-1" style="cursor: pointer;">
-					Movimientos de @Player.Archetype.ToUI()  
-						@if (Player.Archetype == US_Classes.Oracle || Player.Archetype == US_Classes.Sworn || Player.Archetype == US_Classes.Wolf)
-						{
-							@if (PlaybookMovesOnScreen.Count < 2)
-							{
-								<span class="fs-2">Elije DOS</span>
-							}
-						}
-						else if (Player.Archetype == US_Classes.Mage)
-						{
-
-						}
-						else
-						{
-							@if (PlaybookMovesOnScreen.Count < 3)
-							{
-								<span class="fs-2">Elije TRES</span>
-							}
-						}
-						<i class="bi bi-exposure fs-4 editButton" @onclick=SelectPlaybookMoves></i>
+				<div class="CORRUPCION d-flex flex-column CorruptionArea Darker">
+					<div class="LeftColumnTittle">CORRUPCIÓN</div>
+					<div style="font-size:14px; text-align:center;">@Player.CorruptionMoveDetail</div>
+					<div class="flex-grow-1 d-flex justify-content-around align-items-center gap-3">
+						<img src="imgs/Icons/Skull_@(Player.Corruption >= 1?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(1)) />
+						<img src="imgs/Icons/Skull_@(Player.Corruption >= 2?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(2)) />
+						<img src="imgs/Icons/Skull_@(Player.Corruption >= 3?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(3)) />
+						<img src="imgs/Icons/Skull_@(Player.Corruption >= 4?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(4)) />
+						<img src="imgs/Icons/Skull_@(Player.Corruption >= 5?"YES":"NO").png" style="cursor:pointer;" @onclick=@(_ => CorruptionClicked(5)) />
+						<img src="imgs/US/UpgradeButton.svg" class="UpgradeButton" @onclick=ShowCorruptionAdvances/>
 					</div>
-				
-				<div class="InnerColumContent">
-					@foreach (var m in PlaybookMovesOnScreen)
-					{
-						<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Playbook)) ForceUpdate="Update" />
-					}
 				</div>
-				
-			</div>
-			<div class="InnerColumnPack CorruptionMoves">
-				<div class="InnerColumnHeader  d-flex align-items-center gap-1" style="cursor: pointer;">
-					Movimientos de Corrupción <i class="bi bi-exposure fs-4 editButton" @onclick=SelectNewCorruptionMove></i>
-				</div>
-				@if (CurrentFocusDetail != FocusOnDetailed.Playbook)
-				{
-					<div class="InnerColumContent">
-						@foreach (var m in CorruptionMovesOnScreen)
-						{
-							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Corruption)) ForceUpdate="Update" />
-						}
+				<div class="DAÑO d-flex flex-column justify-content-center px-4">
+					<div class="LeftColumnTittle  d-flex justify-content-center">DAÑO</div>
+					<div class="d-flex gap-2">
+						<div class="d-flex flex-column flex-grow-1 gap-1 DamageArea Darker">
+							<div class="WoundsContainer Soft">
+								<div class="d-flex w-100 justify-content-around">
+									<div class="Wound SoftInner @(Player.Damage > 0?"WoundMark":"")" @onclick=@(_ => WoundClicked(1))></div>
+								</div>
+								<InputText @bind-Value="WoundsLightText" style="background: #252323; color: white; border: none; outline:none;" />
+							</div>
+							<div class="WoundsContainer Mid">
+								<div class="d-flex w-100 justify-content-around">
+									<div class="Wound MidInner @(Player.Damage > 1?"WoundMark":"")" @onclick=@(_ => WoundClicked(2))></div>
+									<div class="Wound MidInner @(Player.Damage > 2?"WoundMark":"")" @onclick=@(_ => WoundClicked(3))></div>
+								</div>
+								<InputText @bind-Value="WoundsMidText"
+								@onchange=@(()=>{Game?.StoreChangesOnCharacter(Player,"Cambió el detalle de sus herídas.");})  
+									style="background: #252323; color: white; border: none; outline:none;" />
+							</div>
+							<div class="WoundsContainer Hard">
+								<div class="d-flex w-100 justify-content-around">
+									<div class="Wound HardInner @(Player.Damage > 3?"WoundMark":"")" @onclick=@(_ => WoundClicked(4))></div>
+									<div class="Wound HardInner @(Player.Damage > 4?"WoundMark":"")" @onclick=@(_ => WoundClicked(5))></div>
+								</div>
+								<InputText @bind-Value="WoundsHardText" style="background: #252323; color: white; border: none; outline:none;" />
+							</div>
+						</div>
+						<div class="ArmorContainer">
+							<div><InputText @bind-Value="ArmorString" style="width: 40px; border:none;  text-align:center;  outline:none; background:transparent;" /></div>
+						</div>
 					</div>
-				}
+				</div>
+				<div class="SEQUELAS d-flex flex-column mt-4">
+					<div class="LeftColumnTittle w-100 d-flex justify-content-center mb-1">CICATRICES</div>
+					<div class="d-flex flex-column gap-0 px-5" style="color: #bfbfbf;">
+						<div class="d-flex gap-1">
+							<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
+							Value=Player.IsBloodScarUsed
+							Clicked="@(async ()=>{await ToggleScar(USAttributes.Blood);})"
+							/>
+							Destrozado (-1 Sangre)
+						</div>
+						<div class="d-flex gap-1">
+							<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
+							Value=Player.IsHeartScarUsed
+							Clicked="@(async ()=>{await ToggleScar(USAttributes.Heart);})"
+							/>
+							Descorazonado (-1 Corazón)
+						</div>
+						<div class="d-flex gap-1">
+							<RedCheckBox Style="RedCheckBox.Styles.bloodSplat"
+							Value=Player.IsMindScarUsed
+							Clicked="@(async ()=>{await ToggleScar(USAttributes.Mind);})"
+							/>
+							Deshecho (-1 Mente)
+						</div>
+						<div class="d-flex gap-1">
+							<RedCheckBox 
+							Style="RedCheckBox.Styles.bloodSplat"
+							Value=Player.IsSoulScarUsed
+							Clicked="@(async ()=>{await ToggleScar(USAttributes.Soul);})"
+							/>
+							Quebrado (-1 Espíritu)
+						</div>
+					</div>
+				</div>
+				<div class="EQUIPO d-flex flex-column mt-4 flex-grow-1">
+					<div class="LeftColumnTittle w-100 d-flex justify-content-center mb-1">EQUIPO</div>
+					<div class="d-flex flex-grow-1 p-3 pt-0">
+						<InputTextArea class="form-control" @bind-Value="EquipeText" 
+							style="	background: #130202; color:#bfbfbf; 
+									outline:none; border:1px solid #4E1212; 
+									border-radius:4px;" />
+					</div>
+				</div>
 			</div>
-			@if(UniqueMovesOnScreen.Count != 0)
-			{
-				<div class="InnerColumnPack EspecialesPlaybook">
+			<div class="InnerColumn ms-2" style="@(CurrentFocus==FocusOn.firstColumn?"flex:2!important;":"flex:1!important")">
+				<div class="InnerColumnPack BasicMoves">
 					<div class="InnerColumnHeader" style="cursor: pointer;"
-						@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-						Movimientos especiales de @Player.Archetype.ToUI()
+					@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+						Movimientos básicos
 					</div>
-					@if (CurrentFocusDetail == FocusOnDetailed.nowhere || CurrentFocus == FocusOn.firstColumn || CurrentFocusDetail == FocusOnDetailed.Unique)
+				
+					<div class="InnerColumContent">
+						@foreach (var m in BasicMovesOnScreen)
+						{
+							<MoveViewer ID="m.ID" 
+								Player=Player 
+								IsSelected=false 
+								Clicked=@(_ => Select(m, FocusOnDetailed.Basic)) 
+								ForceUpdate="Update" />
+						}
+					</div>
+					<div class="LetItOutBox">
+						@foreach(var m in Player.LIOs)
+						{
+							<div>@Moves.AllLio.Find(x=>x.ID==m)?.Text</div>
+						}
+					</div>
+				</div>
+			
+			
+				<div class="InnerColumnPack Deuda">
+					<div class="InnerColumnHeader" style="cursor: pointer;"
+					@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+						Movimientos de deuda
+					</div>
+					@if (CurrentFocusDetail != FocusOnDetailed.Basic && CurrentFocusDetail != FocusOnDetailed.Circle)
 					{
 						<div class="InnerColumContent">
-							@foreach (var m in UniqueMovesOnScreen)
+							@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DebtMovements))
 							{
-								<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Unique)) ForceUpdate="Update" />
+								<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.DebtMoves)) ForceUpdate="Update" />
 							}
 						</div>
 					}
 				</div>
-			}
+			</div>
+			<div class="InnerColumn" style="@(CurrentFocus==FocusOn.secondColumn?"flex:2!important;":"flex:1!important")">
+				<div class="InnerColumnPack PlayBookMoves">
+					<div class="InnerColumnHeader d-flex align-items-center gap-1" style="cursor: pointer;">
+						Movimientos de @Player.Archetype.ToUI()  
+							@if (Player.Archetype == US_Classes.Oracle || Player.Archetype == US_Classes.Sworn || Player.Archetype == US_Classes.Wolf)
+							{
+								@if (PlaybookMovesOnScreen.Count < 2)
+								{
+									<span class="fs-2">Elije DOS</span>
+								}
+							}
+							else if (Player.Archetype == US_Classes.Mage)
+							{
 
-			<div class="InnerColumnPack CircleMoves">
-				<div class="InnerColumnHeader" style="cursor: pointer;"
-					 @onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
-					Movimientos de círculo
-				</div>
-				@if (CurrentFocusDetail != FocusOnDetailed.Basic)
-				{
+							}
+							else
+							{
+								@if (PlaybookMovesOnScreen.Count < 3)
+								{
+									<span class="fs-2">Elije TRES</span>
+								}
+							}
+							<i class="bi bi-exposure fs-4 editButton" @onclick=SelectPlaybookMoves></i>
+						</div>
+				
 					<div class="InnerColumContent">
-						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionMovement))
+						@foreach (var m in PlaybookMovesOnScreen)
 						{
-							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Circle)) ForceUpdate="Update" />
+							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Playbook)) ForceUpdate="Update" />
+						}
+					</div>
+				
+				</div>
+				<div class="InnerColumnPack CorruptionMoves">
+					<div class="InnerColumnHeader  d-flex align-items-center gap-1" style="cursor: pointer;">
+						Movimientos de Corrupción <i class="bi bi-exposure fs-4 editButton" @onclick=SelectNewCorruptionMove></i>
+					</div>
+					@if (CurrentFocusDetail != FocusOnDetailed.Playbook)
+					{
+						<div class="InnerColumContent">
+							@foreach (var m in CorruptionMovesOnScreen)
+							{
+								<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Corruption)) ForceUpdate="Update" />
+							}
+						</div>
+					}
+				</div>
+				@if(UniqueMovesOnScreen.Count != 0)
+				{
+					<div class="InnerColumnPack EspecialesPlaybook">
+						<div class="InnerColumnHeader" style="cursor: pointer;"
+							@onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+							Movimientos especiales de @Player.Archetype.ToUI()
+						</div>
+						@if (CurrentFocusDetail == FocusOnDetailed.nowhere || CurrentFocus == FocusOn.firstColumn || CurrentFocusDetail == FocusOnDetailed.Unique)
+						{
+							<div class="InnerColumContent">
+								@foreach (var m in UniqueMovesOnScreen)
+								{
+									<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Unique)) ForceUpdate="Update" />
+								}
+							</div>
 						}
 					</div>
 				}
-			</div>
-			
-			
-		</div>
-		<div class="InnerColumn" style="gap:0px !important;">
-			<div class="PLAYBOOK UNIQUES InnerColumnPack">
-				<div class="InnerColumnHeader d-flex align-items-center gap-1">
-					@Player.ArchetypeUniqueTittle1
-					<i class="bi bi-arrow-down-circle fs-4 editButton" data-bs-toggle="collapse"
-					   data-bs-target="#Unique1original"></i>
-				</div>
-				<div class="InnerColumContent">
-					<InputTextArea class="form-control" style="outline:none; border: none; background: black; color:#7d7d7d;"
-					@bind-Value=Unique1Screen />
-				</div>
-				<div>
-					<div id="Unique1original" class="collapse">
-						<DecodedString Value="@Player.ArchetypeUniqueBody1" />
+
+				<div class="InnerColumnPack CircleMoves">
+					<div class="InnerColumnHeader" style="cursor: pointer;"
+						 @onclick=@(()=>{Select(null, FocusOnDetailed.nowhere);})>
+						Movimientos de círculo
 					</div>
+					@if (CurrentFocusDetail != FocusOnDetailed.Basic)
+					{
+						<div class="InnerColumContent">
+							@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionMovement))
+							{
+								<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.Circle)) ForceUpdate="Update" />
+							}
+						</div>
+					}
 				</div>
+				@if (UniqueMovesOnScreen.Count == 0)
+				{
+
+					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DramaticMovement && x.Archetipe == Player.Archetype))
+					{
+						@if (m.Title.Contains("intimi") || m.Title.Contains("inicial") || m.Title.Contains("final"))
+						{
+							<div class="InnerColumnPack DramaMoves">
+								<div class="InnerColumnHeader">
+
+									@m.Title
+
+								</div>
+								<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
+									<DecodedString Value="@m.PreCondition.MainText" />
+								</div>
+							</div>
+						}
+					}
+				}
+			
 			</div>
-			@if (!string.IsNullOrEmpty(Player.ArchetypeUniqueTittle2))
-			{
-				<div class="InnerColumnPack">
+			<div class="InnerColumn" style="gap:0px !important;">
+				<div class="PLAYBOOK UNIQUES InnerColumnPack">
 					<div class="InnerColumnHeader d-flex align-items-center gap-1">
-						@Player.ArchetypeUniqueTittle2
+						@Player.ArchetypeUniqueTittle1
 						<i class="bi bi-arrow-down-circle fs-4 editButton" data-bs-toggle="collapse"
-						   data-bs-target="#Unique2original"></i>
+						   data-bs-target="#Unique1original"></i>
 					</div>
 					<div class="InnerColumContent">
-						<InputTextArea class="form-control"
-										   style="outline:none; border: none; background: black; color:#7d7d7d;"
-										   @bind-Value=Unique2Screen />
+						<InputTextArea class="form-control" style="outline:none; border: none; background: black; color:#7d7d7d;"
+						@bind-Value=Unique1Screen />
 					</div>
 					<div>
-						<div id="Unique2original" class="collapse">
-							<DecodedString Value="@Player.ArchetypeUniqueBody2" />
+						<div id="Unique1original" class="collapse">
+							<DecodedString Value="@Player.ArchetypeUniqueBody1" />
 						</div>
 					</div>
 				</div>
-			}	
-			<div class="DEBTS InnerColumnPack">
-				<div class="InnerColumnHeader">Deudas</div>
-				<div class="InnerColumContent" style="gap: 0 !important;">
-					<div class="d-flex align-items-center gap-1" style="cursor: pointer;">
-						Se me debe: <i class="bi bi-plus-circle fs-4 editButton" @onclick=AddToGetPaidDebt></i>
-					</div>
-					<div class="d-flex flex-wrap">
-						@foreach(var deb in Game.AllDebts.Where(x=>x.ReceivingID == Player.ID).OrderBy(x=>x.PayingID))
-						{
-							<DebtViewer Debt="deb" Mode="DebtViewer.PayingMode.ToPay" ForceUpdateUI="Update" MinimalisticMode="true" />
-						}
-					</div>
-					<div class="d-flex align-items-center gap-1 mt-1" style="cursor: pointer;">
-						Debo: <i class="bi bi-plus-circle fs-4 editButton" @onclick=AddToPayDebt></i>
-					</div>
-					<div class="d-flex flex-wrap">
-						@foreach (var deb in Game.AllDebts.Where(x => x.PayingID == Player.ID).OrderBy(x => x.ReceivingID))
-						{
-							<DebtViewer Debt="deb" Mode="DebtViewer.PayingMode.ToBePaid" ForceUpdateUI="Update" MinimalisticMode="true" />
-						}
-					</div>
-				</div>
-			</div>
-
-			@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DramaticMovement && x.Archetipe == Player.Archetype))
-			{
-				@if (m.Title.Contains("intimi") || m.Title.Contains("inicial") || m.Title.Contains("final"))
+				@if (!string.IsNullOrEmpty(Player.ArchetypeUniqueTittle2))
 				{
-					<div class="InnerColumnPack DramaMoves">
-						<div class="InnerColumnHeader">
-
-							@m.Title
-
+					<div class="InnerColumnPack">
+						<div class="InnerColumnHeader d-flex align-items-center gap-1">
+							@Player.ArchetypeUniqueTittle2
+							<i class="bi bi-arrow-down-circle fs-4 editButton" data-bs-toggle="collapse"
+							   data-bs-target="#Unique2original"></i>
 						</div>
-						<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
-							<DecodedString Value="@m.PreCondition.MainText" />
+						<div class="InnerColumContent">
+							<InputTextArea class="form-control"
+											   style="outline:none; border: none; background: black; color:#7d7d7d;"
+											   @bind-Value=Unique2Screen />
+						</div>
+						<div>
+							<div id="Unique2original" class="collapse">
+								<DecodedString Value="@Player.ArchetypeUniqueBody2" />
+							</div>
 						</div>
 					</div>
+				}	
+				
+				<div class="DEBTS InnerColumnPack">
+					<div class="InnerColumnHeader">Deudas</div>
+					<div class="InnerColumContent" style="gap: 0 !important;">
+						<div class="d-flex align-items-center gap-1" style="cursor: pointer;">
+							Se me debe: <i class="bi bi-plus-circle fs-4 editButton" @onclick=AddToGetPaidDebt></i>
+						</div>
+						<div class="d-flex flex-wrap">
+							@foreach(var deb in Game.AllDebts.Where(x=>x.ReceivingID == Player.ID).OrderBy(x=>x.PayingID))
+							{
+								<DebtViewer Debt="deb" Mode="DebtViewer.PayingMode.ToPay" ForceUpdateUI="Update" MinimalisticMode="true" />
+							}
+						</div>
+						<div class="d-flex align-items-center gap-1 mt-1" style="cursor: pointer;">
+							Debo: <i class="bi bi-plus-circle fs-4 editButton" @onclick=AddToPayDebt></i>
+						</div>
+						<div class="d-flex flex-wrap">
+							@foreach (var deb in Game.AllDebts.Where(x => x.PayingID == Player.ID).OrderBy(x => x.ReceivingID))
+							{
+								<DebtViewer Debt="deb" Mode="DebtViewer.PayingMode.ToBePaid" ForceUpdateUI="Update" MinimalisticMode="true" />
+							}
+						</div>
+					</div>
+				</div>
+				@if(UniqueMovesOnScreen.Count != 0)
+				{
+
+					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DramaticMovement && x.Archetipe == Player.Archetype))
+					{
+						@if (m.Title.Contains("intimi") || m.Title.Contains("inicial") || m.Title.Contains("final"))
+						{
+							<div class="InnerColumnPack DramaMoves">
+								<div class="InnerColumnHeader">
+
+									@m.Title
+
+								</div>
+								<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
+									<DecodedString Value="@m.PreCondition.MainText" />
+								</div>
+							</div>
+						}
+					}
 				}
-			}
+			</div>
+			<div class="RightColumn">
+				<div class="RightColumnButton" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
+				<div class="RightColumnButton" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
+				<div class="RightColumnButton" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
+				<div class="RightColumnButton" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass-split"></i></div>
+				<div class="RightColumnButton" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
+					<div class="RightColumnButton" @onclick=ShowCharacterCreationModal><i class="bi bi-person-circle"></i></div>
+			</div>
 		</div>
-		<div class="RightColumn">
-			<div class="RightColumnButton" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
-			<div class="RightColumnButton" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
-			<div class="RightColumnButton" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
-			<div class="RightColumnButton" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass-split"></i></div>
-			<div class="RightColumnButton" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
-				<div class="RightColumnButton" @onclick=ShowCharacterCreationModal><i class="bi bi-person-circle"></i></div>
-		</div>
-	</div>
-</EditForm>
+	</EditForm>
 </div>
 <!--Modals-->
 <!--VTT MiniSheet-->
@@ -536,6 +564,11 @@
 	private bool IsShowingVTT = false;
 	private bool IsShowingClocks = false;
 	private bool IsShowingCharacterCreationModal = false;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender) await JS.InvokeVoidAsync("autoResizeTextareas");
+	}
 
 	public string Unique1Screen
 	{

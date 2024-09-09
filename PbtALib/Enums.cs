@@ -21,7 +21,7 @@ public enum RollTypes
 	Roll_Simple, Roll_Advantage, Roll_Disadvantage, Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6, JustShowMoveWithNoRoll,
 	FitD_Action, FitD_Resistance
 }
-
+public enum FactionStatuses { NotSet, Creciendo, Manteniendo, Menguando }
 
 
 public enum DiceTypes

@@ -1,5 +1,6 @@
 ﻿@page "/Running/{SelectedGameString}/{SelectedCharacterID:guid}"
 @using DungeonWorld
+@using PbtALib.ifaces
 @using PbtaWorldRazonCommonComponents
 @using UrbanShadows
 @using static PbtaWorldRazonCommonComponents.CharacterSelector;
@@ -46,6 +47,7 @@ else if(IsShowingClocks)
 {
 	<PeopleViewr GameID="@Meta.SelectedSeason.CampaignGuid"
 				 IsMaster=IsMaster
+				 Game=SelectedGameController
 				 ExitRequested=@(()=>{IsShowingPeople = false;}) />
 }
 
@@ -113,7 +115,6 @@ else if(SelectedGame == AvailableGames.SV)
 	UrbanShadows.USCharacterSheet USPlayer;
 	SVCharacter SVPlayer;
 
-	IPeopleCast People;
 	List<PbtACharacter> Players;
 
 	private bool IsShowingOldRolls = false;
@@ -122,6 +123,7 @@ else if(SelectedGame == AvailableGames.SV)
 	private bool IsShowingVTT = false;
 	private bool IsShowingPeople = false;
 
+	private IGameController SelectedGameController;
 	private ClocksManager Clocks;
 
 	AvailableGames SelectedGame = AvailableGames.NotSet;
@@ -160,9 +162,9 @@ else if(SelectedGame == AvailableGames.SV)
 		if (localGameId == AvailableGames.DI)
 		{
 			DinoPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoCharacter>(data);
+			SelectedGameController = DinoGame;
 			DinoPlayer.Game = DinoGame;
 			Meta.SelectedPlayer = DinoPlayer;
-			People = DinoGame.People;
 			Players = DinoGame.Players;
 		}
 		else if(localGameId == AvailableGames.DW)
@@ -173,8 +175,9 @@ else if(SelectedGame == AvailableGames.SV)
 			Meta.SelectedSeason.Players.Add(DWPlayer);
 			Meta.SelectedPlayer = DWPlayer;
 			DWGame.SessionID = Meta.SelectedSeason.CampaignGuid;
-			CharacterSelectorService.People = DWGame.People;
-			People = DWGame.People;
+
+			SelectedGameController = DWGame;
+			CharacterSelectorService.Game = SelectedGameController;
 			Players = DWGame.Players;
 			Clocks = DWGame.Clocks;
 		}
@@ -191,13 +194,12 @@ else if(SelectedGame == AvailableGames.SV)
 			USGame.NewInfoToast -= ShowInfo;
 			USGame.NewInfoToast += ShowInfo;
 
-			People = USGame.People;
 			Players = USGame.Players;
 			Clocks = USGame.Clocks;
 
 			USGame.SessionID = Meta.SelectedSeason.CampaignGuid;
-			CharacterSelectorService.People = USGame.People;
-			CharacterSelectorService.SetPeople(USGame.People);
+			SelectedGameController = USGame;
+			CharacterSelectorService.Game = SelectedGameController;
 
 			await USGame.LoadAllDebts();
 
@@ -217,8 +219,9 @@ else if(SelectedGame == AvailableGames.SV)
 			}
 
 			if (ImagesService.AllImages.Count == 0) await ImagesService.LoadAll(Meta.SelectedSeason.CampaignGuid);
-			if (CharacterSelectorService.People is not null && CharacterSelectorService.People.Circles.Count <= 1)
-				CharacterSelectorService.People.LoadFromJsonFile(Meta.SelectedSeason.CampaignGuid);
+
+			if (USGame.People is not null && USGame.People.Circles.Count <= 1)
+				USGame.People.LoadFromJsonFile(Meta.SelectedSeason.CampaignGuid);
 
 			AlreadySet = true;
 		}
@@ -227,13 +230,11 @@ else if(SelectedGame == AvailableGames.SV)
 			SVPlayer = System.Text.Json.JsonSerializer.Deserialize<SVCharacter>(data);
 			Meta.SelectedPlayer = SVPlayer;
 			SVGame.SessionID = Meta.SelectedSeason.CampaignGuid;
-			CharacterSelectorService.People = SVGame.People;
-			People = SVGame.People;
+			SelectedGameController = SVGame;
+			CharacterSelectorService.Game = SelectedGameController;
 			Players = SVGame.Players;
 		}
 
-
-		CharacterSelectorService.People = People;
 		CharacterSelectorService.Players = Players;
 		LastRollViewerService.SetGameMode(localGameId);
 

@@ -1,82 +1,233 @@
 ﻿@using PbtALib
 @inject USMovesService Moves
+@inject IToastService toaster
+@inject CharacterSelectorService CharacterSelectorService
 
-<div class="back" style="" @onclick:stopPropagation=true>
-	<div>
-		Suma uno a un atributo
-		<div class="ItemSelector">
-			<div class="@(SelectedAttribute == USAttributes.Blood?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Blood);})>Sangre @Player.Blood</div>
-			<div class="@(SelectedAttribute == USAttributes.Heart?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Heart);})>Corazón @Player.Heart</div>
-			<div class="@(SelectedAttribute == USAttributes.Mind?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Mind);})>Mente @Player.Mind</div>
-			<div class="@(SelectedAttribute == USAttributes.Soul?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Soul);})>Espíritu @Player.Spirit</div>
+<div class="back d-flex gap-3" style="overflow-y:scroll;" @onclick:stopPropagation=true>
+	<div class="d-flex flex-column gap-2" style="max-width: 50%;">
+		<div class="Attributes">
+			Suma uno a un atributo <i class="bi @(Player.FavoriteStat == USAttributes.None ? " bi-exclamation-triangle text-danger" : "bi-check-lg text-success")"></i>
+			<div class="ItemSelector">
+				<div class="@(Player.FavoriteStat == USAttributes.Blood?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Blood);})>Sangre @Player.Blood</div>
+				<div class="@(Player.FavoriteStat == USAttributes.Heart?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Heart);})>Corazón @Player.Heart</div>
+				<div class="@(Player.FavoriteStat == USAttributes.Mind?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Mind);})>Mente @Player.Mind</div>
+				<div class="@(Player.FavoriteStat == USAttributes.Soul?"Selected":"")" @onclick=@(async()=>{await ChangeAttribute(USAttributes.Soul);})>Espíritu @Player.Spirit</div>
+			</div>
 		</div>
-	</div>
-	<div>
-		Suma uno a un Círculo
-		<div class="ItemSelector">
-			<div class="@(SelectedCircle == USAttributes.Mortality?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Mortality);})>Mortalis @Player.Mortalis</div>
-			<div class="@(SelectedCircle == USAttributes.Night?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Night);})>Noche @Player.Night</div>
-			<div class="@(SelectedCircle == USAttributes.Power?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Power);})>Poder @Player.Power</div>
-			<div class="@(SelectedCircle == USAttributes.Veil?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Veil);})>Velo @Player.Veil</div>
+		<div class="Circles""">
+			Suma uno a un Círculo <i class="bi @(Player.FavoriteCircle == USAttributes.None ? " bi-exclamation-triangle text-danger" : "bi-check-lg text-success")"></i>
+			<div class="ItemSelector">
+				<div class="@(Player.FavoriteCircle == USAttributes.Mortality?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Mortality);})>Mortalis @Player.Mortalis</div>
+				<div class="@(Player.FavoriteCircle == USAttributes.Night?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Night);})>Noche @Player.Night</div>
+				<div class="@(Player.FavoriteCircle == USAttributes.Power?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Power);})>Poder @Player.Power</div>
+				<div class="@(Player.FavoriteCircle == USAttributes.Veil?"Selected":"")" @onclick=@(async()=>{await ChangeCircle(USAttributes.Veil);})>Velo @Player.Veil</div>
+			</div>
 		</div>
-	</div>
-	<div class="InnerColumnPack PlayBookMoves">
-		<div class="InnerColumnHeader d-flex align-items-center gap-1" style="cursor: pointer;">
-			Movimientos de @Player.Archetype.ToUI()
-		</div>
-		@if(Player.SelectedArchetypeMoves.Count < ExpectedNumberOfMoves)
-		{
-			<div class="d-flex flex-column">
-				@foreach (var m in PlaybookMovesOnScreen)
-				{
-					<div class="d-flex align-items-stretch" style="border:1px solid gray;">
-						<div class="d-flex align-items-center justify-content-center" style="width:40px;">
-							@if (Player.SelectedArchetypeMoves.Contains(m.ID))
+		<Accordion Class="mt-2 PlaybookMovesSelector" AccordionGroup="PageCreationGroup">
+			<AccordionHeader>
+				<button class="btn btn-dark ActionableHeader">
+					Movimientos de @Player.Archetype.ToUI() (@Player.SelectedArchetypeMoves.Count / @ExpectedNumberOfMoves)
+					<i class="bi @(Player.SelectedArchetypeMoves.Count < @ExpectedNumberOfMoves ? " bi-exclamation-triangle text-danger" : "bi-check-lg text-success")"></i>
+				</button>
+			</AccordionHeader>
+			<AccordionBody>
+				<div class="InnerColumnPack PlayBookMoves">
+					@if (Player.SelectedArchetypeMoves.Count < ExpectedNumberOfMoves)
+					{
+						<div class="d-flex flex-column">
+							@foreach (var m in PlaybookMovesOnScreen)
 							{
-								<i class="bi bi-check2-square fs-2" @onclick=@(async()=>{await RemoveMove(m);})></i>
-							}
-							else
-							{
-								<i class="bi bi-square fs-4" @onclick=@(async()=>{await AddMove(m);})></i>
+								<div class="d-flex align-items-stretch" style="border:1px solid gray;">
+									<div class="d-flex align-items-center justify-content-center" style="width:40px;">
+										@if (Player.SelectedArchetypeMoves.Contains(m.ID))
+										{
+											<i class="bi bi-check2-square fs-2 hoverable" @onclick=@(async()=>{await RemoveMove(m);})></i>
+										}
+										else
+										{
+											<i class="bi bi-square fs-4 hoverable" @onclick=@(async()=>{await AddMove(m);})></i>
+										}
+									</div>
+									<div class="flexOccupy">
+										<MoveViewer ID="m.ID" Player=Player IsSelected=true Clicked=@(_ => {}) ForceUpdate="Update" />
+									</div>
+								</div>
 							}
 						</div>
-						<div class="flexOccupy">
-							<MoveViewer ID="m.ID" Player=Player IsSelected=true Clicked=@(_ => {}) ForceUpdate="Update" />
+					}
+					else
+					{
+						<div class="d-flex flex-column">
+							@foreach (USMove m in Player.SelectedArchetypeMoves.Select(x => Moves.GetMovement(x)))
+							{
+								<div class="d-flex align-items-stretch" style="border:0px solid gray;">
+									<div class="d-flex align-items-center justify-content-center" style="width:40px;">
+										<i class="bi bi-check2-square fs-2 hoverable" @onclick=@(async()=>{await RemoveMove(m);})></i>
+									</div>
+									<div class="flexOccupy">
+										<Accordion Class="h-100 mt-1">
+											<AccordionHeader>
+												<button class="btn btn-dark">
+													@m.Title 
+													@if (m.HasRoll())
+													{
+														<span  class="ms-2">@m.Roll.ToUI() (@Player.GetAttribute(m.Roll))</span>
+													}
+												</button>
+											</AccordionHeader>
+											<AccordionBody>
+												<MoveViewer ID="m.ID" Player=Player IsSelected=true Clicked=@(_ => {}) ForceUpdate="Update" />
+											</AccordionBody>
+										</Accordion>
+									
+									</div>
+								</div>
+							}
+						</div>
+					}
+
+				</div>
+			</AccordionBody>
+		</Accordion>
+		@if (!string.IsNullOrEmpty(Player.ArchetypeUniqueTittle1))
+		{
+			<Accordion Class="Unique1Space" AccordionGroup="PageCreationGroup">
+				<AccordionHeader>
+					<button class="btn btn-dark">
+						@Player.ArchetypeUniqueTittle1
+						<i class="bi @(@Player.ArchetypeUniqueBody1UserText == "" ? " bi-exclamation-triangle text-danger" : "bi-check-lg text-success")"></i>
+					</button>
+				</AccordionHeader>
+				<AccordionBody>
+					<DecodedString Value="@Player.ArchetypeUniqueBody1" />
+					<InputTextArea class="form-control" 
+						style="outline:none; 
+								border: none; 
+								border: 1px solid gray;
+								height: 300px;
+								background: #161616;
+								color:white;"
+								   @bind-Value=Unique1Screen />
+				</AccordionBody>
+			</Accordion>
+		}
+		@if (!string.IsNullOrEmpty(Player.ArchetypeUniqueTittle2))
+		{
+			<Accordion Class="Unique2Space" AccordionGroup="PageCreationGroup">
+				<AccordionHeader>
+					<button class="btn btn-dark">
+						@Player.ArchetypeUniqueTittle2
+						<i class="bi @(@Player.ArchetypeUniqueBody2UserText == "" ? " bi-exclamation-triangle text-danger" : "bi-check-lg text-success")"></i>
+					</button>
+				</AccordionHeader>
+				<AccordionBody>
+					<DecodedString Value="@Player.ArchetypeUniqueBody2" />
+					<InputTextArea class="form-control"
+								   style="outline:none;
+									border: none;
+									border: 1px solid gray;
+									height: 300px;
+									background: #161616;
+									color:white;"
+								   @bind-Value=Unique2Screen />
+				</AccordionBody>
+			</Accordion>
+		}
+
+		<Accordion AccordionGroup="PageCreationGroup">
+			<AccordionHeader>
+				<button class="btn btn-dark">
+					Equipo
+				</button>
+			</AccordionHeader>
+			<AccordionBody>
+				<InputTextArea class="form-control" 
+					@bind-Value="EquipeText"
+					style="outline:none;
+						border: none;
+						border: 1px solid gray;
+						height: 300px;
+						background: #161616;
+						color:white;" />
+			</AccordionBody>
+		</Accordion>
+
+		<Accordion AccordionGroup="PageCreationGroup">
+			<AccordionHeader>
+				<button class="btn btn-dark">
+					Preguntas iniciales
+				</button>
+			</AccordionHeader>
+			<AccordionBody>
+				<div class="d-flex flex-column gap-1 ms-1 ps-3" style="border-left:1px solid gray;">
+					@foreach (var q in Player.InitialQuestions)
+					{
+						<div>@q.Question</div>
+						<InputTextArea class="form-control"
+									   style="outline:none;
+									border: none;
+									border: 1px solid gray;
+									height: 60px;
+									background: #161616;
+									color:white;" @bind-Value=q.Answer />
+					}
+					<button class="btn btn-dark" @onclick=@(async()=>{await StoreChanges("Actualizó sus questiones iniciales");})>
+						<i class="bi bi-floppy"></i> Guardar cambios
+					</button>
+				</div>
+			</AccordionBody>
+		</Accordion>
+
+		<Accordion>
+			<AccordionHeader>
+				<button class="btn btn-dark">
+					Deudas iniciales
+				</button>
+			</AccordionHeader>
+			<AccordionBody>
+				<div class="d-flex flex-column gap-1 ms-1 ps-3" style="border-left:1px solid gray; max-width:400px;" >
+					<div class="d-flex flex-column gap-1">
+						<div>
+							<ul>
+								@foreach (var d in Player.InitialDebs)
+								{
+									<li>@d</li>
+								}
+							</ul>
+						</div>
+						<div class="d-flex align-items-center gap-1" style="cursor: pointer;">
+							Se me debe: <i class="bi bi-plus-circle fs-4 editButton" @onclick=AddToGetPaidDebt></i>
+						</div>
+						<div class="d-flex flex-wrap">
+							@foreach (var deb in Game.AllDebts.Where(x => x.ReceivingID == Player.ID).OrderBy(x => x.PayingID))
+							{
+								<DebtViewer Debt="deb" Mode="DebtViewer.PayingMode.ToPay" ForceUpdateUI="Update" MinimalisticMode="true" />
+							}
+						</div>
+						<div class="d-flex align-items-center gap-1 mt-1" style="cursor: pointer;">
+							Debo: <i class="bi bi-plus-circle fs-4 editButton" @onclick=AddToPayDebt></i>
+						</div>
+						<div class="d-flex flex-wrap">
+							@foreach (var deb in Game.AllDebts.Where(x => x.PayingID == Player.ID).OrderBy(x => x.ReceivingID))
+							{
+								<DebtViewer Debt="deb" Mode="DebtViewer.PayingMode.ToBePaid" ForceUpdateUI="Update" MinimalisticMode="true" />
+							}
 						</div>
 					</div>
-				}
-			</div>
-		}
-		else
-		{
-			<div class="d-flex flex-column">
-				@foreach (USMove m in Player.SelectedArchetypeMoves.Select(x=>Moves.GetMovement(x)))
-				{
-					<div class="d-flex align-items-stretch" style="border:1px solid gray;">
-						<div class="d-flex align-items-center justify-content-center" style="width:40px;">
-							@if (Player.SelectedArchetypeMoves.Contains(m.ID))
-							{
-								<i class="bi bi-check2-square fs-2" @onclick=@(async()=>{await RemoveMove(m);})></i>
-							}
-							else
-							{
-								<i class="bi bi-square fs-4" @onclick=@(async()=>{await AddMove(m);})></i>
-							}
-						</div>
-						<div class="flexOccupy">
-							<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => {}) ForceUpdate="Update" />
-						</div>
-					</div>
-				}
-			</div>
-		}
-
+				</div>
+			</AccordionBody>
+		</Accordion>
+	</div>
+	<div class="flex-fill">
+		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=false PreventFullScreenMode=true/>
 	</div>
 </div>
 
 @code {
 	[Parameter] public USCharacterSheet Player { get; set; } = new();
 	[Parameter] public USGameController? Game { get; set; } = null;
+
+	private string FirstColumnWidth = "50%";
 
 	private List<USMove> PlaybookMovesOnScreen = new();
 
@@ -107,7 +258,6 @@
 			x.TypeOfMovement == MovementTypes.ArchetipeMovement));
 	}
 
-	private async Task SelectPlaybookMoves(){}
 
 	private void Update() => InvokeAsync(StateHasChanged);
 
@@ -117,7 +267,6 @@
 		await StoreChanges($"{Player.Name} añadió {m.Title}");
 		Update();
 	}
-
 	private async Task RemoveMove(USMove m)
 	{
 		if(Player.SelectedArchetypeMoves.Contains(m.ID))
@@ -128,29 +277,95 @@
 		}		
 	}
 
+	public string Unique1Screen
+	{
+		get { return Player.ArchetypeUniqueBody1UserText; }
+		set
+		{
+			if (Player.ArchetypeUniqueBody1UserText == value) return;
+			Player.ArchetypeUniqueBody1UserText = value;
+			StoreChanges($"actualizó su {Player.ArchetypeUniqueTittle1}");
+		}
+	}
+	public string Unique2Screen
+	{
+		get { return Player.ArchetypeUniqueBody2UserText; }
+		set
+		{
+			if (Player.ArchetypeUniqueBody2UserText == value) return;
+			Player.ArchetypeUniqueBody2UserText = value;
+			StoreChanges($"actualizó su {Player.ArchetypeUniqueTittle2}");
+		}
+	}
+	public string EquipeText
+	{
+		get { return Player.Equipe; }
+		set
+		{
+			if (Player.Equipe == value) return;
+			Player.Equipe = value;
+			StoreChanges($"Actualizó su equipo");
+		}
+	}
 
 
-	USAttributes SelectedAttribute = USAttributes.None;
-	USAttributes SelectedCircle = USAttributes.None;
 	private async Task ChangeAttribute(USAttributes newAttribute)
 	{
-		if (newAttribute != SelectedAttribute)
+		if (newAttribute != Player.FavoriteStat)
 		{
-			Player.SetAttribute(SelectedAttribute, Player.GetAttribute(SelectedAttribute) - 1);
-			SelectedAttribute = newAttribute;
-			Player.SetAttribute(SelectedAttribute, Player.GetAttribute(SelectedAttribute) + 1);
-			await StoreChanges($"Cambió su {newAttribute.ToString()} a {Player.GetAttribute(SelectedAttribute)}");
+			Player.SetAttribute(Player.FavoriteStat, Player.GetAttribute(Player.FavoriteStat) - 1);
+			Player.FavoriteStat = newAttribute;
+			Player.SetAttribute(Player.FavoriteStat, Player.GetAttribute(Player.FavoriteStat) + 1);
+			await StoreChanges($"Cambió su {newAttribute.ToString()} a {Player.GetAttribute(Player.FavoriteStat)}");
 		}
 	}
 	private async Task ChangeCircle(USAttributes newAttribute)
 	{
-		if (newAttribute != SelectedCircle)
+		if (newAttribute != Player.FavoriteCircle)
 		{
-			Player.SetAttribute(SelectedCircle, Player.GetAttribute(SelectedCircle) - 1);
-			SelectedCircle = newAttribute;
-			Player.SetAttribute(SelectedCircle, Player.GetAttribute(SelectedCircle) + 1);
-			await StoreChanges($"Cambió su {SelectedCircle.ToString()} a {Player.GetAttribute(SelectedCircle)}");
+			Player.SetAttribute(Player.FavoriteCircle, Player.GetAttribute(Player.FavoriteCircle) - 1);
+			Player.FavoriteCircle = newAttribute;
+			Player.SetAttribute(Player.FavoriteCircle, Player.GetAttribute(Player.FavoriteCircle) + 1);
+			await StoreChanges($"Cambió su {Player.FavoriteCircle.ToString()} a {Player.GetAttribute(Player.FavoriteCircle)}");
 		}
+	}
+
+	private async Task QuestionChanged(QandA question)
+	{
+		await StoreChanges(question.Answer);
+	}
+
+	private async Task AddToGetPaidDebt()
+	{
+		var ToWhom = await CharacterSelectorService.StartSelection();
+
+		var d = new Debt
+			{
+				Amount = 1,
+				PayingID = ToWhom.ID,
+				ReceivingID = Player.ID,
+				Reason = "Por qué?"
+			};
+
+		await Game.StoreDebt(d);
+
+		StateHasChanged();
+	}
+	private async Task AddToPayDebt()
+	{
+		var ToWhom = await CharacterSelectorService.StartSelection();
+
+		var d = new Debt
+			{
+				Amount = 1,
+				PayingID = Player.ID,
+				ReceivingID = ToWhom.ID,
+				Reason = "Por qué?"
+			};
+
+		await Game.StoreDebt(d);
+
+		StateHasChanged();
 	}
 
 	private async Task StoreChanges(string text)

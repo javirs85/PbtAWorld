@@ -9,7 +9,7 @@ namespace UrbanShadows;
 
 
 public enum Circles { NotSet, Mortalis, Noche, Poder, Velo }
-public enum FactionStatuses { NotSet, Creciendo, Manteniendo, Menguando }
+
 public enum USAttributes{ Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, Circle, None, Status}
 
 public enum KindsOfAdvance { Normal, Extra, Corruption };
@@ -72,7 +72,7 @@ public enum USMoveIDs
 	LIO_Awa_01, LIO_Awa_02, LIO_Awa_03, LIO_Awa_04,
 	LIO_Hunter_01, LIO_Hunter_02, LIO_Hunter_03, LIO_Hunter_04,
 	LIO_Vet_01, LIO_Vet_02, LIO_Vet_03, LIO_Vet_04,
-	LIO_Wolf_01, LIO_Wolf_02, LIO_Wolf_03, LIO_Wolf_04,
+	LIO_Wolf_01, LIO_Wolf_02, LIO_Wolf_03, LIO_Wolf_04, LIO_Wolf_05,
 	LIO_Vamp_01, LIO_Vamp_02, LIO_Vamp_03, LIO_Vamp_04,
 	LIO_Spect_01, LIO_Spect_02, LIO_Spect_03, LIO_Spect_04,
 	LIO_Mage_01, LIO_Mage_02, LIO_Mage_03, LIO_Mage_04,

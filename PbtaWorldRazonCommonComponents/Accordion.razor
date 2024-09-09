@@ -1,0 +1,22 @@
+﻿<div class="Accordion @Class">
+    <div id="@headingId" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#@collapseId" 
+        aria-expanded="false" aria-controls="@collapseId">
+        @AccordionHeader
+    </div>
+    <div id="@collapseId" class="collapse" data-bs-parent="@AccordionGroup"
+        aria-labelledby="@headingId">
+        @AccordionBody
+    </div>
+</div>
+
+@code {
+    private string collapseId = $"collapse_{Guid.NewGuid()}";
+    private string headingId = $"heading_{Guid.NewGuid()}";
+
+    [Parameter] public RenderFragment AccordionHeader { get; set; }
+    [Parameter] public RenderFragment AccordionBody { get; set; }
+    [Parameter] public string AccordionGroup { get; set; } = "";
+    [Parameter] public string Class { get; set; } = "";
+ }

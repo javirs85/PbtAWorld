@@ -1,0 +1,158 @@
+﻿@using PbtALib
+@using PbtALib.ifaces
+@inject CharacterSelectorService CharacterSelectorService
+
+<div class="FactionCard d-flex gap-1 justify-content-evenly align-items-end w-100">
+	<div class="d-flex flex-column" style="width: 93px; padding-left: 10px;">
+		<div class="d-flex gap-1 align-items-center" alt="Fuerza">
+			<i class="bi bi-lightning-charge-fill opacity-75"></i>
+			<div class="d-flex">
+				@if(IsMaster)
+				{
+					<i class="bi bi-caret-down-fill" @onclick=PowerDown></i>
+					<div>@Faction.Strength</div>
+					<i class="bi bi-caret-up-fill" @onclick=PowerUp></i>
+				}
+				else
+				{
+					<div>@Faction.Strength</div>
+				}
+			</div>
+			<div class="d-flex align-items-center" style="font-size:0.5em;">
+				<TrackViewer CanEdit=IsMaster Color="RedCheckBox.Styles.bootstrapDark" @bind-Value="LocalStrengthTemp" MaxValue="3" />
+			</div>
+		</div>
+		<div class="d-flex gap-1 align-items-center" alt="Tamaño">
+			<i class="bi bi-bounding-box-circles opacity-75" style="@(IsMaster?"font-size:8px;":"")"></i>
+			@if (IsMaster)
+			{
+				<i class="bi bi-caret-down-fill" @onclick=SizeDown></i>
+				<div>@Faction.Size</div>
+				<i class="bi bi-caret-up-fill" @onclick=SizeUp></i>
+			}
+			else
+			{
+				<div>@Faction.Size</div>
+			}
+			<div class="d-flex align-items-center" style="font-size:0.5em;">
+				<TrackViewer CanEdit=IsMaster Color="RedCheckBox.Styles.bootstrapDark" @bind-Value="LocalSizeTemp" MaxValue="3" />
+			</div>
+		</div>
+	</div>
+	<div class="ps-2 h-100 d-flex align-items-end flex-fill" 
+		style=" 
+			@(Faction.Name.Length > 13?"text-align: left;  font-size: 1.3em !important;":"text-align: center; font-size: 1.5em;")">
+		@if(IsMaster)
+		{
+			<HiddeableInput @bind-Value=Faction.Name EditFinished="SpreadChanges"/>
+		}
+		else
+		{
+			@Faction.Name
+		}
+	</div>
+	<div class="d-flex flex-column align-items-center flex-fill" style="margin-bottom: 5px;">
+		<div class="d-flex gap-3 align-content-center">
+			<i class="bi bi-arrows-angle-contract FactionStatus @(Faction.Status == FactionStatuses.Menguando?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Menguando);})></i>
+			<i class="bi bi-arrows FactionStatus @(Faction.Status == FactionStatuses.Manteniendo?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Manteniendo);})></i>
+			<i class="bi bi-arrows-angle-expand FactionStatus @(Faction.Status==FactionStatuses.Creciendo?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Creciendo);})></i>
+		</div>
+		
+		<div style="font-size:0.8em; opacity:0.75;">
+			@if(IsMaster)
+			{
+				<HiddeableInput @bind-Value=Faction.CurrentlyWorkingOn EditFinished="SpreadChanges" />
+			}
+			else
+			{
+				<div>@Faction.CurrentlyWorkingOn</div>
+			}
+		</div>
+	</div>	
+</div>
+
+@code {
+	[Parameter] public PbtAFaction Faction { get; set; } = new();
+	[Parameter] public bool IsMaster { get; set; } = false;
+	[Parameter] public IGameController Game { get; set; }
+	private bool initialized = false;
+
+	protected override void OnParametersSet()
+	{
+		if(!initialized)
+		{
+			LocalStrengthTemp = Faction.Strength;
+			LocalSizeTemp = Faction.Size;
+			initialized = true;
+		}
+	}
+
+	private void SetStatus(FactionStatuses newStatus)
+	{
+		if(IsMaster)
+		{
+			Faction.Status = newStatus;
+			SpreadChanges();
+		}
+	}
+
+	private int LocalStrengthTemp
+	{
+		get
+		{
+			return Faction.StrengthTemp;
+		}
+		set
+		{
+			if (Faction.StrengthTemp != value)
+			{
+				Faction.StrengthTemp = value;
+				SpreadChanges();
+			}
+		}
+	}
+	private int LocalSizeTemp
+	{
+		get
+		{
+			return Faction.SizeTemp;
+		}
+		set
+		{
+			if (Faction.SizeTemp != value)
+			{
+				Faction.SizeTemp = value;
+				SpreadChanges();
+			}
+		}
+	}
+
+	private async Task PowerUp()
+	{
+		Faction.Strength++;
+		await Update();
+	}
+	private async Task PowerDown()
+	{
+		Faction.Strength--;
+		await Update();
+	}
+	private async Task SizeUp()
+	{
+		Faction.Size++;
+		await Update();
+	}
+	private async Task SizeDown()
+	{
+		Faction.Size--;
+		await Update();
+	}
+
+	private async Task Update()
+	{
+		SpreadChanges();
+	}
+
+	private void SpreadChanges() => Game.UpdatePeopleViewerInAllClients();
+
+}
