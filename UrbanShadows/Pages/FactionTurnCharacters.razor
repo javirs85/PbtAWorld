@@ -1,0 +1,104 @@
+﻿@using PbtALib
+@inject USMovesService Moves
+@inject IToastService toaster
+@inject CharacterSelectorService CharacterSelectorService
+@inject USMovesService Moves
+
+<div class="back d-flex gap-3" style="overflow-y:scroll;" @onclick:stopPropagation=true>
+	<div class="d-flex flex-column gap-2" style="max-width: 21%;">
+		
+		<div>Puedes hacer @MaxStatus movimientos de nivel @MaxStatus o menos</div>
+		<div class="InnerColumnPack Deuda">
+			<div class="InnerColumnHeader" style="cursor: pointer;">
+				Estatus 1:
+			</div>
+			<div class="InnerColumContent">
+				@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus1))
+				{
+					<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+				}
+			</div>
+		</div>
+		@if(MaxStatus > 1)
+		{
+			<div class="InnerColumnPack Deuda">
+				<div class="InnerColumnHeader" style="cursor: pointer;">
+					Estatus 2:
+				</div>
+				<div class="InnerColumContent">
+					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus2))
+					{
+						<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+					}
+				</div>
+			</div>
+			
+		}
+	</div>
+	<div class="flex-fill">
+		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=false PreventFullScreenMode=true ExitRequested="Close" />
+	</div>
+</div>
+
+@code {
+	[Parameter] public USCharacterSheet Player { get; set; } = new();
+	[Parameter] public USGameController? Game { get; set; } = null;
+	[Parameter] public EventCallback CloseMe { get; set; }
+
+	private string FirstColumnWidth = "50%";
+
+	private List<USMove> PlaybookMovesOnScreen = new();
+
+	private int ExpectedNumberOfMoves
+	{
+		get
+		{
+			if (Player.Archetype == US_Classes.Oracle || Player.Archetype == US_Classes.Sworn || Player.Archetype == US_Classes.Wolf)
+			{
+				return 2;
+			}
+			else if (Player.Archetype == US_Classes.Mage)
+			{
+				return 0;
+			}
+			else
+			{
+				return 3;
+			}
+		}
+	}
+
+	private USMove? SelectedMove = null;
+	private bool IsSelectedMove(USMove m) => m is not null && m == SelectedMove;
+	private void Select(USMove m) {
+		if (SelectedMove == m)
+			SelectedMove = null;
+		else
+			SelectedMove = m;
+	}
+
+	protected override void OnParametersSet()
+	{
+		PlaybookMovesOnScreen.Clear();
+		PlaybookMovesOnScreen.AddRange(Moves.AllMovements.Where(
+			x => x.Archetipe == Player.Archetype &&
+			x.TypeOfMovement == MovementTypes.ArchetipeMovement));
+	}
+
+	private int MaxStatus
+	{
+		get
+		{
+			return new List<int> { Player.MortalisStatus, Player.NightStatus, Player.PowerStatus, Player.VeilStatus }.Max();
+		}
+	}
+
+
+	private void Update() => InvokeAsync(StateHasChanged);
+
+	private void Close()
+	{
+		CloseMe.InvokeAsync();
+	}
+
+}

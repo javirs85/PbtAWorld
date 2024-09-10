@@ -9,6 +9,7 @@ namespace PbtALib.ifaces;
 public interface IGameController
 {
 	public event EventHandler UpdateUI;
+	public event EventHandler<string> ShowToastEvent;
 	public void Update();
 	public List<Monster> MonsterDefinitionsInCurrentScene { get; set; }
 	public void AddMonsterDefinition(Monster monster);
@@ -21,6 +22,8 @@ public interface IGameController
 	public void RollMonsterDamage(Monster m);
 
 	public Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null);
+
+	public void ShowToast(string message);
 
 
 	public BaseTextBook TextBook { get; set; }

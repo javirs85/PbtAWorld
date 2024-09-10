@@ -378,7 +378,8 @@
 				<div class="RightColumnButton" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
 				<div class="RightColumnButton" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass-split"></i></div>
 				<div class="RightColumnButton" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
-					<div class="RightColumnButton" @onclick=ShowCharacterCreationModal><i class="bi bi-person-circle"></i></div>
+				<div class="RightColumnButton" @onclick=ShowCityMoves><i class="bi bi-moon-stars-fill"></i></div>
+				<div class="RightColumnButton" @onclick=ShowCharacterCreationModal><i class="bi bi-person-circle"></i></div>
 			</div>
 		</div>
 	</EditForm>
@@ -456,6 +457,13 @@
 	@onclick=HideCharacterCreationModal>
 	<div class="CloseButton"></div>
 	<CharacterCreationPage Player="Player" Game="Game" CloseMe="HideCharacterCreationModal" />
+</div>
+
+<!-- Character creation Modal -->
+<div class="FullScreenModal CityMovesPage d-flex flex-column justify-content-center @(IsShowingCityMoves?"":"HideModal")"
+	 @onclick=HideCityMoves>
+	<div class="CloseButton"></div>
+	<FactionTurnCharacters Player="Player" Game="Game" CloseMe="HideCityMoves" />
 </div>
 <!-- Circle Upgrades Modal -->
 <div class="FullScreenModal CircleUpgrades d-flex flex-column justify-content-center @(IsShowingAdvances?"":"HideModal")" @onclick=HideCircleAdvances>
@@ -564,6 +572,7 @@
 	private bool IsShowingVTT = false;
 	private bool IsShowingClocks = false;
 	private bool IsShowingCharacterCreationModal = false;
+	private bool IsShowingCityMoves = false;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -1013,6 +1022,8 @@
 	void HideCircleAdvances() => IsShowingAdvances = false;
 	void ShowCharacterCreationModal() => IsShowingCharacterCreationModal = true;
 	void HideCharacterCreationModal() => IsShowingCharacterCreationModal = false;
+	void ShowCityMoves() => IsShowingCityMoves = true;
+	void HideCityMoves() => IsShowingCityMoves = false;
 	private bool IsShowingCorruptionAdvances = false;
 	void ShowCorruptionAdvances() => IsShowingCorruptionAdvances = true;
 	void HideCorruptionAdvances() => IsShowingCorruptionAdvances = false;

@@ -217,6 +217,32 @@
 				</div>
 			</AccordionBody>
 		</Accordion>
+
+		<Accordion AccordionGroup="PageCreationGroup">
+			<AccordionHeader>
+				<button class="btn btn-dark">
+					Fase de facciones
+				</button>
+			</AccordionHeader>
+			<AccordionBody>
+				<div class="d-flex flex-column gap-1 ms-1 ps-3" style="border-left:1px solid gray;">
+					@foreach (var q in Player.InitialQuestions)
+					{
+						<div>@q.Question</div>
+						<InputTextArea class="form-control"
+									   style="outline:none;
+									border: none;
+									border: 1px solid gray;
+									height: 60px;
+									background: #161616;
+									color:white;" @bind-Value=q.Answer />
+					}
+					<button class="btn btn-dark" @onclick=@(async()=>{await StoreChanges("Actualizó sus questiones iniciales");})>
+						<i class="bi bi-floppy"></i> Guardar cambios
+					</button>
+				</div>
+			</AccordionBody>
+		</Accordion>
 	</div>
 	<div class="flex-fill">
 		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=false PreventFullScreenMode=true ExitRequested="Close" />

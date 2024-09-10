@@ -38,8 +38,9 @@
 								<div class="CircleBody">
 									@foreach(PbtAFaction f in c.Factions)
 									{
-										<div class="FactionContainer" >
-											<div class="header" @onclick=@(()=>{SelectFaction(f);})>
+										<div class="FactionContainer @(f.Status == FactionStatuses.Manteniendo?"opacity-50":"")"
+											 style="@(f.IsDebilitated?"background:#370404;":"")">
+											<div class="header" style="@(f.IsDebilitated?"background:#370404;":"")" @onclick=@(()=>{SelectFaction(f);})>
 												<FactionCard Faction="f" IsMaster="IsMaster" Game="Game"/>
 											</div>
 											<div class="FactionBody">

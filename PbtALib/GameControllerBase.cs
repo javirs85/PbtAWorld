@@ -36,6 +36,8 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		this.DB = DB;
 		lastRollViewer = LastRoll;
 		if (People is null) People = new People(null);
+		People.SendToastToClients -= ShowToast;
+		People.SendToastToClients += ShowToast;
 	}
 
 	public event EventHandler UpdateUI;
@@ -229,6 +231,8 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	}
 
 	public event EventHandler UpdateMasterMoveListRequested;
+	public event EventHandler<string> ShowToastEvent;
+
 	public void UpdateMasterMoveList() => UpdateMasterMoveListRequested?.Invoke(this, EventArgs.Empty);
 
     public void AddMonsterDefinition(Monster monster)
@@ -249,6 +253,13 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 
 	public void UpdatePeopleViewerInAllClients()
 	{
+		People.StoreInJsonFile(SessionID);
 		UpdatePeopleViewerInAllClientsEvent?.Invoke(this, EventArgs.Empty);
+	}
+
+	private void ShowToast(object? sender, string message) => ShowToast(message);
+	public void ShowToast(string message)
+	{
+		ShowToastEvent?.Invoke(this, message);
 	}
 }

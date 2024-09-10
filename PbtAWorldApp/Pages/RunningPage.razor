@@ -235,6 +235,9 @@ else if(SelectedGame == AvailableGames.SV)
 			Players = SVGame.Players;
 		}
 
+		SelectedGameController.ShowToastEvent -= ShowInfo;
+		SelectedGameController.ShowToastEvent += ShowInfo;
+
 		CharacterSelectorService.Players = Players;
 		LastRollViewerService.SetGameMode(localGameId);
 

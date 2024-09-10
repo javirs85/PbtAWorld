@@ -36,6 +36,7 @@ public class People : IPeopleCast
 {
 	public List<Circle> _circles = new();
 	public List<Circle> Circles => _circles;
+	public event EventHandler<string> SendToastToClients;
 	IDataBaseController DB;
 
 	public void StoreInJsonFile(Guid GameID)
@@ -45,6 +46,7 @@ public class People : IPeopleCast
 		var json = System.Text.Json.JsonSerializer.Serialize(Circles);
 
 		System.IO.File.WriteAllText(path, json);
+		SendToastToClients?.Invoke(this, "People's data stored");
 	}
 
 	public void LoadFromJsonFile(Guid GameID)
@@ -187,6 +189,7 @@ public class PbtAFaction : IPbtAFaction
 	public int SizeTemp { get; set; }
 	public int Strength { get; set; }
 	public int StrengthTemp { get; set; }
+	public bool IsDebilitated { get; set; } = false;
 	public string SizeExplanation { get; set; } = "por que";
 	public string StrengthExplanation { get; set; } = "por que";
 	public FactionStatuses Status { get; set; } = FactionStatuses.NotSet;
