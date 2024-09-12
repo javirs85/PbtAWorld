@@ -5,10 +5,10 @@
 @inject USMovesService Moves
 
 <div class="back d-flex gap-3" style="overflow-y:scroll;" @onclick:stopPropagation=true>
-	<div class="d-flex flex-column gap-2" style="max-width: 21%;">
+	<div class="d-flex flex-column gap-2 overflow-auto" style="max-width: 21%;">
 		
 		<div>Puedes hacer @MaxStatus movimientos de nivel @MaxStatus o menos</div>
-		<div class="InnerColumnPack Deuda">
+		<div class="InnerColumnPack Status1">
 			<div class="InnerColumnHeader" style="cursor: pointer;">
 				Estatus 1:
 			</div>
@@ -21,7 +21,7 @@
 		</div>
 		@if(MaxStatus > 1)
 		{
-			<div class="InnerColumnPack Deuda">
+			<div class="InnerColumnPack Status2">
 				<div class="InnerColumnHeader" style="cursor: pointer;">
 					Estatus 2:
 				</div>
@@ -32,8 +32,19 @@
 					}
 				</div>
 			</div>
-			
 		}
+
+		<div class="InnerColumnPack FactionMoves">
+			<div class="InnerColumnHeader" style="cursor: pointer;">
+				Movimientos de las facciones:
+			</div>
+			<div class="InnerColumContent">
+				@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionPhaseCityMove))
+				{
+					<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+				}
+			</div>
+		</div>
 	</div>
 	<div class="flex-fill">
 		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=false PreventFullScreenMode=true ExitRequested="Close" />

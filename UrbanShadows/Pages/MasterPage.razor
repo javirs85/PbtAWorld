@@ -14,17 +14,21 @@
 @inject IDataBaseController Meta;
 @inject WhiteBoard.WhiteBoardService WhiteboardService
 
-<EditForm Model="Player">
-	<div class="BigContainer d-flex">
-		<div class="RightColumn">
-			<div class="RightColumnButton" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
-			<div class="RightColumnButton" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
-			<div class="RightColumnButton" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
-			<div class="RightColumnButton" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass"></i></div>
-			<div class="RightColumnButton" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
+<div class="bg-dark text-light p-3 fs-2 h-100">
+	<EditForm Model="Player">
+		<div class="BigContainer d-flex">
+			<div class="RightColumn">
+				<div class="RightColumnButton hoverable" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=ShowCityMoves><i class="bi bi-moon-stars-fill"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
+			</div>
 		</div>
-	</div>
-</EditForm>
+	</EditForm>
+</div>
+
 <!--VTT MiniSheet-->
 <div class="VTTMiniSheet" style="display:@(IsShowingVTT?"block":"none")">
 	<div class="Exit">
@@ -61,16 +65,24 @@
 	<div class="d-flex flex-column">
 		<MasterMovePackViewer MovesPack="MasterMoves"/>
 		<div class="CircleSelector">
-			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"hoverableSelected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
-			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"hoverableSelected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
-			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"hoverableSelected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
-			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"hoverableSelected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
+			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
+			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
+			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
+			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
 		</div>
 		<MasterMovePackViewer MovesPack="SelectedCircleMoves" HideTittle="true" />
 	</div>
 	
 	}
 </div>
+
+<!--VTT CityMoves-->
+<div class="FullScreenModal CityMovesPage @(IsShowingCityMoves?"":"HideModal")"
+	 @onclick=HideCityMoves>
+	<div class="CloseButton"></div>
+	<FactionTurnCharacters Player="Player" Game="Game" CloseMe="HideCityMoves" />
+</div>
+
 @code {
 	[Parameter] public USCharacterSheet Player { get; set; }
 	[Parameter] public EventCallback OpenPeopleViewerRequested { get; set; }
@@ -82,6 +94,7 @@
 
 	private bool IsTokensTryMaximized = false;
 
+	private bool IsShowingCityMoves = false;
 	private bool IsShowingVTT = false;
 	private void OpenVTTInternal()
 	{
@@ -92,6 +105,18 @@
 	private void HideVTT()
 	{
 		IsShowingVTT = false;
+		CloseVTTRequested.InvokeAsync();
+	}
+
+	private void ShowCityMoves()
+	{
+		IsShowingCityMoves = true;
+		OpenVTTRequested.InvokeAsync();
+	}
+
+	private void HideCityMoves()
+	{
+		IsShowingCityMoves = false;
 		CloseVTTRequested.InvokeAsync();
 	}
 

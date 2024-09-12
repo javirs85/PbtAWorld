@@ -87,6 +87,21 @@
 													</div>
 												}
 											</div>
+											<div class="p-2 d-flex">
+												@if(IsMaster)
+												{
+													<div class="d-flex flex-grow-1 align-items-center gap-1">
+														<EditForm Model="f" class="w-100">
+															<InputTextArea class="form-control" @bind-Value=f.Assets @onfocusout=SpreadChanges/>
+														</EditForm>
+														<i class="bi bi-send"></i>
+													</div>
+												}
+												else
+												{
+													<DecodedString Value="@f.Assets" />
+												}
+											</div>
 
 											@if (IsMaster && IsCurrentCircle(c) && IsCurrentFaction(f))
 											{
