@@ -80,7 +80,7 @@
 <div class="FullScreenModal CityMovesPage @(IsShowingCityMoves?"":"HideModal")"
 	 @onclick=HideCityMoves>
 	<div class="CloseButton"></div>
-	<FactionTurnCharacters Player="Player" Game="Game" CloseMe="HideCityMoves" />
+	<FactionTurnCharacters Player="Player" IsMaster=true Game="Game" CloseMe="HideCityMoves" />
 </div>
 
 @code {

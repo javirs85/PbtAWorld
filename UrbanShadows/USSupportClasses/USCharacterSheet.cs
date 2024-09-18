@@ -85,8 +85,10 @@ public class USCharacterSheet : PbtACharacter
 	{
 		get
 		{
-			try { 
-			return Moves.AllMovements.Where(x=> 
+			try {
+				if (Moves is null) return "No move";
+
+				return Moves.AllMovements.Where(x=> 
 					x.TypeOfMovement == MovementTypes.DramaticMovement && 
 					x.Archetipe == Archetype)
 				.ToList()[0]?
@@ -96,6 +98,15 @@ public class USCharacterSheet : PbtACharacter
 				return "No move";
 			}
 		}
+	}
+
+	public List<FactionMoveByUser> FactionTurnMoves { get; set; } = new();
+
+	public class FactionMoveByUser
+	{
+		public USMoveIDs MoveIDs { get; set; } = USMoveIDs.NotSet;
+		public string MoveExplanation { get; set; } = string.Empty;
+		public int Roll { get; set; } = 0;
 	}
 
 	public string ArchetypeUniqueTittle1 { get; set; } = "";

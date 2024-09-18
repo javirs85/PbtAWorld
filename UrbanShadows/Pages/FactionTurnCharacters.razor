@@ -6,45 +6,98 @@
 
 <div class="back d-flex gap-3" style="overflow-y:scroll;" @onclick:stopPropagation=true>
 	<div class="d-flex flex-column gap-2 overflow-auto" style="max-width: 21%;">
-		
-		<div>Puedes hacer @MaxStatus movimientos de nivel @MaxStatus o menos</div>
-		<div class="InnerColumnPack Status1">
-			<div class="InnerColumnHeader" style="cursor: pointer;">
-				Estatus 1:
-			</div>
-			<div class="InnerColumContent">
-				@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus1))
+		@if(IsMaster)
+		{
+			@foreach(var Player in Game.Players.Select(x=> x as USCharacterSheet))
+			{
+				<div @onclick=@(()=>{SelectPlayer(Player);}) style="cursor: pointer;">
+					@Player.Name
+					<div class="d-flex flex-column gap-1 ms-2">
+						@foreach(var m in Player.FactionTurnMoves.Select(x=> Moves.GetMovement(x.MoveIDs)))
+						{
+							<div>
+								@m.Title
+							</div>
+						}
+					</div>
+					@if(SelectedPlayer == Player)
+					{
+						<EditForm Model="EditingMovement">
+							<div class="d-flex flex-column gap-1 ms-2" @onclick:stopPropagation>
+								<InputSelect class=" form-control custom-select" @bind-Value=EditingMovement.MoveIDs>
+									<option value="@USMoveIDs.NotSet.ToString()">None</option>
+									@foreach (var op in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus1))
+									{
+										<option value="@op.IDText">1: @op.Title</option>
+									}
+									@foreach (var op in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus2))
+									{
+										<option value="@op.IDText">2: @op.Title</option>
+									}
+								</InputSelect>
+								<InputTextArea class="form-control" @bind-Value=EditingMovement.MoveExplanation/>
+								<InputNumber class="form-control" @bind-Value=EditingMovement.Roll/>
+								<button class="btn btn-primary" @onclick=@(()=>{SaveMove(EditingMovement, Player);})>Save</button>
+							</div>
+						</EditForm>
+					}
+					
+				</div>
+			}
+			
+		}
+		else
+		{
+			<div>Puedes hacer @MaxStatus movimientos de nivel @MaxStatus o menos</div>
+			<div class="d-flex flex-column gap-1 ms-2">
+				@foreach(var m in Player.FactionTurnMoves)
 				{
-					<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+					<div>
+						<div>@Moves.GetMovement(m.MoveIDs).Title</div>
+						<div>@m.MoveExplanation</div>
+						<div>(@m.Roll)</div>
+					</div>
 				}
 			</div>
-		</div>
-		@if(MaxStatus > 1)
-		{
-			<div class="InnerColumnPack Status2">
+			<div class="InnerColumnPack Status1">
 				<div class="InnerColumnHeader" style="cursor: pointer;">
-					Estatus 2:
+					Estatus 1:
 				</div>
 				<div class="InnerColumContent">
-					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus2))
+					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus1))
+					{
+						<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+					}
+				</div>
+			</div>
+			@if(MaxStatus > 1)
+			{
+				<div class="InnerColumnPack Status2">
+					<div class="InnerColumnHeader" style="cursor: pointer;">
+						Estatus 2:
+					</div>
+					<div class="InnerColumContent">
+						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus2))
+						{
+							<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+						}
+					</div>
+				</div>
+			}
+
+			<div class="InnerColumnPack FactionMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;">
+					Movimientos de las facciones:
+				</div>
+				<div class="InnerColumContent">
+					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionPhaseCityMove))
 					{
 						<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
 					}
 				</div>
 			</div>
 		}
-
-		<div class="InnerColumnPack FactionMoves">
-			<div class="InnerColumnHeader" style="cursor: pointer;">
-				Movimientos de las facciones:
-			</div>
-			<div class="InnerColumContent">
-				@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionPhaseCityMove))
-				{
-					<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
-				}
-			</div>
-		</div>
+		
 	</div>
 	<div class="flex-fill">
 		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=false PreventFullScreenMode=true ExitRequested="Close" />
@@ -55,10 +108,46 @@
 	[Parameter] public USCharacterSheet Player { get; set; } = new();
 	[Parameter] public USGameController? Game { get; set; } = null;
 	[Parameter] public EventCallback CloseMe { get; set; }
+	[Parameter] public bool IsMaster { get; set; } = false;
+
+
+	protected override void OnParametersSet()
+	{
+		PlaybookMovesOnScreen.Clear();
+		PlaybookMovesOnScreen.AddRange(Moves.AllMovements.Where(
+			x => x.Archetipe == Player.Archetype &&
+			x.TypeOfMovement == MovementTypes.ArchetipeMovement));
+
+		Game.UpdateUI -= Update;
+		Game.UpdateUI += Update;
+	}
+
+	void Update(object? sender, EventArgs e) => Update();
+	void Update() => InvokeAsync(StateHasChanged);
 
 	private string FirstColumnWidth = "50%";
 
 	private List<USMove> PlaybookMovesOnScreen = new();
+
+	private USCharacterSheet.FactionMoveByUser EditingMovement = new();
+
+	private USCharacterSheet? SelectedPlayer = null;
+	private bool IsEditingMove = false;
+
+	private void SelectPlayer(USCharacterSheet Player)
+	{
+		if (Player == SelectedPlayer)
+			SelectedPlayer = null;
+		else
+			SelectedPlayer = Player;
+	}
+
+	private async Task SaveMove(USCharacterSheet.FactionMoveByUser EditingMovement, USCharacterSheet Player)
+	{
+		Player.FactionTurnMoves.Add(EditingMovement);
+		await Game.StoreChangesOnCharacter(Player, $"Usó {Moves.GetMovement(EditingMovement.MoveIDs).Title}");
+		Game.RequestUpdateToUIOnClients();	
+	}
 
 	private int ExpectedNumberOfMoves
 	{
@@ -88,13 +177,7 @@
 			SelectedMove = m;
 	}
 
-	protected override void OnParametersSet()
-	{
-		PlaybookMovesOnScreen.Clear();
-		PlaybookMovesOnScreen.AddRange(Moves.AllMovements.Where(
-			x => x.Archetipe == Player.Archetype &&
-			x.TypeOfMovement == MovementTypes.ArchetipeMovement));
-	}
+	
 
 	private int MaxStatus
 	{
@@ -105,7 +188,6 @@
 	}
 
 
-	private void Update() => InvokeAsync(StateHasChanged);
 
 	private void Close()
 	{
