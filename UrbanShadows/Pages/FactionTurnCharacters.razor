@@ -10,16 +10,26 @@
 		{
 			@foreach(var Player in Game.Players.Select(x=> x as USCharacterSheet))
 			{
-				<div @onclick=@(()=>{SelectPlayer(Player);}) style="cursor: pointer;">
+				<div class="d-flex gap-1 flex-column" @onclick=@(()=>{SelectPlayer(Player);}) style="cursor: pointer;">
 					@Player.Name
-					<div class="d-flex flex-column gap-1 ms-2">
-						@foreach(var m in Player.FactionTurnMoves.Select(x=> Moves.GetMovement(x.MoveIDs)))
-						{
-							<div>
-								@m.Title
+					
+					@foreach (var m in Player.FactionTurnMoves)
+					{
+						<div class="d-flex flex-column gap-1 ms-2" style="    background: #3d3c3c;
+																			padding: 5px;
+																			border-radius: 5px;">
+							<div class="d-flex">
+								<div class="d-flex flex-column flex-grow-1">
+									<div>@Moves.GetMovement(m.MoveIDs).Title (@m.Roll)</div>
+									<div class="opacity-50">@m.MoveExplanation</div>
+								</div>
+								<div>
+									<i class="bi bi-trash3-fill hoverable text-danger" @onclick:preventDefault @onclick=@(_=> DeleteMove(m, Player))></i>
+								</div>
 							</div>
-						}
-					</div>
+						</div>
+					}
+					
 					@if(SelectedPlayer == Player)
 					{
 						<EditForm Model="EditingMovement">
@@ -52,10 +62,15 @@
 			<div class="d-flex flex-column gap-1 ms-2">
 				@foreach(var m in Player.FactionTurnMoves)
 				{
-					<div>
-						<div>@Moves.GetMovement(m.MoveIDs).Title</div>
-						<div>@m.MoveExplanation</div>
-						<div>(@m.Roll)</div>
+					<div class="d-flex flex-column gap-1 ms-2" style="    background: #3d3c3c;
+																			padding: 5px;
+																			border-radius: 5px;">
+						<div class="d-flex">
+							<div class="d-flex flex-column flex-grow-1">
+								<div>@Moves.GetMovement(m.MoveIDs).Title (@m.Roll)</div>
+								<div class="opacity-50">@m.MoveExplanation</div>
+							</div>
+						</div>
 					</div>
 				}
 			</div>
@@ -147,6 +162,13 @@
 		Player.FactionTurnMoves.Add(EditingMovement);
 		await Game.StoreChangesOnCharacter(Player, $"Usó {Moves.GetMovement(EditingMovement.MoveIDs).Title}");
 		Game.RequestUpdateToUIOnClients();	
+	}
+
+	private async Task DeleteMove(USCharacterSheet.FactionMoveByUser Move, USCharacterSheet Player)
+	{
+		Player.FactionTurnMoves.Remove(Move);
+		await Game.StoreChangesOnCharacter(Player, $"Eliminó {Moves.GetMovement(Move.MoveIDs).Title}");
+		Game.RequestUpdateToUIOnClients();
 	}
 
 	private int ExpectedNumberOfMoves
