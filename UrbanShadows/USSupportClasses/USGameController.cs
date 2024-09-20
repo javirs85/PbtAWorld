@@ -69,13 +69,8 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 		{
 			AllDebts.Add(d);
 			ShowToastOnAllClients($"{GetCharacterByID(d.PayingID).Name} contrajo una deuda con {GetCharacterByID(d.ReceivingID).Name}");
+			await StoreAllDebts();
 		}
-
-		var Folder = $"wwwroot/GameImages/{SessionID}";
-		var path = $"{Folder}/Debts.json";
-		var json = System.Text.Json.JsonSerializer.Serialize(AllDebts);
-
-		await System.IO.File.WriteAllTextAsync(path, json);
 
 		RequestUpdateToUIOnClients();
 	}
@@ -84,8 +79,19 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 		{
 			AllDebts.Remove(d);
 			ShowToastOnAllClients($"{GetCharacterByID(d.PayingID).Name} pagó una deuda a {GetCharacterByID(d.ReceivingID).Name}");
+
+			await StoreAllDebts();
 		}
 		RequestUpdateToUIOnClients();
+	}
+
+	public async Task StoreAllDebts()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID}";
+		var path = $"{Folder}/Debts.json";
+		var json = System.Text.Json.JsonSerializer.Serialize(AllDebts);
+
+		await System.IO.File.WriteAllTextAsync(path, json);
 	}
 
 	public async Task StoreFaction(USFaction fac) { throw new NotImplementedException(); }

@@ -5,6 +5,7 @@
 @inject NavigationManager nav;
 @inject DinoCharacter DinoCharacter;
 @inject DinoGameController DinoGame;
+@inject USGameController USGame;
 @inject USMovesService Moves;
 
 @inject IToastService Toaster;
@@ -211,7 +212,21 @@
 		nav.NavigateTo("SeasonSelection/"+Meta.SelectedGame);
 	}
 
-	private async Task DeleteSelectedCharacter() => await Meta.DeleteSelectedCharacter();
+	private async Task DeleteSelectedCharacter()
+	{ 
+		if(Meta.SelectedGame == AvailableGames.US)
+		{
+			var debs = USGame.AllDebts.FindAll(x =>
+					x.ReceivingID == Meta.SelectedPlayer.ID ||
+					x.PayingID == Meta.SelectedPlayer.ID);
+
+			foreach (var d in debs)
+				USGame.AllDebts.Remove(d);
+
+			USGame.StoreAllDebts();
+		}
+		await Meta.DeleteSelectedCharacter(); 
+	}
 
 	public Type AvailableProfessionsForSelectedGame
 	{
