@@ -1,153 +1,221 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Text.Json
+@using PbtALib.ifaces
 @inject ImagesService ImagesService
+@inject CharacterSelectorService CharacterSelectorService
 
-<div class="FullScreenModal" @onclick=ExitRequested>
-	<div class="PeopleModalBody" @onclick:stopPropagation>
+<div class="@(PreventFullScreenMode?"":"FullScreenModal")" @onclick=ExitRequested>
+	<div class="PeopleModalBody" @onclick:stopPropagation style="@(CharacterSelectorService.CurrentMode == CharacterSelectorService.SelectionModes.character?"":"background:black !important;  border:none !important;")">
 		<div class="CloseButton" @onclick=ExitRequested />
-		@if(CurrentlyViewing == Views.FactionsList)
+		
+		@if(Game is not null && Game.People is not null)
 		{
-			<div class="d-flex w-100 gap-2">
-				@foreach(var c in People.Circles)
-				{
-					<div class="CircleContainer @(IsCurrentCircle(c)? "SuperWide" : "Small") @(IsMaster?"":"opacity:1;")">
-						<div class="header" @onclick=@(()=>{SelectCircle(c);})>
-							@c.Name
-							@if(IsMaster && IsCurrentCircle(c))
-							{
-								<button class="btn btn-outline-success" @onclick=@(()=>{EditCircle(c);}) @onclick:stopPropagation><i class="bi bi-pencil"></i></button>
-							}
-						</div>
-
-						<div class="CircleBody">
-							@foreach(PbtAFaction f in c.Factions)
-							{
-								<div class="FactionContainer" >
-									<div class="header" @onclick=@(()=>{SelectFaction(f);})>
-										@f.Name
-										@if (IsMaster && IsCurrentCircle(c) && IsCurrentFaction(f))
-										{
-											<button class="btn btn-outline-success" @onclick=@(()=>{EditFaction(f);}) @onclick:stopPropagation><i class="bi bi-pencil"></i></button>
-										}
-									</div>
-									<div class="FactionBody">
-										@foreach(PbtACharacter ch in f.Members)
-										{
-											<div class="CharacterBox">
-												@if(HasImage(ch))
-												{
-													<ImageCard Image="GetImage(ch)" IsMaster=IsMaster ForcedSize="150" />
-												}
-												
-												@if (IsMaster && IsCurrentCircle(c))
-												{
-													<div class="CharacterDetailsBox">
-														<div>
-															<span>Quiere</span>
-															@ch.WhatWants
-														</div><div>
-															<span>NO quiere</span>
-															@ch.WhatDoesNotWant
-														</div><div>
-															<span>Complicación</span>
-															@ch.Complication
-														</div>
-														<button class="btn btn-outline-success" style="width:40px;" @onclick=@(()=>{EditCharacter(ch);}) @onclick:stopPropagation><i class="bi bi-pencil"></i></button>
-													</div>
-												}
-																							
-											</div>
-										}
-									</div>
-
-									@if (IsMaster && IsCurrentCircle(c) && IsCurrentFaction(f))
-									{
-										<button class="btn btn-primary" @onclick=@(()=>{People.AddCharacterToFaction(new PbtACharacter{Name = "New Char", ID = Guid.NewGuid()}, f);})>Add Character</button>
-									}
-								</div>
-							}
-						</div>
-
-						@if(IsMaster && SelectedCircle is not null && SelectedCircle == c)
+			@if(CurrentlyViewing == Views.FactionsList)
+			{
+				<div class="d-flex flex-column w-100 gap-1">
+					<div class="PlayersContainer d-flex align-items-center gap-1">
+						<div class="me-2">Jugadores:</div>
+						@foreach (var p in CharacterSelectorService.Players)
 						{
-							<div class="d-flex gap-1 p-1">
-								<button class="btn btn-primary" @onclick=@(()=>{People.AddNewFactionToCircle(c);})>Add Faction</button>
-								<button class="btn btn-danger" @onclick=@(()=>{Delete(c);})><i class="bi bi-trash3"></i></button>
+							<div class="@(CharacterSelectorService.CurrentMode == CharacterSelectorService.SelectionModes.character?"CharacterBox":"")" style="background:black;" @onclick=@(()=>{CharacterSelectorService.FinishSelection(p);})>
+								@p.Name
 							</div>
 						}
-						
 					</div>
-				}				
-			</div>
-			@if (IsMaster)
+					<div class="d-flex w-100 gap-2">
+						
+						@foreach(var c in Game.People.Circles)
+						{
+							<div class="CircleContainer @(IsCurrentCircle(c)? "SuperWide" : "Small") @(IsMaster?"":"opacity:1;")">
+								<div class="header" @onclick=@(()=>{SelectCircle(c);})>
+									@c.Name
+									@if(IsMaster && IsCurrentCircle(c))
+									{
+										<button class="btn btn-outline-success" @onclick=@(()=>{EditCircle(c);}) @onclick:stopPropagation><i class="bi bi-pencil"></i></button>
+									}
+								</div>
+
+								<div class="CircleBody">
+									@foreach(PbtAFaction f in c.Factions)
+									{
+										<div class="FactionContainer @(f.Status == FactionStatuses.Manteniendo?"opacity-50":"")"
+											 style="@(f.IsDebilitated?"background:#370404;":"")">
+											<div class="header" style="@(f.IsDebilitated?"background:#370404;":"")" @onclick=@(()=>{SelectFaction(f);})>
+												<FactionCard Faction="f" IsMaster="IsMaster" Game="Game"/>
+											</div>
+											<div class="FactionBody">
+												@foreach(PbtACharacter ch in f.Members)
+												{
+													<div class="@(CharacterSelectorService.CurrentMode == CharacterSelectorService.SelectionModes.character?"CharacterBox":"")" 
+														@onclick=@(()=>{CharacterSelectorService.FinishSelection(ch);})>
+														@if(HasImage(ch))
+														{
+															<ImageCard Image="GetImage(ch)" IsMaster=IsMaster ForcedSize="150" />
+														}
+														else
+														{
+															<div class="p-3 rounded" style="background:#2f2f2f;">
+																<h4>@if(IsMaster)
+																	{
+																		<HiddeableInput @bind-Value=ch.Name EditFinished="SpreadChanges" />
+																	}
+																	else
+																	{
+																		@ch.Name
+																	}
+																</h4>
+															</div>
+														}
+
+														@if (IsMaster && IsCurrentCircle(c))
+														{
+															<div class="CharacterDetailsBox">
+																<div>
+																	<span>Quiere</span>
+																	@ch.WhatWants
+																</div><div>
+																	<span>NO quiere</span>
+																	@ch.WhatDoesNotWant
+																</div><div>
+																	<span>Complicación</span>
+																	@ch.Complication
+																</div>
+																<button class="btn btn-outline-success" style="width:40px;" @onclick=@(()=>{EditCharacter(ch);}) @onclick:stopPropagation><i class="bi bi-pencil"></i></button>
+															</div>
+														}
+																							
+													</div>
+												}
+											</div>
+											<div class="p-2 d-flex">
+												@if(IsMaster)
+												{
+													<div class="d-flex flex-grow-1 align-items-center gap-1">
+														<EditForm Model="f" class="w-100">
+															<InputTextArea class="form-control" @bind-Value=f.Assets @onfocusout=SpreadChanges/>
+														</EditForm>
+														<i class="bi bi-send"></i>
+													</div>
+												}
+												else
+												{
+													<DecodedString Value="@f.Assets" />
+												}
+											</div>
+
+											@if (IsMaster && IsCurrentCircle(c) && IsCurrentFaction(f))
+											{
+												<button class="btn btn-primary" @onclick=@(()=>{Game.People.AddCharacterToFaction(new PbtACharacter{Name = "New Char", ID = Guid.NewGuid()}, f);})>Add Character</button>
+											}
+										</div>
+									}
+								</div>
+
+								@if(IsMaster && SelectedCircle is not null && SelectedCircle == c)
+								{
+									<div class="d-flex gap-1 p-1">
+										<button class="btn btn-primary" @onclick=@(()=>{Game.People.AddNewFactionToCircle(c);})>Add Faction</button>
+										<button class="btn btn-danger" @onclick=@(()=>{Delete(c);})><i class="bi bi-trash3"></i></button>
+									</div>
+								}
+						
+							</div>
+						}				
+					</div>
+					@if (IsMaster)
+					{
+						<button class="btn btn-primary" @onclick=AddNewCircle>Add circle</button>
+						<button class="btn btn-primary" @onclick=SaveChanges>Save changes</button>
+						<a href="@($"/GameImages/{GameID.ToString()}/People.json")">Download json</a>
+						<EditForm Model="this">
+							<InputFile OnChange="LoadPeopleJson" class="form-control" style="background: var(--bs-gray-700); border: none; color: white;" />
+						</EditForm>
+					}
+					else
+					{
+						
+					}
+				</div>
+			}
+			else if (CurrentlyViewing == Views.FactionView)
 			{
-				<button class="btn btn-primary" @onclick=AddNewCircle>Add circle</button>
-				<button class="btn btn-primary" @onclick=SaveChanges>Save changes</button>
-				<a href="@($"/GameImages/{GameID.ToString()}/People.json")">Download json</a>
-				<EditForm Model="this">
-					<InputFile OnChange="LoadPeopleJson" class="form-control" style="background: var(--bs-gray-700); border: none; color: white;" />
+			
+			}
+			else if (CurrentlyViewing == Views.CharacterView)
+			{
+			
+			}
+			else if (CurrentlyViewing == Views.CircleEdit && SelectedCircle is not null)
+			{
+				<div class="d-flex gap-1">
+					<EditForm Model="SelectedCircle">
+						<InputText class="form-control" @bind-Value="SelectedCircle.Name"/>
+						<button class="btn btn-primary" @onclick="@(()=>{CurrentlyViewing = Views.FactionsList;})">OK</button>
+					</EditForm>
+				</div>
+			}
+			else if (CurrentlyViewing == Views.FactionEdit && SelectedFaction is not null)
+			{
+				<EditForm Model="SelectedFaction">
+					<div class="d-flex flex-column gap-2">
+						<InputText class="form-control" @bind-Value="SelectedFaction.Name" />
+						<div class="d-flex gap-1 align-items-center">
+							<label>Fuerza:</label>
+							<InputNumber class="form-control" @bind-Value="SelectedFaction.Strength"/>
+							<TrackViewer MaxValue="3" Value="@SelectedFaction.StrengthTemp" />
+						</div>
+						<div class="d-flex gap-1 align-items-center">
+							<label>Fuerza:</label>
+							<InputNumber class="form-control" @bind-Value="SelectedFaction.Strength" />
+						</div>
+						<div class="d-flex gap-1 align-items-center">
+							<label>Tamaño:</label>
+							<InputNumber class="form-control" @bind-Value="SelectedFaction.Size" />
+							<TrackViewer MaxValue="3" Value="@SelectedFaction.SizeTemp" />
+						</div>
+						
+						
+						<button class="btn btn-primary" @onclick="FinishEditing">OK</button>
+					</div>
 				</EditForm>
 			}
-		}
-		else if (CurrentlyViewing == Views.FactionView)
-		{
-			
-		}
-		else if (CurrentlyViewing == Views.CharacterView)
-		{
-			
-		}
-		else if (CurrentlyViewing == Views.CircleEdit && SelectedCircle is not null)
-		{
-			<div class="d-flex gap-1">
-				<EditForm Model="SelectedCircle">
-					<InputText class="form-control" @bind-Value="SelectedCircle.Name"/>
-					<button class="btn btn-primary" @onclick="@(()=>{CurrentlyViewing = Views.FactionsList;})">OK</button>
-				</EditForm>
-			</div>
-		}
-		else if (CurrentlyViewing == Views.FactionEdit && SelectedFaction is not null)
-		{
-			<div class="d-flex gap-1">
-				<EditForm Model="SelectedFaction">
-					<InputText class="form-control" @bind-Value="SelectedFaction.Name" />
-					<button class="btn btn-primary" @onclick="@(()=>{CurrentlyViewing = Views.FactionsList;})">OK</button>
-				</EditForm>
-			</div>
-		}
-		else if (CurrentlyViewing == Views.CharacterEdit && SelectedCharacter is not null)
-		{
-			<div class="d-flex gap-1">
-				<EditForm Model="SelectedCharacter">
-					<InputFile OnChange="ImagesService.SaveImageToDisk" class="form-control" style="background: var(--bs-gray-700); border: none; color: white;" />
-					<span>Nombre</span>
-					<InputText class="form-control" @bind-Value="SelectedCharacter.Name" />
-					<span>Quiere</span>
-					<InputText class="form-control" @bind-Value="SelectedCharacter.WhatWants" />
-					<span>No quiere</span>
-					<InputText class="form-control" @bind-Value="SelectedCharacter.WhatDoesNotWant" />
-					<span>Complicación</span>
-					<InputText class="form-control" @bind-Value="SelectedCharacter.Complication" />
-					<div class="form-check pt-1 pb-3">
-						<InputCheckbox class="form-check-input" @bind-Value="SelectedCharacter.IsKnownByPlayers" />
-						<label class="form-check-label" for="flexCheckDefault">
-							Known by players
-						</label>
-					</div>
+			else if (CurrentlyViewing == Views.CharacterEdit && SelectedCharacter is not null)
+			{
+				<div class="d-flex gap-1">
+					<EditForm Model="SelectedCharacter">
+						<InputFile OnChange="ImagesService.SaveImageToDisk" class="form-control" style="background: var(--bs-gray-700); border: none; color: white;" />
+						<span>Nombre</span>
+						<InputText class="form-control" @bind-Value="SelectedCharacter.Name" />
+						<span>Quiere</span>
+						<InputText class="form-control" @bind-Value="SelectedCharacter.WhatWants" />
+						<span>No quiere</span>
+						<InputText class="form-control" @bind-Value="SelectedCharacter.WhatDoesNotWant" />
+						<span>Complicación</span>
+						<InputText class="form-control" @bind-Value="SelectedCharacter.Complication" />
+						<div class="form-check pt-1 pb-3">
+							<InputCheckbox class="form-check-input" @bind-Value="SelectedCharacter.IsKnownByPlayers" />
+							<label class="form-check-label" for="flexCheckDefault">
+								Known by players
+							</label>
+						</div>
 					
-					<button class="btn btn-primary" @onclick="@(()=>{CurrentlyViewing = Views.FactionsList;})">OK</button>
-					<button class="btn btn-danger" @onclick="DeleteSelectedCharacter">Delete</button>
-				</EditForm>
-			</div>
+						<button class="btn btn-primary" @onclick="@(()=>{CurrentlyViewing = Views.FactionsList;})">OK</button>
+						<button class="btn btn-danger" @onclick="DeleteSelectedCharacter">Delete</button>
+					</EditForm>
+				</div>
+			}
 		}
+		
 	</div>
 </div>
 
 @code{
+	[Parameter] public IGameController Game{get;set;}
 	[Parameter] public Guid GameID { get; set; }
-	[Parameter] public IPeopleCast People { get; set; }
 	[Parameter] public bool IsMaster { get; set; }
 	[Parameter] public EventCallback ExitRequested { get; set; }
+	[Parameter] public EventCallback<ICharacter> SelectionFinished { get; set; }
+	[Parameter] public bool PreventFullScreenMode { get; set; } = false;
 
 
 	private enum Views { FactionsList, FactionView, CharacterView, CircleEdit, FactionEdit, CharacterEdit }
@@ -160,9 +228,18 @@
 	protected override async Task OnParametersSetAsync()
 	{
 		if (ImagesService.AllImages.Count == 0) await ImagesService.LoadAll(GameID);
-		if(People.Circles.Count <= 1)
-			People.LoadFromJsonFile(GameID);
+		if (Game.People is not null && Game.People.Circles.Count <= 1)
+			Game.People.LoadFromJsonFile(GameID);
+
+		CharacterSelectorService.ForceUIUpdate -= Refresh;
+		CharacterSelectorService.ForceUIUpdate += Refresh;
+
+		Game.UpdatePeopleViewerInAllClientsEvent -= Refresh;
+		Game.UpdatePeopleViewerInAllClientsEvent += Refresh;
 	}
+
+	private void Refresh(object? sender, EventArgs e) => InvokeAsync(StateHasChanged);
+
 
 	private async Task LoadPeopleJson(InputFileChangeEventArgs e)
 	{
@@ -183,7 +260,7 @@
 					using (var reader = new StreamReader(stream))
 					{
 						var jsonContent = await reader.ReadToEndAsync();
-						People.LoadFromJsonString(jsonContent, GameID);
+						Game.People.LoadFromJsonString(jsonContent, GameID);
 					}
 				}
 			}
@@ -192,8 +269,9 @@
 
 	private void SavePeopleToFile()
 	{
-		People.StoreInJsonFile(GameID);
+		Game.People.StoreInJsonFile(GameID);
 	}
+
 
 	private bool HasImage(PbtACharacter ch)
 	{
@@ -246,7 +324,7 @@
 				Name= "Default faction"
 			};
 
-		People.Circles.Add(new Circle("New Circle", DefaultFaction));
+		Game.People.Circles.Add(new Circle("New Circle", DefaultFaction));
 	}
 
 	private void EditCircle(Circle c)
@@ -268,12 +346,23 @@
 	}
 
 	private void Delete(Circle c){
-		People.Circles.Remove(c);
+		Game.People.Circles.Remove(c);
 		SelectedCircle = null;
 	}
 
 	private void SaveChanges(){
-		People.StoreInJsonFile(GameID);
+		Game.People.StoreInJsonFile(GameID);
+	}
+
+	private void FinishEditing()
+	{
+		CurrentlyViewing = Views.FactionsList;
+		SpreadChanges();
+	}
+
+	private void SpreadChanges()
+	{
+		Game.UpdatePeopleViewerInAllClients();
 	}
 
 	private void DeleteSelectedCharacter(){

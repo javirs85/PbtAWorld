@@ -1,11 +1,11 @@
 ﻿@using PbtALib;
 @inject USGameController Game
 @inject USMovesService Moves
+@inject MoveSelector.MoveSelectorService MSelector
 @inject IToastService Toaster
 
 <div class="PbtASystemContainer @(IsSelected?"IsSelected":"Innactive") @(IsSelectionMode?"ShowFull":"")" 
 	@onclick=PointerDown
-	@oncontextmenu=Edit 
 	@oncontextmenu:preventDefault=true 
 	@oncontextmenu:stopPropagation=true>
 	<div class="Box">
@@ -56,19 +56,19 @@
 				}
 				else
 				{
-					@foreach (var lio in Player.LIOs /*Move.PreCondition.Options*/)
+					@foreach (var lio in Player.LIOs)
 					{
 						<div class="LIOBox">
 							@Moves.AllLio.Find(x=>x.ID == lio)?.Text
 						</div>
 					}
 					<div class="d-flex justify-content-center w-100">
-						<button class="btn btn-outline-light w-75 opacity-75 mt-3" @onclick=OpenLIOSelectionModal>Añadir habilidad</button>
+						<button class="btn btn-outline-light w-75 opacity-75 mt-3" @onclick=SelectNewLIOMove>Añadir habilidad</button>
 					</div>
 				}				
 			</div>
 
-			<div class="Advanced @(Move.IsImproved?"AdvancedYEs":"AdvancedNOT") @(MasterView ? "AdvancedYEs" : "")">
+			<div class="Advanced @(Move.IsImproved?"AdvancedYEs":"AdvancedNOT") @(MasterView ? "AdvancedYEs" : "")" @onclick=AdvanceClicked>
 				<div class="px-2"><img src="imgs/Icons/UpgradedArrow@(Move.IsImproved?"":"NO").png" /></div>
 				<div class="AdvancedMainText">
 					<DecodedString Value="@Move.AdvancedConsequences.MainText" />
@@ -335,9 +335,9 @@
 	private void OpenLIOSelectionModal() { 
 		IsSLioSelectingModalON = true;
 		LIOs.Clear();
-		foreach (var arc in Enum.GetValues(typeof(AvailableArchetypes)).Cast<AvailableArchetypes>())
+		foreach (var arc in Enum.GetValues(typeof(US_Classes)).Cast<US_Classes>())
 		{
-			if (arc != AvailableArchetypes.All && arc != AvailableArchetypes.NotSet && arc != Player.Archetype)
+			if (arc != US_Classes.All && arc != US_Classes.NotSet && arc != Player.Archetype)
 			{
 				LIOs.Add(new LIOsPack
 					{
@@ -358,6 +358,12 @@
 		await ForceUpdate.InvokeAsync();
 	}
 
+	async Task AdvanceClicked()
+	{
+		if (Move.IsImproved) await MakeMoveNOTAdvanced();
+		else await MakeMoveAdvanced();
+	}
+
 	async Task MakeMoveAdvanced()
 	{
 		if (Move.IsImproved) CloseFullScreenModal();
@@ -366,7 +372,7 @@
 			Move.IsImproved = true;
 			Player.UpgradedMoves.Add(Move.ID);
 			await Game.StoreChangesOnCharacter(Player, "añadió movimientos avanzados");
-			CloseFullScreenModal();
+			//CloseFullScreenModal();
 		}
 	}
 	async Task MakeMoveNOTAdvanced()
@@ -377,7 +383,7 @@
 			Move.IsImproved = false;
 			Player.UpgradedMoves.Remove(Move.ID);
 			await Game.StoreChangesOnCharacter(Player, "eliminó movimientos avanzados");
-			CloseFullScreenModal();
+			//CloseFullScreenModal();
 		}
 	}
 
@@ -385,8 +391,6 @@
 
 	async Task Roll()
 	{
-		int d1 = 1 + rnd.Next(5);	
-		int d2 = 1 + rnd.Next(5);
 		int bonus = 0;
 		string rollText = "";
 
@@ -416,7 +420,6 @@
 			Game.Roll(Player.ID, Move, Move.Roll, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
 		}
 
-		int total = d1 + d2 + bonus;
 		await FinishedRolling.InvokeAsync();
 	}
 
@@ -433,4 +436,70 @@
 	}
 
 	void SelectCircle(USAttributes at) => tcs.SetResult(at);
+
+	private async Task SelectNewLIOMove()
+	{
+		List<MoveSelector.MovesPack> options = new();
+
+		MoveSelector.MovesPack firstOption = new();
+		firstOption.Title = Player.Archetype.ToUI();
+		foreach (var m in Moves.AllLio.Where(
+			x => x.Archetype == Player.Archetype))
+		{
+			MoveSelector.MovesPackItem item = new();
+			if (Player.LIOs.Contains(m.ID))
+				item.IsAlreadySelected = true;
+			else
+				item.IsAlreadySelected = false;
+
+			item.move = m;
+			firstOption.Moves.Add(item);
+		}
+		options.Add(firstOption);
+
+		foreach (US_Classes arc in Enum.GetValues(typeof(US_Classes)))
+		{
+			if (arc == Player.Archetype) continue;
+			if (arc == US_Classes.All) continue;
+			if (arc == US_Classes.NotSet) continue;
+
+			firstOption = new();
+			firstOption.Title = arc.ToUI();
+			foreach (var m in Moves.AllLio.Where(
+				x => x.Archetype == arc))
+			{
+				MoveSelector.MovesPackItem item = new();
+				if (Player.LIOs.Contains(m.ID))
+					item.IsAlreadySelected = true;
+				else
+					item.IsAlreadySelected = false;
+
+				item.move = m;
+				firstOption.Moves.Add(item);
+			}
+
+			options.Add(firstOption);
+		}
+
+
+		await MSelector.StartSelection(options);
+
+		Player.LIOs.Clear();
+
+		foreach (var option in options)
+		{
+			foreach (var move in option.Moves)
+			{
+				if (move.IsAlreadySelected)
+				{
+					var m = move.move as LIO;
+					Player.LIOs.Add(m.ID);
+				}
+
+			}
+		}
+
+		await Game.StoreChangesOnCharacter(Player, "Actualizó sus movimientos de dejarlo salir");
+		StateHasChanged();
+	}
 }

@@ -1,0 +1,76 @@
+﻿@inject WhiteBoard.WhiteBoardService service
+
+<div class="ClocksTray pb-3  @(IsExpanded?"Expanded":"Minified")" style="@(IsMaster?"top:90px;":"")" @onclick:preventDefault @onclick:stopPropagation>
+	<div class="Exit ">
+		RELOJES
+		<div class="d-flex gap-2">
+			@if(IsExpanded)
+			{
+				<i class="bi bi-chevron-down hoverable" @onclick=@(()=>{IsExpanded = false;})></i>
+			}
+			else
+			{
+				<i class="bi bi-chevron-up hoverable" @onclick=@(()=>{IsExpanded = true;})></i>
+			}
+			<i class="bi bi-x-circle hoverable" @onclick="CloseRequest"></i>
+		</div>
+	</div>
+	<div class="d-flex flex-wrap justify-content-around @(IsMaster?"gap-1":"gap-4") p-2 @(IsMaster?"WrapContent":"")">
+		@foreach (var cl in service.Clocks)
+		{
+			<div>
+				<FitDClockViewer clock="cl"
+							 IsMaster=IsMaster
+							 Width="90"
+							 SpreadUpdate="service.ForzeUpdateInAllClients"
+							 DeleteMe="@(()=>{RemoveClock(cl);})" />
+			</div>
+		}
+	</div>
+	@if (IsMaster)
+	{
+		<div class="d-flex justify-content-evenly fs-2" style="border-top:1px solid gray">
+			<i class="bi bi-4-circle hoverable" @onclick=AddClock4></i>
+			<i class="bi bi-6-circle hoverable" @onclick=AddClock6></i>
+			<i class="bi bi-8-circle hoverable" @onclick=AddClock8></i>
+		</div>
+	}
+</div>
+
+@code {
+	[Parameter] public bool IsMaster { get; set; } = false;
+	[Parameter] public EventCallback CloseRequest { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+		service.UpdateUI -= UpdateUI;
+		service.UpdateUI += UpdateUI;
+
+	}
+
+	private bool IsExpanded = true;
+
+	private void UpdateUI(object? sender, EventArgs e) => UpdateUI();
+	private void UpdateUI() => InvokeAsync(StateHasChanged);
+
+	private void AddClock4()
+	{
+		service.Clocks.Add(new Clock("Title", 4));
+		service.ForzeUpdateInAllClients();
+	}
+	private void AddClock6()
+	{
+		service.Clocks.Add(new Clock("Title", 6));
+		service.ForzeUpdateInAllClients();
+	}
+	private void AddClock8()
+	{
+		service.Clocks.Add(new Clock("Title", 8));
+		service.ForzeUpdateInAllClients();
+	}
+	private void RemoveClock(Clock cl)
+	{
+		service.Clocks.Remove(cl);
+		service.ForzeUpdateInAllClients();
+	}
+}

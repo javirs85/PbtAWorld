@@ -1,0 +1,164 @@
+﻿@using PbtALib;
+@using UrbanShadows.Controls
+@using UrbanShadows.Pages
+@using static PbtaWorldRazonCommonComponents.CharacterSelector;
+@using static PbtaWorldRazonCommonComponents.LastRollOverlay;
+
+@inject IToastService Toaster;
+@inject NavigationManager Navigation
+@inject USGameController Game
+@inject USMovesService Moves
+@inject MoveSelector.MoveSelectorService MSelector
+@inject LastRollViewerService LastRollViewerService
+@inject CharacterSelectorService CharacterSelectorService
+@inject IDataBaseController Meta;
+@inject WhiteBoard.WhiteBoardService WhiteboardService
+
+<div class="bg-dark text-light p-3 fs-2 h-100">
+	<EditForm Model="Player">
+		<div class="BigContainer d-flex gap-1">
+			<div class="RightColumn">
+				<div class="RightColumnButton hoverable" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=ShowCityMoves><i class="bi bi-moon-stars-fill"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
+			</div>
+			<div class="d-flex flex-column fs-5">
+				<MasterMovePackViewer MovesPack="MasterMoves" />
+				<div class="CircleSelector">
+					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
+					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
+					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
+					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
+				</div>
+				<MasterMovePackViewer MovesPack="SelectedCircleMoves" HideTittle="true" />
+			</div>
+		</div>
+	</EditForm>
+</div>
+
+<!--VTT MiniSheet-->
+<div class="VTTMiniSheet" style="display:@(IsShowingVTT?"block":"none")">
+	<div class="Exit">
+		<i class="bi bi-x-circle" @onclick="HideVTT"></i>
+	</div>
+	<div class="ClocksMini">
+		<i class="bi bi-circle " @onclick="HideVTT"></i>
+		<i class="bi bi-hourglass-split" style="font-size: 17px; top: 0px; left: 9px;" @onclick="OpenClocksViewerRequested"></i>
+	</div>
+	<div class="TokensTry @(IsTokensTryMaximized?"":"Minimized")">
+		@if(IsTokensTryMaximized)
+		{
+			<div class="hoverable w-100 d-flex justify-content-center bg-Dark" @onclick=@(()=>{IsTokensTryMaximized = false;})>Close</div>
+			@foreach(VTTTokens t in Enum.GetValues(typeof(VTTTokens)))
+			{
+				@if (!t.IsProp() && !t.IsDungeonProp() && !t.IsForest()
+						&& t != VTTTokens.Green6 && t != VTTTokens.BoxGray && t != VTTTokens.Black7 && t != VTTTokens.Black8
+						&& t != VTTTokens.Red7 && t != VTTTokens.Red8 && t != VTTTokens.Blue7 && t != VTTTokens.Blue8
+				)
+				{
+					<div class="TokenSelector" @onclick=@(()=>{AddMonster(t);})>
+						<VTTTokenViewer VTTToken="t" isOUTSIDEMap=true/>
+					</div>
+				}
+			}
+		}
+		else
+		{
+			<div class="hoverable" @onclick=@(()=>{IsTokensTryMaximized = true;})>Add token</div>
+			<div class="hoverable" @onclick=AddFromPeople>Add from people</div>
+		}
+
+	</div>
+	<div class="d-flex flex-column">
+		<MasterMovePackViewer MovesPack="MasterMoves"/>
+		<div class="CircleSelector">
+			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
+			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
+			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
+			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
+		</div>
+		<MasterMovePackViewer MovesPack="SelectedCircleMoves" HideTittle="true" />
+	</div>
+	
+	}
+</div>
+
+<!--VTT CityMoves-->
+<div class="FullScreenModal CityMovesPage @(IsShowingCityMoves?"":"HideModal")"
+	 @onclick=HideCityMoves>
+	<div class="CloseButton"></div>
+	<FactionTurnCharacters Player="Player" IsMaster=true Game="Game" CloseMe="HideCityMoves" />
+</div>
+
+@code {
+	[Parameter] public USCharacterSheet Player { get; set; }
+	[Parameter] public EventCallback OpenPeopleViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenImageManagerRequested { get; set; }
+	[Parameter] public EventCallback OpenLastRollViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenClocksViewerRequested { get; set; }
+	[Parameter] public EventCallback OpenVTTRequested { get; set; }
+	[Parameter] public EventCallback CloseVTTRequested { get; set; }
+
+	private bool IsTokensTryMaximized = false;
+
+	private bool IsShowingCityMoves = false;
+	private bool IsShowingVTT = false;
+	private void OpenVTTInternal()
+	{
+		IsShowingVTT = true;
+		OpenVTTRequested.InvokeAsync();
+	}
+
+	private void HideVTT()
+	{
+		IsShowingVTT = false;
+		CloseVTTRequested.InvokeAsync();
+	}
+
+	private void ShowCityMoves()
+	{
+		IsShowingCityMoves = true;
+		OpenVTTRequested.InvokeAsync();
+	}
+
+	private void HideCityMoves()
+	{
+		IsShowingCityMoves = false;
+		CloseVTTRequested.InvokeAsync();
+	}
+
+	private Circles SelectedCircle = Circles.Mortalis; 
+
+	private MasterMovePack Agenda => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("Agenda")) ?? new();
+	private MasterMovePack GeneralAdvice => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("advice")) ?? new();
+	private MasterMovePack Principles => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("Principios")) ?? new();
+	private MasterMovePack MasterMoves => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("Master moves")) ?? new();
+	private MasterMovePack SelectedCircleMoves
+	{
+		get
+		{
+			return SelectedCircle switch
+			{
+				Circles.Mortalis => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("Mortandad")) ?? new(),
+				Circles.Noche => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("Noche")) ?? new(),
+				Circles.Poder => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("Poder")) ?? new(),
+				Circles.Velo => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("Velo")) ?? new(),
+				_ => Game.TextBook.MasterMovesPacks.Find(x => x.Title.Contains("Mortandad")) ?? new()
+			};
+		}
+	}
+
+	private void AddMonster(VTTTokens t)
+	{
+		WhiteboardService.AddToken(t);
+	}
+
+	private async Task AddFromPeople()
+	{
+		var dude = await CharacterSelectorService.StartSelection();
+		WhiteboardService.AddTokenFromPeople(dude);
+	}
+}

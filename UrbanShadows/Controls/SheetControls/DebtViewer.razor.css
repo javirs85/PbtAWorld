@@ -7,11 +7,21 @@
 .DebtContainer {
     background: var(--Middle);
     display: flex;
+    align-items:center;
     gap: 10px;
     border-radius: 5px;
 }
 .FirstColumn{
     min-width:25%;
+}
+.MinimalBox {
+    background: var(--Lighter);
+    margin: 5px;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 5px;
 }
 .TheOther {
     background: var(--Lighter);

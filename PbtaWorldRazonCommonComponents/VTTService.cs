@@ -129,6 +129,8 @@ public class VTTService
 		Update();
 	}
 
+	
+
 	public Token AddToken(VTTTokens TokenType)
 	{
 		var t = new Token { ID = TokenType, X = 50, Y = 50, Status = TokenStatus.Hidden };
@@ -196,6 +198,10 @@ public class Token
 			UpdateNeeeded?.Invoke(this, EventArgs.Empty);
 		}
 	}
+
+	public bool ComesFromImage => ComesFromImageName != string.Empty;
+	public string ComesFromImageName { get; set; } = string.Empty;
+	private string ComesFromImagePath = "";
 
 
 	private TokenStatus _status = TokenStatus.Normal;
@@ -360,7 +366,20 @@ public class Token
 					else if (str == "DW_Mage") ID = VTTTokens.Mage;
 					else if (str == "DW_Paladin") ID = VTTTokens.Paladin;
 					else if (str == "DW_Wielder") ID = VTTTokens.Wielder;
-				}
+					else if (str == "Hunter") ID = VTTTokens.USHunter;
+					else if (str == "Awaken") ID = VTTTokens.USAWaken;
+					else if (str == "Veteran") ID = VTTTokens.USVeteran;
+					else if (str == "Vampire") ID = VTTTokens.USVampire;
+					else if (str == "Wolf") ID = VTTTokens.USWolf;
+					else if (str == "Spectre") ID = VTTTokens.USSpecter;
+					else if (str == "Sworn") ID = VTTTokens.USSworn;
+					else if (str == "Mage") ID = VTTTokens.USWizard;
+					else if (str == "Oracle") ID = VTTTokens.USOracle;
+					else if (str == "Fair") ID = VTTTokens.USFair;
+					else if (str == "Corrupted") ID = VTTTokens.USTainted;
+					else if (str == "Imp") ID = VTTTokens.USImp;
+                }
+				
 			}
 		}
 	}
@@ -404,7 +423,7 @@ public class Token
 				VTTTokens.WhiteMale1 => -SizePixels * 3,
 				VTTTokens.WhiteMale2 => -SizePixels * 4,
 				VTTTokens.WhiteMale3 => -SizePixels * 5,
-				VTTTokens.BoxGray => -SizePixels * 6,
+				VTTTokens.USHunter => -SizePixels * 6,
 				VTTTokens.BoxRed => -SizePixels * 0,
 				VTTTokens.BoxBlue => -SizePixels * 1,
 				VTTTokens.Black1 => -SizePixels * 2,
@@ -413,12 +432,13 @@ public class Token
 				VTTTokens.Black4 => -SizePixels * 5,
 				VTTTokens.Black5 => -SizePixels * 6,
 				VTTTokens.Black6 => -SizePixels * 0,
-				VTTTokens.Black7 => -SizePixels * 1,
-				VTTTokens.Black8 => -SizePixels * 2,
+				VTTTokens.USVeteran => -SizePixels * 1,
+				VTTTokens.USAWaken => -SizePixels * 2,
 				VTTTokens.BlackBoss => -SizePixels * 3,
+				VTTTokens.USSpecter => -SizePixels * 4,
 
-				VTTTokens.Red8 => -SizePixels * 5,
-				VTTTokens.Red7 => -SizePixels * 6,
+				VTTTokens.USSworn => -SizePixels * 5,
+				VTTTokens.USWizard => -SizePixels * 6,
 				VTTTokens.Red6 => -SizePixels * 0,
 				VTTTokens.Red5 => -SizePixels * 1,
 				VTTTokens.Red4 => -SizePixels * 2,
@@ -426,14 +446,14 @@ public class Token
 				VTTTokens.Red2 => -SizePixels * 4,
 				VTTTokens.Red1 => -SizePixels * 5,
 				VTTTokens.RedBoss => -SizePixels * 6,
-
+				VTTTokens.USWolf => -SizePixels * 0,
 				VTTTokens.Green1 => -SizePixels * 1,
 				VTTTokens.Green2 => -SizePixels * 2,
 				VTTTokens.Green3 => -SizePixels * 3,
 				VTTTokens.Green4 => -SizePixels * 4,
 				VTTTokens.Green5 => -SizePixels * 5,
-				VTTTokens.Green6 => -SizePixels * 6,
-				VTTTokens.Green7 => -SizePixels * 0,
+				VTTTokens.USOracle => -SizePixels * 6,
+				VTTTokens.USVampire => -SizePixels * 0,
 				VTTTokens.SpikeTrap => -SizePixels * 2,
 				VTTTokens.GreenBoss => -SizePixels * 1,
 				VTTTokens.Cleric => -SizePixels * 3,
@@ -448,8 +468,8 @@ public class Token
 				VTTTokens.Mage => -SizePixels * 5,
 				VTTTokens.Wielder => -SizePixels * 6,
 				//VTTTokens.Paladin => -SizePixels * 0,
-				VTTTokens.Blue8 => -SizePixels * 1,
-				VTTTokens.Blue7 => -SizePixels * 2,
+				VTTTokens.USTainted => -SizePixels * 1,
+				VTTTokens.USFair => -SizePixels * 2,
 				VTTTokens.Blue6 => -SizePixels * 3,
 				VTTTokens.Blue5 => -SizePixels * 4,
 				VTTTokens.Blue4 => -SizePixels * 5,
@@ -457,7 +477,7 @@ public class Token
 				VTTTokens.Blue2 => -SizePixels * 0,
 				VTTTokens.Blue1 => -SizePixels * 1,
 				VTTTokens.BlueBoss => -SizePixels * 2,
-				//VTTTokens.Blue6 => -SizePixels * 3,
+				VTTTokens.USImp => -SizePixels * 3,
 				VTTTokens.Gold => -SizePixels * 4,
 				VTTTokens.RedPotion => -SizePixels * 5,
 				VTTTokens.GreenPotion => -SizePixels * 6,
@@ -477,7 +497,7 @@ public class Token
 				VTTTokens.WhiteMale1 => -SizePixels * 0,
 				VTTTokens.WhiteMale2 => -SizePixels * 0,
 				VTTTokens.WhiteMale3 => -SizePixels * 0,
-				VTTTokens.BoxGray => -SizePixels * 0,
+				VTTTokens.USHunter => -SizePixels * 0,
 				VTTTokens.BoxRed => -SizePixels * 1,
 				VTTTokens.BoxBlue => -SizePixels * 1,
 				VTTTokens.Black1 => -SizePixels * 1,
@@ -486,12 +506,12 @@ public class Token
 				VTTTokens.Black4 => -SizePixels * 1,
 				VTTTokens.Black5 => -SizePixels * 1,
 				VTTTokens.Black6 => -SizePixels * 2,
-				VTTTokens.Black7 => -SizePixels * 2,
-				VTTTokens.Black8 => -SizePixels * 2,
+				VTTTokens.USVeteran	 => -SizePixels * 2,
+				VTTTokens.USAWaken => -SizePixels * 2,
 				VTTTokens.BlackBoss => -SizePixels * 2,
-
-				VTTTokens.Red8 => -SizePixels * 2,
-				VTTTokens.Red7 => -SizePixels * 2,
+				VTTTokens.USSpecter => -SizePixels * 2,
+				VTTTokens.USSworn => -SizePixels * 2,
+				VTTTokens.USWizard => -SizePixels * 2,
 				VTTTokens.Red6 => -SizePixels * 3,
 				VTTTokens.Red5 => -SizePixels * 3,
 				VTTTokens.Red4 => -SizePixels * 3,
@@ -499,14 +519,14 @@ public class Token
 				VTTTokens.Red2 => -SizePixels * 3,
 				VTTTokens.Red1 => -SizePixels * 3,
 				VTTTokens.RedBoss => -SizePixels * 3,
-
+				VTTTokens.USWolf => -SizePixels * 4,
 				VTTTokens.Green1 => -SizePixels * 4,
 				VTTTokens.Green2 => -SizePixels * 4,
 				VTTTokens.Green3 => -SizePixels * 4,
 				VTTTokens.Green4 => -SizePixels * 4,
 				VTTTokens.Green5 => -SizePixels * 4,
-				VTTTokens.Green6 => -SizePixels * 4,
-				VTTTokens.Green7 => -SizePixels * 5,
+				VTTTokens.USOracle => -SizePixels * 4,
+				VTTTokens.USVampire => -SizePixels * 5,
 				VTTTokens.SpikeTrap => -SizePixels * 5,
 				VTTTokens.GreenBoss => -SizePixels * 5,
 				VTTTokens.Cleric => -SizePixels * 5,
@@ -521,8 +541,8 @@ public class Token
 				VTTTokens.Mage => -SizePixels * 6,
 				VTTTokens.Wielder => -SizePixels * 6,
 				//VTTTokens.Paladin => -SizePixels * 0,
-				VTTTokens.Blue8 => -SizePixels * 7,
-				VTTTokens.Blue7 => -SizePixels * 7,
+				VTTTokens.USTainted => -SizePixels * 7,
+				VTTTokens.USFair => -SizePixels * 7,
 				VTTTokens.Blue6 => -SizePixels * 7,
 				VTTTokens.Blue5 => -SizePixels * 7,
 				VTTTokens.Blue4 => -SizePixels * 7,
@@ -530,7 +550,7 @@ public class Token
 				VTTTokens.Blue2 => -SizePixels * 8,
 				VTTTokens.Blue1 => -SizePixels * 8,
 				VTTTokens.BlueBoss => -SizePixels * 8,
-				//VTTTokens.Blue6 => -SizePixels * 3,
+				VTTTokens.USImp => -SizePixels * 8,
 				VTTTokens.Gold => -SizePixels * 8,
 				VTTTokens.RedPotion => -SizePixels * 8,
 				VTTTokens.GreenPotion => -SizePixels * 8,

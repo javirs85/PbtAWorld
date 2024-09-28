@@ -25,17 +25,19 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
     public SquareMap SquareMap = new SquareMap();
 	public ClocksManager Clocks = new();
 
+	public People People { get; set; }
+	public event EventHandler UpdatePeopleViewerInAllClientsEvent;
 
 	private Random random = new Random();
 	private LastRollViewerService lastRollViewer;
-
-	public IPeopleCast People;
 
 	public GameControllerBase(MovesServiceBase moves, IDataBaseController DB, LastRollViewerService LastRoll)
     {
 		this.DB = DB;
 		lastRollViewer = LastRoll;
 		if (People is null) People = new People(null);
+		People.SendToastToClients -= ShowToast;
+		People.SendToastToClients += ShowToast;
 	}
 
 	public event EventHandler UpdateUI;
@@ -229,6 +231,8 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	}
 
 	public event EventHandler UpdateMasterMoveListRequested;
+	public event EventHandler<string> ShowToastEvent;
+
 	public void UpdateMasterMoveList() => UpdateMasterMoveListRequested?.Invoke(this, EventArgs.Empty);
 
     public void AddMonsterDefinition(Monster monster)
@@ -245,5 +249,17 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
     public void ShowImageToAllPlayers(string url)
 	{
 		ImageToShowToAllPlayers?.Invoke(this, url);
+	}
+
+	public void UpdatePeopleViewerInAllClients()
+	{
+		People.StoreInJsonFile(SessionID);
+		UpdatePeopleViewerInAllClientsEvent?.Invoke(this, EventArgs.Empty);
+	}
+
+	private void ShowToast(object? sender, string message) => ShowToast(message);
+	public void ShowToast(string message)
+	{
+		ShowToastEvent?.Invoke(this, message);
 	}
 }

@@ -21,7 +21,7 @@ public enum RollTypes
 	Roll_Simple, Roll_Advantage, Roll_Disadvantage, Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6, JustShowMoveWithNoRoll,
 	FitD_Action, FitD_Resistance
 }
-
+public enum FactionStatuses { NotSet, Creciendo, Manteniendo, Menguando }
 
 
 public enum DiceTypes
@@ -31,6 +31,7 @@ public enum DiceTypes
 
 public enum VTTTokens
 {
+	FromICharacter,
 	WhiteLady1,WhiteLady2, WhiteLady3,
 	WhiteMale1, WhiteMale2, WhiteMale3,
 	BoxGray, BoxRed,BoxBlue,
@@ -42,7 +43,8 @@ public enum VTTTokens
 	Gold, RedPotion,GreenPotion, FogOfWar, Bultos, Bush1, Bush2, Bush3, Bush4, BushMini1, BushMini2, BushMini3, Firepit,
 	FirepitOff, Outcrop, Rock1, Rock2, Rock3, Rock4, Stomp1, Stomp2, Tent, Tent2, Tent3,
 	Tree1, Tree2, Corner, Door_Round, Door_Square, DoorSmall, PilarRound, PilarSquare, Door_Big,
-	Chest, Throne, Crate_Small, Barrel, Storage, Statue_Hands, Statue_Shield, Stairs
+	Chest, Throne, Crate_Small, Barrel, Storage, Statue_Hands, Statue_Shield, Stairs,
+	USHunter, USAWaken, USVeteran, USVampire, USWolf, USSpecter, USWizard, USOracle, USSworn, USTainted, USImp, USFair
 }
 
 public enum DWClasses
@@ -50,6 +52,8 @@ public enum DWClasses
 	DW_Barbarian, DW_Bard, DW_Cleric, DW_Druid, DW_Explorer, DW_Fighter, DW_Thief, DW_Mage, DW_Paladin, DW_Wielder,
 	DW_NotSet, DW_Master
 }
+
+public enum US_Classes { NotSet, Hunter, Awaken, Veteran, Vampire, Wolf, Spectre, Sworn, Mage, Oracle, Fair, Corrupted, Imp, All, Master }
 
 
 public static class ExtensionsEnum

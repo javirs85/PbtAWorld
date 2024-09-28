@@ -5,6 +5,7 @@
 @inject NavigationManager nav;
 @inject DinoCharacter DinoCharacter;
 @inject DinoGameController DinoGame;
+@inject USGameController USGame;
 @inject USMovesService Moves;
 
 @inject IToastService Toaster;
@@ -122,9 +123,9 @@
 				}
 				else if (Meta.SelectedGame == AvailableGames.US)
 				{
-					@foreach (UrbanShadows.AvailableArchetypes c in Enum.GetValues(typeof(UrbanShadows.AvailableArchetypes)))
+					@foreach (US_Classes c in Enum.GetValues(typeof(US_Classes)))
 					{
-						@if (c != UrbanShadows.AvailableArchetypes.NotSet && c != AvailableArchetypes.All)
+						@if (c != US_Classes.NotSet && c != US_Classes.All)
 						{
 							<div class="btn btn-primary" @onclick=@(async ()=>{await CreateNewUSCharacter(c);})>@c.ToUI()</div>
 						}
@@ -189,7 +190,7 @@
 		}
 		else if(Meta.SelectedGame == AvailableGames.US)
 		{
-			return ((AvailableArchetypes)classID).ToUI();
+			return ((US_Classes)classID).ToUI();
 		}
 		else if (Meta.SelectedGame == AvailableGames.SV)
 		{
@@ -211,7 +212,21 @@
 		nav.NavigateTo("SeasonSelection/"+Meta.SelectedGame);
 	}
 
-	private async Task DeleteSelectedCharacter() => await Meta.DeleteSelectedCharacter();
+	private async Task DeleteSelectedCharacter()
+	{ 
+		if(Meta.SelectedGame == AvailableGames.US)
+		{
+			var debs = USGame.AllDebts.FindAll(x =>
+					x.ReceivingID == Meta.SelectedPlayer.ID ||
+					x.PayingID == Meta.SelectedPlayer.ID);
+
+			foreach (var d in debs)
+				USGame.AllDebts.Remove(d);
+
+			USGame.StoreAllDebts();
+		}
+		await Meta.DeleteSelectedCharacter(); 
+	}
 
 	public Type AvailableProfessionsForSelectedGame
 	{
@@ -279,7 +294,7 @@
 		await Meta.LoadPlayerNamesForSeason(Meta.SelectedSeason);
 		IsLoadingFromDB = false;
 	}
-	private async Task CreateNewUSCharacter(UrbanShadows.AvailableArchetypes c)
+	private async Task CreateNewUSCharacter(US_Classes c)
 	{
 		USCharacterSheet newCharacter = new USCharacterSheet(Moves);
 		newCharacter.ID = Guid.NewGuid();

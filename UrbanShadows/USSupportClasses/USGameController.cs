@@ -1,6 +1,8 @@
 ﻿using PbtADBConnector;
 using PbtALib;
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace UrbanShadows;
 
@@ -11,24 +13,9 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 	private USMovesService moves;
 	public USGameController(USMovesService _moves, IDataBaseController _db, LastRollViewerService lrvs) : base(_moves, _db, lrvs)
 	{
-		//LastRoll = new USRollReport(_moves);
-		//moves = _moves;
-
-		//People = new USPeople(_db);
-
-		//USFaction f = new USFaction
-		//{
-		//	Name = "Invierno",
-		//	Members = new List<PbtACharacter>
-		//	{
-		//		new PNJ {Name = "amparo", ID = Guid.NewGuid()},
-		//		new PNJ {Name = "lolo", ID = Guid.NewGuid()},
-		//		new PNJ {Name = "sergio", ID = Guid.NewGuid()},
-		//		new PNJ {Name = "john", ID = Guid.NewGuid()},
-		//	}
-		//};
-		//People.Circles[3].Factions.Add(f);
-    }
+		TextBook = new USTextBook();
+		LastRoll = new USRollReport(moves);
+	}
 	protected override void CreateNewRollReport()
 	{
 		LastRoll = new USRollReport(moves);
@@ -60,19 +47,51 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 			throw new Exception("tried to store a character that is not DWCharacter at DWGameController");
 	}
 
+	public async Task LoadAllDebts()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID}";
+		if(!Directory.Exists(Folder))
+		{
+			Directory.CreateDirectory(Folder);
+		}
+		var path = $"{Folder}/Debts.json";
+		if(!File.Exists(path))
+		{
+            var sj = System.Text.Json.JsonSerializer.Serialize(AllDebts);
+            await System.IO.File.WriteAllTextAsync(path, sj);
+        } 
+		var json = await File.ReadAllTextAsync(path);
+		AllDebts = JsonSerializer.Deserialize<List<Debt>>(json) ?? new();
+	}
+
 	public async Task StoreDebt(Debt d) {
 		if (!AllDebts.Contains(d))
 		{
 			AllDebts.Add(d);
+			ShowToastOnAllClients($"{GetCharacterByID(d.PayingID).Name} contrajo una deuda con {GetCharacterByID(d.ReceivingID).Name}");
+			await StoreAllDebts();
 		}
+
 		RequestUpdateToUIOnClients();
 	}
 	public async Task DeleteDebt(Debt d) {
 		if (AllDebts.Contains(d))
 		{
 			AllDebts.Remove(d);
+			ShowToastOnAllClients($"{GetCharacterByID(d.PayingID).Name} pagó una deuda a {GetCharacterByID(d.ReceivingID).Name}");
+
+			await StoreAllDebts();
 		}
 		RequestUpdateToUIOnClients();
+	}
+
+	public async Task StoreAllDebts()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID}";
+		var path = $"{Folder}/Debts.json";
+		var json = System.Text.Json.JsonSerializer.Serialize(AllDebts);
+
+		await System.IO.File.WriteAllTextAsync(path, json);
 	}
 
 	public async Task StoreFaction(USFaction fac) { throw new NotImplementedException(); }

@@ -6,10 +6,10 @@
 
 <div class="FullScreenModal" @onclick=Hide>
     <div class="ModalBody" @onclick:stopPropagation>
-        @if (CSService.Campaign is not null && CSService.Campaign.Circles.Count > 1)
+        @if (CSService.Game.People is not null && CSService.Game.People.Circles.Count > 1)
         {
             <div class="CirclesPackContainer">
-                @foreach (var c in CSService.Campaign.Circles)
+                @foreach (var c in CSService.Game.People.Circles)
                 {
                     <div class="CircleContainer">
                         <div class="CircleContainerHeader">@c.Name</div>
@@ -116,6 +116,7 @@
 
 @code {
     [Parameter] public EventCallback CloseRequest {get;set; }
+    [Parameter] public List<ICharacter> Players { get; set; } = new();
 
     private PbtACharacter? SelectedCharacter = null;
     private PbtAFaction? SelectedFaction = null;
@@ -129,9 +130,7 @@
         public List<string> Images = new();
     }
 
-    public enum SelectionModes {faction, character};
-    private SelectionModes CurrentSelectionMode = SelectionModes.character;
-
+    private PbtALib.CharacterSelectorService.SelectionModes CurrentSelectionMode = PbtALib.CharacterSelectorService.SelectionModes.character;
 
     private bool IsShowingEditFaction = false;
     private void HideEditFaction() { IsShowingEditFaction = false; }
@@ -215,7 +214,7 @@
 
     private void AddNewFaction(Circle c)
     {
-        var newF = CSService?.Campaign?.AddNewFactionToCircle(c);
+        var newF = CSService?.Game?.People?.AddNewFactionToCircle(c);
 
         SelectedFaction = newF ;
         IsShowingEditFaction = true;
@@ -225,7 +224,7 @@
     {
        /* PNJ pnj = new PNJ();
         pnj.Name = "Nuevo PNJ";
-        CSService?.Campaign?.AddCharacterToFaction(pnj, f);
+        CSService?.People?.AddCharacterToFaction(pnj, f);
         SelectedCharacter = pnj;
         IsShowingEditIChar = true;
         */
@@ -233,59 +232,35 @@
 
     private async Task UpdateSelectedFaction()
     {
-        if(CSService is not null && CSService.Campaign is not null &&  SelectedFaction is not null)
-            await CSService?.Campaign?.SaveChangesOnFaction(SelectedFaction);
+        if(CSService is not null && CSService.Game.People is not null &&  SelectedFaction is not null)
+            await CSService?.Game?.People?.SaveChangesOnFaction(SelectedFaction);
 
         IsShowingEditFaction = false;
     }
 
     private async Task UpdateSelectedCharacter()
     {
-        if (CSService is not null && CSService.Campaign is not null && SelectedCharacter is not null)
-            await CSService?.Campaign?.SaveChangesOnCharacter(SelectedCharacter);
+        if (CSService is not null && CSService.Game.People is not null && SelectedCharacter is not null)
+            await CSService?.Game?.People?.SaveChangesOnCharacter(SelectedCharacter);
 
         IsShowingEditIChar = false;
     }
 
     private async Task UpdateSelectedICharacter(PbtACharacter ch)
     {
-        await CSService?.Campaign?.SaveChangesOnCharacter(ch);
+        await CSService?.Game?.People?.SaveChangesOnCharacter(ch);
     }
 
     private async Task DeleteSelectedFaction()
     {
-        await CSService?.Campaign?.DeleteFaction(SelectedFaction);
+        await CSService?.Game?.People?.DeleteFaction(SelectedFaction);
         IsShowingEditFaction = false;
     }
 
     private async Task DeleteSelectedCharacter()
     {
-        await CSService?.Campaign?.DeleteCharacter(SelectedCharacter);
+        await CSService?.Game?.People?.DeleteCharacter(SelectedCharacter);
         IsShowingEditIChar = false;
     }
 
-
-    public class CharacterSelectorService
-    {
-        public event EventHandler<SelectionModes> Show;
-        public event EventHandler Hide;
-
-        public IPeopleCast? Campaign = null;
-        public void SetPeople(IPeopleCast _people) => Campaign = _people;
-
-        TaskCompletionSource<ICharacter> tcs = new();
-
-        public async Task<ICharacter> StartSelection(SelectionModes mode = SelectionModes.character)
-        {
-            Show.Invoke(this, mode);
-            tcs = new();
-            return await tcs.Task;
-        }
-
-        public void FinishSelection(ICharacter character)
-        {
-            Hide.Invoke(this, EventArgs.Empty);
-            tcs.SetResult(character);
-        }
-    }
 }

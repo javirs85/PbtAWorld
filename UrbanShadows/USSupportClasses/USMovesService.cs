@@ -1,4 +1,5 @@
 ﻿using PbtALib;
+using System.Reflection;
 
 namespace UrbanShadows;
 
@@ -11,7 +12,7 @@ public class USMovesService : MovesServiceBase
 	{
 		AllMovements.AddRange(GenerateBasicMovments());
 
-		AllMovements.Add(new USMove(USMoveIDs.B_LiberarPoder, USAttributes.Soul) { Archetipe = AvailableArchetypes.All, Title = "Liberar tu poder" });
+		AllMovements.Add(new USMove(USMoveIDs.B_LiberarPoder, USAttributes.Soul) { Archetipe = US_Classes.All, Title = "Liberar tu poder" });
 
 		AllMovements.AddRange(GenerateFactionMovements());
 		AllMovements.AddRange(GenerateDebtMovements());
@@ -20,7 +21,7 @@ public class USMovesService : MovesServiceBase
 		AllMovements.AddRange(GenerateAwakenMovements());
 		AllMovements.AddRange(GenerateVeteranMovements());
 		AllMovements.AddRange(GenerateWolfMovements());
-		AllMovements.AddRange(GenerateVampireMovementes());
+		AllMovements.AddRange(GenerateVampireMovements());
 		AllMovements.AddRange(GenerateMageMovements());
 		AllMovements.AddRange(GenerateOracleMovements());
 		AllMovements.AddRange(GenerateCorruptedMovements());
@@ -67,6 +68,7 @@ public class USMovesService : MovesServiceBase
 		AllMovements.AddRange(GenerateVeteranUniqueMoves());
 
 		AllMovements.Add(new USMove(USMoveIDs.rawBlood, USAttributes.Blood) { Title = "Sangre" });
+		AllMovements.Add(new USMove(USMoveIDs.rawMind, USAttributes.Mind) { Title = "Mente" });
 		AllMovements.Add(new USMove(USMoveIDs.rawHeart, USAttributes.Heart) { Title = "Corazón" });
 		AllMovements.Add(new USMove(USMoveIDs.rawSoul, USAttributes.Soul) { Title = "Espíritu" });
 		AllMovements.Add(new USMove(USMoveIDs.rawMortal, USAttributes.Mortality) { Title = "Mortalis" });
@@ -92,7 +94,7 @@ public class USMovesService : MovesServiceBase
 		AllMovements.AddRange(GenerateFactionMoves());
 	}
 
-	public List<USMoveIDs> GetInitialMovesIDsByArchetype(AvailableArchetypes arch)
+	public List<USMoveIDs> GetInitialMovesIDsByArchetype(US_Classes arch)
 	{
 		var list = from mov in AllMovements
 				   where 
@@ -108,7 +110,7 @@ public class USMovesService : MovesServiceBase
 	public override IMove GetMovement<TMovIDs, TClases>(TMovIDs _ID, TClases _archetype)
 	{
 		USMoveIDs ID = (USMoveIDs)(object)_ID;
-		AvailableArchetypes archetype = (AvailableArchetypes)(object)_archetype;
+		US_Classes archetype = (US_Classes)(object)_archetype;
 
 		if (ID == USMoveIDs.B_LiberarPoder)
 		{
@@ -122,7 +124,7 @@ public class USMovesService : MovesServiceBase
 
 		return AllMovements.Find(x => x.ID == ID) ?? new USMove(USMoveIDs.NotSet, USAttributes.None) { Title = "Unknown movement" };
 	}
-	USMove GetArchetypeBasedLetItOutMovement(AvailableArchetypes archetype)
+	USMove GetArchetypeBasedLetItOutMovement(US_Classes archetype)
 	{
 		var m = new USMove(USMoveIDs.B_LiberarPoder, USAttributes.Soul)
 		{
@@ -164,7 +166,7 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
-			Title = "Lanzar un ataque",
+			Title = "Llevarlo a la violecia",
 			IsImproved = false,
 			PreCondition = new Consequences
 			{
@@ -498,7 +500,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Exterminador",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mantengas la calma durante una cacería, tira con Sangre en vez de Espíritu."
@@ -509,7 +511,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Letal",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando hagas daño suma +1"
@@ -520,7 +522,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Leyendo también se aprende",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te encuentres un tipo nuevo de criatura sobrenatural, tira con Mente. Si fallas la tirada, malinterpretas a la criatura; el Maestro de Ceremonias te dirá cómo."
@@ -539,7 +541,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Piso franco",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Tienes un lugar seguro en el que esconderte. Detállalo y elige 3 rasgos que tenga:",
@@ -558,7 +560,7 @@ public class USMovesService : MovesServiceBase
 			Title = "¡Por aquí!",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando guíes a alguien para ponerlo a salvo, tira con Sangre. Si fallas la tirada, todos quedan a salvo excepto tú; te dejan atrás y la salida se cierra para ti."
@@ -577,7 +579,7 @@ public class USMovesService : MovesServiceBase
 			Title = "¿Quieres tentar a la suerte?",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando convenzas a un personaje no jugador mientras blandes un arma de 2-daño o superior, tira con Sangre en vez de Corazón."
@@ -588,7 +590,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Preparado para todo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = " Tienes una armería bien provista, llena de armas tanto antiguas como modernas. Cógete otra arma personalizada o añádele otra característica a cada una de las que ya tengas."
@@ -601,99 +603,90 @@ public class USMovesService : MovesServiceBase
 	{
 		var result = new List<USMove>();
 
-		result.Add(new USMove(USMoveIDs.A_Awak_01, USAttributes.Mind)
-		{
-			Title = "Fisgón",
-			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Awaken,
-			PreCondition = new Consequences
-			{
-				MainText = " Cuando estés ojo avizor por si hay problemas, tira con Mente. " +
-				 "Mientras estés ahí, gasta los puntos obtenidos para hacerle preguntas al Maestro de Ceremonias, una por cada punto."
-			},
-			ConsequencesOn79 = new Consequences
-			{
-				MainText = "Con un 7-9, obtienes 1 punto."
-			},
-			ConsequencesOn10 = new Consequences
-			{
-				MainText = "Cuando estés ojo avizor por si hay problemas, tira con Mente.",
-				Options = new List<string>
-					{
-						"¿Cuál es la mejor vía de entrada o salida de que dispongo?",
-						"¿Quién o qué hay aquí que no sea lo que parece?",
-						"¿Qué ha pasado aquí recientemente?",
-						"¿Cuál es el mayor peligro que hay aquí para mí?",
-						"¿De quién es este territorio?"
-					}
-			}
-		});
-		result.Add(new USMove(USMoveIDs.A_Awak_02, USAttributes.Mind)
-		{
-			Title = "Los deberes hechos",
-			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Awaken,
-			PreCondition = new Consequences
-			{
-				MainText = "Cuando le pongas cara al nombre de alguien con importancia política (a tu juicio), tira con Mente en vez de Facción. Si fallas, tus fisgoneos ya te han metido en problemas con esa persona y sabe que has estado metiéndote en sus asuntos."
-			},
-			ConsequencesOn79 = new Consequences
-			{
-				MainText = "Si superas la tirada, sabes un secreto peligroso sobre él o sus maquinaciones políticas."
-			},
-			ConsequencesOn10 = new Consequences
-			{
-				MainText = "Con un 10+, sabes cómo usar esta información como influencia; además, tiene una Deuda contigo, apúntatela.",
-			}
-		});
-		result.Add(new USMove(USMoveIDs.A_Awak_03, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Awak_01, USAttributes.Heart)
 		{
 			Title = "Conozco a un tío",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = false,
-			Archetipe = AvailableArchetypes.Awaken,
+			IsSelected = true,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te eches a la calle o le pongas cara a un nombre de la Mortalidad, tira con Mente en vez de Facción."
+				MainText = "Cuando te *echas a la calle** para conseguir lo que necesitas de un miembro de tu Círculo, tira con *Corazón** en lugar de con su Círculo"
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Con un 7-9, tu lista mejora:",
+				Options = new List<string> {
+					"La persona a la que acudes ya tiene problemas propios con los que lidiar.",
+					"Lo que necesitas tiene un coste mayor de lo que esperabas.",
+					"Como sea que los encuentres requiere que ofrezcas una Deuda a un intermediario."
+				}
+			}
+		});
+		result.Add(new USMove(USMoveIDs.A_Awak_02, USAttributes.None)
+		{
+			Title = "Encantador, no sincero",
+			TypeOfMovement = MovementTypes.ArchetipeMovement,
+			IsSelected = true,
+			Archetipe = US_Classes.Awaken,
+			PreCondition = new Consequences
+			{
+				MainText = "+1 Corazón (Max 3)"
+			}
+		});
+		result.Add(new USMove(USMoveIDs.A_Awak_03, USAttributes.None)
+		{
+			Title = "La guarida del león",
+			TypeOfMovement = MovementTypes.ArchetipeMovement,
+			IsSelected = false,
+			Archetipe = US_Classes.Awaken,
+			PreCondition = new Consequences
+			{
+				MainText = "Cuando accedes a una zona segura dentro de un santuario, punto de reunión o lugar de poder, puedes *Estudiarla** como si hubieras sacado un 12+.\r\n\r\n Si el lugar está controlado por un Circulo distinto al tuyo, también encuentras pruebas incriminatorias que implican a un PNJ poderoso (a tu elección) dentro de ese círculo.\n\rEntregarle las pruebas a él (o a uno de sus enemigos) cuenta como cobrar una deuda.",
+				Options =new List<string>
+				{
+					"Con un acierto, ves bajo la superficie hasta la realidad que hay debajo; el MC revelará un área, PNJ u objeto situado dentro que no es lo que parece.",
+					"Con un 10+, tu perspicacia revela mucho sobre la política y los planes del Círculo; haz al MC una pregunta sobre el Círculo y tira con +1 cuando actúes según la respuesta."
+				}
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Awak_04, USAttributes.None)
 		{
-			Title = "Vengo con amigos",
+			Title = "Esta es mi ciudad",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te cobres una Deuda de un personaje no jugador, añade esta opción a la lista:",
+				MainText = "Cuando conciertas una reunión con un individuo poderoso o peligroso en un espacio mundano abarrotado (museo, restaurante, etc) obtén dos puntos que puedes gastar 1 por 1 para:",
 				Options = new List<string>
-					{
-						"Te apoye en una situación peligrosa."
-					}
+				{
+					"+1 para escapara de la situación",
+					"crea una abertura para que tú u otro personaje escape de la situación",
+					"elije por el MC cuando escapes y saques un 7-9"
+				}
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Awak_05, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Awak_05, USAttributes.Heart)
 		{
-			Title = "Tirador avezado",
+			Title = "Con piel de cordero",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando lances un ataque con un arma de fuego,  tira con Mente en vez de Sangre."
+				MainText = "Cuando engañes, distraigas o mientras con alguien con quien has compartido previamente un momento de intimidad, tira con *Corazón** en lugar de mente."
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Awak_06, USAttributes.None)
+		result.Add(new USMove(USMoveIDs.A_Awak_06, USAttributes.Heart)
 		{
-			Title = "Duro de pelar",
+			Title = "De una forma u otra",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te metas en problemas mientras sigues una pista,  obtienes armadura+1."
+				MainText = "Cuando supliques ayuda a un miembro de tu Círculo ante una situación apremiante, tira con *Corazón**.\r\nCon un éxito, aceptan ayudarte o te deben una deuda, a su elección.\r\nCon un 10+, su culpabilidad es palpable: si se niegan y te deben una deuda tienes +1 constante contra ellos mientras tengas la deuda.\r\nCon un fallo estás expuesto y vulnerable, son libres de hacer lo que quieran... y tú marcas corrupción si ignoran tu súplica."
 			}
 		});
 
@@ -709,7 +702,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Viejos amigos, viejos favores",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te encuentres por primera vez a un personaje no jugador, en vez de ponerle nombre a una cara, puedes declarar que es un viejo amigo y tirar con Mente. Si superas la tirada, te ofrecerá consuelo y ayuda, aunque por ello se exponga a sufrir peligro o represalias."
@@ -728,7 +721,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Auténtico artista",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando crees algo para alguien con tu taller, márcate su Facción."
@@ -739,7 +732,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Invertir",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando alguien tenga 2 o más Deudas contigo y le eches una mano o le fastidies, tira con Mente en vez de Facción."
@@ -750,7 +743,7 @@ public class USMovesService : MovesServiceBase
 			Title = "¡Ya estoy viejo para estas mierdas!",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te veas en medio de una pelea que hayas tratado de impedir, obtienes armadura+1 y +1 a todas las tiradas destinadas a poneros a salvo a los demás y a ti."
@@ -761,7 +754,7 @@ public class USMovesService : MovesServiceBase
 			Title = "El plan perfecto",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando traces un plan con alguien, tira con Mente." +
@@ -791,7 +784,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Sacar la pistola en una pelea de navajas",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando lances un ataque con el que agraves seriamente el conflicto, tira con Mente en vez de Sangre."
@@ -809,10 +802,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Reconocer el terreno",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
-				MainText = "Si al principio de la sesión estás patrullando activamente tu territorio, tira con Sangre. Si fallas o si no prestas atención a tu territorio, la situación se va a pique y tus problemas van cuesta abajo y sin frenos."
+				MainText = "Si al principio de la sesión estás patrullando activamente tu territorio, tira con Sangre. Si no estás patrullando asume que has sacado 6-"
 			},
 			ConsequencesOn79 = new Consequences
 			{
@@ -821,17 +814,18 @@ public class USMovesService : MovesServiceBase
 			ConsequencesOn10 = new Consequences
 			{
 				MainText = "Con un 10 +, tu territorio está seguro y los problemas son mínimos; obtienes + 1 a todas las tiradas para echarte a la calle en tu territorio."
-			}
+			},
+			ConsequencesOn6 = new Consequences { MainText = "la cosa se pone fea y tus problemas se desbocan." }
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_02, USAttributes.Blood)
 		{
 			Title = "Sabueso",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Wolf,
+			IsSelected = false,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando vayas a la caza de alguien,  tira con Sangre. Si fallas, algo desagradable te encuentra a ti primero."
+				MainText = "Cuando vayas a la caza de alguien,  tira con Sangre."
 			},
 			ConsequencesOn79 = new Consequences
 			{
@@ -840,14 +834,15 @@ public class USMovesService : MovesServiceBase
 			ConsequencesOn10 = new Consequences
 			{
 				MainText = "Con un 10+, obtienes +1 a la siguiente tirada contra él."
-			}
+			},
+			ConsequencesOn6 = new Consequences { MainText= " algo desagradable te encuentra a ti primero." }
 		});
 		result.Add(new USMove(USMoveIDs.A_Wolf_03, USAttributes.None)
 		{
 			Title = "Regeneración",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando liberes tu poder, añade esta opción a la lista:",
@@ -862,7 +857,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Lobo alfa",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando convenzas a un personaje no jugador en tu territorio, tira con Sangre en vez de Corazón."
@@ -873,7 +868,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Desde el borde del abismo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes abandonar tu forma lupina a voluntad. Cuando lo hagas, tira con Espíritu. Si fallas la tirada, te transformas, pero la transformación es incompleta, lenta o dolorosa. Si superas la tirada, vuelves a tu forma original."
@@ -888,7 +883,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Temerario",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = " Si te tiras de cabeza al peligro sin cubrirte las espaldas,  obtienes armadura+1. Si estás liderando a un grupo, este también obtiene armadura+1."
@@ -897,7 +892,7 @@ public class USMovesService : MovesServiceBase
 
 		return result;
 	}
-	private List<USMove> GenerateVampireMovementes()
+	private List<USMove> GenerateVampireMovements()
 	{
 		var result = new List<USMove>();
 
@@ -906,7 +901,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Hambre eterna",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Ansías sangre, emociones o carne humanas, elige una. Cuando te alimentes, tira con Sangre. Si fallas, algo sale terriblemente mal."
@@ -932,7 +927,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Irresistible",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando convenzas a un personaje no jugador mediante promesas o seducción, trata los resultados de 7-9 como si fueran de 10+. Si fallas la tirada, tus maquinaciones tienen éxito como si hubieras sacado un 7-9, pero atraes la atención de un enemigo o rival"
@@ -943,7 +938,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Refugio",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Tienes un lugar seguro, a salvo de peligros externos. Tiene raciones de emergencia, unos cuantos gules y una vía de escape. Cuando alguien venga a tu refugio por voluntad propia, entra en tu red."
@@ -954,7 +949,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Sangre fría",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mantengas la calma bajo presión emocional, tira con Sangre en vez de Espíritu."
@@ -965,7 +960,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Mantener cerca a tus amigos",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando cales a alguien satisfaciendo sus vicios, tira con Sangre en vez de Mente."
@@ -976,7 +971,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Que corra la voz",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando le cobres una Deuda a alguien de tu red, añade esta opción a la lista:",
@@ -999,7 +994,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Canalizar",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando canalices y reúnas tu magia, tira con Espíritu. Con un 10+, obtienes 3 puntos. Con un 7-9, obtienes 3 puntos y eliges 1 opción de la lista que aparece a continuación. Si fallas, obtienes 1 punto, pero no puedes volver a canalizar en esta escena.",
@@ -1020,7 +1015,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Sanctasanctórum",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando vayas a tu santuario a por un ingrediente para un hechizo, una reliquia o un libro, tira con Espíritu. Con un 10+, tienes algo que vale para lo que necesitas. Con un 7-9 , tienes algo que se le acerca, pero le falta o le falla algo importante. Si fallas, no tienes lo que estás buscando, pero conoces a alguien que probablemente sí lo tenga.",
@@ -1032,7 +1027,7 @@ public class USMovesService : MovesServiceBase
 			Title = "HECHIZO: Rastrear",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Gasta 1 punto para descubrir dónde se encuentra alguien.Tienes que tener un objeto personal que pertenezca al objetivo o residuos corporales recientes(un mechón de pelo, trozos de uñas cortadas, sangre, etcétera).",
@@ -1043,7 +1038,7 @@ public class USMovesService : MovesServiceBase
 			Title = "HECHIZO: Elementalismo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Invocas los elementos para golpear a tus enemigos. Gasta 1 punto para lanzar un ataque usando tu magia como arma(3 - daño, cerca o 2 - daño, cerca, área).",
@@ -1054,7 +1049,7 @@ public class USMovesService : MovesServiceBase
 			Title = "HECHIZO: Borrar la memoria",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Gasta 1 punto para hacer que un objetivo indefenso olvide hasta una hora de su memoria reciente.Puedes gastar un punto más y marcarte corrupción para colocar recuerdos alternativos en su lugar.",
@@ -1065,7 +1060,7 @@ public class USMovesService : MovesServiceBase
 			Title = "HECHIZO: Escudo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Gasta 1 punto para obtener armadura+1 o dársela a alguien cercano, o gasta 2 puntos para proporcionar armadura+1 a todas las personas que haya en una zona pequeña, entre las que puedes estar incluido.Esta armadura dura hasta el final de la escena.Puedes apilar varios usos de Escudo a la vez.",
@@ -1076,7 +1071,7 @@ public class USMovesService : MovesServiceBase
 			Title = "HECHIZO: Manto de oscuridad",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Gasta 1 punto para hacerte invisible durante unos momentos.",
@@ -1087,7 +1082,7 @@ public class USMovesService : MovesServiceBase
 			Title = "HECHIZO: Teletransporte",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Gasta 1 punto para teletransportarte una corta distancia dentro de la escena en la que te encuentras.",
@@ -1098,10 +1093,10 @@ public class USMovesService : MovesServiceBase
 			Title = "HECHIZO: Maleficio",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
-				MainText = "asta 1 punto para hacerle 1 - daño(perforante) a alguien a cualquier distancia.Para ello necesitas una muestra de su pelo, sangre o saliva.",
+				MainText = "Gasta 1 punto para hacerle 1 - daño(perforante) a alguien a cualquier distancia.Para ello necesitas una muestra de su pelo, sangre o saliva.",
 			}
 		});
 
@@ -1116,7 +1111,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Predicciones",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Al inicio de cada sesión, tira con Espíritu. Con un 10+, obtienes 2 puntos. Con un 7-9, obtienes 1 punto. Durante la sesión, puedes gastar cada uno de esos puntos para declarar que algo terrible está a punto de pasar. Tus aliados y tú obtenéis un +1 a todas las tiradas destinadas a evitar el inminente desastre. Si fallas la tirada, ves la muerte de alguien importante para ti y obtienes un –1 a todas las tiradas destinadas a impedirlo.",
@@ -1127,7 +1122,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Psicometría",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Siempre que examines y analices un objeto interesante, tira con Espíritu. Con un 10+, haz 3 preguntas. Con un 7-9, haz 1 pregunta:",
@@ -1150,7 +1145,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Doble vida",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Toma Mortalidad como segunda Facción. Cuando alguien tire con tu Facción o se la marque,  dile cuál de las dos que tienes es más adecuada.",
@@ -1161,7 +1156,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Médium",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Avanza liberar tu poder para todos los personajes que haya en tu presencia, incluido tú mismo.",
@@ -1172,7 +1167,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Cueste lo que cueste",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando interfieras en los planes o acciones de alguien para impedir que una de tus visiones se cumpla, márcate su Facción y obtendrás +1 a la siguiente tirada.",
@@ -1183,7 +1178,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Rozar la superficie",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando toques a alguien, puedes leer sus pensamientos superficiales. Tira con Espíritu.Con un 10 +, haz 3 preguntas.Con un 7 - 9, haz 1 pregunta:",
@@ -1212,7 +1207,7 @@ public class USMovesService : MovesServiceBase
 			Title = "El demonio interior",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando adoptes tu forma demoníaca, tira con Sangre. Con un 10+, elige 2 opciones. Con un 7-9, elige 1 opción. Si fallas la tirada, elige 1 opción y contraes una Deuda con tu jefe.",
@@ -1235,7 +1230,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Invocación",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes cobrarte una Deuda que alguien tenga contigo para aparecer en su presencia. Los demás también pueden cobrarse una Deuda que tengas con ellos para hacerte aparecer donde estén."
@@ -1246,7 +1241,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Lengua de plata",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando *leas a alguien** a alguien, a base de tentarlos con poder, tira con Corazón en vez de Mente."
@@ -1257,7 +1252,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Zarcillos en la oscuridad",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando busques la orientación de tu jefe mediante rituales y presagios, tira con Espíritu. " +
@@ -1271,7 +1266,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Frío como el hielo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Súmate 1 a Sangre (máximo +3)."
@@ -1282,7 +1277,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Duro como el acero",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Obtienes 1-armadura. Las fuentes de daño benditas o sagradas ignoran tu armadura. Las armas diseñadas para aturdir o incapacitar no te afectan"
@@ -1293,7 +1288,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Trabajo demoniaco",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando termines un trabajo para tu jefe, márcate Velo. Tu jefe contrae una Deuda contigo por\r\ncada trabajo que termines."
@@ -1327,10 +1322,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Magia feérica",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
-				MainText = "Siempre que uses un poder feérico, elige 1 opción:",
+				MainText = "Elije 3 poderes (movimientos PODER). Siempre que uses un poder feérico, elige 1 opción:",
 				Options = new List<string>
 					{
 						"Márcate corrupción.",
@@ -1344,7 +1339,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Un plato que se sirve ahora",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando jures vengar a alguien (incluido tú mismo), obtienes +1 a todas las tiradas contra el objetivo de esa venganza. Por cada escena en la que no persigas tu venganza, sufrirás 1-daño (perforante)."
@@ -1355,7 +1350,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Lo llevamos en la sangre",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando engañes a alguien, tira con Corazón en vez de Mente."
@@ -1366,7 +1361,7 @@ public class USMovesService : MovesServiceBase
 			Title = "La balanza de la Justicia",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes cobrarle una Deuda a alguien para usar un poder de Magia feérica (incluidos poderes que normalmente no podrías usar) sobre esa persona sin coste."
@@ -1377,7 +1372,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Descorrer el Velo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando escapes, añade esta opción a la lista:",
@@ -1392,7 +1387,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Las palabras se las lleva el viento",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando alguien rompa una promesa que te haya hecho o te mienta y lo descubras, contrae una Deuda contigo y obtienes +1 a la siguiente tirada contra él."
@@ -1403,7 +1398,7 @@ public class USMovesService : MovesServiceBase
 			Title = "PODER: Furia salvaje",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Invocas un elemento de la naturaleza con el que puedes golpear a tus enemigos (2-daño, cerca, área; o 3-daño cerca/lejos)."
@@ -1414,7 +1409,7 @@ public class USMovesService : MovesServiceBase
 			Title = "PODER: La caricia de la Naturaleza",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "El contacto contigo cura 2-daño. No puedes usar este poder en ti mismo."
@@ -1425,7 +1420,7 @@ public class USMovesService : MovesServiceBase
 			Title = "PODER: Marchitar",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Haces que el contacto contigo resulte mortífero (3-daño, íntimo, perforante)."
@@ -1436,7 +1431,7 @@ public class USMovesService : MovesServiceBase
 			Title = "PODER: Glamour",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Creas ilusiones para engañar los sentidos. Los efectos no duran mucho."
@@ -1447,7 +1442,7 @@ public class USMovesService : MovesServiceBase
 			Title = "PODER: Cambio de forma",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes tomar forma de animal brevemente."
@@ -1458,7 +1453,7 @@ public class USMovesService : MovesServiceBase
 			Title = "PODER: Confusión",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Toca a un objetivo para sumirlo en un estado emocional concreto (a tu elección). Puedes marcarte corrupción para elegir hacia quién está dirigida esa emoción."
@@ -1476,7 +1471,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Manifestarse",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "La gente normal no puede percibirte ni interactuar contigo a menos que te manifiestes. Para manifestarte, dedica un momento a concentrarte con tranquilidad y elige 2:",
@@ -1496,8 +1491,8 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "No toleraré que me ignores",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			IsSelected = false,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando fastidies a alguien, no tires y considera que has sacado un 10+. Si distraes a un personaje no jugador, tira con Espíritu en vez de Mente."
@@ -1507,8 +1502,8 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "Ciudad fantasma",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			IsSelected = false,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te eches a la calle en busca de fantasmas, obtendrás un +1 a todas las tiradas para tratar con ellos."
@@ -1518,8 +1513,8 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "Fantasmagoría",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			IsSelected = false,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Obtienes +1 a Espíritu (máximo +3)."
@@ -1529,8 +1524,8 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "Cuando crees que me ves",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			IsSelected = false,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Siempre tienes una oportunidad para escapar de una situación. Puedes elegir una opción más de la lista para llevarte a alguien contigo. Si fallas, atraerás la atención de espíritus y fantasmas peligrosos que haya por la zona."
@@ -1540,8 +1535,8 @@ public class USMovesService : MovesServiceBase
 		{
 			Title = "Vínculo",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
-			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			IsSelected = false,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Algo te impide descansar en paz: un Vínculo. Cuando estés en presencia de tu Vínculo, avanza liberar tu poder. Cuando tu Vínculo esté en peligro, tendrás acceso a todos tus movimientos de corrupción hasta que esté a salvo. Si en algún momento tu Vínculo se destruye, tú también te destruirás."
@@ -1559,7 +1554,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Proteger y servir",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando leas una situación cargada, tira con Mente. Con un éxito, haz preguntas al MC; toma +1 cuando actúes según las respuestas",
@@ -1585,7 +1580,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Difícil de esquivar",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando sigues a un PNJ por las calles de la ciudad, tira con Mente. Si aciertas, a donde ellos vayan, tú los sigues."
@@ -1598,7 +1593,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Enrevesado",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Coge +1 Mente (máx+3)."
@@ -1609,7 +1604,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Aunténtico policía",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando pongas cara a un nombre o estudies un santuario, punto de reunión o lugar de poder, tira con Mente en lugar de con el Círculo correspondiente. Siempre puedes hacer una pregunta adicional al MC sobre la persona o lugar en cuestión, incluso si fallas."
@@ -1620,7 +1615,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Ajedrez, no damas",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando recurras a la violencia con cualquier tipo de ventaja seria -números, posición, sorpresa, etc.- y consigas un éxito, dile a tu oponente qué opción no puede elegir de su lista antes de que elija."
@@ -1638,26 +1633,17 @@ public class USMovesService : MovesServiceBase
 			Title = "Como de costumbre",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando pase el tiempo -o al principio de la partida- tira con Mente. Con un acierto, tus operaciones habituales generan un nuevo plan o proporcionan una oportunidad para avanzar en uno de tus planes existentes, tú eliges.",
-				Options = new List<string>
-					{
-						"¿cuál es mi ruta de escape / entrada / salida?",
-						"¿qué enemigo es más vulnerable a mí?",
-						"¿qué debo vigilar?",
-						"¿Cuál es la verdadera posición de mi enemigo?",
-						"¿en quién no puedo confiar?",
-
-					}
 			},
 			ConsequencesOn10 = new Consequences
 			{
 				MainText = "Con un 10+, también eliges 1:",
 				Options = new List<string>
 					{
-						"- Un cliente leal revela los secretos de un poderoso PNJ, a tu elección.",
+						"Un cliente leal revela los secretos de un poderoso PNJ, a tu elección.",
 						"Un PNJ que te debe una deuda aparece para cumplir con su obligación.",
 						"Un PNJ de estatus 3 de tu círculo te ofrece una deuda por tus servicios.",
 					}
@@ -1669,16 +1655,29 @@ public class USMovesService : MovesServiceBase
 			Title = "Mide tu marca",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando loas a alguien, añade las siguientes preguntas a la lista:",
+				MainText = "Cuando *Lees a alguien**, cambia tu lista de opciones. Haz tus dos preguntas y tira"
+				
+			},
+			ConsequencesOn10 = new Consequences { MainText = "Haz dos preguntas de la lista sin que te pregunten a tí"},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Haz dos preguntas, y responde a una",
 				Options = new List<string>
 				{
-					"¿Qué necesidad apremiante tienes que yo podría resolver?",
-					"¿Qué es lo más valioso que ofrecería en venta?"
+					"¿Quien mueve los hilos de tu personaje?",
+					"¿Cuál es el problema de tu personaje con _____",
+					"¿Qué espera conseguir tu personaje de _____?",
+					"¿Qué le preocupa a tu personaje que vaya a ocurrir?",
+					"¿Cómo podría llevar a tu personaje a _____?",
+					"¿Cómo podría poner a tu personaje en mi Deuda?",
+					"*¿Qué necesidad apremiante tienes que yo podría resolver?**",
+					"*¿Qué es lo más valioso que ofrecería en venta?**"				
 				}
 			},
+			AdvancedConsequences = new Consequences { MainText = "Puedes preguntar lo que quieras sin limitarte a la lista"},
 			ConsequencesOn6 = new Consequences { MainText = "Si fallas, pregunta 1 de esta lista, pero parecerás sospechoso o sórdido, tú eliges." }
 		});
 		result.Add(new USMove(USMoveIDs.A_Imp_03, USAttributes.None)
@@ -1686,7 +1685,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Enrevesado",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Coge +1 Mente (máx+3)."
@@ -1697,7 +1696,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Amigos en los bajos fondos",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando consigas un acierto al poner cara a un nombre con un PNJ de estatus 3, nombra también a un subordinado o ayudante de bajo nivel que trabaje para ellos y describe cómo este subordinado ha llegado recientemente a tener una deuda contigo."
@@ -1708,7 +1707,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Soy un puto demonio",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Ignora todo el daño la primera vez que alguien te inflija al menos 2 de daño en una escena. Al final de cada escena, borra tu casilla de Daño leve."
@@ -1719,7 +1718,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Palabras de comadreja",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te niegues a cumplir una Deuda por la vía rápida, tira con Mente en lugar de con la diferencia de Estatus. Si aciertas -además de los efectos normales- marca el Círculo de tu deudor como si hubieras cumplido la Deuda."
@@ -1738,7 +1737,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Divide y venceré",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando entres solo en una situación peligrosa, marca corrupción para adelantar todos tus movimientos y lleva +1 a Sangre por la escena.",
@@ -1749,7 +1748,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Difícil de matar",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para ganar armadura+1 hasta el final de la escena.",
@@ -1760,7 +1759,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Esperando ayuda",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para que un equipo de apoyo de cazadores mortales llegue a la escena (3-daño pequeño 1-armadura entrenados) Marca una segunda corrupción para que aparezcan en una posición superior.",
@@ -1771,7 +1770,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Impulso suicida",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Si hay alguien cerca de ti a punto de sufrir daño, puedes marcarte corrupción para sufrirlo tú en su lugar.",
@@ -1787,7 +1786,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Metido hasta el cuello",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para interponerte en el camino de alguien de otro Círculo como si hubieras sacado un 10+.",
@@ -1798,7 +1797,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Si no puedes con ellos…",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
 				MainText = "Coge una habilidad (Liberar tu poder) de un arquetipo de otro Círculo. Siempre que la sueltes y saques un 12+, marca una corrupción adicional.",
@@ -1809,7 +1808,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Libre como el viento",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes marcarte corrupción para negarte a pagarle una Deuda a alguien que no sea mortal como si hubieras sacado un 12+.",
@@ -1820,7 +1819,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Manos largas",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción después de reunirte con un PNJ poderoso para revelar que le has quitado algo importante. Marca corrupción de nuevo para ocultar tu papel en el robo durante algún tiempo.",
@@ -1836,7 +1835,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "De vuelta a las andadas",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Coge dos habilidades de 'Liberar tu poder' de otro arquetipo. Cuando uses estas habilidades no puedes elegir no marcar corrupción (con 10+)",
@@ -1847,7 +1846,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Síndrome de Diógenes",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes marcarte corrupción para buscar entre tus cosas y encontrar justo lo que necesitas para lidiar con la situación en la que te encuentras.",
@@ -1858,7 +1857,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "¿Os pillo en mal momento, cabrones?",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes marcarte corrupción para entrar en escena. Puedes marcártela una vez más para traerte a alguien contigo.",
@@ -1869,7 +1868,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Horribles experimentos",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando trabajas en tu taller con alguien (vivo o muerto) marca corrupción para hacer hasta dos preguntas sobre sus secretos o debilidades. Deben responder honestamente.",
@@ -1885,7 +1884,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Posesión",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Spectre,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para poseer mentalmente a una persona débil (a discreción del MC) en tu presencia; borra un trauma por cada experiencia humana \"normal\" -comer una comida, comprar ropa, etc.- que realices mientras controlas su cuerpo.",
@@ -1896,7 +1895,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Telequinesia",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Spectre,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes mover y levantar objetos pequeños a distancia si te concentras. Puedes marcarte corrupción para mover objetos mayores, pero de un tamaño no superior al de un coche.",
@@ -1907,7 +1906,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Pesadilla",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Spectre,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Márcate corrupción para meterte en los sueños de alguien que esté durmiendo en tu presencia. Mientras estés allí, puedes interactuar con esa persona y con sus sueños como si se tratasen de espíritus.",
@@ -1918,7 +1917,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Sifón",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Spectre,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Márcate corrupción para introducirte en el cuerpo de alguien, hacerle 2-daño (perforante) y curar 1-daño de tu corpus.",
@@ -1934,7 +1933,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Uno con la bestia",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción cuando te transformes para seleccionar dos cualidades adicionales o eliminar dos debilidades existentes de su Transformación. Marca una segunda corrupción para hacer ambas cosas.",
@@ -1945,7 +1944,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "La fuerza de la naturaleza",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Obtienes +1 Sangre (máx. +4). Cada vez que tiras con Sangre y obtienes un 12+, marca corrupción.",
@@ -1956,7 +1955,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Sabueso callejero",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para transformarte en un coyote o un perro. Mientras estás en esta forma, puedes tirar con ESPÍRITU en lugar de mente para leer a alguien o engañarlo, distraerlo y engañarlo.",
@@ -1967,7 +1966,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Territorio conocido",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para ubicar la fuente del mayor peligro para ti o alguien que selecciones dentro de tu territorio o centro de la ciudad, incluso si la amenaza se ha ocultado con magia o mentiras.",
@@ -1983,7 +1982,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Auténtico cazador",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando estés persiguiendo a un personaje no jugador humano por la noche, márcate corrupción. Tu presa no podrá escapar de ti, huya adonde huya, y podrás alimentarte de él o matarlo a voluntad.",
@@ -1994,7 +1993,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Mantenlos dentro",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando cobres la última Deuda de alguien de tu Web, marca corrupción para conservar la Deuda y mantenerlos en tu Red.",
@@ -2005,7 +2004,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Fake news",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando debilitas la posición de alguien mediante rumores falsos, marca corrupción para tirar con Corazón en lugar de Estatus. Si fallas, marca corrupción para que el rastro conduzca a un aliado, no a ti.",
@@ -2016,7 +2015,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Magia de sangre",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Elige 2 Poderes de Hada; marca corrupción para usar uno sin coste adicional. Puedes realizar este avance de corrupción una segunda vez para obtener los Poderes de Hada restantes.",
@@ -2032,7 +2031,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Las Artes Oscuras",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando recurras a la violencia con energías mágicas o psíquicas, marca corrupción para tirar con Espíritu en lugar de Sangre.",
@@ -2043,7 +2042,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Sobre un caballo pálido",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción, 1 por 1, y pronuncia el verdadero nombre de un personaje en la escena para infligir hasta 3 daños (ap) en ellos; solo puedes apuntar a un personaje con este poder una vez por sesión.",
@@ -2054,7 +2053,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Magia negra",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes marcarte corrupción para ignorar un requisito que te haya puesto el Maestro de Ceremonias al usar tu santuario.",
@@ -2065,7 +2064,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Protección",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes marcarte corrupción para crear una protección mágica del tamaño de una habitación pequeña. La protección dura un mes y un día o hasta que la liberes.",
@@ -2081,7 +2080,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Émpata",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando cales a alguien, Roces la superficie o utilices Psicometría, puedes marcarte corrupción para hacer las preguntas que quieras, no solo las de las listas.",
@@ -2092,7 +2091,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "El ojo que todo lo ve",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes marcarte corrupción y sufrir 1-daño (perforante) para tener una visión sobre la situación en la que te encuentras. Hazle una pregunta al Maestro de Ceremonias; la contestará con honestidad.",
@@ -2103,7 +2102,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Oscuro destino",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para maldecir a una facción de la ciudad con una suerte terrible; tendrán -1 en curso en el siguiente turno de facción. Marca corrupción de nuevo para ocultar tu papel o asegurarte de que la maldición dure mucho tiempo.",
@@ -2114,7 +2113,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Mirada penetrante",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para clavar los ojos en alguien y obligarle a quedarse quieto mientras mantengas la mirada. Vuelve a marcar Corrupción para hacerles olvidar la experiencia.",
@@ -2130,7 +2129,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Beneficios adicionales",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para hacer un movimiento de ciudad adicional cuando pasa el tiempo; si usas tu Estatus de Círculo para el movimiento, añade +1 a tu tirada.",
@@ -2141,7 +2140,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Justo bajo la superficie",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes marcarte corrupción para adoptar tu forma demoníaca sin tirar y con todas las opciones de la lista.",
@@ -2152,7 +2151,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Innegable",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando alguien se niegue a pagarte una Deuda, puedes marcarte corrupción para convertir su resultado en un fallo (tras su tirada).",
@@ -2163,7 +2162,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Desde el Infierno",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Márcate corrupción para hacer que tu jefe mande una cuadrilla de demonios a trabajar para ti durante una escena (2-daño, grupo pequeño, 2-armadura, demoníacos).",
@@ -2179,7 +2178,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Aire y oscuridad",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Obtienes los poderes feéricos restantes. Cuando uses Magia feérica, dejas de poder elegir sufrir daño.",
@@ -2190,7 +2189,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Negociador astuto",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te niegas a cumplir una Deuda, puedes marcar corrupción para sacar un 12+ en vez de tirar.",
@@ -2201,7 +2200,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Gracia supranatural",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Obtienes +1 a Corazón (máximo +4). Siempre que tires con Corazón y saques un 12+, márcate corrupción.",
@@ -2212,7 +2211,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Todos tenemos una",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Toca a alguien y marca corrupción para maldecirlo con una vulnerabilidad elemental. Todo el daño de una fuente que selecciones (fuego, acero, hierro, etc.) se trata como +1 daño y ap.",
@@ -2228,7 +2227,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Así es como gano yo",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando avises a tu Círculo de que necesitas algo, marca corrupción para sacar un 12+ en lugar de tirar el dado. Marca la corrupción para dar al vendedor una Deuda en lugar del precio que te pidan cuando llegue el objeto.",
@@ -2239,7 +2238,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Dinero sucio",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando completes un plan, marca corrupción para recibir las cuatro bendiciones en lugar de sólo dos.",
@@ -2250,7 +2249,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Endulza el trato",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando persuades a un PNJ ofreciéndole una bonificación adicional o un soborno atractivo, marca corrupción para sacar un 12+ en lugar de tirar el dado.",
@@ -2261,7 +2260,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "En la lista negra",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para declarar a alguien enemigo de tu pueblo; otros de los tuyos lo gasearán, antagonizarán o algo peor. Hasta que digas lo contrario, avanza despistar, distraer o engañar para cualquiera que se dirija a ellos; también reciben -1 en curso durante cada turno de facción.",
@@ -2277,7 +2276,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Un paso por delante",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Obtienes +1 Mente (máx+4). Siempre que tires con Mente y saques un 12+, marca corrupción.",
@@ -2288,7 +2287,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Chivatos",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Marca corrupción para tirar con Mente en vez de Estado cuando consultes a tus contactos en otro Círculo.",
@@ -2300,7 +2299,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Estudiante de las Artes Arcanas",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Elige tres Hechizos. Marca corrupción para ganar dos puntos que puedes usar para lanzar esos hechizos.",
@@ -2311,7 +2310,7 @@ public class USMovesService : MovesServiceBase
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Asuntos Infernales",
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando pases a la violencia, puedes marcar corrupción para sacar un 12+ en vez de tirar.",
@@ -2329,7 +2328,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando hieras a un mortal durante tu persecución de lo sobrenatural, márcate corrupción.",
@@ -2340,7 +2339,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, hazle\r\nuna pregunta; tendrá que contestarla con honestidad. Luego te hará una pregunta a ti; contéstala\r\ncon honestidad o márcate corrupción.",
@@ -2351,7 +2350,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Hunter,
+			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras o retires a tu personaje, elije a un personaje de otro jugador y dale uno de los\r\nmovimientos de Cazador que tengas. Se lo puede quedar para siempre.",
@@ -2367,7 +2366,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando des de lado tus responsabilidades mortales para ocuparte de lo sobrenatural, márcate corrupción.",
@@ -2378,7 +2377,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con alguien que no sea mortal, márcate corrupción.",
@@ -2389,7 +2388,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Awaken,
+			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras, cada personaje tiene que decidir si tu muerte le inspira o corrompe una parte de su ser. Si le inspira, se borra un avance de corrupción que haya tomado (en caso de que lo haya hecho). Si le corrompe, toma un avance de corrupción inmediatamente.",
@@ -2405,7 +2404,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te lances hacia el peligro de cabeza y de manera consciente, márcate corrupción.",
@@ -2416,7 +2415,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, cuéntale una historia sobre el pasado y las lecciones que has aprendido.",
@@ -2433,7 +2432,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Veteran,
+			Archetipe = US_Classes.Veteran,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras o retires a tu personaje, elije a un personaje para que herede tu taller y Auténtico artista.",
@@ -2449,7 +2448,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando presencies una injusticia y no hagas nada,  márcate corrupción.",
@@ -2460,7 +2459,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, obtendrás 1 punto. Siempre que esa persona se meta en problemas, puedes gastar uno de esos puntos para aparecer donde esté.",
@@ -2471,7 +2470,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Spectre,
+			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando rellenes todas tus casillas de daño, tu corpus quedará esparcido y disperso. Te recompondrás en unos cuantos días. Cuando tu espíritu descanse en paz de manera permanente o retires a tu personaje, todos los personajes presentes obtendrán +1 Espíritu (máximo +3).",
@@ -2487,7 +2486,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando empieces una cacería en pos de alguien, márcate corrupción.",
@@ -2498,7 +2497,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, crearás un vínculo primario con ella; siempre sabrás dónde encontrarla y cuándo está en problemas. Este vínculo durará hasta el final de la siguiente sesión.",
@@ -2509,7 +2508,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Wolf,
+			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras o retires a tu personaje, alguien a quien quieras proteger que esté en escena escapará y se pondrá a salvo, por muy improbable que eso fuera.",
@@ -2525,7 +2524,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando te alimentes de una víctima en contra de su voluntad, márcate corrupción.",
@@ -2536,7 +2535,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona,  cuéntale un secreto sobre ti o contraerás una Deuda con ella. Sea como sea, esa persona entra en tu red y contrae una Deuda contigo.",
@@ -2547,7 +2546,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras o retires a tu personaje,  nombra a alguien que haya en escena a quien quieras muerto; tus subordinados y aliados lo perseguirán sin tregua.",
@@ -2558,7 +2557,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento inicial",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Vampire,
+			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando pase el tiempo, o al comienzo del juego, elige a alguien en tu Web y descubre un secreto sobre él que preferiría mantener enterrado. Marca corrupción para hacer una pregunta de seguimiento sobre la respuesta; su jugador debe responder honestamente."
@@ -2574,7 +2573,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando hagas un trato con alguien oscuro y poderoso, márcate corrupción.",
@@ -2585,7 +2584,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con alguien, decide si esa persona te importa o no. Si no te importa, sigue con su vida tal cual. Si te importa, tiene un –1 a todas las tiradas de escapar hasta que tenga un momento de intimidad con otra persona.",
@@ -2596,7 +2595,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras, puedes echarle una maldición devastadora a alguien que haya cerca. Especifica sus efectos y cómo puede librarse de ella.",
@@ -2612,7 +2611,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando le digas a alguien una profecía falsa,  márcate corrupción.",
@@ -2623,7 +2622,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona,  obtendrás una visión clara y específica sobre su futuro. Puedes hacer un máximo de 3 preguntas sobre la visión; márcate corrupción por cada una que hagas.",
@@ -2634,10 +2633,21 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras o retires a tu personaje,  haz una proclamación al mundo que reverberará en los sueños por todo el planeta. Detalla las señales de lo que se cierne. El Maestro de Ceremonias hará que tu profecía se cumpla más pronto que tarde.",
+			}
+		});
+		result.Add(new USMove(USMoveIDs.D_Orac_04, USAttributes.None)
+		{
+			Title = "Movimiento inicial",
+			TypeOfMovement = MovementTypes.DramaticMovement,
+			IsSelected = true,
+			Archetipe = US_Classes.Oracle,
+			PreCondition = new Consequences
+			{
+				MainText = "Cuando pase el tiempo, o al comienzo del juego, utiliza tu movimiento *Revelaciones**",
 			}
 		});
 		return result;
@@ -2650,7 +2660,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando convenzas a alguien de algo en nombre de tu jefe, márcate corrupción.",
@@ -2661,7 +2671,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, te transfiere el derecho a cobrar una Deuda que otro tuviera con ella.",
@@ -2672,7 +2682,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras,  cóbrate todas las Deudas que tenga contigo tu jefe para volver. Si tu jefe no está en Deuda contigo, le pedirá a otra persona que se endeude por ti. Si esa persona se niega, se acabó lo que se daba. Encantados de haberte conocido.",
@@ -2688,7 +2698,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando rompas una promesa o digas una mentira descarada, márcate corrupción.",
@@ -2699,7 +2709,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona,  pídele que te haga una promesa. Si se niega o rompe la promesa, contrae 2 Deudas contigo.",
@@ -2710,7 +2720,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras o retires a tu personaje, elige a un personaje y concédele el favor de tu corte. Puede elegir entre tomar Magia feérica y dos de tus poderes feéricos o avanzar convencer a un personaje no jugador.",
@@ -2726,7 +2736,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando rompas uno de tus votos o trabajes en contra de los intereses de tus amos: marca corrupción.",
@@ -2737,10 +2747,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, dile si te importa más que tu juramento. Si dices que sí marca corrupción y ellos obtienen un punto que pueden gastar en cualqueir momento para convocarte en su ubicación.",
+				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, dile si te importa más que tu juramento. Si dices que sí marca corrupción y ellos obtienen un punto que pueden gastar en cualquier momento para convocarte en su ubicación.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.D_Swo_03, USAttributes.None)
@@ -2748,7 +2758,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Sworn,
+			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras o retires a tu personaje, ofrece tu arma a otro. Si la acepta, átalos a tres de tus juramentos. Haz que te lo juren.",
@@ -2764,10 +2774,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de corrupción",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando hagas un trato que ponga en peligro a tu família, amigos o comunidad: marca corrupción.",
+				MainText = "Cuando hagas un trato que ponga en peligro a tu familia, amigos o comunidad: marca corrupción.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.D_Imp_02, USAttributes.None)
@@ -2775,10 +2785,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento de intimidad",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, prométele que le conseguiras algo que desee sin pedir nada a cabio. Dale una deuda y toma +1 en curso para conseguir lo que les has prometido.",
+				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, prométele que le conseguirás algo que desee sin pedir nada a cabio. Dale una deuda y toma +1 en curso para conseguir lo que les has prometido.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.D_Imp_03, USAttributes.None)
@@ -2786,7 +2796,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Movimiento final",
 			TypeOfMovement = MovementTypes.DramaticMovement,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando mueras uno de tus planes llega a buen puerto, pero otra persona cosecha las recompensas. Elige quien se beneficiará de los planes que pusiste en marcha.",
@@ -2803,15 +2813,15 @@ public class USMovesService : MovesServiceBase
 			Title = "Trabajo para mi patrón",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando completes un trabajo para tu patrón, marca *Velo**. Tu patron te debe una deuda por cada trabajo completado. Peudes cobrar una Deuda a tu patrón para que él:",
+				MainText = "Cuando completes un trabajo para tu patrón, marca *Velo**. Tu patron te debe una deuda por cada trabajo completado. Puedes cobrar una Deuda a tu patrón para que él:",
 				Options = new List<string>
 				{
 					"Responda a una pregunta honestamente",
 					"Organice un encuentro con un PNJ de Velo",
-					"Te conceda una bendición o un regalo últil",
+					"Te conceda una bendición o un regalo útil",
 					"Borre una deuda que tengas con alguien",
 					"Te conceda una deuda que él tenga"
 				}
@@ -2822,10 +2832,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Amo y señor",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Corrupted,
+			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
-				MainText = "En cualquier momento tu patrón puede canjear una deuda que tengas con él para inflingirte corrupción (1 por 1)",
+				MainText = "En cualquier momento tu patrón puede canjear una deuda que tengas con él para infringirte corrupción (1 por 1)",
 			}
 		});
 		return result;
@@ -2838,10 +2848,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Poder: Caricia de la naturaleza",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
-				MainText = "Tu toque cura 2-daño, emepzando por el crítico; Las heridas se cierran, los huesos vuelven aunirse, etc. No puedes usar este poder contigo mismo",
+				MainText = "Tu toque cura 2-daño, empezando por el crítico; Las heridas se cierran, los huesos vuelven a unirse, etc. No puedes usar este poder contigo mismo",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.U_Fae_02, USAttributes.None)
@@ -2849,7 +2859,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Poder: Marchitar",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
 				MainText = "Puedes imbuir tu toque con el poder de matar (3-daño íntimo ap). El efecto es entendido instantáneamente por el objetivo como un ataque y deja una fea marca o cicatriz en el punto de contacto.",
@@ -2860,10 +2870,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Poder: Encantamientos",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
-				MainText = "Creas ilusioes para engañar a los sentidos. Los efectos no duran mucho, pero son convincentes. No puedes disfrazarte ni ocultar tus acciones con estos trucos.",
+				MainText = "Creas ilusiones para engañar a los sentidos. Los efectos no duran mucho, pero son convincentes. No puedes disfrazarte ni ocultar tus acciones con estos trucos.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.U_Fae_04, USAttributes.None)
@@ -2871,10 +2881,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Poder: Cambio de forma",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
-				MainText = "Puedes cambiar tu forma a la de un animal mediano durante una escena. Hasta tres personas a las que designes pueden seguir entendiendo tu discurso, pero todos los demás te peciven como si ladraras,gorjearas, etc.",
+				MainText = "Puedes cambiar tu forma a la de un animal mediano durante una escena. Hasta tres personas a las que designes pueden seguir entendiendo tu discurso, pero todos los demás te perciben como si ladraras,gorjearas, etc.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.U_Fae_05, USAttributes.None)
@@ -2882,10 +2892,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Poder: Bedlam",
 			TypeOfMovement = MovementTypes.FaeMagic,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Fair,
+			Archetipe = US_Classes.Fair,
 			PreCondition = new Consequences
 			{
-				MainText = "Puedes tocar a un objeto vulnerable para ponero en un estado emocional específico (a tu elección) durante la escena. Marca corrupción para que esa emoción se dirija a un objetivo de tu elección.",
+				MainText = "Puedes tocar a un objeto vulnerable para ponerlo en un estado emocional específico (a tu elección) durante la escena. Marca corrupción para que esa emoción se dirija a un objetivo de tu elección.",
 			}
 		});
 		return result;
@@ -2898,17 +2908,17 @@ public class USMovesService : MovesServiceBase
 			Title = "Generar una nueva estafa",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando generas una estafa elige un círculo principal, uno de tus servicios y dos complicaiones (colabora con el MC para justificarlo)",
+				MainText = "Cuando generas una estafa elige un círculo principal, uno de tus servicios y dos complicaciones (colabora con el MC para justificarlo)",
 				Options = new List<string>
 				{
-					"prometiste a aguien involucrado, algo que aún no tienes",
-					"necesitas un cooperador poco fiable o de poca confiana",
+					"prometiste a alguien involucrado, algo que aún no tienes",
+					"necesitas un cooperador poco fiable o de poca confianza",
 					"debes engañar o embaucar a un PNJ poderoso y peligroso",
 					"necesitas robar algo de un lugar seguro",
-					"necesitas eseprar un momento o acontemiciento predeterminado",
+					"necesitas esperar un momento o acontecimientos predeterminado",
 					"has atraído la atención de una oposición peligrosa"
 				}
 			}
@@ -2918,10 +2928,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Finalizar una estafa",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Imp,
+			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando lleves a buen puerto una estafa, elige dos bonus y un pago. El MC te detallaraá como llegan. Anota los pagos conseguidos por que no se pueden repetir en toda la partida"
+				MainText = "Cuando lleves a buen puerto una estafa, elige dos bonus y un pago. El MC te detallará como llegan. Anota los pagos conseguidos por que no se pueden repetir en toda la partida"
 			},
 			ConsequencesOn6 = new Consequences
 			{
@@ -2957,7 +2967,7 @@ public class USMovesService : MovesServiceBase
 					"Adquirir un arma legendaria",
 					"Adquirir magia de hadas",
 					"Adquirir un santuario",
-					"Returar a tu personaje a un lugar seguro"
+					"Retirar a tu personaje a un lugar seguro"
 				}
 			}
 		});
@@ -2968,21 +2978,21 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.U_Ora_01, USAttributes.Status)
 		{
-			Title = "Neceito ayuda",
+			Title = "Necesito ayuda",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando acudas a tu benefactor en busca de ayuda o recursos tira con Estatus."
 			},
 			ConsequencesOn79 = new Consequences
 			{
-				MainText = "Con un éxito te dan lo que necesitas, siempre que etengas una visión profética de un problema que tengan en este momento."
+				MainText = "Con un éxito te dan lo que necesitas, siempre que tengas una visión profética de un problema que tengan en este momento."
 			},
 			ConsequencesOn10 = new Consequences
 			{
-				MainText = "Con un 10+: la ayuda que te dan es excepcionalmente últil."
+				MainText = "Con un 10+: la ayuda que te dan es excepcionalmente útil."
 			},
 			ConsequencesOn6 = new Consequences
 			{
@@ -2994,7 +3004,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Revelaciones",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
-			Archetipe = AvailableArchetypes.Oracle,
+			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
 				MainText = "Antes de cada turno de facción, o al comienzo de la partida, tira con espíritu. Si tienes éxito elige una de las opciones siguientes. Después del turno de facción el MC te dirá lo que tus herramientas proféticas han revelado",
@@ -3002,12 +3012,12 @@ public class USMovesService : MovesServiceBase
 				{
 					"el destino te ha brindado una oportunidad de cumplir tu papel para tu benefactor, el MC te dirá como aprovecharla.",
 					"un aliado ha llegado a poseer un objeto que podría revelar más sobre tu profecía; el MC te dirá donde lo guarda",
-					"una tragedia ha hecho posible que escapes o aleteres tu camino profecitado; el MC te dirá lo que debes hacer"
+					"una tragedia ha hecho posible que escapes o alteres tu camino profético; el MC te dirá lo que debes hacer"
 				}
 			},
 			ConsequencesOn79 = new Consequences
 			{
-				MainText = "con un 7-9 tambien tienes que elegir:",
+				MainText = "con un 7-9 también tienes que elegir:",
 				Options = new List<string>
 				{
 					"una amenaza se acerca; el MC te dirá por que te acecha a tí o a tu benefactor",
@@ -3016,7 +3026,7 @@ public class USMovesService : MovesServiceBase
 			},
 			ConsequencesOn6 = new Consequences
 			{
-				MainText = "Si fallas, recivirás una premonición aterradora sobre la profecía que te une a tu benefactr; toma -1 en curso a los esfuerzos que hagas para evitar que se cumpla",
+				MainText = "Si fallas, recivirás una premonición aterradora sobre la profecía que te une a tu benefactor; toma -1 en curso a los esfuerzos que hagas para evitar que se cumpla",
 			}
 		});
 		return result;
@@ -3029,10 +3039,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Hechizo: Rastrear",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
-				MainText = "Gasta 1 para conocer la ubicación de una persona específica. Debes tener un objeto personal que pertenezca  al objetivo o restos recietnes de su cuerpo (un mechón de cabello, recortes de uñas, su sangre...)"
+				MainText = "Gasta 1 para conocer la ubicación de una persona específica. Debes tener un objeto personal que pertenezca  al objetivo o restos recientes de su cuerpo (un mechón de cabello, recortes de uñas, su sangre...)"
 			}
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_02, USAttributes.None)
@@ -3040,10 +3050,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Hechizo: Elementalismo",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
-				MainText = "Conjuras los elementos para atacar a tus enemigs. Gasta 1 para *Pasar a la violencia** con tu magia como arma (cerca 3-daño o cerca 2-daño área)"
+				MainText = "Conjuras los elementos para atacar a tus enemigos. Gasta 1 para *Pasar a la violencia** con tu magia como arma (cerca 3-daño o cerca 2-daño área)"
 			}
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_03, USAttributes.None)
@@ -3051,7 +3061,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Hechizo: Enlace",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Gasta 1 para vincular telepáticamente hasta dos personajes en tu presencia durante unas horas, lo que les permite comunicarse entre sí, y contigo, independientemente de la distancia. Puedes gastar adicionalmente (1 por 1) para agregar más personajes a esta red, incluso si los otros miembros no están presentes."
@@ -3062,7 +3072,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Hechizo: Blindage",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Gasta 1 para proporcionar armadura+1 a ti mismo o a alguien cercano o gasta 2 para proporcionar armadura+1 a todos en un área pequeña, posiblemente incluyéndote a ti mismo. Esta aramadura dura hasta el final de la escena, Puedes acomular múltiples usos de Blindaje a la vez."
@@ -3073,10 +3083,10 @@ public class USMovesService : MovesServiceBase
 			Title = "Hechizo: Velo",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
-				MainText = "Gasta 1 para volverte incisble a la vista (morta, sobrenatural, electrónico, etc) por unos momentos."
+				MainText = "Gasta 1 para volverte invisible a la vista (mundana, sobrenatural, electrónica, etc) por unos momentos."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_06, USAttributes.None)
@@ -3084,7 +3094,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Hechizo: Teletransportarse",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Usa 1 para teletransportarte una distancia corta dentro de una escena en la que te encuentres."
@@ -3095,7 +3105,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Hechizo: Baratija",
 			TypeOfMovement = MovementTypes.MageMagic,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
 				MainText = "Gasta 1 para producir un objeto pequeño y mundano que se adapte perfectamente a tus necesidades: una llave para una sola puerta, una bala para un arma, etc"
@@ -3106,19 +3116,19 @@ public class USMovesService : MovesServiceBase
 			Title = "Trabajar en mi sanctum",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = false,
-			Archetipe = AvailableArchetypes.Mage,
+			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando ingresas en tu santuario para trabjar en algo, el MC te dirá: 'Claro, no hay problema, pero ...' y luego de 1 a 4 de lo siguiente:",
+				MainText = "Cuando ingresas en tu santuario para trabajar en algo, el MC te dirá: 'Claro, no hay problema, pero ...' y luego de 1 a 4 de lo siguiente:",
 				Options = new List<string>
 				{
-					"te llevará horas/dias/semanas/meses de trabajo o tiempo de recuperación",
+					"te llevará horas/días/semanas/meses de trabajo o tiempo de recuperación",
 					"Primero tendrás que invocar/construir X",
 					"Necesitarás los servicios de X para completarlo",
 					"Requiere un ingrediente o material raro y costoso",
 					"Solo funcionará durante un breve período de tiempo y es posible que no sea fiable",
-					"Significará exponer a cualquier persona cercana a graves consequencias",
-					"Tu santuario carece de X, añádeselo y podras completarlo",
+					"Significará exponer a cualquier persona cercana a graves consecuencias",
+					"Tu santuario carece de X, añádeselo y podrás completarlo",
 					"Requerirá una parte de ti mismo o un sacrificio comparable para completarlo",
 					"Debes viajar a X para completarlo"
 				}
@@ -3132,10 +3142,10 @@ public class USMovesService : MovesServiceBase
 		{
 			new USMove(USMoveIDs.U_Swo_01, USAttributes.None)
 			{
-				Title = "Juramentado y corruptión",
+				Title = "Juramentado y corrupción",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Sworn,
+				Archetipe = US_Classes.Sworn,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando hagas un avance de corrupción borra uno de tus votos, ya no te ata. Si eliminas todos tus votos tu juramento esta roto (cambia de libreto inmediatamente)."
@@ -3146,7 +3156,7 @@ public class USMovesService : MovesServiceBase
 				Title = "El poder de mi arma",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Sworn,
+				Archetipe = US_Classes.Sworn,
 				PreCondition = new Consequences
 				{
 					MainText = "Mientras lleves tu arma legendaria, avanza el movimiento adecuado."
@@ -3158,10 +3168,10 @@ public class USMovesService : MovesServiceBase
 				Title = "Lo hago por ellos",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Sworn,
+				Archetipe = US_Classes.Sworn,
 				PreCondition = new Consequences
 				{
-					MainText = "Cuando blandas tu arma al servicio de tus maestros, puedes tirar con mente en lugar de espiritu para *Mantener la calma**."
+					MainText = "Cuando blandas tu arma al servicio de tus maestros, puedes tirar con mente en lugar de espíritu para *Mantener la calma**."
 				}
 
 			},
@@ -3170,7 +3180,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Roto",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Sworn,
+				Archetipe = US_Classes.Sworn,
 				PreCondition = new Consequences
 				{
 					MainText = "Tu arma, como tu juramento, está atada a tu lealtad. Si tu juramento se rompe, tu arma te abandonará llegando a traicionarte para asegurarse de escapar de tu servicio"
@@ -3188,7 +3198,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Mi refugio mis reglas",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Vampire,
+				Archetipe = US_Classes.Vampire,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando alguien entra voluntariamente en tu refugio, lo añades a tu red."
@@ -3199,14 +3209,14 @@ public class USMovesService : MovesServiceBase
 				Title = "Mi red",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Vampire,
+				Archetipe = US_Classes.Vampire,
 				PreCondition = new Consequences
 				{
-					MainText = "Cuando alguien se acerca a tí para pedirte un favor, consejo, negociar información o amenazar tus intereses, entra en tu Red y te debe una deuda... aunque no le pagues nada a cambio. La gente sale de tu Red sólo cuando ya no te debe nada. Cuando alguieen está en tu red ganas lo siguiente:",
+					MainText = "Cuando alguien se acerca a tí para pedirte un favor, consejo, negociar información o amenazar tus intereses, entra en tu Red y te debe una deuda... aunque no le pagues nada a cambio. La gente sale de tu Red sólo cuando ya no te debe nada. Cuando alguien está en tu red ganas lo siguiente:",
 					Options = new List<string>
 					{
 						"+1 en curso para echarles una mano o interponerte en su camino",
-						"Siempre que uses *leer a alguien** con alguien de tu red añade la siguiente opcion a la lista: cuál es la verdadera hambre de tu personaje?",
+						"Siempre que uses *leer a alguien** con alguien de tu red añade la siguiente opción a la lista: cuál es la verdadera hambre de tu personaje?",
 						"Gasta una deuda antes de tirar para *persuadir** para avanzar persuasión por esta tirada, y sumar +3 al total"
 					}
 				}
@@ -3216,10 +3226,10 @@ public class USMovesService : MovesServiceBase
 				Title = "Saber más",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Vampire,
+				Archetipe = US_Classes.Vampire,
 				PreCondition = new Consequences
 				{
-					MainText = "Cuando pase el tiempo (o alprincipio de la partida) elige a alguien de tu red y averigua un secreto sobre él que preferiría mantener enterrado. Marca corrupción para hcaer una pregunta de seguimiento sobre la respuesta; su jugadore debe responderte con sinceridad."
+					MainText = "Cuando pase el tiempo (o al principio de la partida) elige a alguien de tu red y averigua un secreto sobre él que preferiría mantener enterrado. Marca corrupción para hacer una pregunta de seguimiento sobre la respuesta; su jugador debe responderte con sinceridad."
 				}
 			}
 		};
@@ -3233,7 +3243,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Cuidar de ellos",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Spectre,
+				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando una de tus anclas se pone en peligro, lo sabes; marca trauma y ten un +1 continuo a todos los movimientos hasta que la veas a salvo.."
@@ -3244,7 +3254,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Resolver un ancla",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Spectre,
+				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando resuelves un ancla, limpia todo tu trauma y borra un avance de corrupción"
@@ -3255,7 +3265,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Perder un ancla",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Spectre,
+				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando un ancla es destruida o arruinada, llena tu marcador de trauma y toma un avance de corrupción"
@@ -3266,10 +3276,10 @@ public class USMovesService : MovesServiceBase
 				Title = "Trauma",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Spectre,
+				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
-					MainText = "Empiezas cada sesión con 2 traumas marcados. Puedes eliminar trauma mediante movimientos de trauma. Si alguan vez llenas tu marcador de trauma el MC puede pedirte que hagas un movimiento de trauma en cualquier momento, pero siempre puedes elegir qué movimiento de trauma haces en ese momento."
+					MainText = "Empiezas cada sesión con 2 traumas marcados. Puedes eliminar trauma mediante movimientos de trauma. Si alguna vez llenas tu marcador de trauma el MC puede pedirte que hagas un movimiento de trauma en cualquier momento, pero siempre puedes elegir qué movimiento de trauma haces en ese momento."
 				}
 			},
 			new USMove(USMoveIDs.U_Spec_05, USAttributes.None)
@@ -3277,7 +3287,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Heridas",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Spectre,
+				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
 					MainText = "La primea vez que recibas daño en una escena, marca trauma. Cuando te llenes de daño, tu corpus se dispersará. Marca trauma para que se reforme en unos días en una de tus anclas, o marca 3 de trauma para que se reforme inmediatamente en un ancla a elección del MC. Si no puedes marcar trauma el MC te dice cómo/cuándo te reformas."
@@ -3288,10 +3298,10 @@ public class USMovesService : MovesServiceBase
 				Title = "Pasar al otro lado",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Spectre,
+				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
-					MainText = "Cuando tu última ancla se resuelva o se destruya, pasas a mejor vida. Elige una bendición o maldición que concedes a la ciudad por cada ancla que se haya resuleto o destruido respectivamente."
+					MainText = "Cuando tu última ancla se resuelva o se destruya, pasas a mejor vida. Elige una bendición o maldición que concedes a la ciudad por cada ancla que se haya resuelto o destruido respectivamente."
 				},
 				ConsequencesOn6 = new Consequences
 				{
@@ -3309,7 +3319,7 @@ public class USMovesService : MovesServiceBase
 					MainText = "Maldiciones",
 					Options = new List<string>
 					{
-						"Dehas tras de ti un reflejo psíquico de tu miedo e ira, algo terrible que persigue a los mortales en la noche",
+						"Dejas tras de ti un reflejo psíquico de tu miedo e ira, algo terrible que persigue a los mortales en la noche",
 						"Imbuyes un objeto con poder de pesadilla; el MC elige quien se queda con el objeto maldito.",
 						"Llevas a un PNJ cercano a ti a una espiral descendiente",
 						"No falleces, sino que te traga el olvido"
@@ -3321,10 +3331,10 @@ public class USMovesService : MovesServiceBase
 				Title = "Arremeter contra un PNJ",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Spectre,
+				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
-					MainText = "Cuando arremetes contra un PNJ con furia, tira con Sangre. Con un éxito, elimina todos tus traumas e inflinge el daño establecido.",
+					MainText = "Cuando arremetes contra un PNJ con furia, tira con Sangre. Con un éxito, elimina todos tus traumas e infringe el daño establecido.",
 				},
 				ConsequencesOn6 = new Consequences
 				{
@@ -3340,10 +3350,10 @@ public class USMovesService : MovesServiceBase
 				Title = "Comulgar con tus anclas",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Spectre,
+				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
-					MainText = "Cuado comulgas con una de tus anclas, tira con espíritu. Con un éxito tu ancla alivia tu psique fracturada: borra 2 traumas.",
+					MainText = "Cuando comulgas con una de tus anclas, tira con espíritu. Con un éxito tu ancla alivia tu psique fracturada: borra 2 traumas.",
 				},
 				ConsequencesOn10 = new Consequences
 				{
@@ -3365,19 +3375,19 @@ public class USMovesService : MovesServiceBase
 				Title = "Mi taller",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Veteran,
+				Archetipe = US_Classes.Veteran,
 				PreCondition = new Consequences
 				{
-					MainText = "Cuando ingresas en tu taller para trabjar en algo, el MC te dirá: 'Claro, no hay problema, pero ...' y luego de 1 a 4 de lo siguiente:",
+					MainText = "Cuando ingresas en tu taller para trabajar en algo, el MC te dirá: 'Claro, no hay problema, pero ...' y luego de 1 a 4 de lo siguiente:",
 					Options = new List<string>
 					{
-						"te llevará horas/dias/semanas/meses de trabajo o tiempo de recuperación",
+						"te llevará horas/días/semanas/meses de trabajo o tiempo de recuperación",
 						"Primero tendrás que invocar/construir X",
 						"Necesitarás los servicios de X para completarlo",
 						"Requiere un ingrediente o material raro y costoso",
 						"Solo funcionará durante un breve período de tiempo y es posible que no sea fiable",
-						"Significará exponer a cualquier persona cercana a graves consequencias",
-						"Tu taller carece de X, añádeselo y podras completarlo",
+						"Significará exponer a cualquier persona cercana a graves consecuencias",
+						"Tu taller carece de X, añádeselo y podrás completarlo",
 						"Requerirá una parte de ti mismo o un sacrificio comparable para completarlo",
 						"Debes viajar a X para completarlo"
 					}
@@ -3385,13 +3395,13 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Vet_02, USAttributes.None)
 			{
-				Title = "Mi creacciones",
+				Title = "Mis creaciones",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Veteran,
+				Archetipe = US_Classes.Veteran,
 				PreCondition = new Consequences
 				{
-					MainText = "Los objetos creados en tu taller esán a salvo del MC. No pueden ser destruidos o taomdos sin tu permiso, incluso si los vendes o regalas a otro personaje. Cuando crees algo específicamente para otro personaje, marca su Círculo cuando el proyecto esté terminado."
+					MainText = "Los objetos creados en tu taller están a salvo del MC. No pueden ser destruidos o tomados sin tu permiso, incluso si los vendes o regalas a otro personaje. Cuando crees algo específicamente para otro personaje, marca su Círculo cuando el proyecto esté terminado."
 				}
 			}
 		};
@@ -3405,7 +3415,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Se han ido",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Awaken,
+				Archetipe = US_Classes.Awaken,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando una de tus relaciones mortales llega a su fin por cualquier motivo -te dejan, mueren, abandonan la ciudad, les dices que dejen de contactar contigo, etc.- marca inmediatamente un avance de corrupción. Si la pérdida de una relación mortal hace que retires a tu personaje debido a la corrupción, dile al MC a quién culpas más por la pérdida;\r\ntu personaje perseguirá al responsable como Amenaza hasta que se haga \"justicia\"."
@@ -3416,7 +3426,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Ocuparme de ellos",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Awaken,
+				Archetipe = US_Classes.Awaken,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando te ocupes de tus relaciones con los mortales durante el turno de facción, no hagas ningún otro movimiento de ciudad y tira con Corazón. Con un éxito, uno de los mortales más cercanos a ti te ofrece una forma de estrechar vuestros lazos; elimina un avance de corrupción si aceptas lo que te proponen."
@@ -3432,10 +3442,10 @@ public class USMovesService : MovesServiceBase
 				Title = "Mi kit",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.Awaken,
+				Archetipe = US_Classes.Awaken,
 				PreCondition = new Consequences
 				{
-					MainText = "ienes algo de equipo que has ido adquiriendo desde que eres consciente del mundo sobrenatural, la mayoría guardado en el maletero de tu coche o en una bolsa que llevas contigo.\r\nCuando busques en tu botiquín algún equipo mundano -bengalas de carretera, botiquín de primeros auxilios, etc.- útil para la situación, tira con Espíritu.. Con un éxito, encuentras algo que te puede servir."
+					MainText = "Tienes algo de equipo que has ido adquiriendo desde que eres consciente del mundo sobrenatural, la mayoría guardado en el maletero de tu coche o en una bolsa que llevas contigo.\r\nCuando busques en tu botiquín algún equipo mundano -bengalas de carretera, botiquín de primeros auxilios, etc.- útil para la situación, tira con Espíritu.. Con un éxito, encuentras algo que te puede servir."
 				},
 				ConsequencesOn10 = new Consequences
 				{
@@ -3454,26 +3464,26 @@ public class USMovesService : MovesServiceBase
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Hunter_01,
-				Text = "Encuentra y persigue a algien o algo por la ciudad con rastros o información limitados.",
-				Archetype = AvailableArchetypes.Hunter
+				Text = "Encuentra y persigue a alguien o algo por la ciudad con rastros o información limitados.",
+				Archetype = US_Classes.Hunter
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Hunter_02,
 				Text = "Improvisa un arma (daño2, mano, desastrosa) o (armadura-1, frágil).",
-				Archetype = AvailableArchetypes.Hunter
+				Archetype = US_Classes.Hunter
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Hunter_03,
 				Text = "Improvisa un explosivo (daño3, ruidoso, fuego) o bomba de humo (aturdidor, ruidosa, humo).",
-				Archetype = AvailableArchetypes.Hunter
+				Archetype = US_Classes.Hunter
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Hunter_04,
 				Text = "Forzar a un enemigo vulnerable a huir de tu\r\npresencia y entregar un mensaje.",
-				Archetype = AvailableArchetypes.Hunter
+				Archetype = US_Classes.Hunter
 			}
 		};
 	}
@@ -3485,25 +3495,25 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Awa_01,
 				Text = "Consigue acceso a una zona asegurada o bloqueada.",
-				Archetype = AvailableArchetypes.Awaken
+				Archetype = US_Classes.Awaken
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Awa_02,
-				Text = "Atrae atencion inmediata de los mortales sobre una persona o situación.",
-				Archetype = AvailableArchetypes.Awaken
+				Text = "Atrae atención inmediata de los mortales sobre una persona o situación.",
+				Archetype = US_Classes.Awaken
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Awa_03,
 				Text = "Encuentra una pista o ventaja en un area inmediata que antes se había pasado por alto.",
-				Archetype = AvailableArchetypes.Awaken
+				Archetype = US_Classes.Awaken
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Awa_04,
-				Text = "Convence a un PNJ de que actue con bondad, interés o en propio beneficio.",
-				Archetype = AvailableArchetypes.Awaken
+				Text = "Convence a un PNJ de que actúe con bondad, interés o en propio beneficio.",
+				Archetype = US_Classes.Awaken
 			}
 		};
 	}
@@ -3514,26 +3524,26 @@ public class USMovesService : MovesServiceBase
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Vet_01,
-				Text = "Sorprende a un enemigo desprevenido con un golpe terrible o dejalo K.O.",
-				Archetype = AvailableArchetypes.Veteran
+				Text = "Sorprende a un enemigo desprevenido con un golpe terrible o déjalo K.O.",
+				Archetype = US_Classes.Veteran
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Vet_02,
-				Text = "Proteje un lugar, o genera barricadas con materiales mínimos.",
-				Archetype = AvailableArchetypes.Veteran
+				Text = "Protege un lugar, o genera barricadas con materiales mínimos.",
+				Archetype = US_Classes.Veteran
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Vet_03,
-				Text = "Asusta o intimida a alguien con un recordatorio de quien solias ser.",
-				Archetype = AvailableArchetypes.Veteran
+				Text = "Asusta o intimida a alguien con un recordatorio de quien solías ser.",
+				Archetype = US_Classes.Veteran
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Vet_04,
 				Text = "Revela la forma en que un antiguo aliado o enemigo está dando forma a un conflicto actual.",
-				Archetype = AvailableArchetypes.Veteran
+				Archetype = US_Classes.Veteran
 			}
 		};
 	}
@@ -3545,25 +3555,25 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Vamp_01,
 				Text = "Crea una oportunidad para ESCAPAR, ignorando impedimentos mortales",
-				Archetype = AvailableArchetypes.Vampire
+				Archetype = US_Classes.Vampire
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Vamp_02,
-				Text = "Realiza una azaña fantástica de fuerza o agiliad vampírica",
-				Archetype = AvailableArchetypes.Vampire
+				Text = "Realiza una hazaña fantástica de fuerza o agilidad vampírica",
+				Archetype = US_Classes.Vampire
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Vamp_03,
 				Text = "Extiende tus sentidos vampíricos por un corto periodo de tiempo",
-				Archetype = AvailableArchetypes.Vampire
+				Archetype = US_Classes.Vampire
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Vamp_04,
 				Text = "Muestra dominancia: PNJ de bajo nivel se van, PJ deben MANTENER LA CALMA",
-				Archetype = AvailableArchetypes.Vampire
+				Archetype = US_Classes.Vampire
 			}
 		};
 	}
@@ -3575,25 +3585,31 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Wolf_01,
 				Text = "Curate 2-daño inmediatamente empezando por daño crítico",
-				Archetype = AvailableArchetypes.Wolf
+				Archetype = US_Classes.Wolf
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Wolf_02,
-				Text = "Transformate sin necesidad de la Luna",
-				Archetype = AvailableArchetypes.Wolf
+				Text = "Transfórmate sin necesidad de la Luna",
+				Archetype = US_Classes.Wolf
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Wolf_03,
-				Text = "Realiza una proheza de fuerza o velocidad lupína",
-				Archetype = AvailableArchetypes.Wolf
+				Text = "Realiza una proeza de fuerza o velocidad lupina",
+				Archetype = US_Classes.Wolf
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Wolf_04,
 				Text = "Aumenta tus sentidos lupinos a niveles supernaturales",
-				Archetype = AvailableArchetypes.Wolf
+				Archetype = US_Classes.Wolf
+			},
+			new LIO
+			{
+				ID= USMoveIDs.LIO_Wolf_05,
+				Text = "Requiere REGENERAR: Se te cierran las heridas; cúrate 1-daño.",
+				Archetype = US_Classes.Wolf
 			}
 		};
 	}
@@ -3604,26 +3620,26 @@ public class USMovesService : MovesServiceBase
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Spect_01,
-				Text = "Transportate instantaneamente a uno de tus anclas, sin importar la distancia",
-				Archetype = AvailableArchetypes.Spectre
+				Text = "Transpórtate instantáneamente a uno de tus anclas, sin importar la distancia",
+				Archetype = US_Classes.Spectre
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Spect_02,
-				Text = "Toma control de una maqina o vehículo poseyendo su forma mecánica",
-				Archetype = AvailableArchetypes.Spectre
+				Text = "Toma control de una maquina o vehículo poseyendo su forma mecánica",
+				Archetype = US_Classes.Spectre
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Spect_03,
-				Text = "Desata un rayo de energía extoplasmática (daño2, cerca, area, perforante)",
-				Archetype = AvailableArchetypes.Spectre
+				Text = "Desata un rayo de energía exoplasmática (daño2, cerca, area, perforante)",
+				Archetype = US_Classes.Spectre
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Spect_04,
-				Text = "Sige a un mortal ordinario, sin importar a donde vaya",
-				Archetype = AvailableArchetypes.Spectre
+				Text = "Sigue a un mortal ordinario, sin importar a donde vaya",
+				Archetype = US_Classes.Spectre
 			}
 		};
 	}
@@ -3634,26 +3650,26 @@ public class USMovesService : MovesServiceBase
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Mage_01,
-				Text = "Deflecta o redirige un golpe justo antes de que te toque",
-				Archetype = AvailableArchetypes.Mage
+				Text = "Deflacta o redirige un golpe justo antes de que te toque",
+				Archetype = US_Classes.Mage
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Mage_02,
-				Text = "Realiza una proheza de fuerza o precisión telekinésica",
-				Archetype = AvailableArchetypes.Mage
+				Text = "Realiza una proeza de fuerza o precisión telequinética",
+				Archetype = US_Classes.Mage
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Mage_03,
 				Text = "Detecta la presencia o funcionamiento de objetos mágicos o hechizos",
-				Archetype = AvailableArchetypes.Mage
+				Archetype = US_Classes.Mage
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Mage_04,
 				Text = "Cambia la forma o naturaleza de un objeto expuesto o hechizo mágico",
-				Archetype = AvailableArchetypes.Mage
+				Archetype = US_Classes.Mage
 			}
 		};
 	}
@@ -3665,25 +3681,25 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Orac_01,
 				Text = "Expón la verdad esencial de una cosa o persona en tu presencia",
-				Archetype = AvailableArchetypes.Oracle
+				Archetype = US_Classes.Oracle
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Orac_02,
 				Text = "Manipula las hebras de la realidad para ayudar o perjudicar un PNJ en tu presencia",
-				Archetype = AvailableArchetypes.Oracle
+				Archetype = US_Classes.Oracle
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Orac_03,
 				Text = "Impresiona o asusta a alguien con un conocimiento del pasado",
-				Archetype = AvailableArchetypes.Oracle
+				Archetype = US_Classes.Oracle
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Orac_04,
 				Text = "Canaliza una potente profecía del más allá sobre un personaje presente",
-				Archetype = AvailableArchetypes.Oracle
+				Archetype = US_Classes.Oracle
 			}
 		};
 	}
@@ -3695,25 +3711,25 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Sworn_01,
 				Text = "Destruye un conjuro mágico o ilusión o encantamiento solo con tocarlo",
-				Archetype = AvailableArchetypes.Sworn
+				Archetype = US_Classes.Sworn
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Sworn_02,
-				Text = "Cúbrete con una armadura mágica. Consúmela para absorver todo del daño de un solo golpe",
-				Archetype = AvailableArchetypes.Sworn
+				Text = "Cúbrete con una armadura mágica. Consúmela para absorber todo del daño de un solo golpe",
+				Archetype = US_Classes.Sworn
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Sworn_03,
 				Text = "Derriba a todos los enemigos menores con una ráfaga de fuerza elemental",
-				Archetype = AvailableArchetypes.Sworn
+				Archetype = US_Classes.Sworn
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Sworn_04,
 				Text = "Obliga a alguien a responder preguntas sinceras durante una escena",
-				Archetype = AvailableArchetypes.Sworn
+				Archetype = US_Classes.Sworn
 			}
 		};
 	}
@@ -3725,25 +3741,25 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Fae_01,
 				Text = "Invoca una tormenta elemental de tu corte (daño2, cerca, area, penetrante)",
-				Archetype = AvailableArchetypes.Fair
+				Archetype = US_Classes.Fair
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Fae_02,
-				Text = "Aparece ante los demás como alguein a quien anteriormente has tocado",
-				Archetype = AvailableArchetypes.Fair
+				Text = "Aparece ante los demás como alguien a quien anteriormente has tocado",
+				Archetype = US_Classes.Fair
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Fae_03,
 				Text = "Obliga a los elementos de tu corte a explicarte lo que han visto",
-				Archetype = AvailableArchetypes.Fair
+				Archetype = US_Classes.Fair
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Fae_04,
 				Text = "Crea un vinculo telepático con alguien durante una escena",
-				Archetype = AvailableArchetypes.Fair
+				Archetype = US_Classes.Fair
 			}
 		};
 	}
@@ -3755,25 +3771,25 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Corrupt_01,
 				Text = "Impregna tu tacto de corrupción demoníaca (daño2, intimidante, penetrante)",
-				Archetype = AvailableArchetypes.Corrupted
+				Archetype = US_Classes.Corrupted
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Corrupt_02,
 				Text = "Impresiona, asusta o consterna a alguien con una demostración de furia demoníaca",
-				Archetype = AvailableArchetypes.Corrupted
+				Archetype = US_Classes.Corrupted
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Corrupt_03,
-				Text = "Atraviesa un obstaculo físico creado por manos mortales",
-				Archetype = AvailableArchetypes.Corrupted
+				Text = "Atraviesa un obstáculo físico creado por manos mortales",
+				Archetype = US_Classes.Corrupted
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Corrupt_04,
 				Text = "Invoca a tu patrón oscuro directamente donde estas",
-				Archetype = AvailableArchetypes.Corrupted
+				Archetype = US_Classes.Corrupted
 			}
 		};
 	}
@@ -3785,25 +3801,25 @@ public class USMovesService : MovesServiceBase
 			{
 				ID= USMoveIDs.LIO_Imp_01,
 				Text = "Olfatear un escondite secreto, incluso cuando esté expertamente oculto o escondido",
-				Archetype = AvailableArchetypes.Imp
+				Archetype = US_Classes.Imp
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Imp_02,
 				Text = "Teletransportarte a tu establecimiento desde cualquier distancia o posición",
-				Archetype = AvailableArchetypes.Imp
+				Archetype = US_Classes.Imp
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Imp_03,
 				Text = "Infiltrarte en una zona hostil aparentando no ser digno de interés",
-				Archetype = AvailableArchetypes.Imp
+				Archetype = US_Classes.Imp
 			},
 			new LIO
 			{
 				ID= USMoveIDs.LIO_Imp_04,
 				Text = "Infligir 4 daños (ap) a un objetivo vulnerable que te subestime",
-				Archetype = AvailableArchetypes.Imp
+				Archetype = US_Classes.Imp
 			}
 		};
 	}
@@ -3817,7 +3833,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Debilitar la posición de alguien",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando usas rumores y cotilleos, tira con Estatus. Con un éxito, los rumores cuajan. Tienen un -1 en curso a los movimientos durante el turno de facción hasta que encuentren alguna forma de disipar los rumores."
@@ -3836,7 +3852,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Hacer correr la voz",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando corres la voz de que necesitas algo para tu Círculo -un tomo mágico, información secreta, un guardaespaldas experto, etc.- tira con Estatus. "
@@ -3859,7 +3875,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Consulta a sus contactos",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = $"Cuando consultes a tus contactos en otro Círculo, tira con estatus en ese Círculo. Con un éxito, pregunta 3; tus contactos responderán lo mejor que puedan.\r\n\r\n",
@@ -3883,10 +3899,10 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityStatus1_04, USAttributes.Status)
 			{
-				Title = "Ocuparte de tus asusntos",
+				Title = "Ocuparte de tus asuntos",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando no te metas en los asuntos de la ciudad, dile al MC cómo pasas el tiempo y tira. Con un éxito, un viejo amigo o un nuevo aliado se acerca a ti para pedirte ayuda; marca una corrupción si lo rechazas."
@@ -3906,7 +3922,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Reunir las fuerzas de una facción",
 				TypeOfMovement = MovementTypes.CityMoveStatus2,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando intentes reunir fuerzas en tu Círculo para socavar una facción o sus posesiones, tira con Estatus.\r\nCon un éxito, puedes dar una Deuda a un PNJ poderoso de tu Círculo -a elección del MC- para reducir la fuerza de tu objetivo o debilitar su control sobre un activo específico, a tu elección.\r\n"
@@ -3925,7 +3941,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Reclamar",
 				TypeOfMovement = MovementTypes.CityMoveStatus2,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando reclames un bien vulnerable, tira con Estatus. Con un éxito, tu reclamación es ampliamente reconocida; apodérate del bien y el MC te dirá qué beneficios te aporta.",
@@ -3954,7 +3970,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Reclutar nuevos aliados",
 				TypeOfMovement = MovementTypes.CityMoveStatus2,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando reclutes aliados de otro Círculo, dile al MC qué ayuda necesitas y tira con Estatus. Con un éxito, el MC te dirá quién está disponible para ser contratado; si gastas una Deuda, estará disponible hasta después del siguiente turno de facción.",
@@ -3981,7 +3997,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Reclamar estatus 3",
 				TypeOfMovement = MovementTypes.CityMoveStatus2,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando hagas una reclamación de Estatus-3 en la ciudad, tira 2d6 y revisa la lista. Con un éxito, sube tu estatus a Estatus-3 y obtén el control de una facción relevante. Cualquier PC que alcance el Estatus-3 puede hacer movimientos de facción junto a las facciones de PNJs en cada turno de facción; su facción siempre se considera creciendo.",
@@ -4009,7 +4025,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Atacar abiertamente a una facción",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando una facción ataca abiertamente a otra facción, tira con la diferencia entre los Tamaños de las dos facciones. Con un éxito, la facción atacada sacrifica una baza apropiada o pierde un punto de Tamaño, a su elección."
@@ -4028,7 +4044,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Consolidar el control",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando los líderes de una facción consolidan el control sobre sus fuerzas y activos existentes, tiran con su Fuerza.",
@@ -4048,7 +4064,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Localizar a alguien",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando una facción intenta localizar a un personaje de estatus 1 o 2 dentro de la ciudad, tira:",
@@ -4069,7 +4085,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Incitar al adversario",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando una facción intenta incitar a un oponente a cometer un error, tira con la diferencia entre las Fuerzas de las dos facciones."
@@ -4083,7 +4099,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Apoderarse por la fuerza",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando una facción se apodera de algo vulnerable por la fuerza, tira con su Fuerza. Con un éxito, se apoderan de ello; reducen el atributo apropiado de la facción objetivo y se apoderan de un bien vulnerable.",
@@ -4100,10 +4116,10 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityFaction_06, USAttributes.None)
 			{
-				Title = "Buscar en la ciduad",
+				Title = "Buscar en la ciudad",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando una facción busca en la ciudad información útil -un raro conocimiento oculto, las debilidades de otra facción, la localización de un artefacto- tira con su Tamaño. Si aciertan, descubren algunos detalles cruciales, suficientes para pedir a un PJ o PNJ notable que siga investigando.",
@@ -4123,7 +4139,7 @@ public class USMovesService : MovesServiceBase
 				Title = "Ofrecer pasaje",
 				TypeOfMovement = MovementTypes.FactionPhaseCityMove,
 				IsSelected = true,
-				Archetipe = AvailableArchetypes.All,
+				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
 					MainText = "Cuando una facción ofrece paso a alguien -para entrar o salir de la ciudad- tira con su Tamaño. Si aciertas, el camino queda expedito, sin importar quién se oponga; elige 1:",

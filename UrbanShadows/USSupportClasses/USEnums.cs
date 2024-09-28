@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PbtALib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,9 @@ namespace UrbanShadows;
 
 
 public enum Circles { NotSet, Mortalis, Noche, Poder, Velo }
-public enum FactionStatuses { NotSet, Creciendo, Manteniendo, Menguando }
+
 public enum USAttributes{ Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, Circle, None, Status}
-public enum AvailableArchetypes{ NotSet, Hunter, Awaken, Veteran, Vampire, Wolf, Spectre, Sworn, Mage, Oracle, Fair, Corrupted, Imp, All }
+
 public enum KindsOfAdvance { Normal, Extra, Corruption };
 public enum PayingMode { ToPay, ToBePaid };
 public enum MovementTypes
@@ -71,7 +72,7 @@ public enum USMoveIDs
 	LIO_Awa_01, LIO_Awa_02, LIO_Awa_03, LIO_Awa_04,
 	LIO_Hunter_01, LIO_Hunter_02, LIO_Hunter_03, LIO_Hunter_04,
 	LIO_Vet_01, LIO_Vet_02, LIO_Vet_03, LIO_Vet_04,
-	LIO_Wolf_01, LIO_Wolf_02, LIO_Wolf_03, LIO_Wolf_04,
+	LIO_Wolf_01, LIO_Wolf_02, LIO_Wolf_03, LIO_Wolf_04, LIO_Wolf_05,
 	LIO_Vamp_01, LIO_Vamp_02, LIO_Vamp_03, LIO_Vamp_04,
 	LIO_Spect_01, LIO_Spect_02, LIO_Spect_03, LIO_Spect_04,
 	LIO_Mage_01, LIO_Mage_02, LIO_Mage_03, LIO_Mage_04,
@@ -94,7 +95,8 @@ public enum USMoveIDs
 	CityFaction_05,
 	CityFaction_06,
 	CityFaction_07,
-	CityStatus1_04
+	CityStatus1_04,
+	D_Orac_04
 }
 
 public static class EnumExtensions
@@ -117,22 +119,23 @@ public static class EnumExtensions
 		};
 	}
 
-	public static string ToUI(this AvailableArchetypes arq)
+	public static string ToUI(this US_Classes arq)
 	{
 		return arq switch
 		{
-			AvailableArchetypes.Hunter => "Cazador",
-			AvailableArchetypes.Awaken => "Despertado",
-			AvailableArchetypes.Fair => "Hada",
-			AvailableArchetypes.Mage => "Mago",
-			AvailableArchetypes.Veteran => "Veterano",
-			AvailableArchetypes.Vampire => "Vampiro",
-			AvailableArchetypes.Corrupted => "Corrompido",
-			AvailableArchetypes.Oracle => "Oraculo",
-			AvailableArchetypes.Wolf => "Hombre Lobo",
-			AvailableArchetypes.Spectre => "Espectro",
-			AvailableArchetypes.Imp => "Duencedillo",
-			AvailableArchetypes.Sworn => "Juramentado",
+			US_Classes.Hunter => "Cazador",
+			US_Classes.Awaken => "Despertado",
+			US_Classes.Fair => "Hada",
+			US_Classes.Mage => "Mago",
+			US_Classes.Veteran => "Veterano",
+			US_Classes.Vampire => "Vampiro",
+			US_Classes.Corrupted => "Corrompido",
+			US_Classes.Oracle => "Oraculo",
+			US_Classes.Wolf => "Hombre Lobo",
+			US_Classes.Spectre => "Espectro",
+			US_Classes.Imp => "Duencedillo",
+			US_Classes.Sworn => "Juramentado",
+			US_Classes.Master => "Master",
 			_ => $"Unknown arquetipe ToUI: {arq.ToString()}"
 		};
 	}

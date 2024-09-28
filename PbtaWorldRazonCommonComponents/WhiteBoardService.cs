@@ -9,8 +9,10 @@ namespace WhiteBoard;
 public class WhiteBoardService
 {
 	public event EventHandler UpdateUI;
+	public event EventHandler OpenClocksTryForAllClients;
 	public event EventHandler<Tuple<DWClasses, Point>> FlashAttentionMarker;
 	public event EventHandler<Guid> StoreChangesInCharacterSheet;
+	public event EventHandler<Token> ForceSelection;
 	public List<Token> Tokens = new();
 	public List<Prop> Props = new();
 	public static IGameController? Game;
@@ -22,6 +24,18 @@ public class WhiteBoardService
 	public string MapImagePATH => RootBattleMapsURL + MapImageName;
 	public string MapImageURL => "/imgs/VTT/BattleMaps/" + MapImageName;
 	public string WallsJasonFile => RootBattleMapsURL + MapImageName.Substring(0, MapImageName.IndexOf('.'))+".json";
+
+	private AvailableGames _currentGame = AvailableGames.DW;
+	public AvailableGames CurrentGame
+	{
+		get => _currentGame;
+		set
+		{
+			_currentGame = value;
+			if (_currentGame == AvailableGames.DW) MapImageName = "UDT_DungeonRectificed.jpg";
+			else if (_currentGame == AvailableGames.US) MapImageName = "USDarkAsphalt.jpg";
+		}
+	}
 
 
 	private string _mapImageName;
@@ -48,7 +62,7 @@ public class WhiteBoardService
 	public List<Marker> MarkerPositions = new();
 	public class Marker
 	{
-		public DWClasses Color;
+		public string EncodedClass = "DW_Bard";
 		public Point Position = new();
 		public bool IsFlashing = false;
 	}
@@ -116,12 +130,13 @@ public class WhiteBoardService
 		if (minDistance < 30)
 		{
 			drawnLines.Remove(SelectedLine);
+			Update();
 		}
 	}
 
-	public async Task ShowPlayerAttention(DWClasses color, Point p)
+	public async Task ShowPlayerAttention(string _encodedClass, Point p)
 	{
-		var marker = MarkerPositions.Find(x => x.Color == color);
+		var marker = MarkerPositions.Find(x => x.EncodedClass == _encodedClass);
 		if (marker is not null)
 		{
 			marker.Position = p;
@@ -129,7 +144,7 @@ public class WhiteBoardService
 		}
 		else
 		{
-			marker = new Marker { Color = color, Position = p, IsFlashing = true };
+			marker = new Marker { EncodedClass = _encodedClass, Position = p, IsFlashing = true };
 			MarkerPositions.Add(marker);
 		}
 
@@ -176,9 +191,12 @@ public class WhiteBoardService
 	{
 		foreach (var c in Clocks) c.UpdateUI();
 		Update();
+		OpenClocksTryForAllClients(this, EventArgs.Empty);
 	}
 	void Update(object? sender, EventArgs e) => Update();
 	private void Update() => UpdateUI?.Invoke(this, EventArgs.Empty);
+
+	public void OpenClocksInPlayers() => OpenClocksTryForAllClients.Invoke(this, EventArgs.Empty);
 
 	public async Task<Token> StartForPlayer(PbtACharacter character)
 	{
@@ -235,7 +253,25 @@ public class WhiteBoardService
 		t.UpdateNeeeded += Update;
 		Tokens.Add(t);
 
+		ForceSelection?.Invoke(this, t);
+		Update();
+
 		return t;
+	}
+
+	public void AddTokenFromPeople(ICharacter dude)
+	{
+		var t = new Token { 
+			ID = VTTTokens.FromICharacter, 
+			ComesFromImageName = dude.Name,
+			X = 50, Y = 50, 
+			Status = TokenStatus.Hidden };
+		t.UpdateNeeeded -= Update;
+		t.UpdateNeeeded += Update;
+		Tokens.Add(t);
+
+		ForceSelection?.Invoke(this, t);
+		Update();
 	}
 
 

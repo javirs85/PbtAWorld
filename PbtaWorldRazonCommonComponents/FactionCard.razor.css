@@ -1,0 +1,18 @@
+﻿.FactionStatus {
+    border-radius: 1em;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    font-size: 1.5em;
+}
+.FactionStatusNot{
+    opacity:0.4;
+    font-size:0.7em;
+    cursor:pointer;
+}
+.FactionStatusNot:hover{
+    opacity:0.8;
+}
+.FactionStatusSelected {
+    opacity: 1;
+}

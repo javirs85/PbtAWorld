@@ -45,7 +45,11 @@
     display: flex;
     padding: 5px 40px;
     border-radius: 40px;
-    
+    opacity:0.5;
+    cursor:pointer;
+}
+.RoundButton:hover{
+    opacity:1;
 }
 .IntegratedRed {
     background: black;
@@ -146,11 +150,6 @@
     padding: 8px 6px;
     color: #8E8F90;
 }
-.RightColumn{
-    min-width: 165px;
-    max-width: 165px;
-    background:url(imgs/US/LeftBar.png);
-}
 
 .RoundedGrayButton {
     border-radius: 50px;
@@ -203,6 +202,14 @@
     pointer-events: none;
 }
 
+.RightColumn {
+    min-width: 165px;
+    max-width: 165px;
+    background: url(imgs/US/LeftBar.png);
+    display: flex;
+    flex-direction:column;
+}
+
 .RightColumnButton{
     font-size:40px;
     display:flex;
@@ -212,7 +219,7 @@
     border-radius: 4px;
     margin:10px;
     margin-left:20px;
-    aspect-ratio: 1/1;
+    flex:1 1;
     color:white;
     opacity: 0.5;
     cursor: pointer;
@@ -220,3 +227,71 @@
 .RightColumnButton:hover{
     opacity: 1;
 }
+
+.LetItOutBox div{
+    margin:5px;
+    font-size:14px;
+    background:black;
+    padding:5px;
+}
+.editButton {
+    color: #5cff5c !important;
+    opacity: 0.3;
+    cursor: pointer;
+}
+.editButton:hover{
+    opacity:0.5;
+}
+
+
+.VTTMiniSheet {
+    position: fixed;
+    z-index: 790;
+    height: 100%;
+    width: 405px;
+    top: 0;
+    right: 0;
+    background: #1C1E20;
+    overflow: auto;
+    border-left: 1px solid black;
+    box-shadow: black -1px 0px 10px 1px
+}
+    .VTTMiniSheet .Exit {
+        position: fixed;
+        top: 5px;
+        right: 390px;
+        padding: 0px;
+        font-size: 30px;
+        color: gray;
+        cursor: pointer;
+        background: #1C1E20;
+        border-radius: 100%;
+        line-height: 35px;
+        padding-left: 2px;
+        width: 35px;
+        height: 35px;
+    }
+    .VTTMiniSheet .Exit:hover {
+        color:white;
+    }
+    .VTTMiniSheet .ClocksMini {
+        position: fixed;
+        top: 45px;
+        right: 390px;
+        padding: 0px;
+        font-size: 30px;
+        color: gray;
+        cursor: pointer;
+        background: #1C1E20;
+        border-radius: 100%;
+        line-height: 35px;
+        padding-left: 2px;
+        width: 35px;
+        height: 35px;
+    }
+        .VTTMiniSheet .ClocksMini:hover {
+            color: white;
+        }
+        .VTTMiniSheet i{
+            position:absolute;
+        }

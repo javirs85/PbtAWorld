@@ -1,25 +1,33 @@
 ﻿@using static PbtaWorldRazonCommonComponents.CharacterSelector;
 @inject USGameController Game
-@inject CharacterSelectorService Selector
-
-@if (!IsEditing)
+@inject PbtALib.CharacterSelectorService Selector
+@if (MinimalisticMode)
 {
-	<div class="PbtASystemContainer DebtContainer">
-		<div class="FirstColumn d-flex flex-column">
-			<div class="TheOther" @onclick=ChooseCharacter>@TheOtherName</div>
-			<div class="Amount d-flex justify-content-center" @onclick=AddOneToDebt>@Debt.Amount</div>
+	<div class="PbtASystemContainer d-flex wrap">
+		<div class="MinimalBox" @onclick=@(()=>{MinimalisticMode = false;})>
+			@TheOtherName
 		</div>
-		<div class="DebtMain flex-grow-1" @onclick=@(()=>{IsEditing = true;})>
-			@Debt.Reason
-		</div>
-		<div class="ClossingButton" @onclick=RemoveOneDebt>
-			<i class="bi bi-x-lg"/>
-		</div>
-	</div>
+	</div>	
 }
 else
 {
+	@if (!IsEditing)
+	{
+		<div class="PbtASystemContainer DebtContainer">
+			<div class="FirstColumn d-flex flex-column">
+				<div class="TheOther" @onclick=ChooseCharacter>@TheOtherName</div>
+			</div>
+			<div class="DebtMain flex-grow-1">
+				<EditableText @bind-Text=Debt.Reason EditFinished="StoreChanges"/>
+			</div>
+			<div class="ClossingButton" >
+				<i class="bi bi-trash3-fill" @onclick=RemoveOneDebt/>
+			</div>
+		</div>
+	}
 }
+	
+
 
 @code {
 	[Inject] IToastService Toaster { get; set; }
@@ -32,12 +40,13 @@ else
 	[Parameter] public Debt Debt { get; set; } = new();
 	[Parameter] public PayingMode Mode { get; set; } = PayingMode.ToPay;
 	[Parameter] public EventCallback ForceUpdateUI { get;set; }
+	[Parameter] public bool MinimalisticMode { get; set; }
 
 	string TheOtherName
 	{
 		get
 		{
-			if(Mode == PayingMode.ToPay){
+			if(Mode == PayingMode.ToBePaid){
 				var ch = Game.GetCharacterByID(Debt.ReceivingID);
 				if (ch.Name.Contains("Character not found"))
 					return $"NO: {ch.ID.ToString()}";
@@ -53,9 +62,9 @@ else
 	{
 		var ch = await Selector.StartSelection();
 		if (Mode == PayingMode.ToPay)
-			Debt.ReceivingID = ch.ID;
-		else
 			Debt.PayingID = ch.ID;
+		else
+			Debt.ReceivingID = ch.ID;
 
 		await Game.StoreDebt(Debt);
 		StateHasChanged();
@@ -68,6 +77,11 @@ else
 		StateHasChanged();
 	}
 
+	private async Task StoreChanges()
+	{
+		await Game.StoreDebt(Debt);
+	}
+
 	private async Task RemoveOneDebt()
 	{
 		Debt.Amount--;
@@ -78,8 +92,8 @@ else
 		else
 			await Game.StoreDebt(Debt);
 
-		//await Data.ForceDataRefresh();
-		StateHasChanged();
-		await ForceUpdateUI.InvokeAsync();
+		
+		// StateHasChanged();
+		// await ForceUpdateUI.InvokeAsync();
 	}
 }

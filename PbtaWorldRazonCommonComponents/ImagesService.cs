@@ -52,7 +52,10 @@ public class ImagesService
 		ForeceUpdateInAllClients();
 	}
 
-	public void ForeceUpdateInAllClients() => UpdateUI?.Invoke(this, EventArgs.Empty);
+	public void ForeceUpdateInAllClients()
+	{
+		UpdateUI?.Invoke(this, EventArgs.Empty);
+	}
 
 	public async Task SaveImagesInfo()
 	{
@@ -148,7 +151,10 @@ public class ImagesService
 		
 	}
 
-	public void SendImageToAllPlayers(PbtAImage image) => ForceFullScreenImageOnPlayers?.Invoke(this, image);
+	public void SendImageToAllPlayers(PbtAImage image)
+	{
+		ForceFullScreenImageOnPlayers?.Invoke(this, image);
+	}
 
 	public void DeleteImage(PbtAImage image)
 	{

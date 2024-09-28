@@ -17,7 +17,7 @@
 				{
 					<i class="bi bi-square"></i>
 				}
-				<div>[-- sin peso]</div>
+				<div>[0]</div>
 			}
 			else
 			{
@@ -35,13 +35,13 @@
 			}
 		</div>
 		<div>
-			<div class="d-flex gap-1" style="@(Item.IsFine?"font-weight:bold;":"font-weight: 100;")">
+			<div class="d-flex gap-1" style="@(Item.IsFine?"font-weight:bold;":"font-weight: 100;") @(Item.Load==0?"font-style:italic;":"")">
 				<DecodedString Value="@Item.Name" />
 			</div>
 		</div>
 	</div>
 
-	<div style="line-height:10px;">
+	<div class="hoverable" style="line-height:10px;">
 		<HelperStarter HelperInvoked="ShowHelp"
 					   Title=@Item.Name
 					   HelpText="@Item.Description" ForcedOpacity="75" />

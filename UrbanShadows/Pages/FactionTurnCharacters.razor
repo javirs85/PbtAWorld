@@ -1,0 +1,219 @@
+﻿@using PbtALib
+@inject USMovesService Moves
+@inject IToastService toaster
+@inject CharacterSelectorService CharacterSelectorService
+@inject USMovesService Moves
+
+<div class="back d-flex gap-3" @onclick:stopPropagation=true>
+	<div class="d-flex flex-column gap-2 overflow-auto" style="max-width: 21%;">
+		@if(IsMaster)
+		{
+			@foreach(var Player in Game.Players.Select(x=> x as USCharacterSheet))
+			{
+				<div class="d-flex gap-1 flex-column" @onclick=@(()=>{SelectPlayer(Player);}) style="cursor: pointer;">
+					@Player.Name
+					
+					@foreach (var m in Player.FactionTurnMoves)
+					{
+						<div class="d-flex flex-column gap-1 ms-2" style="    background: #3d3c3c;
+																			padding: 5px;
+																			border-radius: 5px;">
+							<div class="d-flex">
+								<div class="d-flex flex-column flex-grow-1">
+									<div>@Moves.GetMovement(m.MoveIDs).Title (@m.Roll)</div>
+									<div class="opacity-50">@m.MoveExplanation</div>
+								</div>
+								<div>
+									<i class="bi bi-trash3-fill hoverable text-danger" @onclick:preventDefault @onclick=@(_=> DeleteMove(m, Player))></i>
+								</div>
+							</div>
+						</div>
+					}
+					
+					@if(SelectedPlayer == Player)
+					{
+						<EditForm Model="EditingMovement">
+							<div class="d-flex flex-column gap-1 ms-2" @onclick:stopPropagation>
+								<InputSelect class=" form-control custom-select" @bind-Value=EditingMovement.MoveIDs>
+									<option value="@USMoveIDs.NotSet.ToString()">None</option>
+									@foreach (var op in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus1))
+									{
+										<option value="@op.IDText">1: @op.Title</option>
+									}
+									@foreach (var op in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus2))
+									{
+										<option value="@op.IDText">2: @op.Title</option>
+									}
+								</InputSelect>
+								<InputTextArea class="form-control" @bind-Value=EditingMovement.MoveExplanation/>
+								<InputNumber class="form-control" @bind-Value=EditingMovement.Roll/>
+								<button class="btn btn-primary" @onclick=@(()=>{SaveMove(EditingMovement, Player);})>Save</button>
+							</div>
+						</EditForm>
+					}
+					
+				</div>
+			}
+			
+		}
+		else
+		{
+			<div>Puedes hacer @MaxStatus movimientos de nivel @MaxStatus o menos</div>
+			<div class="d-flex flex-column gap-1 ms-2">
+				@foreach(var m in Player.FactionTurnMoves)
+				{
+					<div class="d-flex flex-column gap-1 ms-2" style="    background: #3d3c3c;
+																			padding: 5px;
+																			border-radius: 5px;">
+						<div class="d-flex">
+							<div class="d-flex flex-column flex-grow-1">
+								<div>@Moves.GetMovement(m.MoveIDs).Title (@m.Roll)</div>
+								<div class="opacity-50">@m.MoveExplanation</div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+			<div class="InnerColumnPack Status1">
+				<div class="InnerColumnHeader" style="cursor: pointer;">
+					Estatus 1:
+				</div>
+				<div class="InnerColumContent">
+					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus1))
+					{
+						<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+					}
+				</div>
+			</div>
+			@if(MaxStatus > 1)
+			{
+				<div class="InnerColumnPack Status2">
+					<div class="InnerColumnHeader" style="cursor: pointer;">
+						Estatus 2:
+					</div>
+					<div class="InnerColumContent">
+						@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.CityMoveStatus2))
+						{
+							<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+						}
+					</div>
+				</div>
+			}
+
+			<div class="InnerColumnPack FactionMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;">
+					Movimientos de las facciones:
+				</div>
+				<div class="InnerColumContent">
+					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionPhaseCityMove))
+					{
+						<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+					}
+				</div>
+			</div>
+		}
+		
+	</div>
+	<div class="flex-fill">
+		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=IsMaster PreventFullScreenMode=true ExitRequested="Close" />
+	</div>
+</div>
+
+@code {
+	[Parameter] public USCharacterSheet Player { get; set; } = new();
+	[Parameter] public USGameController? Game { get; set; } = null;
+	[Parameter] public EventCallback CloseMe { get; set; }
+	[Parameter] public bool IsMaster { get; set; } = false;
+
+
+	protected override void OnParametersSet()
+	{
+		PlaybookMovesOnScreen.Clear();
+		PlaybookMovesOnScreen.AddRange(Moves.AllMovements.Where(
+			x => x.Archetipe == Player.Archetype &&
+			x.TypeOfMovement == MovementTypes.ArchetipeMovement));
+
+		Game.UpdateUI -= Update;
+		Game.UpdateUI += Update;
+	}
+
+	void Update(object? sender, EventArgs e) => Update();
+	void Update() => InvokeAsync(StateHasChanged);
+
+	private string FirstColumnWidth = "50%";
+
+	private List<USMove> PlaybookMovesOnScreen = new();
+
+	private USCharacterSheet.FactionMoveByUser EditingMovement = new();
+
+	private USCharacterSheet? SelectedPlayer = null;
+	private bool IsEditingMove = false;
+
+	private void SelectPlayer(USCharacterSheet Player)
+	{
+		if (Player == SelectedPlayer)
+			SelectedPlayer = null;
+		else
+			SelectedPlayer = Player;
+	}
+
+	private async Task SaveMove(USCharacterSheet.FactionMoveByUser EditingMovement, USCharacterSheet Player)
+	{
+		Player.FactionTurnMoves.Add(EditingMovement);
+		await Game.StoreChangesOnCharacter(Player, $"Usó {Moves.GetMovement(EditingMovement.MoveIDs).Title}");
+		Game.RequestUpdateToUIOnClients();	
+	}
+
+	private async Task DeleteMove(USCharacterSheet.FactionMoveByUser Move, USCharacterSheet Player)
+	{
+		Player.FactionTurnMoves.Remove(Move);
+		await Game.StoreChangesOnCharacter(Player, $"Eliminó {Moves.GetMovement(Move.MoveIDs).Title}");
+		Game.RequestUpdateToUIOnClients();
+	}
+
+	private int ExpectedNumberOfMoves
+	{
+		get
+		{
+			if (Player.Archetype == US_Classes.Oracle || Player.Archetype == US_Classes.Sworn || Player.Archetype == US_Classes.Wolf)
+			{
+				return 2;
+			}
+			else if (Player.Archetype == US_Classes.Mage)
+			{
+				return 0;
+			}
+			else
+			{
+				return 3;
+			}
+		}
+	}
+
+	private USMove? SelectedMove = null;
+	private bool IsSelectedMove(USMove m) => m is not null && m == SelectedMove;
+	private void Select(USMove m) {
+		if (SelectedMove == m)
+			SelectedMove = null;
+		else
+			SelectedMove = m;
+	}
+
+	
+
+	private int MaxStatus
+	{
+		get
+		{
+			return new List<int> { Player.MortalisStatus, Player.NightStatus, Player.PowerStatus, Player.VeilStatus }.Max();
+		}
+	}
+
+
+
+	private void Close()
+	{
+		CloseMe.InvokeAsync();
+	}
+
+}

@@ -1,0 +1,69 @@
+﻿
+<div class="d-flex gap-1">
+	@if(MaxValue > 0)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<1)  Clicked=@(()=>{ClickAt(0);}) />
+	}
+	@if (MaxValue > 1)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<2) Clicked=@(()=>{ClickAt(1);}) />
+	}
+	@if (MaxValue > 2)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<3) Clicked=@(()=>{ClickAt(2);}) />
+	}
+	@if(MaxValue > 3)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<4) Clicked=@(()=>{ClickAt(3);}) />
+	}
+	@if (MaxValue > 4)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<5) Clicked=@(()=>{ClickAt(4);}) />
+	}
+	@if (MaxValue > 5)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<6) Clicked=@(()=>{ClickAt(5);}) />
+	}
+	@if (MaxValue > 6)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<7) Clicked=@(()=>{ClickAt(6);}) />
+	}
+	@if (MaxValue > 7)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<8) Clicked=@(()=>{ClickAt(7);}) />
+	}
+	@if (MaxValue > 8)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<9) Clicked=@(()=>{ClickAt(8);}) />
+	}
+	@if (MaxValue > 9)
+	{
+		<RedCheckBox Style="Color" Value=@(Value<10) Clicked=@(()=>{ClickAt(9);}) />
+	}
+</div>
+
+@code {
+	[Parameter] public RedCheckBox.Styles Color { get; set; } = RedCheckBox.Styles.RED;
+	[Parameter] public EventCallback ChangesFromUser { get; set; }
+	[Parameter] public int MaxValue { get; set; }
+	[Parameter] public int Value { get; set; }
+	[Parameter] public EventCallback<int> ValueChanged { get; set; }
+	[Parameter] public bool CanEdit { get; set; } = true;
+
+	private void ClickAt(int i)
+	{
+		if(CanEdit)
+		{
+			if (Value > i)
+			{
+				Value--;
+			}
+			else
+			{
+				Value++;
+			}
+		}
+		
+		ValueChanged.InvokeAsync(Value);
+	}
+}

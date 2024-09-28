@@ -3,13 +3,6 @@
 
 @if (!IsMaster && _IsForcedFromOutside)
 {
-	@* <div class="ImagesService d-flex flex-column align-items-center" 
-		style="position:fixed; top:0; left:0; width:100%; height:100%;
-				background-size:contain; background-repeat:no-repeat;
-				background-image: url(@ForcedImage.src.Replace(" ", "%20"))">
-		<div class="CloseButton" style="color:white;" @onclick=CloseWhenForced></div>
-		<div>@ForcedImage.Name</div>
-	</div> *@
 	<ImageCard Image="ForcedImage" IsMaster=false IsForcedFullscreen=true ExitFullScreenClicked=CloseWhenForced />
 }
 else
@@ -39,7 +32,7 @@ else
 			{
 				<button class="btn btn-primary" @onclick=service.LoadAll>LoadAll</button>
 			}
-			<div class="d-flex gap-1  overflow-auto flex-wrap">
+			<div class="d-flex overflow-auto flex-wrap">
 				@foreach (var f in service.AllImages.Where(x => x.IsVisibleForPlayers == true))
 				{
 					<ImageCard Image="f" IsMaster=IsMaster />
@@ -83,7 +76,6 @@ else
 	{
 		@if(!IsMaster)
 		{
-
 			ForcedImage = img;
 			_IsForcedFromOutside = true;
 			InvokeAsync(StateHasChanged);

@@ -1,0 +1,43 @@
+﻿.ClocksTray {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 365px;
+    z-index: 700;
+    background: #230606;
+    box-shadow: #931b1b 1px 1px 14px;
+    color: white;
+    border-radius: 1em;
+    border: 1px solid #933c3c;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+
+.Exit {
+    display: flex;
+    justify-content: space-between;
+    margin: 7px;
+    margin-right: 11px;
+}
+
+.hoverable{
+    cursor:pointer;
+    opacity:0.5;
+}
+.hoverable:hover{
+    opacity:1;
+}
+.WrapContent div {
+    margin: 0px;
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 1em;
+}
+
+.Expanded {
+    max-height: 511px;
+}
+
+.Minified {
+    max-height: 40px;
+}

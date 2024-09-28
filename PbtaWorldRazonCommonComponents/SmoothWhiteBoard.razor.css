@@ -150,6 +150,45 @@
     }
 }
 
+.Master{
+    background:gold;
+}
+.Imp {
+    background: #015501;
+}
+
+.Vampire {
+    background: #551818;
+}
+.Spectre {
+    background: #0e80ab;
+}
+.Hunter {
+    background: #1b1b7b;
+}
+.Awaken{
+    background: orange;
+}
+.Wolf {
+    background: #19223e;
+}
+.Sworn {
+    background: #81b6e9;
+}
+.Mage {
+    background: #711071;
+}
+.Oracle {
+    background: #dbae74;
+}
+.Fair {
+    background: #9a0045;
+}
+.Corrupted {
+    background: #a10001;
+}
+
+
 .DW_Cleric {
     background: #515021;
 }
@@ -199,97 +238,7 @@
 }
 
 
-.VTTToken {
-    position: absolute;
-    background-image: url(/imgs/VTT/Tokens60.png);
-    filter: drop-shadow(2px 4px 6px black);
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    transition: all 0.5s ease-in-out;
-    pointer-events: none;
-    z-index: 2;
-}
 
-    .VTTToken.Selected {
-        box-shadow: 0px 0px 11px 8px rgb(114 197 245);
-        z-index: 1;
-    }
-.LifeContainer {
-    width: 60px;
-    height: 8px;
-    border: 1px solid black;
-}
-
-.LifeBar {
-    height: 100%;
-    background: red;
-    transition: all 0.3s linear;
-}
-
-.NameContainer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    background: #00000048;
-    border-radius: 10px;
-    color: white;
-}
-
-.TokenStatus {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border-radius: 100px;
-}
-
-.Master_Hidden {
-    opacity: 0.5;
-}
-
-.Player_Hidden {
-    display: none;
-}
-
-.TokenStatus.Master_Dead {
-    background: #ff040438;
-    background-image: url(./imgs/redCross.png);
-    background-size: contain;
-}
-
-.TokenStatus.Master_InFlame {
-    background: #ff040438;
-    background-image: url(./imgs/inflames.png);
-    background-size: contain;
-}
-
-.TokenStatus.Master_Poisoned {
-    background: #420c475e;
-    background-image: url(./imgs/poisoned.png);
-    background-size: contain;
-}
-
-.TokenStatus.Player_Dead {
-    background: #ff040438;
-    background-image: url(./imgs/redCross.png);
-    background-size: contain;
-}
-
-.TokenStatus.Player_Poisoned {
-    background: #420c475e;
-    background-image: url(./imgs/poisoned.png);
-    background-size: contain;
-}
-
-.TokenStatus.Player_InFlame {
-    background: #ff040438;
-    background-image: url(./imgs/inflames.png);
-    background-size: contain;
-}
 
 .DefinitionsSelector {
     position: absolute;
@@ -322,20 +271,7 @@
     cursor: pointer;
 }
 
-.PropTools {
-    position: absolute;
-    pointer-events: all;
-}
 
-    .PropTools.Token {
-        pointer-events: none;
-        margin-top: 60px;
-        pointer-events: all;
-        transform: translateX(-50%);
-    }
-
-        .PropTools.Token button {
-        }
 
 .FullPageMonsterImageHolder{
     position:absolute;
@@ -362,15 +298,15 @@
 
 .ClocksTray {
     position: fixed;
-    top: 60px;
+    top: 10px;
     left: 10px;
-    padding: 10px;
-    padding-bottom: 24px;
-    border-radius: 10px;
-    background: black;
-    color: gray;
-    z-index: 200;
-    display: flex;
-    flex-direction: column;
-    width: 200px;
+    width: 365px;
+    z-index: 700;
+    background: #230606;
+    box-shadow: #931b1b 1px 1px 14px;
+    color: white;
+    min-height: 100px;
+    border-radius: 1em;
+    border: 1px solid #933c3c;
 }
+
