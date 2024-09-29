@@ -316,9 +316,18 @@
 							   data-bs-target="#Unique2original"></i>
 						</div>
 						<div class="InnerColumContent">
-							<InputTextArea class="form-control"
+							@if(Player.Archetype == US_Classes.Spectre)
+							{
+								<div class="fs-2">
+									<TrackViewer CanEdit="true" Color="RedCheckBox.Styles.bootstrapDark" @bind-Value="@Player.Trauma" MaxValue="5"/>
+								</div>
+							}
+							else
+							{
+								<InputTextArea class="form-control"
 											   style="outline:none; border: none; background: black; color:#7d7d7d;"
 											   @bind-Value=Unique2Screen />
+							}							
 						</div>
 						<div>
 							<div id="Unique2original" class="collapse">

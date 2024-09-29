@@ -327,7 +327,7 @@ public class USMovesService : MovesServiceBase
 			IsSelected = true,
 			IsImproved = false,
 			TicksCircle = true,
-			Title = "Ayudar o molestar",
+			Title = "Ayudar o interferir",
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando ayudes o te interpongas en el camino de un PJ. *Después de que haya tirado**, tira con su Círculo. Si aciertas, dale un +1 o -2 a su tirada",
@@ -1495,7 +1495,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando fastidies a alguien, no tires y considera que has sacado un 10+. Si distraes a un personaje no jugador, tira con Espíritu en vez de Mente."
+				MainText = "Cuando fastidies a alguien (ayudar o interferir), no tires y considera que has sacado un 10+. Si distraes a un personaje no jugador, tira con Espíritu en vez de Mente."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_03, USAttributes.None)
@@ -1506,7 +1506,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te eches a la calle en busca de fantasmas, obtendrás un +1 a todas las tiradas para tratar con ellos."
+				MainText = "Cuando te *eches a la calle** en busca de fantasmas, obtendrás un +1 a todas las tiradas para tratar con ellos. Con un fallo aún encuentras a un fantasma que tiene lo que necesitas, pero están perdidos o son peligrosos: tu eliges."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_04, USAttributes.None)
@@ -1528,7 +1528,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
-				MainText = "Siempre tienes una oportunidad para escapar de una situación. Puedes elegir una opción más de la lista para llevarte a alguien contigo. Si fallas, atraerás la atención de espíritus y fantasmas peligrosos que haya por la zona."
+				MainText = "Siempre tienes una oportunidad para *escapar de una situación**. Puedes elegir una opción más de la lista para llevarte a alguien contigo. Si fallas, tu y quien estubiera contigo, acabais atrapados en el peligroso espacio entre los mundos de lo vivo y lo muerto."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_06, USAttributes.None)
@@ -1539,7 +1539,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
-				MainText = "Algo te impide descansar en paz: un Vínculo. Cuando estés en presencia de tu Vínculo, avanza liberar tu poder. Cuando tu Vínculo esté en peligro, tendrás acceso a todos tus movimientos de corrupción hasta que esté a salvo. Si en algún momento tu Vínculo se destruye, tú también te destruirás."
+				MainText = "Avanaza *dejarlo salir** para todos los PJs en tu presencia, incluido tu mismo"
 			}
 		});
 
@@ -3246,7 +3246,7 @@ public class USMovesService : MovesServiceBase
 				Archetipe = US_Classes.Spectre,
 				PreCondition = new Consequences
 				{
-					MainText = "Cuando una de tus anclas se pone en peligro, lo sabes; marca trauma y ten un +1 continuo a todos los movimientos hasta que la veas a salvo.."
+					MainText = "Cuando una de tus anclas se pone en peligro, lo sabes; marca trauma y obten un +1 continuo a todos los movimientos hasta que la veas a salvo.."
 				}
 			},
 			new USMove(USMoveIDs.U_Spec_02, USAttributes.None)
@@ -3328,7 +3328,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_07, USAttributes.Blood)
 			{
-				Title = "Arremeter contra un PNJ",
+				Title = "TRAUMA: Arremeter contra un PNJ",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = US_Classes.Spectre,
@@ -3347,7 +3347,7 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.U_Spec_08, USAttributes.Soul)
 			{
-				Title = "Comulgar con tus anclas",
+				Title = "TRAUMA: Comulgar con tus anclas",
 				TypeOfMovement = MovementTypes.UniqueMove,
 				IsSelected = true,
 				Archetipe = US_Classes.Spectre,
