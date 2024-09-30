@@ -16,14 +16,22 @@
 				<div class="RollDetails">(@Move.Roll.ToUI().ToLower()@rollNumber)</div>
 			}			
 		</div>
-		<div class="ImagesContainer">
+		<div class="ImagesContainer"
+			>@if(Move.IsImprovedByOtherMove)
+			{
+				<i class="bi bi-fire" style="color: #675704;"></i>
+			}
 			<img src="imgs/Icons/UpgradedArrow.png" class="@(Move.IsImproved?"IconSize":"Hidden")" />
 			<img src="imgs/Icons/TicksCircleIcon.png" class="@(Move.TicksCircle?"IconSize":"Hidden")" />
+			
 			@if (!IsSelectionMode)
 			{
 				if (Move.HasRoll() && !MasterView)
 				{
-					<img class="DiceButton" src="imgs/Icons/Dice.svg" @onclick=@(async ()=>{await Roll();}) @onclick:stopPropagation=true/>
+					<img class="DiceButton"
+						 src="imgs/Icons/Dice.svg" 
+						@onclick=@(async ()=>{await Roll();}) 
+						@onclick:stopPropagation=true/>
 				}
 				else
 				{
@@ -292,22 +300,34 @@
 	}
 	public void UnSelect() => IsSelected = false;
 
+	bool AlreadyFixed = false;
 
 	protected override void OnParametersSet()
 	{
-		if (imove is not null)
-			Move = (USMove)imove;
-		else
+		if (!AlreadyFixed)
 		{
-			Move = Moves.AllMovements.Find(x => x.ID == ID);
-		}
+			USMove temp = new USMove(USMoveIDs.NotSet, USAttributes.None);
+
+			if (imove is not null)
+				temp = (USMove)imove;
+			else
+			{
+				temp = Moves.AllMovements.Find(x => x.ID == ID);
+			}
 
 
-		if (Move is null)
-		{
-			Toaster.ShowError($"The move {ID} is not in the DB");
+			if (temp is null)
+			{
+				Toaster.ShowError($"The move {ID} is not in the DB");
+			}
+			else
+			{
+				Move = Moves.GenerateImprovedMovement(temp, Player);
+			}
+
+			AlreadyFixed = true;
+			StateHasChanged();
 		}
-		StateHasChanged();
 	}
 
 	private void PointerDown() => Clicked.InvokeAsync(Move);

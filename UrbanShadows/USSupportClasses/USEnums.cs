@@ -29,7 +29,7 @@ public enum USMoveIDs
 {
 	rawBlood, rawHeart, rawMind, rawSoul, rawMortal, rawNight, rawPower, rawVeil, raw2d6,
 	NotSet, B_Ataque, B_Escapar, B_Convencer, B_Calar, B_Confundir, B_distraer, B_KeepCalm, B_LiberarPoder, B_AyudarOFastidiar,
-	F_01, F_02, F_03, F_04, D_01, D_02, D_03, D_04, D_05,
+	F_01_echarse_a_la_calle, F_02, F_03, F_04, D_01, D_02, D_03, D_04, D_05,
 	A_Hunt_01, A_Hunt_02, A_Hunt_03, A_Hunt_04, A_Hunt_05, A_Hunt_06, A_Hunt_07,
 	A_Awak_01, A_Awak_02, A_Awak_03, A_Awak_04, A_Awak_05, A_Awak_06,
 	A_Vet_01, A_Vet_02, A_Vet_03, A_Vet_04, A_Vet_05, A_Vet_06,

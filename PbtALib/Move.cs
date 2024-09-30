@@ -46,7 +46,11 @@ public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 
 	public string ClosingText { get; set; }
 	public TIDPack ID => _me;
-	public TStatsPack Roll => _roll;
+	public TStatsPack Roll
+	{
+		get { return _roll; }
+		set { _roll = value; }
+	}
 	public bool IsSelected { get; set; }
 	public string Title { get; set; } = "";
 	public Consequences PreCondition { get; set; } = new();
@@ -90,6 +94,41 @@ public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 			else if (NumUsedTimes < 5) return HowOftenUsed.LotsOfUses;
 			else return HowOftenUsed.ToMuch;
 		}
+	}
+
+	public void CopyContentFrom(BaseMove<TIDPack, TStatsPack> move)
+	{
+		this.Title = move.Title;
+		this.PreCondition = CloneConsequence(move.PreCondition);
+		this.ConsequencesOn10 = CloneConsequence(move.ConsequencesOn10);
+		this.ConsequencesOn6 = CloneConsequence(move.ConsequencesOn6);
+		this.ConsequencesOn79 = CloneConsequence(move.ConsequencesOn79);
+		this.AdvancedConsequences = CloneConsequence(move.AdvancedConsequences);
+		this.ClosingText = move.ClosingText;
+		this.NumUsedTimes = move.NumUsedTimes;
+		CopyContentFromInternal(move);
+	}
+
+	private Consequences CloneConsequence(Consequences con)
+	{
+		Consequences consequences = new Consequences();
+
+		consequences.MainText = con.MainText;
+		if(con.Options is not null)
+		{
+			consequences.Options = new List<string>();
+			foreach (var c in con.Options!)
+				consequences.Options.Add(c.ToString());
+		}
+		else
+			consequences.Options = new List<string>();
+
+		return consequences;
+	}
+
+	protected virtual void CopyContentFromInternal<M>(M move)
+	{
+
 	}
 }
 

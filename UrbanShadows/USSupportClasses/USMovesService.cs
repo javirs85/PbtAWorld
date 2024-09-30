@@ -8,6 +8,32 @@ public class USMovesService : MovesServiceBase
 	public List<USMove> AllMovements { get; set; } = new();
 	public List<LIO> AllLio { get; set; } = new();
 
+	public USMove GenerateImprovedMovement(USMove move, USCharacterSheet Player)
+	{
+		USMove NewMove = new USMove(move.ID, move.Roll);
+		NewMove.CopyContentFrom(move);
+
+		if(NewMove.ID == USMoveIDs.F_01_echarse_a_la_calle)
+		{
+			if(Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Awak_01))
+			{
+				NewMove.Roll = USAttributes.Heart;
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ConsequencesOn79.Options!.AddRange(
+					new List<string> {
+						"[+] La persona a la que acudes ya tiene problemas propios con los que lidiar.",
+						"[+] Lo que necesitas tiene un coste mayor de lo que esperabas.",
+						"[+] Como sea que los encuentres requiere que ofrezcas una Deuda a un intermediario."
+					});
+				
+			}
+		}
+
+		return NewMove;
+	}
+
+	
+
 	public USMovesService()
 	{
 		AllMovements.AddRange(GenerateBasicMovments());
@@ -346,7 +372,7 @@ public class USMovesService : MovesServiceBase
 	{
 		List<USMove> result = new List<USMove>();
 
-		result.Add(new USMove(USMoveIDs.F_01, USAttributes.Circle)
+		result.Add(new USMove(USMoveIDs.F_01_echarse_a_la_calle, USAttributes.Circle)
 		{
 			TypeOfMovement = MovementTypes.FactionMovement,
 			IsSelected = true,
@@ -617,8 +643,6 @@ public class USMovesService : MovesServiceBase
 			{
 				MainText = "Con un 7-9, tu lista mejora:",
 				Options = new List<string> {
-					"La persona a la que acudes ya tiene problemas propios con los que lidiar.",
-					"Lo que necesitas tiene un coste mayor de lo que esperabas.",
 					"Como sea que los encuentres requiere que ofrezcas una Deuda a un intermediario."
 				}
 			}
@@ -642,7 +666,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando accedes a una zona segura dentro de un santuario, punto de reunión o lugar de poder, puedes *Estudiarla** como si hubieras sacado un 12+.\r\n\r\n Si el lugar está controlado por un Circulo distinto al tuyo, también encuentras pruebas incriminatorias que implican a un PNJ poderoso (a tu elección) dentro de ese círculo.\n\rEntregarle las pruebas a él (o a uno de sus enemigos) cuenta como cobrar una deuda.",
+				MainText = "Cuando obtienes acceso a una zona segura dentro de un santuario, punto de reunión o lugar de poder, puedes *Estudiarla** como si hubieras sacado un 12+.\r\n\r\n Si el lugar está controlado por un Circulo distinto al tuyo, también encuentras pruebas incriminatorias que implican a un PNJ poderoso (a tu elección) dentro de ese círculo.\n\rEntregarle las pruebas a él (o a uno de sus enemigos) cuenta como cobrar una deuda.",
 				Options =new List<string>
 				{
 					"Con un acierto, ves bajo la superficie hasta la realidad que hay debajo; el MC revelará un área, PNJ u objeto situado dentro que no es lo que parece.",
