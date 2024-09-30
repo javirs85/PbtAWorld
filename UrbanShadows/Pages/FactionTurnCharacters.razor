@@ -4,7 +4,7 @@
 @inject CharacterSelectorService CharacterSelectorService
 @inject USMovesService Moves
 
-<div class="back d-flex gap-3" style="overflow-y:scroll;" @onclick:stopPropagation=true>
+<div class="back d-flex gap-3" @onclick:stopPropagation=true>
 	<div class="d-flex flex-column gap-2 overflow-auto" style="max-width: 21%;">
 		@if(IsMaster)
 		{
@@ -115,7 +115,7 @@
 		
 	</div>
 	<div class="flex-fill">
-		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=false PreventFullScreenMode=true ExitRequested="Close" />
+		<PeopleViewr GameID="Game.SessionID" Game=Game IsMaster=IsMaster PreventFullScreenMode=true ExitRequested="Close" />
 	</div>
 </div>
 

@@ -16,7 +16,7 @@
 
 <div class="bg-dark text-light p-3 fs-2 h-100">
 	<EditForm Model="Player">
-		<div class="BigContainer d-flex">
+		<div class="BigContainer d-flex gap-1">
 			<div class="RightColumn">
 				<div class="RightColumnButton hoverable" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
 				<div class="RightColumnButton hoverable" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
@@ -24,6 +24,16 @@
 				<div class="RightColumnButton hoverable" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass"></i></div>
 				<div class="RightColumnButton hoverable" @onclick=ShowCityMoves><i class="bi bi-moon-stars-fill"></i></div>
 				<div class="RightColumnButton hoverable" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
+			</div>
+			<div class="d-flex flex-column fs-5">
+				<MasterMovePackViewer MovesPack="MasterMoves" />
+				<div class="CircleSelector">
+					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
+					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
+					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
+					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
+				</div>
+				<MasterMovePackViewer MovesPack="SelectedCircleMoves" HideTittle="true" />
 			</div>
 		</div>
 	</EditForm>

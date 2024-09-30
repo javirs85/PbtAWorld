@@ -23,6 +23,8 @@ public class USCharacterSheet : PbtACharacter
 		} 
 	}
 
+	public int Trauma { get; set; } = 0;
+
 	public string Details { get; set; } = "";
 	public string Kind { get; set; } = "Noy set";
 	public Circles Circle { get; set; } = Circles.NotSet;
@@ -253,6 +255,7 @@ public class USCharacterSheet : PbtACharacter
 				LIOs.Add(USMoveIDs.LIO_Spect_02);
 				LIOs.Add(USMoveIDs.LIO_Spect_03);
 				LIOs.Add(USMoveIDs.LIO_Spect_04);
+				Trauma = 2;
 				ArchetypeUniqueTittle1 = "Tus Anclas";
 				ArchetypeUniqueBody1 = "Tienes varias anclas en la ciudad: lugares, personas u objetos importantes que te impiden seguir adelante. Puede que tengas la oportunidad de solucionar un ancla, pero las anclas también pueden arruinarse o destruirse.\r\n\r\nELIGE 4:\r\n    un familiar o heredero, inconsciente de tu existencia\r\n    un testigo de tu muerte, unido a ti por el azar\r\n    un animal doméstico amistoso, compañero constante \r\n    una querida posesión de su juventud, transmitida a un \r\n    nuevo propietario\r\n    un símbolo de tu éxito en la vida, reclamado por otro\r\n    un objeto relacionado con tu muerte, que marca \r\n    tu violento final\r\n    un lugar de importe para tí, recuerdo de un amor\r\n    un espacio en el que vivías o trabajabas, abandonado.\r\n\r\nCuando una de tus anclas se pone en peligro, lo sabes; marca el trauma y adopta un +1 continuo a todos los movimientos hasta que la veas a salvo. Cuando resuelves un ancla, despeja tu registro de trauma y borra un avance de corrupción; cuando un ancla es destruida o arruinada, llena tu registro de trauma y toma un avance de corrupción.";
 				ArchetypeUniqueTittle2 = "Trauma";

@@ -66,11 +66,29 @@
 		</div>
 		<div class="CurrentlyDoingText text-align-left" style=" font-size:0.8em; opacity:0.75;">
 			
-			<div class="GrowingIcon d-flex flex-column gap-0 align-items-center">								
-				<i class="bi bi-arrows-angle-expand FactionStatus @(Faction.Status==FactionStatuses.Creciendo?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Creciendo);})></i>
-				<i class="bi bi-arrows FactionStatus @(Faction.Status == FactionStatuses.Manteniendo?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Manteniendo);})></i>
-				<i class="bi bi-arrows-angle-contract FactionStatus @(Faction.Status == FactionStatuses.Menguando?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Menguando);})></i>
-				<i class="bi @(Faction.IsDebilitated?"bi-droplet-fill text-danger":"bi-droplet opacity-25")" @onclick=DebilitatedClicked></i>
+			<div class="GrowingIcon d-flex flex-column gap-0 align-items-center">	
+				@if(IsMaster)
+				{
+					<i class="bi bi-arrows-angle-expand FactionStatus @(Faction.Status==FactionStatuses.Creciendo?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Creciendo);})></i>
+					<i class="bi bi-arrows FactionStatus @(Faction.Status == FactionStatuses.Manteniendo?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Manteniendo);})></i>
+					<i class="bi bi-arrows-angle-contract FactionStatus @(Faction.Status == FactionStatuses.Menguando?"FactionStatusSelected":"FactionStatusNot")" @onclick=@(()=>{SetStatus(FactionStatuses.Menguando);})></i>
+					<i class="bi @(Faction.IsDebilitated?"bi-droplet-fill text-danger":"bi-droplet opacity-25")" @onclick=DebilitatedClicked></i>
+				}
+				else
+				{
+					@if(Faction.Status == FactionStatuses.Creciendo)
+					{
+						<i class="bi bi-arrow-bar-up FactionStatus" />
+					}
+					else if (Faction.Status == FactionStatuses.Menguando)
+					{
+						<i class="bi bi-arrow-bar-down FactionStatus" />
+					}
+					else
+					{
+						<i class="bi bi-arrows FactionStatus" />
+					}
+				}
 			</div>
 		</div>
 	</div>	
