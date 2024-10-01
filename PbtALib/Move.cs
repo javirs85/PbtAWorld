@@ -34,12 +34,23 @@ public interface IMove
 
 public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 {
-	protected TStatsPack _roll;
+	protected TStatsPack _roll
+	{
+		get
+		{
+			if (_rolls.Count > 0)
+				return _rolls[0];
+			else
+				return DefaultStat;
+		}
+	}
+	protected TStatsPack DefaultStat { get; set; }
+	protected List<TStatsPack> _rolls { get; set; } = new();
 	protected TIDPack _me;
 	protected BaseMove(TIDPack IDpack, TStatsPack roll)
 	{
 		_me = IDpack;
-		_roll = roll;
+		_rolls.Add(roll);
 	}
 
 	public string IDText => ID.ToString() ?? "ID not set";
@@ -49,8 +60,8 @@ public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 	public TStatsPack Roll
 	{
 		get { return _roll; }
-		set { _roll = value; }
 	}
+	public List<TStatsPack> Rolls => _rolls;
 	public bool IsSelected { get; set; }
 	public string Title { get; set; } = "";
 	public Consequences PreCondition { get; set; } = new();

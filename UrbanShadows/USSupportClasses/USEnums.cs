@@ -10,7 +10,7 @@ namespace UrbanShadows;
 
 public enum Circles { NotSet, Mortalis, Noche, Poder, Velo }
 
-public enum USAttributes{ Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, Circle, None, Status}
+public enum USAttributes{ Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, MortalityStatus, NightStatus, PowerStatus, VeilStatus, Circle, None, Status, just13, just10, just5}
 
 public enum KindsOfAdvance { Normal, Extra, Corruption };
 public enum PayingMode { ToPay, ToBePaid };
@@ -34,7 +34,7 @@ public enum USMoveIDs
 	A_Awak_01, A_Awak_02, A_Awak_03, A_Awak_04, A_Awak_05, A_Awak_06,
 	A_Vet_01, A_Vet_02, A_Vet_03, A_Vet_04, A_Vet_05, A_Vet_06,
 	A_Wolf_01, A_Wolf_02, A_Wolf_03, A_Wolf_04, A_Wolf_05, A_Wolf_06,
-	A_Vamp_01, A_Vamp_02, A_Vamp_03, A_Vamp_04, A_Vamp_05, A_Vamp_06,
+	A_Vamp_01, A_Vamp_02, A_Vamp_03, A_Vamp_04, A_Vamp_05, A_Vamp_06, A_Vamp_07,
 	A_Mage_01, A_Mage_02, A_Mage_03, A_Mage_04, A_Mage_05, A_Mage_06, A_Mage_07, A_Mage_08, A_Mage_09, A_Mage_10,
 	A_Orac_01, A_Orac_02, A_Orac_03, A_Orac_04, A_Orac_05, A_Orac_06,
 	A_Corrup_01, A_Corrup_02, A_Corrup_03, A_Corrup_04, A_Corrup_05, A_Corrup_06, A_Corrup_07,
@@ -115,6 +115,13 @@ public static class EnumExtensions
 			USAttributes.Power => "Poder",
 			USAttributes.Circle => "Círculo",
 			USAttributes.Status => "Estatus",
+			USAttributes.NightStatus => "Estatus en Noche",
+			USAttributes.PowerStatus => "Estatus en Poder",
+			USAttributes.VeilStatus => "Estatus en Velo",
+			USAttributes.MortalityStatus => "Estatus en Mortalis",
+			USAttributes.just5 => "6-",
+			USAttributes.just10 => "7+",
+			USAttributes.just13 => "12+",
 			_ => $"Unknown characteristic ToUI {ch}"
 		};
 	}

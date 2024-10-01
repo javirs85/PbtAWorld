@@ -13,20 +13,38 @@
 			<div class="TextTitle">@Move.Title</div>
 			@if (Move.HasRoll() && !MasterView)
 			{
-				<div class="RollDetails">(@Move.Roll.ToUI().ToLower()@rollNumber)</div>
+				@if(Move.Rolls.Count > 4 || IsRollMixed(Move.Rolls))
+				{
+					<div class="RollDetails">(Mix)</div>
+				}
+				else if(Move.Roll == USAttributes.MortalityStatus || Move.Roll == USAttributes.NightStatus ||
+						Move.Roll == USAttributes.PowerStatus || Move.Roll == USAttributes.VeilStatus)
+				{
+					<div class="RollDetails">(Estatus)</div>
+				}
+				else if (Move.Roll == USAttributes.Mortality || Move.Roll == USAttributes.Night ||
+						Move.Roll == USAttributes.Power || Move.Roll == USAttributes.Veil)
+				{
+					<div class="RollDetails">(Circulo)</div>
+				}
+				else
+				{
+					<div class="RollDetails">(@Move.Roll.ToUI().ToLower()@rollNumber)</div>
+				}
+				
 			}			
 		</div>
-		<div class="ImagesContainer"
-			>@if(Move.IsImprovedByOtherMove)
+		<div class="ImagesContainer">
+			@if(Move.IsImprovedByOtherMove)
 			{
 				<i class="bi bi-fire" style="color: #675704;"></i>
 			}
 			<img src="imgs/Icons/UpgradedArrow.png" class="@(Move.IsImproved?"IconSize":"Hidden")" />
 			<img src="imgs/Icons/TicksCircleIcon.png" class="@(Move.TicksCircle?"IconSize":"Hidden")" />
 			
-			@if (!IsSelectionMode)
+			@if (!IsSelectionMode || !IsSelected)
 			{
-				if (Move.HasRoll() && !MasterView)
+				if (Move.HasRoll() && !MasterView )
 				{
 					<img class="DiceButton"
 						 src="imgs/Icons/Dice.svg" 
@@ -174,6 +192,36 @@
 					</div>
 				</div>
 			}
+
+			@if(Move.IsImprovedByOtherMove)
+			{
+				<div class="ImproveBox d-flex gap-1">
+					<div>
+						<i class="bi bi-fire" style="color: #675704;"></i>
+					</div>
+					<div class="d-flex flex-column">
+						@foreach (var s in Move.ImprovedByOhterMoveExplanation)
+						{
+							<DecodedString Value="@s"/>
+						}
+					</div>
+				</div>
+			}
+
+			<div class="d-flex flex-wrap gap-1 justify-content-center mt-3">
+				@foreach(var s in Move.Rolls.Where(x=>x != USAttributes.None))
+				{
+					<div class="RollButton d-flex flex-column"
+							@onclick=@(async()=>{ await RollDirect(s);})
+							@onclick:stopPropagation=true>
+						<div>@s.ToUI()</div>
+						@if (s != USAttributes.just10 && s != USAttributes.just13 && s != USAttributes.just5)
+						{
+							<div>(@Player.GetAttribute(s).ToNiceUIStat())</div>
+						}
+					</div>
+				}
+			</div>
 		}
 		
 	</div>
@@ -235,10 +283,27 @@
 </div>
 
 <!--ChooseCircle modal-->
-<div class="FullScreenModal @(IsShowingCircleSelectionModal?"":"HideModal")" @onclick=CloseCircleSelectionModal>
+<div class="FullScreenModal @(IsShowingStatSelectionModal?"":"HideModal")" @onclick=CloseStatSelectionModal>
 	<div class="ModalBody">
 		<p>Elija círculo para tirar los dados</p>
-		<div class="d-flex gap-2">
+		<div class="d-flex flex-wrap gap-1">
+			@foreach(var r in Move.Rolls)
+			{
+				<button class="btn btn-outline-light" style="width: 100px;"
+						@onclick=@(()=>{SelectStat(r);})
+						@onclick:stopPropagation=true>
+					@r.ToUI()
+				</button>
+			}
+			
+		</div>
+		<div>
+			@foreach (var r in Move.ImprovedByOhterMoveExplanation)
+			{
+				<DecodedString Value="@r" />
+			}
+		</div>
+		@*< div class="d-flex gap-2">
 			<div class="d-flex flex-column gap-2">
 				<button class="btn btn-outline-light" style="width: 100px;"
 						@onclick=@(()=>{SelectCircle(USAttributes.Mortality);})
@@ -263,7 +328,7 @@
 					Velo
 				</button>
 			</div>
-		</div>
+		</div> *@
 	</div>
 </div>
 
@@ -301,33 +366,47 @@
 	public void UnSelect() => IsSelected = false;
 
 	bool AlreadyFixed = false;
+	IMove? CurrentMove = null;
+
+	private bool IsRollMixed(List<USAttributes> rolls)
+	{
+		var targetAttributes = new List<USAttributes> { USAttributes.Blood, USAttributes.Heart, USAttributes.Soul, USAttributes.Mind };
+
+		// Contamos cuántos de esos atributos específicos están en la lista de 'rolls'
+		int count = rolls.Where(roll => targetAttributes.Contains(roll)).Count();
+
+		// Verificamos si hay al menos dos
+		return count >= 2;
+	}
 
 	protected override void OnParametersSet()
 	{
-		if (!AlreadyFixed)
+		USMove temp = new USMove(USMoveIDs.NotSet, USAttributes.None);
+
+		if (imove is not null)
+			temp = (USMove)imove;
+		else
 		{
-			USMove temp = new USMove(USMoveIDs.NotSet, USAttributes.None);
-
-			if (imove is not null)
-				temp = (USMove)imove;
-			else
-			{
-				temp = Moves.AllMovements.Find(x => x.ID == ID);
-			}
+			temp = Moves.AllMovements.Find(x => x.ID == ID);
+		}
 
 
-			if (temp is null)
-			{
-				Toaster.ShowError($"The move {ID} is not in the DB");
-			}
-			else
+		if (temp is null)
+		{
+			Toaster.ShowError($"The move {ID} is not in the DB");
+		}
+		else
+		{
+			if(CurrentMove != temp ||  !AlreadyFixed)
 			{
 				Move = Moves.GenerateImprovedMovement(temp, Player);
+				AlreadyFixed = true;
 			}
-
-			AlreadyFixed = true;
-			StateHasChanged();
 		}
+
+		CurrentMove = Move;
+
+		StateHasChanged();
 	}
 
 	private void PointerDown() => Clicked.InvokeAsync(Move);
@@ -414,27 +493,19 @@
 		int bonus = 0;
 		string rollText = "";
 
-		if(Move.Roll == USAttributes.Circle)
+		if(Move.Rolls.Count > 1)
 		{
-			OpenCircleSelectionModal();
-			var circle = await WaitForUserToChoseCircle();
-			CloseCircleSelectionModal();
-			bonus = Player.GetAttribute(circle);
-			rollText = circle.ToUI();
+			// OpenStatSelectionModal();
+			// var stat = await WaitForUserToChoseCircle();
+			// CloseStatSelectionModal();
+			// bonus = Player.GetAttribute(stat);
+			// rollText = stat.ToUI();
 
-			Game.Roll(Player.ID, Move, circle, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
-		}
-		else if(Move.Roll == USAttributes.Status)
-		{
-			OpenCircleSelectionModal();
-			var circle = await WaitForUserToChoseCircle();
-			CloseCircleSelectionModal();
-			bonus = Player.GetStatusInCircle(circle);
-			rollText = "estatus en "+circle.ToUI();
-			Game.Roll(Player.ID, Move, circle, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
+			// Game.Roll(Player.ID, Move, stat, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
+			PointerDown();
 		}
 		else
-		{
+		{			
 			bonus = Player.GetAttribute(Move.Roll);
 			rollText = Move.Roll.ToUI();
 			Game.Roll(Player.ID, Move, Move.Roll, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
@@ -443,9 +514,17 @@
 		await FinishedRolling.InvokeAsync();
 	}
 
-	bool IsShowingCircleSelectionModal = false;
-	void CloseCircleSelectionModal() => IsShowingCircleSelectionModal = false;
-	void OpenCircleSelectionModal() => IsShowingCircleSelectionModal = true;
+	async Task RollDirect(USAttributes stat)
+	{
+		var bonus = Player.GetAttribute(stat);
+		var rollText = stat.ToUI();
+		Game.Roll(Player.ID, Move, stat, Move.ID, bonus, RollTypes.Roll_Simple, rollText);
+		await FinishedRolling.InvokeAsync();
+	}
+
+	bool IsShowingStatSelectionModal = false;
+	void CloseStatSelectionModal() => IsShowingStatSelectionModal = false;
+	void OpenStatSelectionModal() => IsShowingStatSelectionModal = true;
 
 	USAttributes SelectedCircle = USAttributes.None;
 	TaskCompletionSource<USAttributes> tcs = new();
@@ -455,7 +534,7 @@
 		return tcs.Task;
 	}
 
-	void SelectCircle(USAttributes at) => tcs.SetResult(at);
+	void SelectStat(USAttributes at) => tcs.SetResult(at);
 
 	private async Task SelectNewLIOMove()
 	{

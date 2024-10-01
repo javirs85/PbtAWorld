@@ -213,4 +213,26 @@
     border-color: orange;
 }
 
-
+.ImproveBox {
+    background: black;
+    border-radius: 1em;
+    margin: 1em;
+    padding: 1em;
+}
+.RollButton {
+    cursor: pointer;
+    background: #181818;
+    border-radius: 1em;
+    padding: 1em;
+    display: flex;
+    flex-grow: 1;
+    text-align: center;
+    justify-content: center;
+    border: 1px solid white;
+    margin: 1em;
+    transition: all linear 0.2s;
+}
+.RollButton:hover{
+    background:white;
+    color:black;
+}

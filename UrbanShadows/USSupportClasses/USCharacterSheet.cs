@@ -8,6 +8,18 @@ public class USCharacterSheet : PbtACharacter
 {
 	private USMovesService Moves;
 
+	public override int GetBonus<T>(T stat)
+	{
+		if (stat is USAttributes)
+		{
+			var s = (USAttributes)(object)stat;
+
+			return GetAttribute(s);
+		}
+		else
+			throw new Exception($"Expected USAttribute in USCharagersheet::GetBonus, found {typeof(T).ToString()} instead");
+	}
+
 	public USCharacterSheet() { }
 	public USCharacterSheet(USMovesService _moves) => Moves = _moves;
 
@@ -518,8 +530,12 @@ public class USCharacterSheet : PbtACharacter
 			USAttributes.Night => Night,
 			USAttributes.Power => Power,
 			USAttributes.Veil => Veil,
+			USAttributes.MortalityStatus => MortalisStatus,
+			USAttributes.NightStatus => NightStatus,
+			USAttributes.PowerStatus => PowerStatus,
+			USAttributes.VeilStatus => VeilStatus,
 			_ => 42
-		};
+		} ;
 	}
 	public void SetAttribute(USAttributes attr, int val)
 	{
