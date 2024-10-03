@@ -529,7 +529,7 @@
 <!-- MoveViewer Modal -->
 <div class="FullScreenModal FullScreenMoveViewer d-flex flex-column justify-content-center @(IsShowingOneMove?"":"HideModal")" @onclick=HideMoveViewer>
 	<div class="CloseButton"></div>
-	<div class="ModalBody" style="height:80%; width:80%; background:transparent; border:none;">
+	<div class="ModalBody" style="background:transparent; border:none; max-height:100% !important;">
 		<div class="d-flex flex-column align-items-center justify-content-start mt-5 w-100 h-100">
 			<div class="flex-grow-1 d-flex flex-column justify-content-center w-100 gap-4" style="max-width:800px;" @onclick:stopPropagation=true>
 				@if (SelectedMovement is not null)

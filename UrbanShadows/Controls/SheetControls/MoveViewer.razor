@@ -11,35 +11,14 @@
 	<div class="Box">
 		<div class="TextContainer">
 			<div class="TextTitle">@Move.Title</div>
-			@if (Move.HasRoll() && !MasterView)
-			{
-				@if(Move.Rolls.Count > 4 || IsRollMixed(Move.Rolls))
-				{
-					<div class="RollDetails">(Mix)</div>
-				}
-				else if(Move.Roll == USAttributes.MortalityStatus || Move.Roll == USAttributes.NightStatus ||
-						Move.Roll == USAttributes.PowerStatus || Move.Roll == USAttributes.VeilStatus)
-				{
-					<div class="RollDetails">(Estatus)</div>
-				}
-				else if (Move.Roll == USAttributes.Mortality || Move.Roll == USAttributes.Night ||
-						Move.Roll == USAttributes.Power || Move.Roll == USAttributes.Veil)
-				{
-					<div class="RollDetails">(Circulo)</div>
-				}
-				else
-				{
-					<div class="RollDetails">(@Move.Roll.ToUI().ToLower()@rollNumber)</div>
-				}
-				
-			}			
+			<div class="RollDetails">@MoveRollHeader </div>
 		</div>
 		<div class="ImagesContainer">
 			@if(Move.IsImprovedByOtherMove)
 			{
 				<i class="bi bi-fire" style="color: #675704;"></i>
 			}
-			<img src="imgs/Icons/UpgradedArrow.png" class="@(Move.IsImproved?"IconSize":"Hidden")" />
+			<img src="imgs/Icons/UpgradedArrow.png" class="@(Player.UpgradedMoves.Contains(Move.ID)?"IconSize":"Hidden")" />
 			<img src="imgs/Icons/TicksCircleIcon.png" class="@(Move.TicksCircle?"IconSize":"Hidden")" />
 			
 			@if (!IsSelectionMode || !IsSelected)
@@ -71,10 +50,152 @@
 		</div>
 	</div>
 	<div class="MoveBody flex-column">
+		<div class="ResultSection d-flex flex-column" style="padding:1em; margin-top:0;">
+			<DecodedString Value="@Move.PreCondition.MainText"/>		
+			@if (Move.ID != USMoveIDs.B_LiberarPoder && Move.PreCondition.Options != null && Move.PreCondition.Options.Count > 0)
+			{
+				<ul class="mt-1">
+					@foreach (var item in Move.PreCondition.Options)
+					{
+						<li><DecodedString Value="@item"/></li>
+					}
+				</ul>
+			}
+		</div>
+
+		@if (Move.ConsequencesOn6 != null && !string.IsNullOrEmpty(Move.ConsequencesOn6!.MainText) && !string.IsNullOrWhiteSpace(Move.ConsequencesOn6!.MainText))
+		{
+			<div class="@(MasterView && MasterRolledValue <= 6 ? "MasterSelected red" : "")">
+				<div class="ResultSection d-flex">
+					<div class="ResultSectionHeader">
+						@("<6")
+					</div>
+					<div class="ResultSectionBody">
+						<DecodedString Value="@Move.ConsequencesOn6.MainText" />
+						@if (Move.ConsequencesOn6.Options != null && Move.ConsequencesOn6.Options.Count > 0)
+						{
+							<ul class="mt-1">
+								@foreach (var item in Move.ConsequencesOn6.Options)
+								{
+									<li><DecodedString Value="@item" /></li>
+								}
+							</ul>
+						}
+					</div>
+				</div>
+			</div>
+		}
+
+		@if (Move.ConsequencesOn79 != null && !string.IsNullOrEmpty(Move.ConsequencesOn79!.MainText) && !string.IsNullOrWhiteSpace(Move.ConsequencesOn79!.MainText))
+		{
+			<div class="@(MasterView && MasterRolledValue >= 7 && MasterRolledValue <= 9? "MasterSelected orange" : "")">
+				<div class="ResultSection d-flex">
+					<div class="ResultSectionHeader">
+						@("7-9")
+					</div>
+					<div class="ResultSectionBody">
+						<DecodedString Value="@Move.ConsequencesOn79.MainText" />
+						@if (Move.ConsequencesOn79.Options != null && Move.ConsequencesOn79.Options.Count > 0)
+						{
+							<ul class="mt-1">
+								@foreach (var item in Move.ConsequencesOn79.Options)
+								{
+									<li><DecodedString Value="@item" /></li>
+								}
+							</ul>
+						}
+					</div>
+				</div>
+			</div>
+		}
+		@if (Move.ConsequencesOn10 != null && !string.IsNullOrEmpty(Move.ConsequencesOn10!.MainText) && !string.IsNullOrWhiteSpace(Move.ConsequencesOn10!.MainText))
+		{
+			<div class="@(MasterView && MasterRolledValue >= 10 ? "MasterSelected green" : "")">
+				<div class="ResultSection d-flex">
+					<div class="ResultSectionHeader">
+						@("10+")
+					</div>
+					<div class="ResultSectionBody">
+						<DecodedString Value="@Move.ConsequencesOn10.MainText" />
+						@if (Move.ConsequencesOn10.Options != null && Move.ConsequencesOn10.Options.Count > 0)
+						{
+							<ul class="mt-1">
+								@foreach (var item in Move.ConsequencesOn10.Options)
+								{
+									<li><DecodedString Value="@item" /></li>
+								}
+							</ul>
+						}
+					</div>
+				</div>
+			</div>
+		}
+
+		@if (Move.TypeOfMovement == MovementTypes.BasicMovements &&
+				Move.AdvancedConsequences is not null &&
+				Move.AdvancedConsequences.MainText is not null &&
+				Move.AdvancedConsequences.MainText != "")
+		{
+			@if(IsAdvanced)
+			{
+				<div class="@(MasterView && MasterRolledValue >= 10 ? "MasterSelected green" : "")">
+					<div class="ResultSection d-flex">
+						<div class="ResultSectionHeader d-flex flex-column align-items-center">
+							<div>12+</div>
+							<div class="px-2"><img src="imgs/Icons/UpgradedArrow@(Move.IsImproved?"":"NO").png" @onclick=ToggleAdvancement @onclick:stopPropagation /></div>
+						</div>
+						<div class="ResultSectionBody">
+							<DecodedString Value="@Move.AdvancedConsequences.MainText" />
+							@if (Move.AdvancedConsequences.Options != null)
+							{
+								<ul class="mt-1">
+									@foreach (var item in Move.AdvancedConsequences.Options)
+									{
+										<li><DecodedString Value="@item" /></li>
+									}
+								</ul>
+							}
+						</div>
+					</div>
+				</div>
+			}
+			else
+			{
+				<div class="Advanced @(IsAdvanced?"AdvancedYEs":"AdvancedNOT") @(MasterView ? "AdvancedYEs" : "")">
+					<div class="px-2"><img src="imgs/Icons/UpgradedArrow@(IsAdvanced?"":"NO").png" @onclick=ToggleAdvancement @onclick:stopPropagation /></div>
+					<div class="AdvancedMainText">
+						<DecodedString Value="@Move.AdvancedConsequences.MainText" />
+						@if (Move.AdvancedConsequences.Options != null)
+						{
+							<ul class="mt-1">
+								@foreach (var item in Move.AdvancedConsequences.Options)
+								{
+									<li><DecodedString Value="@item" /></li>
+								}
+							</ul>
+						}
+					</div>
+				</div>
+			}
+		}
+
+		@if(Move.IsImprovedByOtherMove)
+		{
+			<div class="ImproveBox d-flex gap-1">
+				<div>
+					<i class="bi bi-fire" style="color: #675704;"></i>
+				</div>
+				<div class="d-flex flex-column">
+					@foreach (var s in Move.ImprovedByOhterMoveExplanation)
+					{
+						<DecodedString Value="@s"/>
+					}
+				</div>
+			</div>
+		}
+
 		@if (Move.ID == USMoveIDs.B_LiberarPoder)
 		{
-			<DecodedString Value="@Move.PreCondition.MainText" />
-
 			<div class="LIOContainer d-flex flex-column">
 				@if(MasterView)
 				{
@@ -93,136 +214,68 @@
 					</div>
 				}				
 			</div>
-
-			<div class="Advanced @(Move.IsImproved?"AdvancedYEs":"AdvancedNOT") @(MasterView ? "AdvancedYEs" : "")" @onclick=AdvanceClicked>
-				<div class="px-2"><img src="imgs/Icons/UpgradedArrow@(Move.IsImproved?"":"NO").png" /></div>
-				<div class="AdvancedMainText">
-					<DecodedString Value="@Move.AdvancedConsequences.MainText" />
-					@if (Move.AdvancedConsequences.Options != null)
-					{
-						<ul class="mt-1">
-							@foreach (var item in Move.AdvancedConsequences.Options)
-							{
-								<li><DecodedString Value="@item" /></li>
-							}
-						</ul>						
-					}
-				</div>
-			</div>
-
 		}
-		else
-		{
-			<DecodedString Value="@Move.PreCondition.MainText"/>		
-			@if (Move.PreCondition.Options != null)
-			{
-				<ul class="mt-1">
-					@foreach (var item in Move.PreCondition.Options)
-					{
-						<li><DecodedString Value="@item"/></li>
-					}
-				</ul>
-			}	
-			@if (Move.ConsequencesOn79 != null)
-			{
-				<div class="@(MasterView && MasterRolledValue >= 7 && MasterRolledValue <= 9? "MasterSelected orange" : "")">
-					<DecodedString Value="@Move.ConsequencesOn79.MainText" />
-					@if (Move.ConsequencesOn79.Options != null)
-					{
-						<ul class="mt-1">
-							@foreach (var item in Move.ConsequencesOn79.Options)
-							{
-								<li><DecodedString Value="@item" /></li>
-							}
-						</ul>
-					}
-				</div>
-			}
-			@if (Move.ConsequencesOn10 != null)
-			{
-				<div class="@(MasterView && MasterRolledValue >= 10 ? "MasterSelected green" : "")">
-					<DecodedString Value="@Move.ConsequencesOn10.MainText" />
-					@if (Move.ConsequencesOn10.Options != null)
-					{
-						<ul class="mt-1">
-							@foreach (var item in Move.ConsequencesOn10.Options)
-							{
-								<li><DecodedString Value="@item" /></li>
-							}
-						</ul>
-					}
-				</div>
-			}
 
-			@if (Move.ConsequencesOn6 != null)
+		<div class="d-flex flex-wrap gap-1 justify-content-left mt-3">
+			@if(Move.HasRoll())
 			{
-				<div class="@(MasterView && MasterRolledValue <= 6 ? "MasterSelected red" : "")">
-					<DecodedString Value="@Move.ConsequencesOn6.MainText" />
-					@if (Move.ConsequencesOn6.Options != null)
+				<div class="d-flex flex-column">
+					@if (HasBonuses)
 					{
-						<ul class="mt-1">
-							@foreach (var item in Move.ConsequencesOn6.Options)
-							{
-								<li><DecodedString Value="@item" /></li>
-							}
-						</ul>
-					}
-				</div>
-			}
-
-			@if (Move.TypeOfMovement == MovementTypes.BasicMovements &&
-					Move.AdvancedConsequences is not null &&
-					Move.AdvancedConsequences.MainText is not null &&
-					Move.AdvancedConsequences.MainText != "")
-			{
-				<div class="Advanced @(Move.IsImproved?"AdvancedYEs":"AdvancedNOT") @(MasterView ? "AdvancedYEs" : "")">
-					<div class="px-2"><img src="imgs/Icons/UpgradedArrow@(Move.IsImproved?"":"NO").png" /></div>
-					<div class="AdvancedMainText">
-						<DecodedString Value="@Move.AdvancedConsequences.MainText" />
-						@if (Move.AdvancedConsequences.Options != null)
-						{
-							<ul class="mt-1">
-								@foreach (var item in Move.AdvancedConsequences.Options)
+						<div class="d-flex flex-column">
+							<div>Algún bonus aplicable?</div>
+							<div class="d-flex flex-wrap">
+								@foreach (var s in Move.AvailableExtras)
 								{
-									<li><DecodedString Value="@item" /></li>
+									<div class="RollButton d-flex flex-column @(SelectedBonus.Contains(s)?"IsSelected":"")"
+										 @onclick=@(()=>{ ToggleBonus(s);})
+										 @onclick:stopPropagation=true>
+										<div>@s.ToUI()</div>
+									</div>
 								}
-
-							</ul>
-						}
-					</div>
-				</div>
-			}
-
-			@if(Move.IsImprovedByOtherMove)
-			{
-				<div class="ImproveBox d-flex gap-1">
-					<div>
-						<i class="bi bi-fire" style="color: #675704;"></i>
-					</div>
+							</div>
+						</div>
+					}
 					<div class="d-flex flex-column">
-						@foreach (var s in Move.ImprovedByOhterMoveExplanation)
-						{
-							<DecodedString Value="@s"/>
-						}
+						<div>Que tiramos?</div>
+						<div class="d-flex flex-wrap">
+							@foreach (var s in Move.Rolls.Where(x => x != USAttributes.None))
+							{
+								<div class="RollButton d-flex flex-column"
+									 @onclick=@(async()=>{ await RollDirect(s);})
+									 @onclick:stopPropagation=true>
+									<div>@s.ToUI()</div>
+									@if (s != USAttributes.just10 && s != USAttributes.just13 && s != USAttributes.just5 && SelectedBonus.Count > 0)
+									{
+										<div>
+											(
+												@if( s != USAttributes.Raw2d6)
+												{
+													@Player.GetAttribute(s).ToNiceUIStat()
+												}
+												@foreach(var b in SelectedBonus)
+												{
+													@b.ToUI()
+												}
+											)
+										</div>
+									}
+								</div>
+							}
+						</div>
 					</div>
 				</div>
 			}
-
-			<div class="d-flex flex-wrap gap-1 justify-content-center mt-3">
-				@foreach(var s in Move.Rolls.Where(x=>x != USAttributes.None))
-				{
-					<div class="RollButton d-flex flex-column"
-							@onclick=@(async()=>{ await RollDirect(s);})
-							@onclick:stopPropagation=true>
-						<div>@s.ToUI()</div>
-						@if (s != USAttributes.just10 && s != USAttributes.just13 && s != USAttributes.just5)
-						{
-							<div>(@Player.GetAttribute(s).ToNiceUIStat())</div>
-						}
-					</div>
-				}
-			</div>
-		}
+			else
+			{
+				<div class="RollButton d-flex flex-column"
+						@onclick=SpreadMoveText
+						@onclick:stopPropagation=true>
+					<div>Compartir texto</div>
+				</div>
+			}
+		</div>
+		
 		
 	</div>
 </div>
@@ -346,6 +399,56 @@
 	[Parameter] public EventCallback FinishedRolling { get; set; }
 	USMove Move;
 
+	List<RollExtras> SelectedBonus = new();
+	void ToggleBonus(RollExtras b)
+	{
+		if (SelectedBonus.Contains(b)) SelectedBonus.Remove(b);
+		else SelectedBonus.Add(b);
+	}
+
+	bool HasBonuses => Move.AvailableExtras.Count >0;
+
+	string MoveRollHeader
+	{
+		get
+		{
+			if (!Move.HasRoll()) return "";
+			//has more than two actual atributes
+			if (IsRollMixed(Move.Rolls)) 
+			{
+				var ats = Move.Rolls.FindAll(x => x == USAttributes.Blood || x == USAttributes.Mind || x == USAttributes.Heart || x == USAttributes.Soul);
+				return "("+string.Join(", ", ats.Select(atr => atr.ToUI()))+")";
+			}
+			if (Move.Rolls.Contains(USAttributes.MortalityStatus) || Move.Rolls.Contains(USAttributes.VeilStatus) 
+			|| Move.Rolls.Contains(USAttributes.NightStatus) || Move.Rolls.Contains(USAttributes.PowerStatus))
+				return "(Estatus)";
+			if (Move.Rolls.Contains(USAttributes.Mortality) || Move.Rolls.Contains(USAttributes.Veil)
+			|| Move.Rolls.Contains(USAttributes.Night) || Move.Rolls.Contains(USAttributes.Power))
+				return "(Circulo)";
+			if (Move.Rolls.Contains(USAttributes.Raw2d6))
+				return "2d6";
+			else
+			{
+				var att = GetFirstRealAttribute();
+				if (att is not USAttributes.None)
+					return $"({att.ToUI()} {Player.GetAttribute(att).ToNiceUIStat()})";
+				return "loading..";
+			}
+		}
+	}
+
+	USAttributes GetFirstRealAttribute()
+	{
+		var result = Move.Rolls.FirstOrDefault(attr => attr == USAttributes.Blood ||
+								attr == USAttributes.Heart ||
+								attr == USAttributes.Soul ||
+								attr == USAttributes.Mind);
+
+		result = result == default(USAttributes) ? USAttributes.None : result;
+
+		return result;
+	}
+
 	string rollNumber
 	{
 		get
@@ -465,28 +568,34 @@
 
 	async Task MakeMoveAdvanced()
 	{
-		if (Move.IsImproved) CloseFullScreenModal();
-		else
-		{
-			Move.IsImproved = true;
-			Player.UpgradedMoves.Add(Move.ID);
-			await Game.StoreChangesOnCharacter(Player, "añadió movimientos avanzados");
-			//CloseFullScreenModal();
-		}
+		Move.IsImproved = true;
+		Player.UpgradedMoves.Add(Move.ID);
+		Player.UpgradedMoves = Player.UpgradedMoves.Distinct().ToList();
+		await Game.StoreChangesOnCharacter(Player, "añadió movimientos avanzados");
+		//CloseFullScreenModal();		
 	}
 	async Task MakeMoveNOTAdvanced()
 	{
-		if (!Move.IsImproved) CloseFullScreenModal();
-		else
-		{
-			Move.IsImproved = false;
-			Player.UpgradedMoves.Remove(Move.ID);
-			await Game.StoreChangesOnCharacter(Player, "eliminó movimientos avanzados");
-			//CloseFullScreenModal();
-		}
+		Move.IsImproved = false;
+		Player.UpgradedMoves.Remove(Move.ID);
+		await Game.StoreChangesOnCharacter(Player, "eliminó movimientos avanzados");
+		//CloseFullScreenModal();
+
+	}
+	async Task ToggleAdvancement()
+	{
+		if (IsAdvanced) await MakeMoveNOTAdvanced();
+		else await MakeMoveAdvanced();
 	}
 
+	bool IsAdvanced => Player.UpgradedMoves.Contains(Move.ID);
+
 	Random rnd = new();
+
+	void SpreadMoveText()
+	{
+		Game.Roll(Player.ID, Move, Move.Roll, Move.ID, 0, RollTypes.JustShowMoveWithNoRoll, "");
+	}
 
 	async Task Roll()
 	{

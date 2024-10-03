@@ -10,7 +10,12 @@ namespace UrbanShadows;
 
 public enum Circles { NotSet, Mortalis, Noche, Poder, Velo }
 
-public enum USAttributes{ Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, MortalityStatus, NightStatus, PowerStatus, VeilStatus, Circle, None, Status, just13, just10, just5}
+public enum USAttributes{ None, Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, 
+	MortalityStatus, NightStatus, PowerStatus, VeilStatus, Circle, Status, 
+	Raw2d6,
+	just13, just10, just5,
+	RollPlusMinus3, RollPlusMinus2, RollPlusMinus1, RollPlus0, RollPlus1, RollPlus2, RollPlus3,
+	 }
 
 public enum KindsOfAdvance { Normal, Extra, Corruption };
 public enum PayingMode { ToPay, ToBePaid };
@@ -122,6 +127,14 @@ public static class EnumExtensions
 			USAttributes.just5 => "6-",
 			USAttributes.just10 => "7+",
 			USAttributes.just13 => "12+",
+			USAttributes.RollPlus0 => "+0",
+			USAttributes.RollPlus1 => "+1",
+			USAttributes.RollPlus2 => "+2",
+			USAttributes.RollPlus3 => "+3",
+			USAttributes.RollPlusMinus1 => "-1",
+			USAttributes.RollPlusMinus2 => "-2",
+			USAttributes.RollPlusMinus3 => "-3",
+			USAttributes.Raw2d6 => "2d6",
 			_ => $"Unknown characteristic ToUI {ch}"
 		};
 	}

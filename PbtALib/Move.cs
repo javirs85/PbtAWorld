@@ -53,6 +53,7 @@ public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 		_rolls.Add(roll);
 	}
 
+	public List<RollExtras> AvailableExtras = new();
 	public string IDText => ID.ToString() ?? "ID not set";
 
 	public string ClosingText { get; set; }
@@ -62,6 +63,11 @@ public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 		get { return _roll; }
 	}
 	public List<TStatsPack> Rolls => _rolls;
+	public void FixRolls()
+	{
+		_rolls = Rolls.Distinct().ToList().OrderBy(x=> Enum.GetName(typeof(TStatsPack), x)).ToList();
+		AvailableExtras = AvailableExtras.Distinct().ToList();
+	}
 	public bool IsSelected { get; set; }
 	public string Title { get; set; } = "";
 	public Consequences PreCondition { get; set; } = new();

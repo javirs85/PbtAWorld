@@ -12,6 +12,14 @@ public class USMovesService : MovesServiceBase
 	{
 		USMove NewMove = new USMove(move.ID, move.Rolls);
 		NewMove.CopyContentFrom(move);
+		if(NewMove.ID == USMoveIDs.D_03) //Negarse a pagar una deuda
+		{
+			NewMove.AvailableExtras.Add(RollExtras.bonusMinus3);
+			NewMove.AvailableExtras.Add(RollExtras.bonusMinus2);
+			NewMove.AvailableExtras.Add(RollExtras.bonusPlus1);
+			NewMove.AvailableExtras.Add(RollExtras.bonusPlus2);
+			NewMove.AvailableExtras.Add(RollExtras.bonusPlus3);
+		}
 
 		if(NewMove.ID == USMoveIDs.F_01_echarse_a_la_calle)
 		{
@@ -29,8 +37,18 @@ public class USMovesService : MovesServiceBase
 			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vamp_06)) //Es mi barrio
 			{
 				NewMove.IsImprovedByOtherMove = true;
+				NewMove.AvailableExtras.Add(RollExtras.bonusPlus3);
 				var m = USMoveIDs.A_Vamp_06;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		if(NewMove.ID == USMoveIDs.B_AyudarOFastidiar)
+		{
+			if(Player.Archetype == US_Classes.Vampire)
+			{
+				NewMove.AvailableExtras.Add(RollExtras.bonusPlus1);
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("+1 Si están en tu red");
 			}
 		}
 		if (NewMove.ID == USMoveIDs.B_Confundir)
@@ -52,6 +70,12 @@ public class USMovesService : MovesServiceBase
 				var m = USMoveIDs.C_Imp_03;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
+			if(Player.Archetype == US_Classes.Vampire)
+			{
+				NewMove.AvailableExtras.Add(RollExtras.bonusPlus3);
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("Gasta una deuda antes de tirar para avanzar el movimiento y aplicar +3. Sólo en esta tirada");
+			}
 		}
 		if (NewMove.ID == USMoveIDs.B_KeepCalm)
 		{
@@ -68,6 +92,7 @@ public class USMovesService : MovesServiceBase
 			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vamp_05)) //Mantener cerca a tus amigos 
 			{
 				NewMove.IsImprovedByOtherMove = true;
+				NewMove.Rolls.Add(USAttributes.just13);
 				var m = USMoveIDs.A_Vamp_05;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
@@ -80,6 +105,12 @@ public class USMovesService : MovesServiceBase
 				}
 				NewMove.IsImprovedByOtherMove = true;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + om.Title + "**\r\n " + om.PreCondition.MainText);
+			}
+			if(Player.Archetype == US_Classes.Vampire)
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("Opción extra si está en tu red");
+				NewMove.PreCondition.Options.Add("[RED] Cuál es la verdadera hambre de tu personaje?");
 			}
 			
 		}
@@ -131,8 +162,13 @@ public class USMovesService : MovesServiceBase
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
 		}
-		
 
+		if (NewMove.HasRoll())
+		{
+			NewMove.AvailableExtras.Add(RollExtras.bonusPlus1);
+		}
+
+		NewMove.FixRolls();
 
 		return NewMove;
 	}
@@ -248,6 +284,9 @@ public class USMovesService : MovesServiceBase
 			var m = GetArchetypeBasedLetItOutMovement(archetype);
 			var original = AllMovements.Find(x => x.ID == USMoveIDs.B_LiberarPoder);
 			original.PreCondition = m.PreCondition;
+			original.ConsequencesOn6 = m.ConsequencesOn6;
+			original.ConsequencesOn79 = m.ConsequencesOn79;
+			original.ConsequencesOn10 = m.ConsequencesOn10;
 			original.AdvancedConsequences = m.AdvancedConsequences;
 
 			return original;
@@ -265,7 +304,15 @@ public class USMovesService : MovesServiceBase
 			Title = "Liberar tu poder",
 			PreCondition = new Consequences
 			{
-				MainText = "Tira con Espíritu. Con 7+ márcate corrupción y el Master te dirá cómo el efecto de tu poder es costoso, limitado o inestable. Con un 10+ elije ignorar la corrupción o las complicaciones.",
+				MainText = "Cuando liberas los poderes mas oscuros de tu ser, elige una habilidad de la lista y tira con Espíritu.",
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Márcate corrupción y el MC te dirá cómo el efecto de tu poder es costoso, limitado o inestable."
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Elije ignorar la corrupción o las complicaciones."
 			},
 			AdvancedConsequences = new Consequences
 			{
@@ -274,8 +321,6 @@ public class USMovesService : MovesServiceBase
 		};
 
 		m.Title = "Liberar tu poder";
-
-
 
 		return m;
 	}
@@ -297,11 +342,15 @@ public class USMovesService : MovesServiceBase
 		{
 			TypeOfMovement = MovementTypes.BasicMovements,
 			IsSelected = true,
-			Title = "Llevarlo a la violecia",
+			Title = "Llevarlo a la violencia",
 			IsImproved = false,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando le lances un ataque a alguien,  tira con Sangre. Si superas la tirada, inflige daño según lo establecido y TU OPONENTE elige 1 opción:",
+				MainText = "Cuando le lances un ataque a alguien,  tira con Sangre. "				
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Inflige daño según lo establecido y TU OPONENTE elige 1 opción:",
 				Options = new List<string>
 					{
 						"Te hiere a tí también.",
@@ -333,23 +382,27 @@ public class USMovesService : MovesServiceBase
 			Title = "Escapar de una situación",
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando *aproveches una oportunidad** para escapar de una situación, tira con Sangre."
-			},
-			ConsequencesOn79 = new Consequences
-			{
-				MainText = "Si tienes éxito, escapas y eliges 1. Con un 7-9, el MC también elige uno (2 en total):",
+				MainText = "Cuando *aproveches una oportunidad** para escapar de una situación, tira con Sangre.",
 				Options = new List<string>
 					{
 						"Sufres daño durante tu huida",
 						"acabas en otra situación peligrosa",
 						"te dejas algo importante",
 						"tienes una deuda con un PNJ por su ayuda",
-						"cedes a tu naturaleza básica y marcas la corrupción"
+						"cedes a tu naturaleza básica y marcas corrupción"
 					}
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Eliges 1 y el MC también elige otra (2 en total):",
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Elije 1, el MC no elije (1 en total)"
 			},
 			AdvancedConsequences = new Consequences
 			{
-				MainText = "12+  escapas y haces un descubrimiento importante.",
+				MainText = "Escapas y haces un descubrimiento importante.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.B_Convencer, USAttributes.Heart)
@@ -360,15 +413,19 @@ public class USMovesService : MovesServiceBase
 			Title = "Persuadir a un PNJ",
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando persuades  a un *PNJ** mediante seducción, promesas o amenazas,  tira con Corazón. Si superas la tirada, comparten tu opinión y hacen lo que les pides.",
+				MainText = "Cuando persuades  a un *PNJ** mediante seducción, promesas o amenazas,  tira con Corazón.\r\nSi cobras una Deuda con el PNJ *antes** de tirar el dado, suma +3 a tu total",
 			},
 			ConsequencesOn79 = new Consequences
 			{
-				MainText = "Con un 7-9, se oponen a tu propuesta o exigen un pago -una deuda, un favor, recursos- antes de aceptar seguir adelante. Si cobras una Deuda con el PNJ *antes** de tirar el dado, suma +3 a tu total"
+				MainText = "Comparten tu opinión y hacen lo que les pides, pero, se oponen a tu propuesta o exigen un pago -una deuda, un favor, recursos- antes de aceptar seguir adelante."
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Comparten tu opinión y hacen lo que les pides."
 			},
 			AdvancedConsequences = new Consequences
 			{
-				MainText = "12+, hará lo que le hayas pedido y te ayudará con ese asunto hasta el final.",
+				MainText = "Hará lo que le hayas pedido y te ayudará con ese asunto hasta el final.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.B_Calar, USAttributes.Mind)
@@ -379,11 +436,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Calar a alguien",
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando intentes calar a alguien, tira con Mente. Si superas la tirada, obtienes 2 puntos. Mientras estés interactuando con ese personaje, gasta cada punto en hacerle una pregunta al jugador que lo interpreta. Si pertenecéis a la mismo Circulo, hazle una pregunta más, aunque hayas fallado la tirada."
-			},
-			ConsequencesOn79 = new Consequences
-			{
-				MainText = "Con un 7-9, la otra persona obtiene también 1 punto que puede gastar en preguntarte a ti. ",
+				MainText = "Cuando intentes calar a alguien, tira con Mente. Gastad puntos, mientras estés interactuando con ese personaje, para hacerle una pregunta al jugador que lo interpreta.\nSi pertenecéis a la mismo Circulo, hazle una pregunta más, aunque hayas fallado la tirada.\n\r",
 				Options = new List<string>
 					{
 						"¿Quién mueve los hilos de tu personaje?",
@@ -394,9 +447,17 @@ public class USMovesService : MovesServiceBase
 						"¿Cómo podría yo hacer que tu personaje contrajera una Deuda conmigo?"
 					}
 			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Obtienes 2 puntos y la otra persona obtiene también 1 punto que puede gastar en preguntarte a ti. ",
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Obtienes 2 puntos y la otra persona 0",
+			},
 			AdvancedConsequences = new Consequences
 			{
-				MainText = "12+, puedes hacer cualquier pregunta (una por cada punto), no solo las de la lista. Pregunta lo que quieras, incluso «¿Estás mintiendo?». Tu objetivo es un libro abierto.",
+				MainText = "Puedes hacer cualquier pregunta (una por cada punto), no solo las de la lista. Pregunta lo que quieras, incluso «¿Estás mintiendo?». Tu objetivo es un libro abierto.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.B_Confundir, USAttributes.Mind)
@@ -437,19 +498,19 @@ public class USMovesService : MovesServiceBase
 			Title = "Mantener la calma",
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando las cosas se pongan serias y mantengas la calma, dile al Maestro de Ceremonias qué situación quieres evitar y tira con Espíritu.",
+				MainText = "Cuando las cosas se pongan serias y mantengas la calma, dile al MC qué situación quieres evitar y tira con Espíritu.",
 			},
 			ConsequencesOn79 = new Consequences
 			{
-				MainText = "Con un 7-9, el Maestro de Ceremonias te dirá el coste que conlleva para ti."
+				MainText = "Ell MC te dirá el coste que conlleva para ti."
 			},
 			ConsequencesOn10 = new Consequences
 			{
-				MainText = "Con un 10+, todo va bien."
+				MainText = "Todo va bien."
 			},
 			AdvancedConsequences = new Consequences
 			{
-				MainText = "12+, la calma de tu oposición se ve comprometida. Dile lo que le va a costar mantener su curso de acción actual.",
+				MainText = "La calma de tu oposición se ve comprometida. Dile lo que le va a costar mantener su curso de acción actual.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.B_AyudarOFastidiar, USAttributes.Circle)
@@ -461,11 +522,15 @@ public class USMovesService : MovesServiceBase
 			Title = "Ayudar o interferir",
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando ayudes o te interpongas en el camino de un PJ. *Después de que haya tirado**, tira con su Círculo. Si aciertas, dale un +1 o -2 a su tirada",
+				MainText = "Cuando ayudes o te interpongas en el camino de un PJ. *Después de que haya tirado**, tira con su Círculo.",
 			},
 			ConsequencesOn79 = new Consequences
 			{
-				MainText = "Con un resultado de 7-9, te expones a peligro, enredo o coste"
+				MainText = "Dale un +1 o -2 a su tirada, pero te expones a peligro, enredo o coste"
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Dale un +1 o -2 a su tirada sin contrapartidas"
 			}
 		});
 
@@ -579,7 +644,7 @@ public class USMovesService : MovesServiceBase
 			Title = "Cobrarse una deuda",
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te cobres una Deuda, recuérdale a tu deudor por qué está en Deuda contigo."
+				MainText = "Cuando te cobres una Deuda, recuérdale a tu deudor por qué está en Deuda contigo.\nSi es un PJ aplica 7-9, si es un PNJ aplica 10+ (No hay tirada)."
 			},
 			ConsequencesOn79 = new Consequences
 			{
@@ -608,14 +673,26 @@ public class USMovesService : MovesServiceBase
 					}
 			}
 		});
-		result.Add(new USMove(USMoveIDs.D_03, USAttributes.None)
+		result.Add(new USMove(USMoveIDs.D_03, USAttributes.Status)
 		{
 			TypeOfMovement = MovementTypes.DebtMovements,
 			IsSelected = true,
 			Title = "Negarse a pagar una deuda",
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te niegues a honrar una Deuda, tira con la diferencia de *estatus* entre tú y tu acreedor.\n\nCon un éxito, te libras de la obligación por ahora, pero sigues debiendo la Deuda. \n\nCon un 7-9, les debes una Deuda adicional o marca corrupción, tú eliges. \n\nSi fallas, no puedes evitar la soga: o honras la Deuda en su totalidad o borras todas las Deudas que te debe su Círculo y tendrás un -1 en curso al Estatus con su Círculo hasta que pase el tiempo.\r\n"
+				MainText = "Cuando te niegues a honrar una Deuda, tira con la diferencia de *estatus** entre tú y tu acreedor."
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText= "Te libras de la obligación por ahora, pero sigues debiendo la Deuda. Además, les debes una deuda adicional o marcas corrupción, tu eliges."
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Te libras de la obligación por ahora, pero sigues debiendo la Deuda."
+			},
+			ConsequencesOn6 = new Consequences
+			{
+				MainText = "No puedes evitar la soga: o honras la Deuda en su totalidad o borras todas las Deudas que te debe su Círculo y tendrás un -1 en curso al Estatus con su Círculo hasta que pase el tiempo."
 			}
 		});
 		return result;
@@ -1033,21 +1110,25 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
-				MainText = "Ansías sangre, emociones o carne humanas, elige una. Cuando te alimentes, tira con Sangre. Si fallas tu hambre se apodera de tí y todo el mundo sufre."
+				MainText = "Ansías sangre, emociones o carne humanas, elige una. Cuando te alimentes, tira con Sangre."
 			},
 			ConsequencesOn79 = new Consequences
 			{
-				MainText = "Con un 7-9, elige 2"
+				MainText = "elige 2"
 			},
 			ConsequencesOn10 = new Consequences
 			{
-				MainText = "Con un 10+, elige 3",
+				MainText = "elige 3",
 				Options = new List<string>
 					{
 						"Te curas 1-daño.",
 						"Descubres un secreto sobre tu presa.",
 						"Tu víctima no muere."
 					}
+			},
+			ConsequencesOn6 = new Consequences
+			{
+				MainText= "Si fallas tu hambre se apodera de tí y todo el mundo sufre."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Vamp_02, USAttributes.Status)
@@ -1058,10 +1139,22 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando intentas colarte en un lugar restringido manipulando a un subordinado o guardia, tira con tu Estatus dentro de su Círculo. Con un éxito, te abren el paso a pesar de sus dudas. Con un 10+, prometen intentar mantener tu nombre fuera de cualquier problema que surja. Si fallas, se mantienen firmes... pero, sin querer, te dan la oportunidad de acceder por la fuerza."
+				MainText = "Cuando intentas colarte en un lugar restringido manipulando a un subordinado o guardia, tira con tu Estatus dentro de su Círculo."
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText= "Con un éxito, te abren el paso a pesar de sus dudas."
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText= "Además, prometen intentar mantener tu nombre fuera de cualquier problema que surja."
+			},
+			ConsequencesOn6 = new Consequences
+			{
+				MainText= "Si fallas, se mantienen firmes... pero, sin querer, te dan la oportunidad de acceder por la fuerza."
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Vamp_04, USAttributes.Soul)
+		result.Add(new USMove(USMoveIDs.A_Vamp_04, USAttributes.None)
 		{
 			Title = "Sangre fría",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -1069,10 +1162,10 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando mantienes la calma desafiando las convenciones sociales y las expectativas de los mortales, tira con Sangre en vez de Espíritu."
+				MainText = "Cuando *mantienes la calma** desafiando las convenciones sociales y las expectativas de los mortales, tira con Sangre en vez de Espíritu."
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Vamp_05, USAttributes.Blood)
+		result.Add(new USMove(USMoveIDs.A_Vamp_05, USAttributes.None)
 		{
 			Title = "Mantener cerca a tus amigos",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -1080,7 +1173,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando *cales** a alguien mientras les ayudas a satisfacer sus vicios, obtén un 12+ sin tirar. Si son de tu círculo, además, obtén un +1 constante cuando actúes basándote en sus respuestas."
+				MainText = "Cuando *cales a alguien** mientras les ayudas a satisfacer sus vicios, obtén un 12+ sin tirar. Si son de tu círculo, además, obtén un +1 constante cuando actúes basándote en sus respuestas."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Vamp_06, USAttributes.None)
@@ -1091,7 +1184,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando te *echas a la calla** por de alguien que te debe una Deuda, puedes cobrar la Deuda antes de tirar para sumar +3 a tu tirada. Si tienes éxito, también los encuentras en una situación comprometida o vulnerable; obtienes +1 continuo contra ellos durante la escena."
+				MainText = "Cuando te *echas a la calla** tras alguien que te debe una Deuda, puedes cobrar la Deuda antes de tirar para sumar +3 a tu tirada.\r\nSi tienes éxito, también los encuentras en una situación comprometida o vulnerable; obtienes +1 continuo contra ellos durante la escena."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Vamp_07, USAttributes.None)
@@ -2059,7 +2152,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Wolf,
 			PreCondition = new Consequences
 			{
-				MainText = "Marca corrupción para transformarte en un coyote o un perro. Mientras estás en esta forma, puedes tirar con ESPÍRITU en lugar de mente para leer a alguien o engañarlo, distraerlo y engañarlo.",
+				MainText = "Marca corrupción para transformarte en un coyote o un perro. Mientras estás en esta forma, puedes tirar con ESPÍRITU en lugar de mente para *Calar a alguien** o *Confundir, distraerlo y engañarlo.**",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.C_Wolf_04, USAttributes.None)
@@ -2108,7 +2201,11 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Vampire,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando debilitas la posición de alguien mediante rumores falsos, marca corrupción para tirar con Corazón en lugar de Estatus. Si fallas, marca corrupción para que el rastro conduzca a un aliado, no a ti.",
+				MainText = "Cuando *debilitas la posición de alguien** (Fase de facciones) mediante rumores falsos, marca corrupción para tirar con Corazón en lugar de Estatus.",
+			},
+			ConsequencesOn6 = new Consequences
+			{
+				MainText = "Si fallas, marca corrupción para que el rastro conduzca a un aliado, no a ti."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.C_Vamp_04, USAttributes.None)
@@ -3316,8 +3413,8 @@ public class USMovesService : MovesServiceBase
 					MainText = "Cuando alguien se acerca a tí para pedirte un favor, consejo, negociar información o amenazar tus intereses, entra en tu Red y te debe una deuda... aunque no le pagues nada a cambio. La gente sale de tu Red sólo cuando ya no te debe nada. Cuando alguien está en tu red ganas lo siguiente:",
 					Options = new List<string>
 					{
-						"+1 en curso para echarles una mano o interponerte en su camino",
-						"Siempre que uses *leer a alguien** con alguien de tu red añade la siguiente opción a la lista: cuál es la verdadera hambre de tu personaje?",
+						"+1 en curso para *Ayudar o interferir**",
+						"Siempre que uses *Calar a alguien** con alguien de tu red añade la siguiente opción a la lista: cuál es la verdadera hambre de tu personaje?",
 						"Gasta una deuda antes de tirar para *persuadir** para avanzar persuasión por esta tirada, y sumar +3 al total"
 					}
 				}
