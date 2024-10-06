@@ -21,6 +21,7 @@ public interface IRollReport
 	int d3 { get; set; }
 	int StatValue { get; set; }
 	int bonus { get; set; }
+	List<int> Extras { get; set; }
 	int Total { get; set; }
 	string MoveTittle { get; }
 	string StatString { get; set; }
@@ -68,6 +69,7 @@ public abstract class RollReport<T_ID, T_Stats> : IRollReport
 	public int d3 { get; set; } = 0;
 	public int StatValue { get; set; } = 0;
 	public int bonus { get; set; } = 0;
+	public List<int> Extras { get; set; } = new();
 	public int Total { get; set; } = 0;
 	public T_ID MoveId { get; set; }
 	

@@ -158,7 +158,7 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		}
 	}
 
-	public void Roll(Guid PlayerID, IMove move, TStatsPack stat, TIDPack moveID, int hardcodedBonus, RollTypes rtype = RollTypes.Roll_Simple, string hardcodedRolledStatName = "")
+	public void Roll(Guid PlayerID, IMove move, TStatsPack stat, TIDPack moveID, int hardcodedBonus, RollTypes rtype = RollTypes.Roll_Simple, string hardcodedRolledStatName = "", List<RollExtras>? Extras = null)
 	{
 		var player = Players.Find(x => x.ID == PlayerID);
 		if (player is not null)
@@ -172,6 +172,15 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 			LastRoll.d2 = random.Next(1, 7);
 			LastRoll.d3 = random.Next(1, 7);
 			LastRoll.bonus = hardcodedBonus;
+			LastRoll.Extras = new List<int>();
+			if (Extras is not null)
+			{
+				foreach (var e in Extras)
+				{
+					LastRoll.Extras.Add(e.ToInt());
+				}
+			}
+			
 			LastRoll.RollType = rtype;
 
 			if (rtype == RollTypes.Roll_Simple)
@@ -195,6 +204,11 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 				LastRoll.Total = l[1] + l[2] + LastRoll.bonus;
 			}
 
+			foreach(var e in LastRoll.Extras)
+			{
+				LastRoll.Total += e;
+			}
+
 			LastRoll.Roller = player.Name;
 			LastRoll.SetID(moveID);
 			LastRoll.SetStat(stat);
@@ -202,6 +216,12 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 
 			if(hardcodedRolledStatName != "")
 				LastRoll.StatString = hardcodedRolledStatName;
+
+			if (LastRoll.RollType == RollTypes.just5) LastRoll.Total = 0;
+			if (LastRoll.RollType == RollTypes.just10) LastRoll.Total = 10;
+			if (LastRoll.RollType == RollTypes.just13) LastRoll.Total = 12;
+
+			
 		}
 
 		lastRollViewer.Show(LastRoll);

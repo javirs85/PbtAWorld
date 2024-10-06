@@ -279,7 +279,10 @@
 								<div class="InnerColumnHeader">
 
 									@m.Title
-
+									@if (m.Title.Contains("intimi"))
+									{
+										<img src="imgs/Icons/TicksCircleIcon.png" class="ms-2 opacity-50" style="margin-bottom:5px;" />
+									}
 								</div>
 								<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
 									<DecodedString Value="@m.PreCondition.MainText" />
@@ -371,7 +374,10 @@
 								<div class="InnerColumnHeader">
 
 									@m.Title
-
+									@if(m.Title.Contains("intimi"))
+									{
+										<img src="imgs/Icons/TicksCircleIcon.png" class="ms-2 opacity-50" style="margin-bottom:5px;" />
+									}
 								</div>
 								<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
 									<DecodedString Value="@m.PreCondition.MainText" />

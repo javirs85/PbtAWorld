@@ -41,26 +41,152 @@ public class USMovesService : MovesServiceBase
 				var m = USMoveIDs.A_Vamp_06;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
-		}
-		if(NewMove.ID == USMoveIDs.B_AyudarOFastidiar)
-		{
-			if(Player.Archetype == US_Classes.Vampire)
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Spe_03)) //Ciudad fantasma
 			{
+				NewMove.IsImprovedByOtherMove = true;
 				NewMove.AvailableExtras.Add(RollExtras.bonusPlus1);
-				NewMove.IsImprovedByOtherMove = true;
-				NewMove.ImprovedByOhterMoveExplanation.Add("+1 Si están en tu red");
+				var m = USMoveIDs.A_Spe_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
+			
 		}
-		if (NewMove.ID == USMoveIDs.B_Confundir)
+		if (NewMove.ID == USMoveIDs.F_02) //ponerle cara a un nombre
 		{
-			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Awak_05)) 
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Imp_04)) // amigos en los bajos fondos
 			{
-				NewMove.Rolls.Add(USAttributes.Heart);
 				NewMove.IsImprovedByOtherMove = true;
-				var m = USMoveIDs.A_Awak_05;
+				var m = USMoveIDs.A_Imp_04;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Swo_04)) // Aunténtico policía
+			{
+				NewMove.Rolls.Add(USAttributes.Mind);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Swo_04;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
 		}
+		if (NewMove.ID == USMoveIDs.F_03) //Investigar un lugar de poder
+		{
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Swo_04)) // Aunténtico policía
+			{
+				NewMove.Rolls.Add(USAttributes.Mind);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Swo_04;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if(Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Awak_03)) //La guarida del león
+			{
+				NewMove.Rolls.Add(USAttributes.just13);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Awak_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+
+
+
+
+
+		if (NewMove.ID == USMoveIDs.B_Ataque)
+		{
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Swo_05)) //Ajedrez, no damas
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Swo_05;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Swo_04)) //Ajedrez, no damas
+			{
+				NewMove.Rolls.Add(USAttributes.just13);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Swo_04;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Hun_01)) //Divide y venceré
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Hun_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Hunt_02)) //Letal
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Hunt_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Hun_02)) //Dificil de matar
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Hun_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vet_06)) // Sacar la pistola en una pelea de navajas 
+			{
+				NewMove.Rolls.Add(USAttributes.Mind);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Vet_06;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Wolf_06)) // Temerario
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Wolf_06;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Wolf_02)) //La fuerza de la naturaleza
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Wolf_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Mage_01)) //Las artes oscuras
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.Rolls.Add(USAttributes.Soul);
+				var m = USMoveIDs.C_Mage_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+
+		if (NewMove.ID == USMoveIDs.B_Escapar)
+		{
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Spe_05)) //Muro? Qué muro? 
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.Rolls.Add(USAttributes.just13);
+				var m = USMoveIDs.A_Spe_05;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Hun_01)) //Divide y venceré
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Hun_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vet_04)) // Ya estoy viejo para estas mierdas 
+			{
+				var m = USMoveIDs.A_Vet_04;
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Wolf_02)) //La fuerza de la naturaleza
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Wolf_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Fai_05)) // Lo llevamos en la sangre
+			{
+				var m = USMoveIDs.A_Fai_05;
+				foreach(var o in GetMovement(m).PreCondition.Options)
+					NewMove.PreCondition.Options.Add("[+] "+o);
+
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+
 		if (NewMove.ID == USMoveIDs.B_Convencer)
 		{
 			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Imp_03))
@@ -76,17 +202,35 @@ public class USMovesService : MovesServiceBase
 				NewMove.IsImprovedByOtherMove = true;
 				NewMove.ImprovedByOhterMoveExplanation.Add("Gasta una deuda antes de tirar para avanzar el movimiento y aplicar +3. Sólo en esta tirada");
 			}
-		}
-		if (NewMove.ID == USMoveIDs.B_KeepCalm)
-		{
-			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vamp_04)) //Sangre fría
+			if(Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Hunt_06))
 			{
 				NewMove.Rolls.Add(USAttributes.Blood);
 				NewMove.IsImprovedByOtherMove = true;
-				var m = USMoveIDs.A_Vamp_04;
+				var m = USMoveIDs.A_Hunt_06;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vet_04)) // Ya estoy viejo para estas mierdas 
+			{
+				var m = USMoveIDs.A_Vet_04;
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Wolf_04)) // Lobo alfa
+			{
+				var m = USMoveIDs.A_Wolf_04;
+				NewMove.Rolls.Add(USAttributes.Blood);
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Fai_03)) // Negociador astuto
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Fai_03;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
 		}
+
+
 		if (NewMove.ID == USMoveIDs.B_Calar)
 		{
 			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vamp_05)) //Mantener cerca a tus amigos 
@@ -99,9 +243,9 @@ public class USMovesService : MovesServiceBase
 			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Imp_02))  //mide tu marca
 			{
 				var om = GetMovement(USMoveIDs.A_Imp_02);
-				foreach(var i in om.ConsequencesOn79.Options!)
+				foreach(var i in om.PreCondition.Options!)
 				{
-					NewMove.ConsequencesOn79.Options!.Add("[+] " + i);
+					NewMove.PreCondition.Options!.Add("[+] " + i);
 				}
 				NewMove.IsImprovedByOtherMove = true;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + om.Title + "**\r\n " + om.PreCondition.MainText);
@@ -112,9 +256,182 @@ public class USMovesService : MovesServiceBase
 				NewMove.ImprovedByOhterMoveExplanation.Add("Opción extra si está en tu red");
 				NewMove.PreCondition.Options.Add("[RED] Cuál es la verdadera hambre de tu personaje?");
 			}
-			
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Swo_01))
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Swo_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Orac_01))
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Orac_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Wolf_03)) //Sabueso callejero
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.Rolls.Add(USAttributes.Soul);
+				var m = USMoveIDs.C_Wolf_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
 		}
-		if(NewMove.ID == USMoveIDs.CityStatus1_01) //debilitar la posición de una facción
+
+		if (NewMove.ID == USMoveIDs.B_Confundir)
+		{
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Awak_05))
+			{
+				NewMove.Rolls.Add(USAttributes.Heart);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Awak_05;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Imp_04)) //En la lista negra
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Imp_04;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Spe_02)) // No toleraré que me ignores 
+			{
+				NewMove.Rolls.Add(USAttributes.Soul);
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*No toleraré que me ignores**\r\nSi *Confundes, distraes, esgañas** a un a alguien con una demonstración obviamente sobrenatural, tira con Espíritu en vez de Mente.");
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Swo_01))
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Swo_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vet_04)) // Ya estoy viejo para estas mierdas 
+			{
+				var m = USMoveIDs.A_Vet_04;
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Wolf_03)) //Sabueso callejero
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.Rolls.Add(USAttributes.Soul);
+				var m = USMoveIDs.C_Wolf_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Fai_03)) // Lo llevamos en la sangre
+			{
+				var m = USMoveIDs.A_Fai_03;
+				NewMove.Rolls.Add(USAttributes.Heart);
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+
+		if (NewMove.ID == USMoveIDs.B_KeepCalm)
+		{
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vamp_04)) //Sangre fría
+			{
+				NewMove.Rolls.Add(USAttributes.Blood);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Vamp_04;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.Archetype == US_Classes.Sworn)
+			{
+				NewMove.Rolls.Add(USAttributes.Mind);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.U_Swo_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Hunt_01))
+			{
+				NewMove.Rolls.Add(USAttributes.Blood);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Hunt_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vet_04)) // Ya estoy viejo para estas mierdas 
+			{
+				var m = USMoveIDs.A_Vet_04;
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+
+		if (NewMove.ID == USMoveIDs.B_AyudarOFastidiar)
+		{
+			if (Player.Archetype == US_Classes.Vampire)
+			{
+				NewMove.AvailableExtras.Add(RollExtras.bonusPlus1);
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("+1 Si están en tu red");
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Spe_02)) // No toleraré que me ignores 
+			{
+				NewMove.Rolls.Add(USAttributes.just10);
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*No toleraré que me ignores**\r\nCuando fastidies a alguien no tires y considera que has sacado un 10+");
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vet_03)) // Invertir 
+			{
+				NewMove.Rolls.Add(USAttributes.Mind);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Vet_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vet_04)) // Ya estoy viejo para estas mierdas 
+			{
+				var m = USMoveIDs.A_Vet_04;
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Awa_01))
+			{
+				NewMove.Rolls.Add(USAttributes.just10);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Awa_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+
+		}
+
+		if (NewMove.ID == USMoveIDs.B_LiberarPoder)
+		{
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Spe_06)) //Catalizador 
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Spe_06;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Awa_02)) //Si no puedes con ellos .. 
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Awa_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Orac_04)) //Catalizador 
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.A_Orac_04;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Vet_04)) // Ya estoy viejo para estas mierdas 
+			{
+				var m = USMoveIDs.A_Vet_04;
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Orac_01)) //De vuelta a las andadas
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Orac_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+
+
+
+
+		if (NewMove.ID == USMoveIDs.CityStatus1_01) //debilitar la posición de una facción
 		{
 			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Vamp_03)) //Fake news
 			{
@@ -124,6 +441,29 @@ public class USMovesService : MovesServiceBase
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}			
 		}
+
+		if (NewMove.ID == USMoveIDs.CityStatus1_03) //Consultar a tus contactos
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Swo_02)) //Fake news
+			{
+				NewMove.Rolls.Add(USAttributes.Mind);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Swo_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		if (NewMove.ID == USMoveIDs.CityStatus1_04) //Ocuparte de tus asuntos
+		{
+			if (Player.Archetype == US_Classes.Awaken) //Ocuparme de ellos
+			{
+				NewMove.Rolls.Add(USAttributes.Heart);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.U_Awa_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		
+
 		if (NewMove.ID == USMoveIDs.D_02) //cobrarse una deuda
 		{
 			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Vamp_02)) // mantenlos dentro
@@ -133,15 +473,8 @@ public class USMovesService : MovesServiceBase
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
 		}
-		if (NewMove.ID == USMoveIDs.F_02) //ponerle cara a un nombre
-		{
-			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Imp_04)) // amigos en los bajos fondos
-			{
-				NewMove.IsImprovedByOtherMove = true;
-				var m = USMoveIDs.A_Imp_04;
-				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
-			}
-		}
+
+		
 		if (NewMove.ID == USMoveIDs.D_03) //negarse a pagar una deuda
 		{
 			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Imp_06)) // palabras de comadreja
@@ -151,6 +484,20 @@ public class USMovesService : MovesServiceBase
 				var m = USMoveIDs.A_Imp_06;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
+			if(Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Awa_03)) // Libre como el viento
+			{
+				NewMove.Rolls.Add(USAttributes.just13); 
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Awa_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Fai_02)) // Negociador astuto
+			{
+				NewMove.Rolls.Add(USAttributes.just13);
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Fai_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
 		}
 		if (NewMove.ID == USMoveIDs.CityStatus1_02) //hacer correr la voz
 		{
@@ -158,10 +505,75 @@ public class USMovesService : MovesServiceBase
 			{
 				NewMove.Rolls.Add(USAttributes.just13);
 				NewMove.IsImprovedByOtherMove = true;
-				var m = USMoveIDs.A_Imp_06;
+				var m = USMoveIDs.C_Imp_01;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
 		}
+		if (NewMove.ID == USMoveIDs.U_Imp_02) //Finalizar un chanchullo
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Imp_02)) // Finero sucio
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Imp_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+
+		if(NewMove.ID == USMoveIDs.A_Swo_01)
+		{
+			if(Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Swo_01))
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Swo_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		if (NewMove.ID == USMoveIDs.A_Swo_02)
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Swo_01))
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Swo_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		if (NewMove.ID == USMoveIDs.A_Orac_02) //Piscometría
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Orac_01))
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Orac_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		if (NewMove.ID == USMoveIDs.A_Orac_06) // Rozar la superficie
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Orac_01))
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Orac_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		if (NewMove.ID == USMoveIDs.A_Mage_02) // Santosanctorum
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Mage_03)) //Magia negra
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Mage_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		if (NewMove.ID == USMoveIDs.A_Fai_01) // Magia feerica
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Fai_01)) //Aire y oscuridad
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Fai_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+
 
 		if (NewMove.HasRoll())
 		{
@@ -703,7 +1115,7 @@ public class USMovesService : MovesServiceBase
 	{
 		var result = new List<USMove>();
 
-		result.Add(new USMove(USMoveIDs.A_Hunt_01, USAttributes.Blood)
+		result.Add(new USMove(USMoveIDs.A_Hunt_01, USAttributes.None)
 		{
 			Title = "Exterminador",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -744,7 +1156,7 @@ public class USMovesService : MovesServiceBase
 				MainText = "Con un 10 +, tras oír la información, hazle una pregunta al Maestro de Ceremonias; la contestará con honestidad. "
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Hunt_04, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Hunt_04, USAttributes.None)
 		{
 			Title = "Piso franco",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -790,7 +1202,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Hunter,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando convenzas a un personaje no jugador mientras blandes un arma de 2-daño o superior, tira con Sangre en vez de Corazón."
+				MainText = "Cuando *Persuadas** a un PNJ mientras blandes un arma de 2-daño o superior, tira con Sangre en vez de Corazón."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Hunt_07, USAttributes.None)
@@ -811,7 +1223,7 @@ public class USMovesService : MovesServiceBase
 	{
 		var result = new List<USMove>();
 
-		result.Add(new USMove(USMoveIDs.A_Awak_01, USAttributes.Heart)
+		result.Add(new USMove(USMoveIDs.A_Awak_01, USAttributes.None)
 		{
 			Title = "Conozco a un tío",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -873,7 +1285,7 @@ public class USMovesService : MovesServiceBase
 				}
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Awak_05, USAttributes.Heart)
+		result.Add(new USMove(USMoveIDs.A_Awak_05, USAttributes.None)
 		{
 			Title = "Con piel de cordero",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -881,7 +1293,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando engañes, distraigas o mientras con alguien con quien has compartido previamente un momento de intimidad, tira con *Corazón** en lugar de mente."
+				MainText = "Cuando *Confundas, distraigas o engañes** con alguien con quien has compartido previamente un momento de intimidad, tira con *Corazón** en lugar de mente."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Awak_06, USAttributes.Heart)
@@ -933,7 +1345,7 @@ public class USMovesService : MovesServiceBase
 				MainText = "Cuando crees algo para alguien con tu taller, márcate su Facción."
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Vet_03, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Vet_03, USAttributes.None)
 		{
 			Title = "Invertir",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -1213,7 +1625,20 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando canalices y reúnas tu magia, tira con Espíritu. Con un 10+, obtienes 3 puntos. Con un 7-9, obtienes 3 puntos y eliges 1 opción de la lista que aparece a continuación. Si fallas, obtienes 1 punto, pero no puedes volver a canalizar en esta escena.",
+				MainText = "Cuando canalices y reúnas tu magia, tira con Espíritu.",
+				
+			},
+			ConsequencesOn6 = new Consequences
+			{
+				MainText = "Obtienes 1 punto, pero no puedes volver a canalizar en esta escena."
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Obtienes 3 puntos"
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Obtienes 3 puntos y eliges 1 opción de la lista que aparece a continuación",
 				Options = new List<string>
 					{
 						"Obtienes –1 a todas las tiradas hasta que descanses.",
@@ -1221,10 +1646,7 @@ public class USMovesService : MovesServiceBase
 						"Te marcas corrupción."
 					}
 			},
-			ConsequencesOn10 = new Consequences
-			{
-				MainText = "Los puntos te durarán hasta que los gastes. Puedes gastarlos para lanzar cualquier hechizo que tengas según se indique en su descripción."
-			}
+			ClosingText = "Los puntos te durarán hasta que los gastes. Puedes gastarlos para lanzar cualquier hechizo que tengas según se indique en su descripción."
 		});
 		result.Add(new USMove(USMoveIDs.A_Mage_02, USAttributes.Soul)
 		{
@@ -1234,8 +1656,26 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Mage,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando vayas a tu santuario a por un ingrediente para un hechizo, una reliquia o un libro, tira con Espíritu. Con un 10+, tienes algo que vale para lo que necesitas. Con un 7-9 , tienes algo que se le acerca, pero le falta o le falla algo importante. Si fallas, no tienes lo que estás buscando, pero conoces a alguien que probablemente sí lo tenga.",
-			}
+				MainText = "Cuando vayas a tu santuario a por un ingrediente para un hechizo, una reliquia o un libro, tira con Espíritu.",
+			},
+			ConsequencesOn6 = new Consequences
+			{
+				MainText = "Si fallas, no tienes lo que estás buscando, pero conoces a alguien que probablemente sí lo tenga."
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Tienes algo que vale para lo que necesitas."
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Tienes algo que se le acerca, pero le falta o le falla algo importante",
+				Options = new List<string>
+					{
+						"Obtienes –1 a todas las tiradas hasta que descanses.",
+						"Sufres 1-daño (perforante)",
+						"Te marcas corrupción."
+					}
+			},
 		});
 
 		result.Add(new USMove(USMoveIDs.A_Mage_04, USAttributes.None)
@@ -1315,6 +1755,17 @@ public class USMovesService : MovesServiceBase
 				MainText = "Gasta 1 punto para hacerle 1 - daño(perforante) a alguien a cualquier distancia.Para ello necesitas una muestra de su pelo, sangre o saliva.",
 			}
 		});
+		result.Add(new USMove(USMoveIDs.A_Mage_11, USAttributes.None)
+		{
+			Title = "HECHIZO: Baratija",
+			TypeOfMovement = MovementTypes.ArchetipeMovement,
+			IsSelected = false,
+			Archetipe = US_Classes.Mage,
+			PreCondition = new Consequences
+			{
+				MainText = "Gasta 1 para producir un objeto pequeño y mundano que se adapte perfectamente a tus necesidades: una llave para una sola puerta, una bala para un arma, etc"
+			}
+		});
 
 		return result;
 	}
@@ -1341,7 +1792,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
-				MainText = "Siempre que examines y analices un objeto interesante, tira con Espíritu. Con un 10+, haz 3 preguntas. Con un 7-9, haz 1 pregunta:",
+				MainText = "Siempre que examines y analices un objeto interesante, tira con Espíritu.",
 				Options = new List<string>
 					{
 						"¿Cuál es la historia de este objeto?",
@@ -1351,7 +1802,15 @@ public class USMovesService : MovesServiceBase
 						"¿Qué emociones fuertes han estado cerca de este objeto últimamente?"
 					}
 			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Con un 10+, haz 3 preguntas."
+			},
 			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Con un 7-9, haz 1 pregunta"
+			},
+			ConsequencesOn6 = new Consequences
 			{
 				MainText = "Si fallas, la emoción que hay en el objeto te abruma y obtienes –1 a todas las tiradas durante esa escena."
 			}
@@ -1389,7 +1848,7 @@ public class USMovesService : MovesServiceBase
 				MainText = "Cuando interfieras en los planes o acciones de alguien para impedir que una de tus visiones se cumpla, márcate su Facción y obtendrás +1 a la siguiente tirada.",
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Orac_06, USAttributes.None)
+		result.Add(new USMove(USMoveIDs.A_Orac_06, USAttributes.Soul)
 		{
 			Title = "Rozar la superficie",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -1397,7 +1856,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Oracle,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando toques a alguien, puedes leer sus pensamientos superficiales. Tira con Espíritu.Con un 10 +, haz 3 preguntas.Con un 7 - 9, haz 1 pregunta:",
+				MainText = "Cuando toques a alguien, puedes leer sus pensamientos superficiales. Tira con Espíritu.",
 				Options = new List<string>
 					{
 						"¿Qué está pensando tu personaje ahora mismo ?",
@@ -1406,7 +1865,15 @@ public class USMovesService : MovesServiceBase
 						"¿Qué dolor oculta tu personaje?"
 					}
 			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Con un 10 +, haz 3 preguntas"
+			},
 			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Con un 7 - 9, haz 1 pregunta"
+			},
+			ConsequencesOn6= new Consequences
 			{
 				MainText = "Si fallas, haces 1 - daño(perforante) a la otra persona y a ti mismo."
 			}
@@ -1426,7 +1893,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando adoptes tu forma demoníaca, tira con Sangre. Con un 10+, elige 2 opciones. Con un 7-9, elige 1 opción. Si fallas la tirada, elige 1 opción y contraes una Deuda con tu jefe.",
+				MainText = "Cuando adoptes tu forma demoníaca, tira con Sangre.",
 				Options = new List<string>
 					{
 						"Obtienes armadura+1.",
@@ -1436,10 +1903,19 @@ public class USMovesService : MovesServiceBase
 						"+desplazamiento demoníaco (vuelo, moto llameante, etcétera)."
 					}
 			},
+			ConsequencesOn6 = new Consequences
+			{
+				MainText = "Si fallas la tirada, elige 1 opción y contraes una Deuda con tu jefe."
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = "Elige 2 opciones"
+			},
 			ConsequencesOn79 = new Consequences
 			{
-				MainText = "Si estás haciendo un trabajo para tu jefe, elige 1 opción más. Si te marcas corrupción, elige 1 opción más."
-			}
+				MainText = "Elige 1 opción"
+			},
+			ClosingText = "Si estás haciendo un trabajo para tu jefe, elige 1 opción más. Si te marcas corrupción, elige 1 opción más."
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_02, USAttributes.None)
 		{
@@ -1698,10 +2174,8 @@ public class USMovesService : MovesServiceBase
 						"Eres tangible para el mundo físico y este es tangible para ti."
 					}
 			},
-			ConsequencesOn79 = new Consequences
-			{
-				MainText = "Puedes marcarte corrupción para elegir solo 1 opción o las 3."
-			}
+			ClosingText = "Puedes marcarte corrupción para elegir solo 1 opción o las 3."
+			
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_02, USAttributes.None)
 		{
@@ -1711,7 +2185,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Spectre,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando fastidies a alguien (ayudar o interferir), no tires y considera que has sacado un 10+. Si distraes a un personaje no jugador, tira con Espíritu en vez de Mente."
+				MainText = "Cuando fastidies a alguien (ayudar o *interferir**), no tires y considera que has sacado un 10+. \n\nSi *Confundes, distraes, esgañas** a un a alguien con una demonstración obviamente sobrenatural, tira con Espíritu en vez de Mente."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_03, USAttributes.None)
@@ -1727,7 +2201,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_04, USAttributes.None)
 		{
-			Title = "Fantasmagoría",
+			Title = "Potente",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = US_Classes.Spectre,
@@ -1738,7 +2212,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_05, USAttributes.None)
 		{
-			Title = "Cuando crees que me ves",
+			Title = "Muro? qué muro?",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = US_Classes.Spectre,
@@ -1749,7 +2223,7 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.A_Spe_06, USAttributes.None)
 		{
-			Title = "Vínculo",
+			Title = "Catalizador",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
 			IsSelected = false,
 			Archetipe = US_Classes.Spectre,
@@ -1815,7 +2289,7 @@ public class USMovesService : MovesServiceBase
 				MainText = "Coge +1 Mente (máx+3)."
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Swo_04, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Swo_04, USAttributes.None)
 		{
 			Title = "Aunténtico policía",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -1823,7 +2297,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando pongas cara a un nombre o estudies un santuario, punto de reunión o lugar de poder, tira con Mente en lugar de con el Círculo correspondiente. Siempre puedes hacer una pregunta adicional al MC sobre la persona o lugar en cuestión, incluso si fallas."
+				MainText = "Cuando *Pongas cara a un nombre** o *estudies un santuario**, punto de reunión o lugar de poder, tira con Mente en lugar de con el Círculo correspondiente. Siempre puedes hacer una pregunta adicional al MC sobre la persona o lugar en cuestión, incluso si fallas."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Swo_05, USAttributes.None)
@@ -1875,9 +2349,6 @@ public class USMovesService : MovesServiceBase
 			PreCondition = new Consequences
 			{
 				MainText = "Cuando *Calas a alguien**, añade estas opciones a tu lista.\r\nSi fallas, pregunta 1 de esta lista, pero parecerás sospechoso o sórdido, tú eliges.",
-			},
-			ConsequencesOn79 = new Consequences
-			{
 				Options = new List<string>
 				{
 					"Que necesidad urgente tienes que yo podría resolver",
@@ -1885,7 +2356,7 @@ public class USMovesService : MovesServiceBase
 				}
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Imp_04, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Imp_04, USAttributes.None)
 		{
 			Title = "Amigos en los bajos fondos",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -1907,7 +2378,7 @@ public class USMovesService : MovesServiceBase
 				MainText = "Ignora todo el daño la primera vez que alguien te inflija al menos 2 de daño en una escena. Al final de cada escena, borra tu casilla de Daño leve."
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Imp_06, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.A_Imp_06, USAttributes.None)
 		{
 			Title = "Palabras de comadreja",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -1983,7 +2454,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Awaken,
 			PreCondition = new Consequences
 			{
-				MainText = "Marca corrupción para interponerte en el camino de alguien de otro Círculo como si hubieras sacado un 10+.",
+				MainText = "Marca corrupción para *interferir** en el camino de alguien de otro Círculo como si hubieras sacado un 10+.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.C_Awa_02, USAttributes.None)
@@ -2224,7 +2695,7 @@ public class USMovesService : MovesServiceBase
 	private List<USMove> GenerateMageCorruptionMovements()
 	{
 		var result = new List<USMove>();
-		result.Add(new USMove(USMoveIDs.C_Mage_01, USAttributes.Soul)
+		result.Add(new USMove(USMoveIDs.C_Mage_01, USAttributes.None)
 		{
 			Title = "Las Artes Oscuras",
 			TypeOfMovement = MovementTypes.CorruptionMovement,
@@ -2428,7 +2899,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando *avises a tu Círculo de que necesitas algo** (mov. de facción), marca corrupción para sacar un 12+ en lugar de tirar los dados. Marca corrupción para dar al vendedor una Deuda en lugar del precio que te pidan cuando llegue el objeto.",
+				MainText = "Cuando *Haces correr la voz** en tu Círculo de que necesitas algo (mov. de facción), marca corrupción para sacar un 12+ en lugar de tirar los dados. Marca corrupción para dar al vendedor una Deuda en lugar del precio que te pidan cuando llegue el objeto.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.C_Imp_02, USAttributes.None)
@@ -2439,10 +2910,10 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando completes un plan, marca corrupción para recibir las cuatro bendiciones en lugar de sólo dos.",
+				MainText = "Cuando *Finalizas un chanchullo**, marca corrupción para recibir las cuatro bendiciones en lugar de sólo dos.",
 			}
 		});
-		result.Add(new USMove(USMoveIDs.C_Imp_03, USAttributes.Heart)
+		result.Add(new USMove(USMoveIDs.C_Imp_03, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
 			Title = "Endulza el trato",
@@ -2461,7 +2932,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Marca corrupción para declarar a alguien enemigo de tu pueblo; otros de los tuyos lo manipularán, antagonizarán o algo peor. Hasta que digas lo contrario, avanza *despistar, distraer o engañar** para cualquiera que se dirija a ellos; también reciben -1 en curso durante cada turno de facción.",
+				MainText = "Marca corrupción para declarar a alguien enemigo de tu pueblo; otros de los tuyos lo manipularán, antagonizarán o algo peor. Hasta que digas lo contrario, avanza *Confundir, distraer o engañar** para cualquiera que se dirija a ellos; también reciben -1 en curso durante cada turno de facción.",
 			}
 		});
 		return result;
@@ -2480,15 +2951,15 @@ public class USMovesService : MovesServiceBase
 				MainText = "Obtienes +1 Mente (máx+4). Siempre que tires con Mente y saques un 12+, marca corrupción.",
 			}
 		});
-		result.Add(new USMove(USMoveIDs.C_Swo_02, USAttributes.Mind)
+		result.Add(new USMove(USMoveIDs.C_Swo_02, USAttributes.None)
 		{
 			TypeOfMovement = MovementTypes.CorruptionMovement,
-			Title = "Chivatos",
+			Title = "Mis pajaritos",
 			IsSelected = false,
 			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
-				MainText = "Marca corrupción para tirar con Mente en vez de Estado cuando consultes a tus contactos en otro Círculo.",
+				MainText = "Marca corrupción para tirar con Mente en vez de Estatus cuando consultes a tus contactos en otro Círculo (Fase de facciones).",
 			},
 			ConsequencesOn6 = new Consequences { MainText = "Si fallas, marca corrupción de nuevo y elige entre responder a la pregunta difícil de tu contacto o deberle una Deuda." }
 		});
@@ -2948,7 +3419,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Sworn,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, dile si te importa más que tu juramento. Si dices que sí marca corrupción y ellos obtienen un punto que pueden gastar en cualquier momento para convocarte en su ubicación.",
+				MainText = "Cuando compartas un momento de intimidad física o emocional con otra persona, explícales si te importa más que tu juramento. Si sí lo hace, marca corrupción y ellos obtienen un punto que pueden gastar en cualquier momento para convocarte en su ubicación.",
 			}
 		});
 		result.Add(new USMove(USMoveIDs.D_Swo_03, USAttributes.None)
@@ -3103,69 +3574,69 @@ public class USMovesService : MovesServiceBase
 		var result = new List<USMove>();
 		result.Add(new USMove(USMoveIDs.U_Imp_01, USAttributes.None)
 		{
-			Title = "Generar una nueva estafa",
+			Title = "Generar un nuevo chanchullo",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = true,
 			Archetipe = US_Classes.Imp,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando generas una estafa elige un círculo principal, uno de tus servicios y dos complicaciones (colabora con el MC para justificarlo)",
-				Options = new List<string>
-				{
-					"prometiste a alguien involucrado, algo que aún no tienes",
-					"necesitas un cooperador poco fiable o de poca confianza",
-					"debes engañar o embaucar a un PNJ poderoso y peligroso",
-					"necesitas robar algo de un lugar seguro",
-					"necesitas esperar un momento o acontecimientos predeterminado",
-					"has atraído la atención de una oposición peligrosa"
-				}
-			}
-		});
-		result.Add(new USMove(USMoveIDs.U_Imp_02, USAttributes.None)
-		{
-			Title = "Finalizar una estafa",
-			TypeOfMovement = MovementTypes.UniqueMove,
-			IsSelected = true,
-			Archetipe = US_Classes.Imp,
-			PreCondition = new Consequences
-			{
-				MainText = "Cuando lleves a buen puerto una estafa, elige dos bonus y un pago. El MC te detallará como llegan. Anota los pagos conseguidos por que no se pueden repetir en toda la partida"
+				MainText = "Cuando generas un chanchullo elige un círculo principal, uno de tus servicios y dos complicaciones (colabora con el MC para justificarlo)",
 			},
 			ConsequencesOn6 = new Consequences
 			{
-				MainText = "Bonus (2), puedes repetir",
+				MainText = "Complicaciones",
 				Options = new List<string>
 				{
-					"atraer nuevos negocios, genera una nueva estafa",
-					"pagar tus deudas; cancelar una deuda que tienes",
-					"hacer valer tu influencia; contraer una deuda con un PNJ",
-					"aumentar tu reputación; marcar un Círculo afectado pro el trato"
+					"Has prometido a alguien involucrado algo que aún no tienes.",
+					"Necesitas la ayuda de un cómplice poco fiable o de dudosa lealtad.",
+					"Debes engañar o manipular a un PNJ poderoso y peligroso.",
+					"Necesitas robar algo de un lugar altamente seguro.",
+					"Tienes que esperar un evento o momento predeterminado.",
+					"Has atraído la atención de una oposición peligrosa."
 				}
+			}			
+		});
+		result.Add(new USMove(USMoveIDs.U_Imp_02, USAttributes.None)
+		{
+			Title = "Finalizar un chanchullo",
+			TypeOfMovement = MovementTypes.UniqueMove,
+			IsSelected = true,
+			Archetipe = US_Classes.Imp,
+			PreCondition = new Consequences
+			{
+				MainText = "Cuando lleves a buen puerto un chanchullo, elige dos bonus y un pago. El MC te detallará como llegan.\nAnota los pagos conseguidos por que no se pueden repetir en toda la partida\n(Elije 2 y 1, no hay tirada)"
 			},
 			ConsequencesOn79 = new Consequences
 			{
-				MainText = "Pagos, una ver en la vida, disponibles al inicio:",
+				MainText = "BENEFICIOS",
 				Options = new List<string>
 				{
-					"+1 a cualquier círculo (Max +3)",
-					"Contratar subordinados diabólicos",
-					"Adquirir un arsenal",
-					"Adquirir un nuevo activo",
-					"Adquirir un nuevo activo",
-					"Resolver un problema"
+					"Atraes nuevos negocios; generas un nuevo chanchullo.",
+					"Reduces tus deudas; cancelas una Deuda que debes.",
+					"Haces valer tu poder; tomas una Deuda sobre un PNJ.",
+					"Mejoras tu reputación; marcas un Círculo afectado por el trato."
 				}
 			},
 			ConsequencesOn10 = new Consequences
 			{
-				MainText = "Pagos, una ver en la vida, después de 4 pagos normales:",
+				MainText = "Pagos (Solo una vez cada uno)",
 				Options = new List<string>
 				{
-					"+1 a cualquier círculo (Max +3)",
-					"+1 Status (max +2)",
+					"Disponibles al inicio del juego:",
+					"+1 a cualquier Círculo (máx.+3)",
+					"Contratar esbirros infernales",
+					"Adquirir un arsenal",
+					"Adquirir un nuevo recurso",
+					"Adquirir un nuevo recurso",
+					"Resolver un problema\n\n",
+
+					"Después de 4+ pagos:",
+					"+1 a cualquier Círculo (máx.+3)",
+					"+1 Estatus (máx.+2)",
 					"Adquirir un arma legendaria",
-					"Adquirir magia de hadas",
-					"Adquirir un santuario",
-					"Retirar a tu personaje a un lugar seguro"
+					"Adquirir un sanctum",
+					"Adquirir magia feérica",
+					"Retirar tu personaje a un lugar seguro"
 				}
 			}
 		});
@@ -3300,17 +3771,6 @@ public class USMovesService : MovesServiceBase
 		});
 		result.Add(new USMove(USMoveIDs.U_Mage_07, USAttributes.None)
 		{
-			Title = "Hechizo: Baratija",
-			TypeOfMovement = MovementTypes.MageMagic,
-			IsSelected = false,
-			Archetipe = US_Classes.Mage,
-			PreCondition = new Consequences
-			{
-				MainText = "Gasta 1 para producir un objeto pequeño y mundano que se adapte perfectamente a tus necesidades: una llave para una sola puerta, una bala para un arma, etc"
-			}
-		});
-		result.Add(new USMove(USMoveIDs.U_Mage_07, USAttributes.None)
-		{
 			Title = "Trabajar en mi sanctum",
 			TypeOfMovement = MovementTypes.UniqueMove,
 			IsSelected = false,
@@ -3361,7 +3821,7 @@ public class USMovesService : MovesServiceBase
 				}
 
 			},
-			new USMove(USMoveIDs.U_Swo_03, USAttributes.Mind)
+			new USMove(USMoveIDs.U_Swo_03, USAttributes.None)
 			{
 				Title = "Lo hago por ellos",
 				TypeOfMovement = MovementTypes.UniqueMove,
@@ -3373,7 +3833,7 @@ public class USMovesService : MovesServiceBase
 				}
 
 			},
-			new USMove(USMoveIDs.U_Swo_04, USAttributes.Mind)
+			new USMove(USMoveIDs.U_Swo_04, USAttributes.None)
 			{
 				Title = "Roto",
 				TypeOfMovement = MovementTypes.UniqueMove,
@@ -3619,7 +4079,7 @@ public class USMovesService : MovesServiceBase
 					MainText = "Cuando una de tus relaciones mortales llega a su fin por cualquier motivo -te dejan, mueren, abandonan la ciudad, les dices que dejen de contactar contigo, etc.- marca inmediatamente un avance de corrupción. Si la pérdida de una relación mortal hace que retires a tu personaje debido a la corrupción, dile al MC a quién culpas más por la pérdida;\r\ntu personaje perseguirá al responsable como Amenaza hasta que se haga \"justicia\"."
 				}
 			},
-			new USMove(USMoveIDs.U_Awa_02, USAttributes.Heart)
+			new USMove(USMoveIDs.U_Awa_02, USAttributes.None)
 			{
 				Title = "Ocuparme de ellos",
 				TypeOfMovement = MovementTypes.UniqueMove,
@@ -3643,7 +4103,7 @@ public class USMovesService : MovesServiceBase
 				Archetipe = US_Classes.Awaken,
 				PreCondition = new Consequences
 				{
-					MainText = "Tienes algo de equipo que has ido adquiriendo desde que eres consciente del mundo sobrenatural, la mayoría guardado en el maletero de tu coche o en una bolsa que llevas contigo.\r\nCuando busques en tu botiquín algún equipo mundano -bengalas de carretera, botiquín de primeros auxilios, etc.- útil para la situación, tira con Espíritu.. Con un éxito, encuentras algo que te puede servir."
+					MainText = "Tienes algo de equipo que has ido adquiriendo desde que eres consciente del mundo sobrenatural, la mayoría guardado en el maletero de tu coche o en una bolsa que llevas contigo.\r\nCuando busques en tu kit algún equipo mundano -bengalas de carretera, botiquín de primeros auxilios, etc.- útil para la situación, tira con Espíritu.. Con un éxito, encuentras algo que te puede servir."
 				},
 				ConsequencesOn10 = new Consequences
 				{

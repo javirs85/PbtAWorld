@@ -20,9 +20,12 @@
     justify-content: center;
     flex-wrap: wrap;
 }
-.dice.crossed{
-    opacity: 0.4;
-}
+    .dice.crossed{
+        opacity: 0.4;
+    }
+    .dice.ExtraBonusBox {
+        border: 1px solid #ffffff30;
+    }
 
 .RollResult {
     font-size: 22px;

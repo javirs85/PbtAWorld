@@ -15,7 +15,7 @@ public enum USAttributes{ None, Blood, Heart, Mind, Soul, Mortality, Night, Powe
 	Raw2d6,
 	just13, just10, just5,
 	RollPlusMinus3, RollPlusMinus2, RollPlusMinus1, RollPlus0, RollPlus1, RollPlus2, RollPlus3,
-	 }
+}
 
 public enum KindsOfAdvance { Normal, Extra, Corruption };
 public enum PayingMode { ToPay, ToBePaid };
@@ -101,7 +101,8 @@ public enum USMoveIDs
 	CityFaction_06,
 	CityFaction_07,
 	CityStatus1_04,
-	D_Orac_04
+	D_Orac_04,
+	A_Mage_11
 }
 
 public static class EnumExtensions
@@ -125,7 +126,7 @@ public static class EnumExtensions
 			USAttributes.VeilStatus => "Estatus en Velo",
 			USAttributes.MortalityStatus => "Estatus en Mortalis",
 			USAttributes.just5 => "6-",
-			USAttributes.just10 => "7+",
+			USAttributes.just10 => "10+",
 			USAttributes.just13 => "12+",
 			USAttributes.RollPlus0 => "+0",
 			USAttributes.RollPlus1 => "+1",

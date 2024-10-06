@@ -18,7 +18,9 @@ public static class Extensions
 
 public enum RollTypes
 {
-	Roll_Simple, Roll_Advantage, Roll_Disadvantage, Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6, JustShowMoveWithNoRoll,
+	Roll_Simple, Roll_Advantage, Roll_Disadvantage, 
+	Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6, JustShowMoveWithNoRoll,
+	just5,just10,just13,
 	FitD_Action, FitD_Resistance
 }
 
@@ -86,6 +88,21 @@ public static class ExtensionsEnum
 			RollExtras.bonusPlus2 => "+2",
 			RollExtras.bonusPlus3 => "+3",
 			_ => $"Unknown RollExtra ToUI {extra}"
+		};
+	}
+
+	public static int ToInt(this RollExtras r)
+	{
+		return r switch
+		{
+			RollExtras.bonusMinus1 => -1,
+			RollExtras.bonusMinus2 => -2,
+			RollExtras.bonusMinus3 => -3,
+			RollExtras.bonus0 => 0,
+			RollExtras.bonusPlus1 => +1,
+			RollExtras.bonusPlus2 => +2,
+			RollExtras.bonusPlus3 => +3,
+			_ => 0,
 		};
 	}
 
