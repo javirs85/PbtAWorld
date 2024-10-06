@@ -279,7 +279,10 @@
 								<div class="InnerColumnHeader">
 
 									@m.Title
-
+									@if (m.Title.Contains("intimi"))
+									{
+										<img src="imgs/Icons/TicksCircleIcon.png" class="ms-2 opacity-50" style="margin-bottom:5px;" />
+									}
 								</div>
 								<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
 									<DecodedString Value="@m.PreCondition.MainText" />
@@ -371,7 +374,10 @@
 								<div class="InnerColumnHeader">
 
 									@m.Title
-
+									@if(m.Title.Contains("intimi"))
+									{
+										<img src="imgs/Icons/TicksCircleIcon.png" class="ms-2 opacity-50" style="margin-bottom:5px;" />
+									}
 								</div>
 								<div class="InnerColumContent" style="font-size:14px; opacity: 0.75;">
 									<DecodedString Value="@m.PreCondition.MainText" />
@@ -468,7 +474,7 @@
 	<CharacterCreationPage Player="Player" Game="Game" CloseMe="HideCharacterCreationModal" />
 </div>
 
-<!-- Character creation Modal -->
+<!-- Faction Turn Modal -->
 <div class="FullScreenModal CityMovesPage d-flex flex-column justify-content-center @(IsShowingCityMoves?"":"HideModal")"
 	 @onclick=HideCityMoves>
 	<div class="CloseButton"></div>
@@ -529,7 +535,7 @@
 <!-- MoveViewer Modal -->
 <div class="FullScreenModal FullScreenMoveViewer d-flex flex-column justify-content-center @(IsShowingOneMove?"":"HideModal")" @onclick=HideMoveViewer>
 	<div class="CloseButton"></div>
-	<div class="ModalBody" style="height:80%; width:80%; background:transparent; border:none;">
+	<div class="ModalBody" style="background:transparent; border:none; max-height:100% !important;">
 		<div class="d-flex flex-column align-items-center justify-content-start mt-5 w-100 h-100">
 			<div class="flex-grow-1 d-flex flex-column justify-content-center w-100 gap-4" style="max-width:800px;" @onclick:stopPropagation=true>
 				@if (SelectedMovement is not null)

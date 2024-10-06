@@ -34,19 +34,40 @@ public interface IMove
 
 public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 {
-	protected TStatsPack _roll;
+	protected TStatsPack _roll
+	{
+		get
+		{
+			if (_rolls.Count > 0)
+				return _rolls[0];
+			else
+				return DefaultStat;
+		}
+	}
+	protected TStatsPack DefaultStat { get; set; }
+	protected List<TStatsPack> _rolls { get; set; } = new();
 	protected TIDPack _me;
 	protected BaseMove(TIDPack IDpack, TStatsPack roll)
 	{
 		_me = IDpack;
-		_roll = roll;
+		_rolls.Add(roll);
 	}
 
+	public List<RollExtras> AvailableExtras = new();
 	public string IDText => ID.ToString() ?? "ID not set";
 
 	public string ClosingText { get; set; }
 	public TIDPack ID => _me;
-	public TStatsPack Roll => _roll;
+	public TStatsPack Roll
+	{
+		get { return _roll; }
+	}
+	public List<TStatsPack> Rolls => _rolls;
+	public void FixRolls()
+	{
+		_rolls = Rolls.Distinct().ToList().OrderBy(x=> Enum.GetName(typeof(TStatsPack), x)).ToList();
+		AvailableExtras = AvailableExtras.Distinct().ToList();
+	}
 	public bool IsSelected { get; set; }
 	public string Title { get; set; } = "";
 	public Consequences PreCondition { get; set; } = new();
@@ -90,6 +111,41 @@ public abstract class BaseMove<TIDPack, TStatsPack> : IMove
 			else if (NumUsedTimes < 5) return HowOftenUsed.LotsOfUses;
 			else return HowOftenUsed.ToMuch;
 		}
+	}
+
+	public void CopyContentFrom(BaseMove<TIDPack, TStatsPack> move)
+	{
+		this.Title = move.Title;
+		this.PreCondition = CloneConsequence(move.PreCondition);
+		this.ConsequencesOn10 = CloneConsequence(move.ConsequencesOn10);
+		this.ConsequencesOn6 = CloneConsequence(move.ConsequencesOn6);
+		this.ConsequencesOn79 = CloneConsequence(move.ConsequencesOn79);
+		this.AdvancedConsequences = CloneConsequence(move.AdvancedConsequences);
+		this.ClosingText = move.ClosingText;
+		this.NumUsedTimes = move.NumUsedTimes;
+		CopyContentFromInternal(move);
+	}
+
+	private Consequences CloneConsequence(Consequences con)
+	{
+		Consequences consequences = new Consequences();
+
+		consequences.MainText = con.MainText;
+		if(con.Options is not null)
+		{
+			consequences.Options = new List<string>();
+			foreach (var c in con.Options!)
+				consequences.Options.Add(c.ToString());
+		}
+		else
+			consequences.Options = new List<string>();
+
+		return consequences;
+	}
+
+	protected virtual void CopyContentFromInternal<M>(M move)
+	{
+
 	}
 }
 

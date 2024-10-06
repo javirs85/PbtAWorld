@@ -53,11 +53,39 @@ public class LIO : IMove
 
 public class USMove : PbtALib.BaseMove<USMoveIDs, USAttributes>
 {
-	public USMove(USMoveIDs IDs, USAttributes roll) : base(IDs, roll)
-	{
-		Title = "Not Set";
+    public USMove(USMoveIDs IDs, List<USAttributes> rolls) : base(IDs, USAttributes.None)
+    {
+		DefaultStat = USAttributes.None;
+        Title = "Not set";
+        Rolls.Clear();
+        foreach (var r in rolls)
+            Rolls.Add(r);
 	}
 
+	public USMove(USMoveIDs IDs, USAttributes roll) : base(IDs, roll)
+	{
+        DefaultStat = USAttributes.None;
+		Title = "Not Set";
+        if(roll == USAttributes.Circle)
+        {
+            Rolls.Clear();
+            Rolls.Add(USAttributes.Mortality);
+            Rolls.Add(USAttributes.Night);
+            Rolls.Add(USAttributes.Power);
+            Rolls.Add(USAttributes.Veil);
+        }
+        if(roll == USAttributes.Status)
+        {
+			Rolls.Clear();
+			Rolls.Add(USAttributes.MortalityStatus);
+			Rolls.Add(USAttributes.NightStatus);
+			Rolls.Add(USAttributes.PowerStatus);
+			Rolls.Add(USAttributes.VeilStatus);
+		}
+	}
+    
+    public bool IsImprovedByOtherMove { get; set; } = false;
+    public List<string> ImprovedByOhterMoveExplanation { get; set; } = new();
 	public override bool HasRoll() => Roll != USAttributes.None;
 	public override string ToUI() => Roll.ToUI();
 
@@ -69,4 +97,16 @@ public class USMove : PbtALib.BaseMove<USMoveIDs, USAttributes>
 	public bool IsImproved { get; set; } = false;
 	public MovementTypes TypeOfMovement = MovementTypes.NotSet;
 	public US_Classes Archetipe = US_Classes.All;
+
+	protected override void CopyContentFromInternal<M>(M move)
+	{
+        var m = move as USMove;
+        if(m is not null)
+        {
+			this.TicksCircle = m.TicksCircle;
+			this.IsImproved = m.IsImproved;
+			this.TypeOfMovement = m.TypeOfMovement;
+			this.Archetipe = m.Archetipe;
+		}
+	}
 }

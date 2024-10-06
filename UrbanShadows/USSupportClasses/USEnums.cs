@@ -10,7 +10,12 @@ namespace UrbanShadows;
 
 public enum Circles { NotSet, Mortalis, Noche, Poder, Velo }
 
-public enum USAttributes{ Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, Circle, None, Status}
+public enum USAttributes{ None, Blood, Heart, Mind, Soul, Mortality, Night, Power, Veil, 
+	MortalityStatus, NightStatus, PowerStatus, VeilStatus, Circle, Status, 
+	Raw2d6,
+	just13, just10, just5,
+	RollPlusMinus3, RollPlusMinus2, RollPlusMinus1, RollPlus0, RollPlus1, RollPlus2, RollPlus3,
+}
 
 public enum KindsOfAdvance { Normal, Extra, Corruption };
 public enum PayingMode { ToPay, ToBePaid };
@@ -29,12 +34,12 @@ public enum USMoveIDs
 {
 	rawBlood, rawHeart, rawMind, rawSoul, rawMortal, rawNight, rawPower, rawVeil, raw2d6,
 	NotSet, B_Ataque, B_Escapar, B_Convencer, B_Calar, B_Confundir, B_distraer, B_KeepCalm, B_LiberarPoder, B_AyudarOFastidiar,
-	F_01, F_02, F_03, F_04, D_01, D_02, D_03, D_04, D_05,
+	F_01_echarse_a_la_calle, F_02, F_03, F_04, D_01, D_02, D_03, D_04, D_05,
 	A_Hunt_01, A_Hunt_02, A_Hunt_03, A_Hunt_04, A_Hunt_05, A_Hunt_06, A_Hunt_07,
 	A_Awak_01, A_Awak_02, A_Awak_03, A_Awak_04, A_Awak_05, A_Awak_06,
 	A_Vet_01, A_Vet_02, A_Vet_03, A_Vet_04, A_Vet_05, A_Vet_06,
 	A_Wolf_01, A_Wolf_02, A_Wolf_03, A_Wolf_04, A_Wolf_05, A_Wolf_06,
-	A_Vamp_01, A_Vamp_02, A_Vamp_03, A_Vamp_04, A_Vamp_05, A_Vamp_06,
+	A_Vamp_01, A_Vamp_02, A_Vamp_03, A_Vamp_04, A_Vamp_05, A_Vamp_06, A_Vamp_07,
 	A_Mage_01, A_Mage_02, A_Mage_03, A_Mage_04, A_Mage_05, A_Mage_06, A_Mage_07, A_Mage_08, A_Mage_09, A_Mage_10,
 	A_Orac_01, A_Orac_02, A_Orac_03, A_Orac_04, A_Orac_05, A_Orac_06,
 	A_Corrup_01, A_Corrup_02, A_Corrup_03, A_Corrup_04, A_Corrup_05, A_Corrup_06, A_Corrup_07,
@@ -96,7 +101,8 @@ public enum USMoveIDs
 	CityFaction_06,
 	CityFaction_07,
 	CityStatus1_04,
-	D_Orac_04
+	D_Orac_04,
+	A_Mage_11
 }
 
 public static class EnumExtensions
@@ -115,6 +121,21 @@ public static class EnumExtensions
 			USAttributes.Power => "Poder",
 			USAttributes.Circle => "Círculo",
 			USAttributes.Status => "Estatus",
+			USAttributes.NightStatus => "Estatus en Noche",
+			USAttributes.PowerStatus => "Estatus en Poder",
+			USAttributes.VeilStatus => "Estatus en Velo",
+			USAttributes.MortalityStatus => "Estatus en Mortalis",
+			USAttributes.just5 => "6-",
+			USAttributes.just10 => "10+",
+			USAttributes.just13 => "12+",
+			USAttributes.RollPlus0 => "+0",
+			USAttributes.RollPlus1 => "+1",
+			USAttributes.RollPlus2 => "+2",
+			USAttributes.RollPlus3 => "+3",
+			USAttributes.RollPlusMinus1 => "-1",
+			USAttributes.RollPlusMinus2 => "-2",
+			USAttributes.RollPlusMinus3 => "-3",
+			USAttributes.Raw2d6 => "2d6",
 			_ => $"Unknown characteristic ToUI {ch}"
 		};
 	}

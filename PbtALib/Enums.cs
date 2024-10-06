@@ -18,9 +18,17 @@ public static class Extensions
 
 public enum RollTypes
 {
-	Roll_Simple, Roll_Advantage, Roll_Disadvantage, Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6, JustShowMoveWithNoRoll,
+	Roll_Simple, Roll_Advantage, Roll_Disadvantage, 
+	Roll_SimplePlus1d6, Roll_AdvantagePlus1d6, Roll_DisadvantagePlus1d6, JustShowMoveWithNoRoll,
+	just5,just10,just13,
 	FitD_Action, FitD_Resistance
 }
+
+public enum RollExtras
+{
+	bonusMinus1, bonusMinus2, bonusMinus3, bonus0, bonusPlus1, bonusPlus2, bonusPlus3
+}
+
 public enum FactionStatuses { NotSet, Creciendo, Manteniendo, Menguando }
 
 
@@ -66,6 +74,36 @@ public static class ExtensionsEnum
 			VTTTokens.Tree1,VTTTokens.Tree2, VTTTokens.Door_Big
 		};
 		return props.Contains(t);
+	}
+
+	public static string ToUI(this RollExtras extra)
+	{
+		return extra switch
+		{
+			RollExtras.bonusMinus3 => "-3",
+			RollExtras.bonusMinus1 => "-1",
+			RollExtras.bonusMinus2 => "-2",
+			RollExtras.bonus0 => "+0",
+			RollExtras.bonusPlus1 => "+1",
+			RollExtras.bonusPlus2 => "+2",
+			RollExtras.bonusPlus3 => "+3",
+			_ => $"Unknown RollExtra ToUI {extra}"
+		};
+	}
+
+	public static int ToInt(this RollExtras r)
+	{
+		return r switch
+		{
+			RollExtras.bonusMinus1 => -1,
+			RollExtras.bonusMinus2 => -2,
+			RollExtras.bonusMinus3 => -3,
+			RollExtras.bonus0 => 0,
+			RollExtras.bonusPlus1 => +1,
+			RollExtras.bonusPlus2 => +2,
+			RollExtras.bonusPlus3 => +3,
+			_ => 0,
+		};
 	}
 
 	public static bool IsForest(this VTTTokens t)
