@@ -46,11 +46,11 @@
 											<div class="FactionBody">
 												@foreach(PbtACharacter ch in f.Members)
 												{
-													<div class="@(CharacterSelectorService.CurrentMode == CharacterSelectorService.SelectionModes.character?"CharacterBox":"")" 
-														@onclick=@(()=>{CharacterSelectorService.FinishSelection(ch);})>
+													<div class="@(CharacterSelectorService.CurrentMode == CharacterSelectorService.SelectionModes.character?"CharacterBox":"")"
+														 @onclick=@(()=>{CharacterClicked(ch);})>
 														@if(HasImage(ch))
 														{
-															<ImageCard Image="GetImage(ch)" IsMaster=IsMaster ForcedSize="150" />
+															<ImageCard Image="GetImage(ch)" IsMaster=IsMaster IsInPeopleViewer="true" ForcedSize="150" />
 														}
 														else
 														{
@@ -88,11 +88,11 @@
 												}
 											</div>
 											<div class="p-2 d-flex">
-												@if(IsMaster)
+												@if (IsMaster && SelectedFaction == f)
 												{
 													<div class="d-flex flex-grow-1 align-items-center gap-1">
 														<EditForm Model="f" class="w-100">
-															<InputTextArea class="form-control" @bind-Value=f.Assets @onfocusout=SpreadChanges/>
+															<InputTextArea class="form-control" @bind-Value=f.Assets @onfocusout=SpreadChanges />
 														</EditForm>
 														<i class="bi bi-send"></i>
 													</div>
@@ -240,6 +240,21 @@
 
 	private void Refresh(object? sender, EventArgs e) => InvokeAsync(StateHasChanged);
 
+	private void CharacterClicked(PbtACharacter ch)
+	{
+		if (CharacterSelectorService.CurrentMode == CharacterSelectorService.SelectionModes.character)
+			CharacterSelectorService.FinishSelection(ch);
+		else
+		{
+			SelectedCharacter = ch;
+			SelectedFaction = Game.People.Circles
+				.SelectMany(x => x.Factions)
+				.FirstOrDefault(f => f.Members.Any(m => m.ID == ch.ID));
+
+			SelectedCircle = Game.People.Circles.FirstOrDefault(x => x.Factions.Contains(SelectedFaction));
+		}
+	}
+
 
 	private async Task LoadPeopleJson(InputFileChangeEventArgs e)
 	{
@@ -302,6 +317,8 @@
 	{
 		if (SelectedFaction == f) SelectedFaction = null;
 		else SelectedFaction = f;
+
+		SelectedCircle = Game.People.Circles.FirstOrDefault(c => c.Factions.Contains(SelectedFaction));
 	}
 
 	private bool IsCurrentCircle(Circle c)
@@ -365,11 +382,18 @@
 		Game.UpdatePeopleViewerInAllClients();
 	}
 
-	private void DeleteSelectedCharacter(){
+	private void DeleteSelectedCharacter()
+	{
+		SelectedFaction = Game.People.Circles
+			.SelectMany(x => x.Factions)
+			.FirstOrDefault(f => f.Members.Any(m => m.ID == SelectedCharacter.ID));
+		
 		if(SelectedFaction is not null && SelectedCharacter is not null)
 		{			
 			SelectedFaction.Members.Remove(SelectedCharacter);
 			SelectedCharacter = null;
 		}
+
+		CurrentlyViewing = Views.FactionsList;
 	}
 }

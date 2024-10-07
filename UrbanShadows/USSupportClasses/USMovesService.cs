@@ -275,6 +275,14 @@ public class USMovesService : MovesServiceBase
 				var m = USMoveIDs.C_Wolf_03;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
+			if (Player.SelectedArchetypeMoves.Contains(USMoveIDs.A_Corrup_03)) //Lengua de plata
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				NewMove.Rolls.Add(USAttributes.Heart);
+				var m = USMoveIDs.A_Corrup_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			
 		}
 
 		if (NewMove.ID == USMoveIDs.B_Confundir)
@@ -439,9 +447,23 @@ public class USMovesService : MovesServiceBase
 				NewMove.IsImprovedByOtherMove = true;
 				var m = USMoveIDs.C_Vamp_03;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
-			}			
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Corrupt_01)) //Beneficios adicionales
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Vamp_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
 		}
-
+		if (NewMove.ID == USMoveIDs.CityStatus1_02) //Hacer correr la voz
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Corrupt_01)) //Beneficios adicionales
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Vamp_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
 		if (NewMove.ID == USMoveIDs.CityStatus1_03) //Consultar a tus contactos
 		{
 			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Swo_02)) //Fake news
@@ -449,6 +471,12 @@ public class USMovesService : MovesServiceBase
 				NewMove.Rolls.Add(USAttributes.Mind);
 				NewMove.IsImprovedByOtherMove = true;
 				var m = USMoveIDs.C_Swo_02;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Corrupt_01)) //Beneficios adicionales
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Vamp_03;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
 		}
@@ -461,8 +489,14 @@ public class USMovesService : MovesServiceBase
 				var m = USMoveIDs.U_Awa_02;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Corrupt_01)) //Beneficios adicionales
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Vamp_03;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
 		}
-		
+
 
 		if (NewMove.ID == USMoveIDs.D_02) //cobrarse una deuda
 		{
@@ -570,6 +604,15 @@ public class USMovesService : MovesServiceBase
 			{
 				NewMove.IsImprovedByOtherMove = true;
 				var m = USMoveIDs.C_Fai_01;
+				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
+			}
+		}
+		if (NewMove.ID == USMoveIDs.A_Corrup_01) // El demonio interior
+		{
+			if (Player.SelectedCorruptionMoves.Contains(USMoveIDs.C_Corrupt_02)) //Justo bajo la superficie
+			{
+				NewMove.IsImprovedByOtherMove = true;
+				var m = USMoveIDs.C_Corrupt_02;
 				NewMove.ImprovedByOhterMoveExplanation.Add("*" + GetMovement(m).Title + "**\r\n " + GetMovement(m).PreCondition.MainText);
 			}
 		}
@@ -1928,7 +1971,7 @@ public class USMovesService : MovesServiceBase
 				MainText = "Puedes cobrarte una Deuda que alguien tenga contigo para aparecer en su presencia. Los demás también pueden cobrarse una Deuda que tengas con ellos para hacerte aparecer donde estén."
 			}
 		});
-		result.Add(new USMove(USMoveIDs.A_Corrup_03, USAttributes.Blood)
+		result.Add(new USMove(USMoveIDs.A_Corrup_03, USAttributes.None)
 		{
 			Title = "Lengua de plata",
 			TypeOfMovement = MovementTypes.ArchetipeMovement,
@@ -1936,7 +1979,7 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando *leas a alguien** a alguien, a base de tentarlos con poder, tira con Corazón en vez de Mente."
+				MainText = "Cuando *Calas a alguien** a alguien, a base de tentarlos con poder, tira con Corazón en vez de Mente."
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_04, USAttributes.Soul)
@@ -1947,10 +1990,19 @@ public class USMovesService : MovesServiceBase
 			Archetipe = US_Classes.Corrupted,
 			PreCondition = new Consequences
 			{
-				MainText = "Cuando busques la orientación de tu jefe mediante rituales y presagios, tira con Espíritu. " +
-				"Si superas la tirada, se muestran señales ante ti: si sigues la senda marcada, obtienes un +1 a la siguiente. " +
-				"Con un 7-9, acabas aún más involucrado en el servicio a tu jefe; para poder seguir tu camino tendrás que mantener la calma. " +
-				"Si fallas la tirada, tu jefe tiene trabajo para ti ahora mismo; adopta tu forma demoníaca y ponte manos a la obra o sufrirás 2-daño (perforante)."
+				MainText = "Cuando busques la orientación de tu jefe mediante rituales y presagios, tira con Espíritu.\nSi superas la tirada, se muestran señales ante ti: si sigues la senda marcada, obtienes un +1 a la siguiente. " 
+			},
+			ConsequencesOn6 = new Consequences
+			{
+				MainText = "Si fallas la tirada, tu jefe tiene trabajo para ti ahora mismo; adopta tu forma demoníaca y ponte manos a la obra o sufrirás 2-daño (perforante)."
+			},
+			ConsequencesOn79 = new Consequences
+			{
+				MainText = "Con un 7-9, acabas aún más involucrado en el servicio a tu jefe; para poder seguir tu camino tendrás que mantener la calma."
+			},
+			ConsequencesOn10 = new Consequences
+			{
+				MainText = ""
 			}
 		});
 		result.Add(new USMove(USMoveIDs.A_Corrup_05, USAttributes.None)

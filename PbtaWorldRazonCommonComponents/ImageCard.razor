@@ -66,13 +66,17 @@ else
 					   style="pointer-events:none;"></i>
 				</div>
 
-				<div class="d-flex align-items-center justify-content-center mt-4" style="
-					right: 2px; color: #eab7b7; cursor:pointer;
-					width: 30px; height:30px; background-color:#960000;
-					padding:10px; border-radius:50%;" @onclick=@(()=>{service.DeleteImage(Image);})>
-					<i class="bi bi-trash3-fill" 
-					   style="pointer-events:none;"></i>
-				</div>
+				@if(!IsInPeopleViewer)
+				{
+					<div class="d-flex align-items-center justify-content-center mt-4" style="
+						right: 2px; color: #eab7b7; cursor:pointer;
+						width: 30px; height:30px; background-color:#960000;
+						padding:10px; border-radius:50%;" @onclick=@(()=>{service.DeleteImage(Image);})>
+						<i class="bi bi-trash3-fill" 
+						   style="pointer-events:none;"></i>
+					</div>
+				}
+				
 			}
 		</div>
 		<div class="flex-grow-1"></div>
@@ -118,6 +122,7 @@ else
 @code {
 	[Parameter] public PbtAImage Image { get; set; }
 	[Parameter] public bool IsMaster { get; set; }
+	[Parameter] public bool IsInPeopleViewer { get; set; }
 	[Parameter] public EventCallback ExitFullScreenClicked { get; set; }
 	[Parameter] public bool IsForcedFullscreen { get; set; } = false;
 	[Parameter] public float ForcedSize { get; set; } = 300.0f;
