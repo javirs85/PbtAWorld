@@ -181,7 +181,12 @@
 						<div class="InnerColumContent">
 							@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.DebtMovements))
 							{
-								<MoveViewer ID="m.ID" Player=Player IsSelected=false Clicked=@(_ => Select(m, FocusOnDetailed.DebtMoves)) ForceUpdate="Update" />
+								<MoveViewer 
+									ID="m.ID" 
+									Player=Player
+									IsSelected=false 
+									Clicked=@(_ => Select(m, FocusOnDetailed.DebtMoves)) 
+									ForceUpdate="Update" />
 							}
 						</div>
 					}

@@ -14,29 +14,102 @@
 @inject IDataBaseController Meta;
 @inject WhiteBoard.WhiteBoardService WhiteboardService
 
-<div class="bg-dark text-light p-3 fs-2 h-100">
-	<EditForm Model="Player">
-		<div class="BigContainer d-flex gap-1">
-			<div class="RightColumn">
-				<div class="RightColumnButton hoverable" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
-				<div class="RightColumnButton hoverable" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
-				<div class="RightColumnButton hoverable" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
-				<div class="RightColumnButton hoverable" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass"></i></div>
-				<div class="RightColumnButton hoverable" @onclick=ShowCityMoves><i class="bi bi-moon-stars-fill"></i></div>
-				<div class="RightColumnButton hoverable" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
-			</div>
-			<div class="d-flex flex-column fs-5">
-				<MasterMovePackViewer MovesPack="MasterMoves" />
-				<div class="CircleSelector">
-					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
-					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
-					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
-					<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
-				</div>
-				<MasterMovePackViewer MovesPack="SelectedCircleMoves" HideTittle="true" />
-			</div>
+<div class="text-light p-3 h-100 container-fluid" style="background:black;">
+	<div class="BigContainer  d-flex h-100 flex-wrap gap-1">
+		<div class="RightColumn row d-flex flex-column h-100 fs-2" style="width:60px;">
+			<div class="RightColumnButton hoverable" @onclick=OpenPeopleViewerRequested><i class="bi bi-people-fill"></i></div>
+			<div class="RightColumnButton hoverable" @onclick=OpenLastRollViewerRequested><i class="bi bi-dice-5"></i></div>
+			<div class="RightColumnButton hoverable" @onclick=OpenImageManagerRequested><i class="bi bi-image"></i></div>
+			<div class="RightColumnButton hoverable" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass"></i></div>
+			<div class="RightColumnButton hoverable" @onclick=ShowCityMoves><i class="bi bi-moon-stars-fill"></i></div>
+			<div class="RightColumnButton hoverable" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
 		</div>
-	</EditForm>
+		<div class="d-flex gap-1 h-100 flex-grow-1 flex-wrap">
+			<div class="d-flex flex-column" style="background:#25282c;">
+				<MasterMovePackViewer MovesPack="MasterMoves" />
+				<div class="d-flex flex-column gap-0">
+					<div class="CircleSelector">
+						<div style="max-width:100px;" class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
+						<div style="max-width:100px;" class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
+						<div style="max-width:100px;" class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
+						<div style="max-width:100px;" class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
+					</div>
+					<MasterMovePackViewer MovesPack="SelectedCircleMoves" NoPadding=true HideTittle="true" />
+				</div>
+				<div class="flex-grow-1 m-3">
+					<button class="btn btn-dark w-100 h-100" @onclick=SaveAll>Save all changes</button>
+				</div>
+			</div>
+			<div class="d-flex h-100 flex-wrap">
+				<div class="d-flex flex-column gap-1" style="width:1050px;">
+					@foreach (var p in from i in Game.Players
+											where i.Name != "Master"
+											select i as USCharacterSheet)
+					{
+						<div class="p-1" style="background:#25282c;">
+							<div>@p.Name</div>
+							<div class="d-flex flex-column ps-2">
+								<div class="d-flex">
+									<div class="d-flex flex-column" style="width:350px;">
+										@foreach (var m in p.SelectedArchetypeMoves)
+										{
+											<div class="" style="background:red;">
+												<MoveViewer ID="m"
+															Player=Player
+															IsSelected=@(SelectedMove is not null && SelectedMove == m)
+															Clicked="@(()=>{MoveClicked(m);})"
+															ForceUpdate="Update" />
+											</div>
+										}
+									</div>
+									<div class="d-flex flex-column" style="width:350px;">
+										@foreach (var m in p.SelectedCorruptionMoves)
+										{
+											<div class="" style="background:red;">
+												<MoveViewer ID="m"
+															Player=Player
+															IsSelected=@(SelectedMove is not null && SelectedMove == m)
+															Clicked="@(()=>{MoveClicked(m);})"
+															ForceUpdate="Update" />
+											</div>
+										}
+									</div>
+									<div class="d-flex flex-column" style="width:350px;">
+										<EditForm Model="p">
+											<InputTextArea 
+												class="form-control h-100 w-100 bg-dark text-light" 
+												style="border:1px solid #4f4f4f; outline:none !important;" 
+												@bind-Value="p.CurrentGoal" />
+										</EditForm>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+			<div class="d-flex flex-column flex-grow-1 h-100 gap-2" style="overflow:auto;">
+				@foreach(var c in Game.People.Circles)
+				{
+					<div class="p-1" style="background:#25282c;">
+						<div>@c.Name</div>
+						<div class="d-flex flex-column">
+							@foreach (var f in c.Factions)
+							{
+								<div>@f.Name</div>
+								<EditForm Model="f">
+									<InputTextArea 
+										class="form-control bg-dark text-light" 
+										style="border:1px solid #4f4f4f; outline:none !important;" 
+										@bind-Value="@f.CurrentlyWorkingOn" />
+								</EditForm>
+							}
+						</div>
+					</div>
+				}
+			</div>
+		</div>		
+	</div>
 </div>
 
 <!--VTT MiniSheet-->
@@ -72,15 +145,17 @@
 		}
 
 	</div>
-	<div class="d-flex flex-column">
+	<div class="d-flex flex-column pack">
 		<MasterMovePackViewer MovesPack="MasterMoves"/>
-		<div class="CircleSelector">
-			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
-			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
-			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
-			<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
+		<div class="CirclesSection d-flex flex-column gap-0">
+			<div class="CircleSelector">
+				<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Mortalis?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Mortalis;})>Mort.</div>
+				<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Noche?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Noche;})>Noche</div>
+				<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Poder?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Poder;})>Poder</div>
+				<div class="CircleSelectorButton hoverable @(SelectedCircle == Circles.Velo?"hoverable Selected":"")" @onclick=@(()=>{SelectedCircle= Circles.Velo;})>Velo</div>
+			</div>
+			<MasterMovePackViewer MovesPack="SelectedCircleMoves" HideTittle="true" />
 		</div>
-		<MasterMovePackViewer MovesPack="SelectedCircleMoves" HideTittle="true" />
 	</div>
 	
 	}
@@ -102,7 +177,30 @@
 	[Parameter] public EventCallback OpenVTTRequested { get; set; }
 	[Parameter] public EventCallback CloseVTTRequested { get; set; }
 
+	USMoveIDs? SelectedMove = null;
+
 	private bool IsTokensTryMaximized = false;
+
+	void Update()
+	{
+		InvokeAsync(() => { StateHasChanged(); });
+	}
+
+	void SaveAll()
+	{
+		Game.People.StoreInJsonFile(Game.SessionID);
+		
+	}
+
+
+	void MoveClicked(USMoveIDs m)
+	{
+		if (SelectedMove == m)
+			SelectedMove = null;
+		else
+			SelectedMove = m;
+	}
+
 
 	private bool IsShowingCityMoves = false;
 	private bool IsShowingVTT = false;
@@ -129,6 +227,7 @@
 		IsShowingCityMoves = false;
 		CloseVTTRequested.InvokeAsync();
 	}
+
 
 	private Circles SelectedCircle = Circles.Mortalis; 
 

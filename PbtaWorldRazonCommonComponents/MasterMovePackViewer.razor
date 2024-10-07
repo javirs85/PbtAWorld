@@ -1,18 +1,21 @@
-﻿<div class="MasterMovePack d-flex flex-column mb-3 p-1">
+﻿<div class="MasterMovePack d-flex flex-column mb-3 @(NoPadding?"":"p-1")">
 	@if(!HideTittle)
 	{
 		<div class="MasterMovePackTitle"><DecodedString Value="@MovesPack.Title"/> </div>
 	}
 	
-	@foreach (var m in MovesPack.Moves.OrderBy(x => x.Order))
-	{
-		<div class="MasterMove @m.HowOften.ToString()" @onclick=@m.Use>
-			<DecodedString Value="@m.Tittle" />			
-		</div>
-	}
+	<div style="border-radius:1em; overflow:hidden;">
+		@foreach (var m in MovesPack.Moves.OrderBy(x => x.Order))
+		{
+			<div class="MasterMove @m.HowOften.ToString()" @onclick=@m.Use>
+				<DecodedString Value="@m.Tittle" />			
+			</div>
+		}
+	</div>
 </div>
 
 @code {
 	[Parameter] public MasterMovePack MovesPack { get; set; } = new();
 	[Parameter] public bool HideTittle { get; set; } = false;
+	[Parameter] public bool NoPadding { get; set; } = false;
 }
