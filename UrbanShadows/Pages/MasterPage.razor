@@ -23,6 +23,7 @@
 			<div class="RightColumnButton hoverable" @onclick=OpenClocksViewerRequested><i class="bi bi-hourglass"></i></div>
 			<div class="RightColumnButton hoverable" @onclick=ShowCityMoves><i class="bi bi-moon-stars-fill"></i></div>
 			<div class="RightColumnButton hoverable" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
+			<div class="RightColumnButton hoverable" @onclick=OpenCityMapInternal><i class="bi bi-compass"></i></div>
 		</div>
 		<div class="d-flex gap-1 h-100 flex-grow-1 flex-wrap">
 			<div class="d-flex flex-column" style="background:#25282c;">
@@ -175,6 +176,8 @@
 	[Parameter] public EventCallback OpenLastRollViewerRequested { get; set; }
 	[Parameter] public EventCallback OpenClocksViewerRequested { get; set; }
 	[Parameter] public EventCallback OpenVTTRequested { get; set; }
+	[Parameter] public EventCallback OpenCityMapRequested { get; set; }
+	[Parameter] public EventCallback CloseCityMapRequested { get; set; }
 	[Parameter] public EventCallback CloseVTTRequested { get; set; }
 
 	USMoveIDs? SelectedMove = null;
@@ -186,10 +189,11 @@
 		InvokeAsync(() => { StateHasChanged(); });
 	}
 
-	void SaveAll()
+	async Task SaveAll()
 	{
 		Game.People.StoreInJsonFile(Game.SessionID);
-		
+		foreach (var p in Game.Players)
+			await Game.StoreChangesOnCharacter(p, "");
 	}
 
 
@@ -204,10 +208,17 @@
 
 	private bool IsShowingCityMoves = false;
 	private bool IsShowingVTT = false;
+	private bool IsShowingCityMap = false;
 	private void OpenVTTInternal()
 	{
 		IsShowingVTT = true;
 		OpenVTTRequested.InvokeAsync();
+	}
+
+	private void OpenCityMapInternal()
+	{
+		IsShowingCityMap = true;
+		OpenCityMapRequested.InvokeAsync();
 	}
 
 	private void HideVTT()

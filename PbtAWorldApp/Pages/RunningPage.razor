@@ -17,6 +17,7 @@
 @inject CharacterSelectorService CharacterSelectorService
 @inject ImagesService ImagesService
 @inject WhiteBoard.WhiteBoardService WhiteBoardService
+@inject CityMapService CityMapService
 @inject VTTService VTTService
 @inject IToastService Toaster;
 
@@ -42,6 +43,13 @@ else if(IsShowingClocks)
 	}
 </div>
 
+
+@if (IsShowingCityMap)
+{
+	<CityMap ExitRequested=@(()=>{IsShowingCityMap = false;})
+			 Character="SelectedCharacter"
+			 IsMaster=IsMaster />
+}
 
 @if(IsShowingPeople)
 {
@@ -76,9 +84,10 @@ else if(SelectedGame == AvailableGames.US)
 										  OpenImageManagerRequested="ShowImages"
 										  OpenLastRollViewerRequested="ShowLastRoll"
 										  OpenPeopleViewerRequested="ShowPeople"
-									   OpenClocksViewerRequested="OpenClocks"
-									   CloseVTTRequested="CloseVTT"
-										  OpenVTTRequested="OpenVTT"/>
+										  OpenClocksViewerRequested="OpenClocks"
+										  CloseVTTRequested="CloseVTT"
+										  OpenVTTRequested="OpenVTT"
+										  OpenCityMapRequested="OpenCityMap"/>
 	}
 	else
 	{
@@ -88,7 +97,8 @@ else if(SelectedGame == AvailableGames.US)
 										  OpenPeopleViewerRequested="ShowPeople"
 										  OpenClocksViewerRequested="OpenClocks"
 										  CloseVTTRequested="CloseVTT"
-										  OpenVTTRequested="OpenVTT" />
+										  OpenVTTRequested="OpenVTT" 
+										  OpenCityMapRequested="OpenCityMap"/>
 	}
 }
 else if(SelectedGame == AvailableGames.SV)
@@ -121,9 +131,11 @@ else if(SelectedGame == AvailableGames.SV)
 	private bool IsShowingClocks = false;
 	private bool IsShowingImagesManager = false;
 	private bool IsShowingVTT = false;
+	private bool IsShowingCityMap = false;
 	private bool IsShowingPeople = false;
 
 	private IGameController SelectedGameController;
+	private PbtACharacter SelectedCharacter;
 	private ClocksManager Clocks;
 
 	AvailableGames SelectedGame = AvailableGames.NotSet;
@@ -154,6 +166,8 @@ else if(SelectedGame == AvailableGames.SV)
 
 		VTTService.UpdateUI -= ForceUpdate;
 		VTTService.UpdateUI += ForceUpdate;
+		CityMapService.UpdateUI -= ForceUpdate;
+		CityMapService.UpdateUI += ForceUpdate;
 		WhiteBoardService.CurrentGame = localGameId;
 		WhiteBoardService.OpenClocksTryForAllClients -= OpenClocks;
 		WhiteBoardService.OpenClocksTryForAllClients += OpenClocks;
@@ -162,6 +176,7 @@ else if(SelectedGame == AvailableGames.SV)
 		if (localGameId == AvailableGames.DI)
 		{
 			DinoPlayer = System.Text.Json.JsonSerializer.Deserialize<DinoCharacter>(data);
+			SelectedCharacter = DinoPlayer;
 			SelectedGameController = DinoGame;
 			DinoPlayer.Game = DinoGame;
 			Meta.SelectedPlayer = DinoPlayer;
@@ -170,6 +185,7 @@ else if(SelectedGame == AvailableGames.SV)
 		else if(localGameId == AvailableGames.DW)
 		{
 			DWPlayer = System.Text.Json.JsonSerializer.Deserialize<DungeonWorld.DWCharacter>(data);
+			SelectedCharacter = DWPlayer;
 			var oldOne = Meta.SelectedSeason.Players.Find(x => x.ID == DWPlayer.ID);
 			Meta.SelectedSeason.Players.Remove(oldOne);
 			Meta.SelectedSeason.Players.Add(DWPlayer);
@@ -184,6 +200,7 @@ else if(SelectedGame == AvailableGames.SV)
 		else if(localGameId == AvailableGames.US)
 		{
 			USPlayer = System.Text.Json.JsonSerializer.Deserialize<UrbanShadows.USCharacterSheet>(data);
+			SelectedCharacter = USPlayer;
 			USPlayer?.ConnectoToMovesService(USMoves);
 			Meta.SelectedPlayer = USPlayer;
 
@@ -228,6 +245,7 @@ else if(SelectedGame == AvailableGames.SV)
 		else if(localGameId == AvailableGames.SV)
 		{
 			SVPlayer = System.Text.Json.JsonSerializer.Deserialize<SVCharacter>(data);
+			SelectedCharacter = SVPlayer;
 			Meta.SelectedPlayer = SVPlayer;
 			SVGame.SessionID = Meta.SelectedSeason.CampaignGuid;
 			SelectedGameController = SVGame;
@@ -237,6 +255,8 @@ else if(SelectedGame == AvailableGames.SV)
 
 		SelectedGameController.ShowToastEvent -= ShowInfo;
 		SelectedGameController.ShowToastEvent += ShowInfo;
+
+		CityMapService.Game = SelectedGameController;
 
 		CharacterSelectorService.Players = Players;
 		LastRollViewerService.SetGameMode(localGameId);
@@ -255,6 +275,16 @@ else if(SelectedGame == AvailableGames.SV)
 	private void OpenVTT()
 	{
 		IsShowingVTT = true;
+		InvokeAsync(StateHasChanged);
+	}
+	private void OpenCityMap()
+	{
+		IsShowingCityMap = true;
+		InvokeAsync(StateHasChanged);
+	}
+	private void CloseCityMap()
+	{
+		IsShowingCityMap = false;
 		InvokeAsync(StateHasChanged);
 	}
 	private void CloseVTT()

@@ -56,6 +56,7 @@ builder.Services.AddScoped<DinoCharacter>();
 builder.Services.AddSingleton<MoveSelector.MoveSelectorService>();
 builder.Services.AddScoped<CharacterSelectorService>();
 builder.Services.AddSingleton<VTTService>();
+builder.Services.AddSingleton<CityMapService>();
 builder.Services.AddScoped<VTTLocalManagerService>();
 builder.Services.AddBlazorBootstrap();
 

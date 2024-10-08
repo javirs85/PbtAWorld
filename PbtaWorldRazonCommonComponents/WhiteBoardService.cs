@@ -259,13 +259,21 @@ public class WhiteBoardService
 		return t;
 	}
 
+	public Token GenerateTokenFromPeople(ICharacter dude)
+	{
+		return new Token
+		{
+			ID = VTTTokens.FromICharacter,
+			ComesFromImageName = dude.Name,
+			X = 50,
+			Y = 50,
+			Status = TokenStatus.Hidden
+		};
+	}
+
 	public void AddTokenFromPeople(ICharacter dude)
 	{
-		var t = new Token { 
-			ID = VTTTokens.FromICharacter, 
-			ComesFromImageName = dude.Name,
-			X = 50, Y = 50, 
-			Status = TokenStatus.Hidden };
+		var t = GenerateTokenFromPeople(dude);
 		t.UpdateNeeeded -= Update;
 		t.UpdateNeeeded += Update;
 		Tokens.Add(t);

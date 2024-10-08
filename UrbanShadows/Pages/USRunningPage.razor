@@ -400,6 +400,7 @@
 				<div class="RightColumnButton" @onclick=OpenVTTInternal><i class="bi bi-globe-europe-africa"></i></div>
 				<div class="RightColumnButton" @onclick=ShowCityMoves><i class="bi bi-moon-stars-fill"></i></div>
 				<div class="RightColumnButton" @onclick=ShowCharacterCreationModal><i class="bi bi-person-circle"></i></div>
+				<div class="RightColumnButton hoverable" @onclick=OpenCityMapInternal><i class="bi bi-compass"></i></div>
 			</div>
 		</div>
 	</EditForm>
@@ -559,6 +560,7 @@
 	[Parameter] public EventCallback OpenLastRollViewerRequested { get; set; }
 	[Parameter] public EventCallback OpenClocksViewerRequested { get; set; }
 	[Parameter] public EventCallback OpenVTTRequested { get; set; }
+	[Parameter] public EventCallback OpenCityMapRequested { get; set; }
 	[Parameter] public EventCallback CloseVTTRequested { get; set; }
 
 	private void OpenVTTInternal()
@@ -566,6 +568,14 @@
 		IsShowingVTT = true;
 		OpenVTTRequested.InvokeAsync();
 	}
+	
+	private void OpenCityMapInternal()
+	{
+		//IsShowingVTT = true;
+		OpenCityMapRequested.InvokeAsync();
+	}
+
+	
 
 	private void HideVTT()
 	{
