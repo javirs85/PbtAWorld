@@ -10,6 +10,7 @@ public interface IGameController
 {
 	public event EventHandler UpdateUI;
 	public event EventHandler<string> ShowToastEvent;
+	public Guid SessionID { get; set; }
 	public void Update();
 	public List<Monster> MonsterDefinitionsInCurrentScene { get; set; }
 	public void AddMonsterDefinition(Monster monster);

@@ -56,7 +56,12 @@ public class CityMapService
 
 	public void AddTokenFromPeople(ICharacter dude)
 	{
-		var t = GenerateTokenFromPeople(dude);
+		AddToken(GenerateTokenFromPeople(dude));
+		
+	}
+
+	private void AddToken(Token t)
+	{
 		t.UpdateNeeeded -= Update;
 		t.UpdateNeeeded += Update;
 		t.Status = TokenStatus.Normal;
@@ -111,4 +116,40 @@ public class CityMapService
 
 		return SelectedToken;
 	}
+
+	public void Save()
+	{
+		var Folder = $"wwwroot/GameImages/{Game.SessionID.ToString()}";
+		var path = $"{Folder}/CityMap.json";
+
+		ToStore toStore = new ToStore();
+		toStore.Tokens = TokensOnScreen;
+		toStore.ImageName = BackgroundImageName;
+
+		var json = System.Text.Json.JsonSerializer.Serialize(toStore);
+
+		System.IO.File.WriteAllText(path, json);
+	}
+
+	public void Load()
+	{
+		var Folder = $"wwwroot/GameImages/{Game.SessionID.ToString()}";
+		var path = $"{Folder}/CityMap.json";
+
+		if (File.Exists(path))
+		{
+			var json = System.IO.File.ReadAllText(path);
+			var loaded = System.Text.Json.JsonSerializer.Deserialize<ToStore>(json);
+			foreach(var t in loaded.Tokens)
+				AddToken(t);
+			BackgroundImageName = loaded.ImageName;
+		}
+	}
+
+	private class ToStore
+	{
+		public List<Token> Tokens { get; set; } = new List<Token>();
+		public string ImageName { get; set; } = string.Empty;
+	}
+
 }
