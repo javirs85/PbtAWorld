@@ -57,7 +57,13 @@ public class CityMapService
 	public void AddTokenFromPeople(ICharacter dude)
 	{
 		AddToken(GenerateTokenFromPeople(dude));
-		
+	}
+
+	public void RemoveToken(Token t)
+	{
+		t.UpdateNeeeded -= Update;
+		TokensOnScreen.Remove(t);
+		Update();
 	}
 
 	private void AddToken(Token t)
@@ -76,6 +82,7 @@ public class CityMapService
 		return new Token
 		{
 			ID = VTTTokens.FromICharacter,
+			Character = dude as PbtACharacter,
 			ComesFromImageName = dude.Name,
 			X = 50,
 			Y = 50,
@@ -131,18 +138,21 @@ public class CityMapService
 		System.IO.File.WriteAllText(path, json);
 	}
 
-	public void Load()
+	public async Task Load()
 	{
 		var Folder = $"wwwroot/GameImages/{Game.SessionID.ToString()}";
 		var path = $"{Folder}/CityMap.json";
 
 		if (File.Exists(path))
 		{
-			var json = System.IO.File.ReadAllText(path);
+			var json = await System.IO.File.ReadAllTextAsync(path);
 			var loaded = System.Text.Json.JsonSerializer.Deserialize<ToStore>(json);
-			foreach(var t in loaded.Tokens)
-				AddToken(t);
-			BackgroundImageName = loaded.ImageName;
+			if(loaded is not null && loaded.Tokens is not null)
+			{
+				foreach (var t in loaded.Tokens)
+					AddToken(t);
+				BackgroundImageName = loaded.ImageName;
+			}			
 		}
 	}
 

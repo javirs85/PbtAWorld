@@ -7,7 +7,7 @@
 @inject CharacterSelectorService CharacterSelectorService
 
 <div class="FullScreenModal">
-	<div class="CloseButton" @onclick=ExitRequested></div>
+	<div class="CloseButton" @onclick=ExitRequested style="z-index:9999;"></div>
 
 	@if(IsMaster)
 	{
@@ -21,6 +21,7 @@
 					}
 				</InputSelect>
 				<button class="btn btn-primary" @onclick=AddFromPeople>Add people</button>
+				<button class="btn btn-primary" @onclick=DeleteSelected>DeleteSelected</button>
 				<button class="btn btn-primary" @onclick=Service.Save>Save</button>
 				<button class="btn btn-primary" @onclick=Service.Load>Load</button>
 			</EditForm>
@@ -59,7 +60,7 @@
 	[Parameter] public PbtACharacter Character { get; set; } = new();
 	[Parameter] public bool IsMaster { get; set; } = false;
 
-	protected override void OnInitialized()
+	protected override async Task OnInitializedAsync()
 	{
 		Service.BackgroundImageName = WBService.GetMaps().First();
 		Service.UpdateUI -= UpdateUi;
@@ -67,6 +68,22 @@
 
 		Service.ForceSelection -= ForceSelection;
 		Service.ForceSelection += ForceSelection;
+
+		if(Service.TokensOnScreen.Count == 0)
+		{
+			await Service.Load();
+		}
+
+		var t = Service.TokensOnScreen.FirstOrDefault(x => x.Character?.Name == Character.Name);
+		if(t is not null)
+		{
+			SelectedTokens.Clear();
+			t.Character = Character;
+			SelectedTokens.Add(t);
+		}
+		else
+			SelectedTokens.Clear();
+			
 	}
 
 	private enum Actions {Selecting, moving, attention};
@@ -117,6 +134,10 @@
 			{
 				if(SelectedTokens.Count > 0)
 					Service?.MoveToken(SelectedTokens[0], e.OffsetX, e.OffsetY);
+				else
+				{
+					var t = Service?.SelectToken(e.OffsetX, e.OffsetY);
+				}
 			}
 			else //right click for attention marker
 			{
@@ -143,5 +164,12 @@
 	{
 		InvokeAsync(StateHasChanged);
 	}
-	
+
+	private void DeleteSelected()
+	{
+		if(SelectedTokens.Count >0)
+		{
+			Service.RemoveToken(SelectedTokens[0]);
+		}
+	}
 }
