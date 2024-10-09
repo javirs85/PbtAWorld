@@ -8,6 +8,18 @@
 
 <div class="FullScreenModal">
 	<div class="CloseButton" @onclick=ExitRequested style="z-index:9999;"></div>
+	<div class="floatingButton hoverable"
+		 @onclick=ShowPeopleViewerRequested
+		style="
+			position:fixed; top:10px; left:10px; z-index:9999; 
+			background:black; border:1px solid gray; 
+			width:71px; line-height:30px;
+			display:flex; justify-content:center;
+			box-shadow:0px 2px black; border-radius:1em; padding:1em;">
+		<div class="">
+				<i class="bi bi-people-fill fs-2"></i>
+		</div>
+	</div>
 
 	@if(IsMaster)
 	{
@@ -92,6 +104,7 @@
 @code {
 	[Parameter] public EventCallback ExitRequested { get; set; }
 	[Parameter] public EventCallback UpdateUI { get; set; }
+	[Parameter] public EventCallback ShowPeopleViewerRequested { get; set; }
 	[Parameter] public PbtACharacter Character { get; set; } = new();
 	[Parameter] public bool IsMaster { get; set; } = false;
 
