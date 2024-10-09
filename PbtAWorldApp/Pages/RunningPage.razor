@@ -48,14 +48,15 @@ else if(IsShowingClocks)
 {
 	<CityMap ExitRequested=@(()=>{IsShowingCityMap = false;})
 			 Character="SelectedCharacter"
+			 ShowPeopleViewerRequested="@(() => {IsShowingPeople = true; IsShowingCityMap= false;})"
 			 IsMaster=IsMaster />
 }
-
-@if(IsShowingPeople)
+else if(IsShowingPeople)
 {
 	<PeopleViewr GameID="@Meta.SelectedSeason.CampaignGuid"
 				 IsMaster=IsMaster
 				 Game=SelectedGameController
+				 ShowCityMapRequested="@(() => {IsShowingPeople = false; IsShowingCityMap= true;})"
 				 ExitRequested=@(()=>{IsShowingPeople = false;}) />
 }
 
