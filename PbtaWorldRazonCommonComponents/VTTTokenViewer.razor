@@ -10,6 +10,7 @@
 		width: @(Token.SizePixels+"px");
 		height: @(Token.SizePixels+"px");
 		border-radius:@(Token.SizePixels+"px");
+		border: @(Border?"1px solid #7776b7":"none");
 		background-image:url(@ImagePath);
 		background-position-x:@(Token.ImgX+"px"); 
 		background-position-y:@(Token.ImgY+"px");
@@ -89,6 +90,7 @@
 	[Parameter] public bool ShowingOptionsPanelForSelectedItems { get; set; } = false;
 	[Parameter] public PbtALib.ifaces.IGameController? Game { get; set; }
 	[Parameter] public bool isOUTSIDEMap { get; set; } = false;
+	[Parameter] public bool Border { get; set; } = false;
 
 
 	private VTTTokens _vtttoken = VTTTokens.WhiteLady1;

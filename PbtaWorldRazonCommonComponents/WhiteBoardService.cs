@@ -204,6 +204,8 @@ public class WhiteBoardService
 		if (TheToken == null)
 		{
 			TheToken = new Token { Character = character, X = 100, Y = 100 };
+			TheToken.Character = character;
+			TheToken.ComesFromImageName = character.Name;
 			Tokens.Add(TheToken);
 			TheToken.StoreChangesInCharacterSheet += StoreChangesInCharacterSheet;
 			character.UpdateVTT += Update;
@@ -253,24 +255,32 @@ public class WhiteBoardService
 		t.UpdateNeeeded += Update;
 		Tokens.Add(t);
 
-		ForceSelection?.Invoke(this, t);
+		//ForceSelection?.Invoke(this, t);
 		Update();
 
 		return t;
 	}
 
+	public Token GenerateTokenFromPeople(ICharacter dude)
+	{
+		return new Token
+		{
+			ID = VTTTokens.FromICharacter,
+			ComesFromImageName = dude.Name,
+			X = 50,
+			Y = 50,
+			Status = TokenStatus.Hidden
+		};
+	}
+
 	public void AddTokenFromPeople(ICharacter dude)
 	{
-		var t = new Token { 
-			ID = VTTTokens.FromICharacter, 
-			ComesFromImageName = dude.Name,
-			X = 50, Y = 50, 
-			Status = TokenStatus.Hidden };
+		var t = GenerateTokenFromPeople(dude);
 		t.UpdateNeeeded -= Update;
 		t.UpdateNeeeded += Update;
 		Tokens.Add(t);
 
-		ForceSelection?.Invoke(this, t);
+		//ForceSelection?.Invoke(this, t);
 		Update();
 	}
 

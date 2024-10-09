@@ -1,0 +1,217 @@
+﻿@using Blazored.Toast.Services
+@using Microsoft.AspNetCore.Components.Forms
+@using WhiteBoard
+@inject CityMapService Service
+@inject WhiteBoard.WhiteBoardService WBService
+@inject IToastService Toaster
+@inject CharacterSelectorService CharacterSelectorService
+
+<div class="FullScreenModal">
+	<div class="CloseButton" @onclick=ExitRequested style="z-index:9999;"></div>
+
+	@if(IsMaster)
+	{
+		<div class="MasterTools d-flex gap-1" style="position:fixed; left:10px; top:10px; z-index:120;">
+			<EditForm Model="this">
+				@CurrentAction.ToString()
+				<InputSelect @bind-Value=Service.BackgroundImageName>
+					@foreach (var op in WBService.GetMaps())
+					{
+						<option value="@op">@op</option>
+					}
+				</InputSelect>
+				<button class="btn btn-primary" @onclick=DeleteSelected>DeleteSelected</button>
+				<button class="btn btn-primary" @onclick=Service.Save>Save</button>
+				<button class="btn btn-primary" @onclick=Service.Load>Load</button>
+			</EditForm>
+			<div class="TokensTry @(IsTokensTryMaximized?"":"Minimized")">
+				@if (IsTokensTryMaximized)
+				{
+					<div class="hoverable d-flex justify-content-center bg-Dark"
+						 
+						@onclick=@(()=>{IsTokensTryMaximized = false;})>Close</div>
+					<div style="display: flex;
+										flex-wrap: wrap;
+										background: black;
+										padding: 1em;
+										border: 1px solid gray;
+										border-radius: 1em;">
+						@foreach (VTTTokens t in Enum.GetValues(typeof(VTTTokens)))
+						{
+							@if (!t.IsProp() && !t.IsDungeonProp() && !t.IsForest()
+												&& t != VTTTokens.Green6 && t != VTTTokens.BoxGray && t != VTTTokens.Black7 && t != VTTTokens.Black8
+												&& t != VTTTokens.Red7 && t != VTTTokens.Red8 && t != VTTTokens.Blue7 && t != VTTTokens.Blue8
+												)
+							{
+								<div class="TokenSelector"
+									 @onclick=@(()=>{AddMonster(t);})>
+									<VTTTokenViewer VTTToken="t" isOUTSIDEMap=true/>
+								</div>
+							}
+						}
+					</div>
+					
+				}
+				else
+				{
+					<div class="hoverable" @onclick=@(()=>{IsTokensTryMaximized = true;})>Add token</div>
+					<div class="hoverable" @onclick=AddFromPeople>Add from people</div>
+				}
+
+			</div>
+		</div>
+	}
+	
+	<div class="Map" id="Map" 
+		 style="position:relative; top:0; left:0; width:100%; height:100%; overflow:auto;"
+		@onmousedown=MouseDown @onclick:stopPropagation @onclick:preventDefault 
+		@oncontextmenu:preventDefault>
+		<img src="@Service.BackgroundImagePath" style="position:absolute; top:0; left:0;"/>
+		@foreach (var marker in Service.MarkerPositions)
+		{
+			<div class="AttentionMarker" style="@($"top: {marker.Position.Y}px; left: {marker.Position.X}px;")">
+				<div class="FlashingContainer" style="opacity: @(marker.IsFlashing?"1":"0")">
+					<div class="AttentionCore @marker.EncodedClass" />
+					<div class="AttentionMarkerCircle1  Flashing"></div>
+					<div class="AttentionMarkerCircle2  Flashing @marker.EncodedClass"></div>
+					<div class="AttentionMarkerCircle3  Flashing"></div>
+				</div>
+			</div>
+		}
+		@foreach(var t in Service.TokensOnScreen)
+		{
+			<VTTTokenViewer Token="t" Game="Service.Game" IsMaster=IsMaster
+							SelectedTokens="SelectedTokens"
+							Border="true"
+							ShowingOptionsPanelForSelectedItems=false />
+		}
+	</div>
+	
+</div>
+
+@code {
+	[Parameter] public EventCallback ExitRequested { get; set; }
+	[Parameter] public EventCallback UpdateUI { get; set; }
+	[Parameter] public PbtACharacter Character { get; set; } = new();
+	[Parameter] public bool IsMaster { get; set; } = false;
+
+	bool IsTokensTryMaximized = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		Service.BackgroundImageName = WBService.GetMaps().First();
+		Service.UpdateUI -= UpdateUi;
+		Service.UpdateUI += UpdateUi;
+
+		Service.ForceSelection -= ForceSelection;
+		Service.ForceSelection += ForceSelection;
+
+		if(Service.TokensOnScreen.Count == 0)
+		{
+			await Service.Load();
+		}
+
+		var t = Service.TokensOnScreen.FirstOrDefault(x => x.Character?.Name == Character.Name);
+		if(t is not null)
+		{
+			SelectedTokens.Clear();
+			t.Character = Character;
+			SelectedTokens.Add(t);
+		}
+		else
+			SelectedTokens.Clear();
+
+	}
+
+	private enum Actions {Selecting, moving, attention};
+	Actions CurrentAction;
+
+	public string OwnerStringClass => Character.ClassString;
+	public List<Token> SelectedTokens = new();	
+
+	List<Token> TokensOnScreen = new();
+
+	private void MouseDown(MouseEventArgs e)
+	{
+		if(IsMaster)
+		{
+			if(e.Buttons == 1) //left(normal) click
+			{
+				var t = Service?.SelectToken(e.OffsetX, e.OffsetY);
+				if(t is not null)
+				{
+					if(SelectedTokens.Count > 0 && t == SelectedTokens[0])
+						SelectedTokens.Clear();
+					else
+					{
+						SelectedTokens.Clear();
+						SelectedTokens.Add(t);
+					}
+
+				}					
+				else
+				{
+					if (SelectedTokens.Count > 0)
+					{
+						foreach (var tok in SelectedTokens)
+						{
+							Service?.MoveToken(tok, e.OffsetX, e.OffsetY);
+						}
+					}
+				}	
+			}
+			else //right click for attention marker
+			{
+				Service?.ShowPlayerAttention(OwnerStringClass, new Point(e));
+			}
+		}
+		else
+		{
+			if (e.Buttons == 1) //left(normal) click
+			{
+				if(SelectedTokens.Count > 0)
+					Service?.MoveToken(SelectedTokens[0], e.OffsetX, e.OffsetY);
+				else
+				{
+					var t = Service?.SelectToken(e.OffsetX, e.OffsetY);
+				}
+			}
+			else //right click for attention marker
+			{
+				Service?.ShowPlayerAttention(OwnerStringClass, new Point(e));
+			}
+		}
+	}
+
+	private async Task AddFromPeople()
+	{
+		var dude = await CharacterSelectorService.StartSelection();
+		Service.AddTokenFromPeople(dude);
+	}
+
+	private async Task AddMonster(VTTTokens t)
+	{
+		Service.AddToken(t);
+	}
+
+	private void ForceSelection(object? sender, Token t)
+	{
+		if (SelectedTokens.Count > 0)
+			if (SelectedTokens[0].X != 50 || SelectedTokens[0].Y != 50)
+				SelectedTokens.Clear();
+		SelectedTokens.Add(t);
+	}
+
+	private void UpdateUi(object? sender, EventArgs e)
+	{
+		InvokeAsync(StateHasChanged);
+	}
+
+	private void DeleteSelected()
+	{
+		if(SelectedTokens.Count >0)
+		{
+			Service.RemoveToken(SelectedTokens[0]);
+		}
+	}
+}

@@ -4,7 +4,7 @@
 @inject ImagesService ImagesService
 @inject IDataBaseController DB;
 
-<div class="FullScreenModal" @onclick=Hide>
+<div class="FullScreenModal" @onclick=Hide style="z-index:8888;">
     <div class="ModalBody" @onclick:stopPropagation>
         @if (CSService.Game.People is not null && CSService.Game.People.Circles.Count > 1)
         {

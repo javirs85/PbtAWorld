@@ -315,7 +315,8 @@ public class Token
 	{
 		get { return _monster; }
 		set { _monster = value;
-			UpdateInners();
+			if(_monster != null)
+				UpdateInners();
 		}
 	}
 

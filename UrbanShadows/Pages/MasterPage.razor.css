@@ -57,7 +57,7 @@
 
 .CircleSelector{
     display:flex;
-    margin:0 10px;
+    margin:0 5px;
 }
     .CircleSelector div {
         background: #2d2b2b;
@@ -70,12 +70,14 @@
 .hoverable{
     opacity:0.2;
 }
-.hoverable:hover{
-    opacity:1;
-}
-.hoverableSelected{
-    opacity:1;
-}
+    .hoverable:hover{
+        opacity:1;
+    }
+    .hoverable.Selected {
+        opacity: 1;
+        background: black;
+        border-radius: 10px 10px 0px 0px;
+    }
 
 .TokensTry {
     display:flex;
