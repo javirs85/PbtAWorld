@@ -59,6 +59,18 @@ public class CityMapService
 		AddToken(GenerateTokenFromPeople(dude));
 	}
 
+	public void AddToken(VTTTokens TokenType)
+	{
+		var t = new Token { ID = TokenType, X = 50, Y = 50, Status = TokenStatus.Hidden };
+		t.UpdateNeeeded -= Update;
+		t.UpdateNeeeded += Update;
+		t.Status = TokenStatus.Normal;
+		TokensOnScreen.Add(t);
+
+		//ForceSelection?.Invoke(this, t);
+		Update();
+	}
+
 	public void RemoveToken(Token t)
 	{
 		t.UpdateNeeeded -= Update;
@@ -73,7 +85,7 @@ public class CityMapService
 		t.Status = TokenStatus.Normal;
 		TokensOnScreen.Add(t);
 
-		ForceSelection?.Invoke(this, t);
+		//ForceSelection?.Invoke(this, t);
 		Update();
 	}
 
@@ -105,7 +117,7 @@ public class CityMapService
 
 	public Token? SelectToken(double x, double y)
 	{
-		double minDist = 100000;
+		double minDist = 100;
 		Token? SelectedToken = null;
 
 		foreach (var t in TokensOnScreen)

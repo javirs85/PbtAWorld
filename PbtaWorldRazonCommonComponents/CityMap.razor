@@ -20,11 +20,45 @@
 						<option value="@op">@op</option>
 					}
 				</InputSelect>
-				<button class="btn btn-primary" @onclick=AddFromPeople>Add people</button>
 				<button class="btn btn-primary" @onclick=DeleteSelected>DeleteSelected</button>
 				<button class="btn btn-primary" @onclick=Service.Save>Save</button>
 				<button class="btn btn-primary" @onclick=Service.Load>Load</button>
 			</EditForm>
+			<div class="TokensTry @(IsTokensTryMaximized?"":"Minimized")">
+				@if (IsTokensTryMaximized)
+				{
+					<div class="hoverable d-flex justify-content-center bg-Dark"
+						 
+						@onclick=@(()=>{IsTokensTryMaximized = false;})>Close</div>
+					<div style="display: flex;
+										flex-wrap: wrap;
+										background: black;
+										padding: 1em;
+										border: 1px solid gray;
+										border-radius: 1em;">
+						@foreach (VTTTokens t in Enum.GetValues(typeof(VTTTokens)))
+						{
+							@if (!t.IsProp() && !t.IsDungeonProp() && !t.IsForest()
+												&& t != VTTTokens.Green6 && t != VTTTokens.BoxGray && t != VTTTokens.Black7 && t != VTTTokens.Black8
+												&& t != VTTTokens.Red7 && t != VTTTokens.Red8 && t != VTTTokens.Blue7 && t != VTTTokens.Blue8
+												)
+							{
+								<div class="TokenSelector"
+									 @onclick=@(()=>{AddMonster(t);})>
+									<VTTTokenViewer VTTToken="t" isOUTSIDEMap=true/>
+								</div>
+							}
+						}
+					</div>
+					
+				}
+				else
+				{
+					<div class="hoverable" @onclick=@(()=>{IsTokensTryMaximized = true;})>Add token</div>
+					<div class="hoverable" @onclick=AddFromPeople>Add from people</div>
+				}
+
+			</div>
 		</div>
 	}
 	
@@ -48,6 +82,7 @@
 		{
 			<VTTTokenViewer Token="t" Game="Service.Game" IsMaster=IsMaster
 							SelectedTokens="SelectedTokens"
+							Border="true"
 							ShowingOptionsPanelForSelectedItems=false />
 		}
 	</div>
@@ -59,6 +94,8 @@
 	[Parameter] public EventCallback UpdateUI { get; set; }
 	[Parameter] public PbtACharacter Character { get; set; } = new();
 	[Parameter] public bool IsMaster { get; set; } = false;
+
+	bool IsTokensTryMaximized = false;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -83,7 +120,7 @@
 		}
 		else
 			SelectedTokens.Clear();
-			
+
 	}
 
 	private enum Actions {Selecting, moving, attention};
@@ -150,6 +187,11 @@
 	{
 		var dude = await CharacterSelectorService.StartSelection();
 		Service.AddTokenFromPeople(dude);
+	}
+
+	private async Task AddMonster(VTTTokens t)
+	{
+		Service.AddToken(t);
 	}
 
 	private void ForceSelection(object? sender, Token t)
