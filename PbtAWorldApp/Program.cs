@@ -53,7 +53,7 @@ builder.Services.AddSingleton<USGameController>();
 builder.Services.AddSingleton<SVGameController>();
 builder.Services.AddSingleton<LastRollViewerService>();
 builder.Services.AddScoped<DinoCharacter>();
-builder.Services.AddSingleton<MoveSelector.MoveSelectorService>();
+builder.Services.AddScoped<MoveSelector.MoveSelectorService>();
 builder.Services.AddScoped<CharacterSelectorService>();
 builder.Services.AddSingleton<VTTService>();
 builder.Services.AddSingleton<CityMapService>();
