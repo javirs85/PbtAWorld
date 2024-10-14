@@ -1,0 +1,389 @@
+﻿@using Blazored.Toast.Services
+@using Microsoft.AspNetCore.Components.Forms
+@using PbtALib
+@using PbtALib.ifaces
+@using WhiteBoard
+
+@inject WhiteBoard.WhiteBoardService WBService
+@inject IToastService Toaster
+@inject CharacterSelectorService CharacterSelectorService
+
+<div class="FullScreenModal" style="z-index:1;">
+	<div class="CloseButton" @onclick=ExitRequested style="z-index:9999;"></div>
+
+	@if(true)
+	{
+		<div class="MasterTools d-flex gap-1" style="position:fixed; left:10px; top:10px; z-index:120;">
+			<EditForm Model="this">
+				@CurrentAction.ToString()
+				<button class="btn btn-primary" @onclick=DeleteSelected>DeleteSelected</button>
+				<button class="btn btn-primary" @onclick=Save>Save</button>
+				<button class="btn btn-primary" @onclick=Load>Load</button>
+			</EditForm>
+			<div class="TokensTry @(IsTokensTryMaximized?"":"Minimized")">
+				<div class="hoverable" @onclick=AddFromPeople>Add from people</div>
+			</div>
+		</div>
+		
+		@* @if(SelectedTokens.Count > 0)
+		{
+			foreach(var t in SelectedTokens)
+			{
+				<div>
+					<div>@t.ComesFromImage</div>
+					@if(t.ComesFromImage)
+					{
+						<div>@t.Character.Name</div>
+						<div>@t.Character.ID</div>
+						<div>
+							@foreach(var d in Game.AllDebts)
+							{
+								<div class="m-2 p-1 border border-light bg-dark">
+									<div>Receiving: @d.ReceivingID.ToString() (@(GetDude(d.ReceivingID)?.Name ?? ""))</div>
+									<div>PayingID: @d.PayingID.ToString() (@(GetDude(d.PayingID)?.Name ?? ""))</div>
+									<div>@d.Reason</div>
+								</div>
+							}
+						</div>
+					}
+					
+				</div>
+			}
+		} *@
+	}
+	
+	<div class="Map" id="Map" 
+		 style="position:relative; top:0; left:0; width:100%; height:100%; overflow:auto;"
+		@onmousedown=MouseDown @onclick:stopPropagation @onclick:preventDefault 
+		@oncontextmenu:preventDefault>
+		<svg class="DrawingArea w-100 h-100" style="z-index:10; position:absolute;">
+			@foreach(var line in Lines)
+			{
+				<path d="@line.Line.GenerateMonotonePath()" stroke="red" fill="red" stroke-width="3" 
+					@onclick=@(()=>{Toaster.ShowInfo(line.Debt.Reason);})
+					@onclick:stopPropagation
+					/>
+			}
+		</svg>
+		<img src="@BackgroundImagePath" style="position:absolute; top:0; left:0;"/>
+		
+		@foreach(var t in TokensOnScreen)
+		{
+			<VTTTokenViewer Token="t" Game="Game" IsMaster=true
+							SelectedTokens="SelectedTokens"
+							Border="true"
+							ShowingOptionsPanelForSelectedItems=false />
+		}
+		
+	</div>
+	
+</div>
+
+@code {
+	[Parameter] public EventCallback ExitRequested { get; set; }
+	[Parameter] public EventCallback UpdateUI { get; set; }
+	[Parameter] public EventCallback ShowPeopleViewerRequested { get; set; }
+	[Parameter] public PbtACharacter Character { get; set; } = new();
+	[Parameter] public USGameController Game { get; set; }
+
+	public string BackgroundImageName { get; set; } = "FactionMap.jpg";
+	public List<string> AvailableImagePaths { get; set; } = new();
+
+	string RootBattleMapsURL = "/imgs/VTT/BattleMaps/";
+	public string BackgroundImagePath => RootBattleMapsURL + BackgroundImageName;
+
+	List<DebtLine> Lines = new();
+
+	bool IsTokensTryMaximized = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		//BackgroundImageName = WBService.GetMaps().First();
+		// Service.UpdateUI -= UpdateUi;
+		// Service.UpdateUI += UpdateUi;
+
+		// Service.ForceSelection -= ForceSelection;
+		// Service.ForceSelection += ForceSelection;
+
+		if(TokensOnScreen.Count == 0)
+		{
+			await Load();
+		}
+
+		var OrphanDebts = Game.AllDebts.FindAll(x => !IsValidDebt(x));
+		foreach (var d in OrphanDebts) Game.AllDebts.Remove(d);
+		await Game.StoreAllDebts();
+
+		foreach (var d in Game.People.Circles.SelectMany(c => c.Factions)
+		.SelectMany(f => f.Members)
+		.ToList())
+		{
+			if (TokensOnScreen.Find(x => x.Character.ID == d.ID) is null)
+			{
+				AddTokenFromPeople(d);
+			}
+		}
+
+		List<Token> TokensToRemove = new();
+
+		foreach(var t in TokensOnScreen)
+		{
+			if (t.Character is not null &&  GetDude(t.Character.ID) == null)
+				TokensToRemove.Add(t);
+		}
+
+		foreach (var t in TokensToRemove) TokensOnScreen.Remove(t);
+
+		foreach (var t in TokensOnScreen) t.Status = TokenStatus.Normal;
+
+		RecalculateLines();
+
+	}
+
+	private void RecalculateLines()
+	{
+		Lines.Clear();
+		foreach (var d in Game.AllDebts)
+		{
+			var origin = TokensOnScreen.Find(x => x.Character.ID == d.PayingID);
+			var end = TokensOnScreen.Find(x => x.Character.ID == d.ReceivingID);
+
+			if (origin is not null && end is not null)
+			{
+				Lines.Add(
+					new DebtLine
+						{
+							Debt = d,
+							Line = new DrawnLine
+							{
+								Points = new List<Point>{
+							new Point { X = origin.X + origin.SizePixels/2, Y = origin.Y+ origin.SizePixels/2 },
+							new Point { X = end.X + end.SizePixels/2, Y = end.Y+ end.SizePixels/2 }
+									}
+							}
+						}
+				);
+			}
+		}
+	}
+
+	private class DebtLine
+	{
+		public Debt Debt = new Debt();
+		public DrawnLine Line = new DrawnLine();
+	}
+
+	private bool IsValidDebt(Debt d)
+	{
+		var payingDude = GetDude(d.PayingID);
+		var receivingDude = GetDude(d.ReceivingID);
+
+		if(payingDude is null || receivingDude is null) 
+			return false;
+		if(payingDude.IsNPC && receivingDude.IsNPC)
+			return false;
+
+		return true;
+	}
+
+	private PbtACharacter? GetDude(Guid id)
+	{
+		return Game.People.Circles.SelectMany(c => c.Factions)
+		.SelectMany(f => f.Members)
+		.ToList()
+		.Find(x => x.ID == id);
+	}
+
+	private bool DoesNotExistsInPeople(Guid id)
+	{
+		var dude = Game.People.Circles.SelectMany(c => c.Factions)
+		.SelectMany(f => f.Members)
+		.ToList()
+		.Find(x => x.ID == id);
+
+		if (dude is null) return true;
+		return false;
+	}
+
+	private enum Actions {Selecting, moving, attention};
+	Actions CurrentAction;
+
+	public string OwnerStringClass => Character.ClassString;
+	public List<Token> SelectedTokens = new();	
+
+	List<Token> TokensOnScreen = new();
+
+	private void MouseDown(MouseEventArgs e)
+	{
+		if(e.Buttons == 1) //left(normal) click
+		{
+			var t = SelectToken(e.OffsetX, e.OffsetY);
+			if(t is not null)
+			{
+				if(SelectedTokens.Count > 0 && t == SelectedTokens[0])
+					SelectedTokens.Clear();
+				else
+				{
+					SelectedTokens.Clear();
+					SelectedTokens.Add(t);
+				}
+
+			}					
+			else
+			{
+				if (SelectedTokens.Count > 0)
+				{
+					foreach (var tok in SelectedTokens)
+					{
+						MoveToken(tok, e.OffsetX, e.OffsetY);
+					}
+				}
+			}	
+		}
+
+	}
+
+	private async Task AddFromPeople()
+	{
+		var dude = await CharacterSelectorService.StartSelection();
+		AddTokenFromPeople(dude);
+	}
+
+	private async Task AddMonster(VTTTokens t)
+	{
+		AddToken(t);
+	}
+
+	private void ForceSelection(object? sender, Token t)
+	{
+		if (SelectedTokens.Count > 0)
+			if (SelectedTokens[0].X != 50 || SelectedTokens[0].Y != 50)
+				SelectedTokens.Clear();
+		SelectedTokens.Add(t);
+	}
+
+	private void UpdateUi(object? sender, EventArgs e)
+	{
+		InvokeAsync(StateHasChanged);
+	}
+
+	private void DeleteSelected()
+	{
+		if(SelectedTokens.Count >0)
+		{
+			RemoveToken(SelectedTokens[0]);
+		}
+	}
+
+
+	public void AddTokenFromPeople(ICharacter dude)
+	{
+		AddToken(GenerateTokenFromPeople(dude));
+	}
+
+	public void AddToken(VTTTokens TokenType)
+	{
+		var t = new Token { ID = TokenType, X = 50, Y = 50, Status = TokenStatus.Hidden };
+		// t.UpdateNeeeded -= Update;
+		// t.UpdateNeeeded += Update;
+		t.Status = TokenStatus.Normal;
+		TokensOnScreen.Add(t);
+
+		//ForceSelection?.Invoke(this, t);
+		Update();
+	}
+
+	public void RemoveToken(Token t)
+	{
+		// t.UpdateNeeeded -= Update;
+		TokensOnScreen.Remove(t);
+		Update();
+	}
+
+	private void AddToken(Token t)
+	{
+		// 	t.UpdateNeeeded -= Update;
+		// 	t.UpdateNeeeded += Update;
+		t.Status = TokenStatus.Normal;
+		TokensOnScreen.Add(t);
+
+		//ForceSelection?.Invoke(this, t);
+		Update();
+	}
+
+	private void Update() => InvokeAsync(StateHasChanged);
+
+	public Token GenerateTokenFromPeople(ICharacter dude)
+	{
+		return new Token
+			{
+				ID = VTTTokens.FromICharacter,
+				Character = dude as PbtACharacter,
+				ComesFromImageName = dude.Name,
+				X = 50,
+				Y = 50,
+				Status = TokenStatus.Hidden
+			};
+	}
+
+	public void MoveToken(Token t, double X, double Y)
+	{
+		if (t == null) return;
+
+		var token = TokensOnScreen.Find(x => x.Guid == t.Guid);
+		if (token != null)
+		{
+			token.X = (int)X - Token.BasicSize / 2;
+			token.Y = (int)Y - Token.BasicSize / 2;
+		}
+		Update();
+
+		RecalculateLines();
+	}
+
+	public Token? SelectToken(double x, double y)
+	{
+		double minDist = 100;
+		Token? SelectedToken = null;
+
+		foreach (var t in TokensOnScreen)
+		{
+			var d = Math.Abs(t.X - x) + Math.Abs(t.Y - y);
+			if (d < minDist)
+			{
+				if (d < 100)
+				{
+					minDist = d;
+					SelectedToken = t;
+				}
+			}
+		}
+
+		return SelectedToken;
+	}
+
+	public void Save()
+	{
+		var Folder = $"wwwroot/GameImages/{Game.SessionID.ToString()}";
+		var path = $"{Folder}/DebtMap.json";
+
+		var json = System.Text.Json.JsonSerializer.Serialize(TokensOnScreen);
+
+		System.IO.File.WriteAllText(path, json);
+	}
+
+	public async Task Load()
+	{
+		var Folder = $"wwwroot/GameImages/{Game.SessionID.ToString()}";
+		var path = $"{Folder}/DebtMap.json";
+
+		if (File.Exists(path))
+		{
+			var json = await System.IO.File.ReadAllTextAsync(path);
+			TokensOnScreen = System.Text.Json.JsonSerializer.Deserialize<List<Token>>(json) ?? new();
+		}
+
+		foreach (var t in TokensOnScreen) t.Status = TokenStatus.Normal;
+	}
+
+}

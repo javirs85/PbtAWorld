@@ -71,6 +71,8 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 			ShowToastOnAllClients($"{GetCharacterByID(d.PayingID).Name} contrajo una deuda con {GetCharacterByID(d.ReceivingID).Name}");
 			await StoreAllDebts();
 		}
+		else
+			await StoreAllDebts();
 
 		RequestUpdateToUIOnClients();
 	}
