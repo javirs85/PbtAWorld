@@ -1,4 +1,5 @@
-﻿@using static PbtaWorldRazonCommonComponents.CharacterSelector;
+﻿@using PbtALib.ifaces
+@using static PbtaWorldRazonCommonComponents.CharacterSelector;
 @inject USGameController Game
 @inject PbtALib.CharacterSelectorService Selector
 @if (MinimalisticMode)
@@ -18,7 +19,10 @@ else
 				<div class="TheOther" @onclick=ChooseCharacter>@TheOtherName</div>
 			</div>
 			<div class="DebtMain flex-grow-1">
-				<EditableText @bind-Text=Debt.Reason EditFinished="StoreChanges"/>
+				<EditForm Model="this">
+					<EditableText @bind-Text=Debt.Reason EditFinished="StoreChanges"/>
+					<button style="display:none;"></button>
+				</EditForm>
 			</div>
 			<div class="ClossingButton" >
 				<i class="bi bi-trash3-fill" @onclick=RemoveOneDebt/>

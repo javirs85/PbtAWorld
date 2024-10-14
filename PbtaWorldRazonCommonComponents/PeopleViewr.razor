@@ -63,6 +63,8 @@
 														@if(HasImage(ch))
 														{
 															<ImageCard Image="GetImage(ch)" IsMaster=IsMaster IsInPeopleViewer="true" ForcedSize="150" />
+															<span>@ch.ID</span>
+															<span>@(ch.IsNPC?"NPC":"PLAYER")</span>
 														}
 														else
 														{
@@ -249,6 +251,19 @@
 
 		Game.UpdatePeopleViewerInAllClientsEvent -= Refresh;
 		Game.UpdatePeopleViewerInAllClientsEvent += Refresh;
+
+		foreach(var m in Game.People!.Circles.SelectMany(c => c.Factions).SelectMany(f => f.Members))
+		{
+			var p = Game.Players.Find(x=>x.Name == m.Name);
+
+			if (p is not null)
+			{
+				m.ID = p.ID;
+				m.IsNPC = false;
+			}
+			else
+				m.IsNPC = true;
+		}
 	}
 
 	private void Refresh(object? sender, EventArgs e) => InvokeAsync(StateHasChanged);
