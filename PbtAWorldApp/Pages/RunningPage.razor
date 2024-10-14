@@ -51,7 +51,7 @@ else if(IsShowingClocks)
 			 ShowPeopleViewerRequested="@(() => {IsShowingPeople = true; IsShowingCityMap= false;})"
 			 IsMaster=IsMaster />
 }
-else if(IsShowingPeople)
+@if(IsShowingPeople)
 {
 	<PeopleViewr GameID="@Meta.SelectedSeason.CampaignGuid"
 				 IsMaster=IsMaster
