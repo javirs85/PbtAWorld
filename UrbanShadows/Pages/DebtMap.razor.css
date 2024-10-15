@@ -69,46 +69,74 @@
 
 .Imp {
     background: #015501;
+    fill: #015501;
+    stroke: #015501;
+}
+
+.NPC {
+    background: gray;
+    fill: gray;
+    stroke: gray;
 }
 
 .Vampire {
     background: #551818;
+    fill: #551818;
+    stroke: #551818;
 }
 
 .Spectre {
     background: #9ea4a7;
+    stroke: #9ea4a7;
+    fill: #9ea4a7;
 }
 
 .Hunter {
     background: #1b1b7b;
+    fill: #1b1b7b;
+    stroke: #1b1b7b;
 }
 
 .Awaken {
     background: orange;
+    fill: orange;
+    stroke: orange;
 }
 
 .Wolf {
     background: #19223e;
+    fill: #19223e;
+    stroke: #19223e;
 }
 
 .Sworn {
     background: #81b6e9;
+    fill: #81b6e9;
+    stroke: #81b6e9;
 }
 
 .Mage {
     background: #711071;
+    fill: #711071;
+    stroke: #711071;
 }
 
 .Oracle {
     background: #dbae74;
+    fill: #dbae74;
+    stroke: #dbae74;
 }
 
 .Fair {
     background: #9a0045;
+    fill: #9a0045;
+    stroke: #9a0045;
 }
 
 .Corrupted {
     background: #a10001;
+    fill: #a10001;
+    stroke: #a10001;
 }
 
 

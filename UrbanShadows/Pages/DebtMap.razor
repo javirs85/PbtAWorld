@@ -59,7 +59,9 @@
 		<svg class="DrawingArea w-100 h-100" style="z-index:10; position:absolute;">
 			@foreach(var line in Lines)
 			{
-				<path d="@line.Line.GenerateMonotonePath()" stroke="red" fill="red" stroke-width="3" 
+				<path d="@line.Line.GenerateMonotonePath()"
+					  class="@(GetClassString(line.Debt.PayingID))"
+					  stroke-width="3"
 					@onclick=@(()=>{Toaster.ShowInfo(line.Debt.Reason);})
 					@onclick:stopPropagation
 					/>
@@ -140,6 +142,17 @@
 
 	}
 
+	private string GetClassString(Guid id)
+	{
+		var d = GetDude(id);
+		var uschar = d as USCharacterSheet;
+
+		if (uschar is null) 
+			return "NPC";
+		else
+			return uschar.Archetype.ToString();
+	}
+
 	private void RecalculateLines()
 	{
 		Lines.Clear();
@@ -188,6 +201,9 @@
 
 	private PbtACharacter? GetDude(Guid id)
 	{
+		var d = Game.Players.Find(x => x.ID == id);
+		if (d is not null) return d;
+
 		return Game.People.Circles.SelectMany(c => c.Factions)
 		.SelectMany(f => f.Members)
 		.ToList()
