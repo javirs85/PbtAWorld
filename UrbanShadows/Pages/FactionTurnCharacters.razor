@@ -5,7 +5,7 @@
 @inject USMovesService Moves
 
 <div class="back d-flex gap-3" @onclick:stopPropagation=true>
-	<div class="d-flex flex-column gap-2 overflow-auto" style="max-width: 21%;">
+	<div class="d-flex flex-column gap-2 overflow-auto" style="max-width: 21%; margin-top:70px;">
 		@if(IsMaster)
 		{
 			@foreach(var Player in Game.Players.Select(x=> x as USCharacterSheet))

@@ -25,16 +25,18 @@
 	{
 		<div class="MasterTools d-flex gap-1" style="position:fixed; left:10px; top:10px; z-index:120;">
 			<EditForm Model="this">
-				@CurrentAction.ToString()
-				<InputSelect @bind-Value=Service.BackgroundImageName>
+				@* <InputSelect @bind-Value=Service.BackgroundImageName>
 					@foreach (var op in WBService.GetMaps())
 					{
 						<option value="@op">@op</option>
 					}
-				</InputSelect>
+				</InputSelect> *@
 				<button class="btn btn-primary" @onclick=DeleteSelected>DeleteSelected</button>
 				<button class="btn btn-primary" @onclick=Service.Save>Save</button>
 				<button class="btn btn-primary" @onclick=Service.Load>Load</button>
+				<button class="btn @(CurrentAction==Actions.Selecting?"btn-success":"btn-outline-success bg-dark")" @onclick=@(()=>{CurrentAction=Actions.Selecting;})>Selecting</button>
+				<button class="btn @(CurrentAction==Actions.DrawMode?"btn-success":"btn-outline-success bg-dark")" @onclick=@(()=>{CurrentAction=Actions.DrawMode;})>Dibujar</button>
+				<button class="btn @(CurrentAction==Actions.deleting?"btn-success":"btn-outline-success bg-dark")" @onclick=@(()=>{CurrentAction=Actions.deleting;})>Eliminar</button>
 			</EditForm>
 			<div class="TokensTry @(IsTokensTryMaximized?"":"Minimized")">
 				@if (IsTokensTryMaximized)
@@ -76,6 +78,8 @@
 	
 	<div class="Map" id="Map" 
 		 style="position:relative; top:0; left:0; width:100%; height:100%; overflow:auto;"
+		 @onmousemove=MouseMove
+		 @onmouseup=MouseUp
 		@onmousedown=MouseDown @onclick:stopPropagation @onclick:preventDefault 
 		@oncontextmenu:preventDefault>
 		<img src="@Service.BackgroundImagePath" style="position:absolute; top:0; left:0;"/>
@@ -98,6 +102,27 @@
 							ShowingOptionsPanelForSelectedItems=false />
 		}
 	</div>
+
+	<svg width="100%" height="100%" style="position:absolute; pointer-events:none;">
+		@foreach (var line in Service.GetLines())
+		{
+			<path d="@line.GenerateMonotonePath()" stroke="red" fill="red" stroke-width="9" />
+		}
+
+		@if (CurrentDrawing.Points.Count < 4)
+		{
+			<polyline class="line" points="@CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
+		}
+		<path d="@CurrentDrawing.GenerateMonotonePath()" stroke="red" stroke-width="3" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
+
+		@if (CurrentAction == Actions.deleting)
+		{
+			@foreach (var line in Service.GetLines())
+			{
+				<circle r="10" cx="@line.AnchorPoint.X" cy="@line.AnchorPoint.Y" fill="blue" stroke="white" />
+			}
+		}
+	</svg>
 	
 </div>
 
@@ -136,7 +161,9 @@
 
 	}
 
-	private enum Actions {Selecting, moving, attention};
+	private enum Actions {Selecting, moving, attention, DrawMode, deleting};
+	bool IsDrwaingInDrawMode = false;
+	DrawnLine CurrentDrawing = new();
 	Actions CurrentAction;
 
 	public string OwnerStringClass => Character.ClassString;
@@ -150,35 +177,46 @@
 		{
 			if(e.Buttons == 1) //left(normal) click
 			{
-				var t = Service?.SelectToken(e.OffsetX, e.OffsetY);
-				if(t is not null)
+				if(CurrentAction == Actions.Selecting)
 				{
-					if(SelectedTokens.Count > 0 && t == SelectedTokens[0])
-						SelectedTokens.Clear();
+					var t = Service?.SelectToken(e.OffsetX, e.OffsetY);
+					if (t is not null)
+					{
+						if (SelectedTokens.Count > 0 && t == SelectedTokens[0])
+							SelectedTokens.Clear();
+						else
+						{
+							SelectedTokens.Clear();
+							SelectedTokens.Add(t);
+						}
+
+					}
 					else
 					{
-						SelectedTokens.Clear();
-						SelectedTokens.Add(t);
-					}
-
-				}					
-				else
-				{
-					if (SelectedTokens.Count > 0)
-					{
-						foreach (var tok in SelectedTokens)
+						if (SelectedTokens.Count > 0)
 						{
-							Service?.MoveToken(tok, e.OffsetX, e.OffsetY);
+							foreach (var tok in SelectedTokens)
+							{
+								Service?.MoveToken(tok, e.OffsetX, e.OffsetY);
+							}
 						}
 					}
-				}	
+				}
+				else if(CurrentAction == Actions.DrawMode)
+				{
+					IsDrwaingInDrawMode = true;
+					CurrentDrawing.Points.Clear();
+					CurrentDrawing.IsFilledIn = false;
+					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+				}
+
 			}
 			else //right click for attention marker
 			{
 				Service?.ShowPlayerAttention(OwnerStringClass, new Point(e));
 			}
 		}
-		else
+		else //Player, not master
 		{
 			if (e.Buttons == 1) //left(normal) click
 			{
@@ -193,6 +231,33 @@
 			{
 				Service?.ShowPlayerAttention(OwnerStringClass, new Point(e));
 			}
+		}
+	}
+	public void MouseMove(MouseEventArgs e)
+	{
+		if(CurrentAction == Actions.DrawMode && IsDrwaingInDrawMode)
+		{
+			var lastPoint = CurrentDrawing.Points.Last();
+			var newPoint = new Point((int)e.OffsetX, (int)e.OffsetY);
+
+			if (newPoint.DistanceTo(lastPoint) >= 10)
+				CurrentDrawing.Points.Add(newPoint);
+		}
+	}
+
+	public void MouseUp(MouseEventArgs e)
+	{
+		if (CurrentAction == Actions.DrawMode && IsDrwaingInDrawMode)
+		{
+			var lastPoint = CurrentDrawing.Points.Last();
+			var newPoint = new Point((int)e.OffsetX, (int)e.OffsetY);
+
+			if (newPoint.DistanceTo(lastPoint) >= 10)
+				CurrentDrawing.Points.Add(newPoint);
+
+			Service.AddDrawnLine(CurrentDrawing);
+			CurrentDrawing = new();
+			IsDrwaingInDrawMode = false;
 		}
 	}
 
