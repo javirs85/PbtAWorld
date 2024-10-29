@@ -77,7 +77,7 @@
 	}
 	
 	<div class="Map" id="Map" 
-		 style="position:relative; top:0; left:0; width:100%; height:100%; overflow:auto;"
+		 style="position:relative; top:0; left:0; width:100%; height:100%; overflow:auto; @(IsDrwaingInDrawMode?"cursor:crosshair;":"")"
 		 @onmousemove=MouseMove
 		 @onmouseup=MouseUp
 		@onmousedown=MouseDown @onclick:stopPropagation @onclick:preventDefault 
@@ -101,28 +101,30 @@
 							Border="true"
 							ShowingOptionsPanelForSelectedItems=false />
 		}
-	</div>
-
-	<svg width="100%" height="100%" style="position:absolute; pointer-events:none;">
-		@foreach (var line in Service.GetLines())
-		{
-			<path d="@line.GenerateMonotonePath()" stroke="red" fill="red" stroke-width="9" />
-		}
-
-		@if (CurrentDrawing.Points.Count < 4)
-		{
-			<polyline class="line" points="@CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
-		}
-		<path d="@CurrentDrawing.GenerateMonotonePath()" stroke="red" stroke-width="3" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
-
-		@if (CurrentAction == Actions.deleting)
-		{
+		
+		<svg width="100%" height="@imageH px" style="position:absolute; pointer-events:none;">
 			@foreach (var line in Service.GetLines())
 			{
-				<circle r="10" cx="@line.AnchorPoint.X" cy="@line.AnchorPoint.Y" fill="blue" stroke="white" />
+				<path d="@line.GenerateMonotonePath()" stroke="red" fill="none" stroke-width="9" />
 			}
-		}
-	</svg>
+
+			@if (CurrentDrawing.Points.Count < 4)
+			{
+				<polyline class="line" points="@CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
+			}
+			<path d="@CurrentDrawing.GenerateMonotonePath()" stroke="red" stroke-width="3" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
+
+			@if (CurrentAction == Actions.deleting)
+			{
+				@foreach (var line in Service.GetLines())
+				{
+					<circle r="10" cx="@line.AnchorPoint.X" cy="@line.AnchorPoint.Y" fill="blue" stroke="white" />
+				}
+			}
+		</svg>
+	</div>
+
+	
 	
 </div>
 
@@ -132,6 +134,9 @@
 	[Parameter] public EventCallback ShowPeopleViewerRequested { get; set; }
 	[Parameter] public PbtACharacter Character { get; set; } = new();
 	[Parameter] public bool IsMaster { get; set; } = false;
+
+	int imageW = 1812;
+	int imageH = 1493;
 
 	bool IsTokensTryMaximized = false;
 
@@ -204,10 +209,29 @@
 				}
 				else if(CurrentAction == Actions.DrawMode)
 				{
-					IsDrwaingInDrawMode = true;
-					CurrentDrawing.Points.Clear();
-					CurrentDrawing.IsFilledIn = false;
-					CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+					if(!IsDrwaingInDrawMode)
+					{
+						IsDrwaingInDrawMode = true;
+						CurrentDrawing.Points.Clear();
+						CurrentDrawing.IsFilledIn = false;
+						CurrentDrawing.Points.Add(new Point((int)e.OffsetX, (int)e.OffsetY));
+					}
+					else
+					{
+						var lastPoint = CurrentDrawing.Points.Last();
+						var newPoint = new Point((int)e.OffsetX, (int)e.OffsetY);
+
+						if (newPoint.DistanceTo(lastPoint) >= 10)
+							CurrentDrawing.Points.Add(newPoint);
+
+						Service.AddDrawnLine(CurrentDrawing);
+						CurrentDrawing = new();
+						IsDrwaingInDrawMode = false;
+					}
+				}
+				else if(CurrentAction == Actions.deleting)
+				{
+					Service.TryDelete(new Point((int)e.OffsetX, (int)e.OffsetY));
 				}
 
 			}
@@ -247,18 +271,18 @@
 
 	public void MouseUp(MouseEventArgs e)
 	{
-		if (CurrentAction == Actions.DrawMode && IsDrwaingInDrawMode)
-		{
-			var lastPoint = CurrentDrawing.Points.Last();
-			var newPoint = new Point((int)e.OffsetX, (int)e.OffsetY);
+		// if (CurrentAction == Actions.DrawMode && IsDrwaingInDrawMode)
+		// {
+		// 	var lastPoint = CurrentDrawing.Points.Last();
+		// 	var newPoint = new Point((int)e.OffsetX, (int)e.OffsetY);
 
-			if (newPoint.DistanceTo(lastPoint) >= 10)
-				CurrentDrawing.Points.Add(newPoint);
+		// 	if (newPoint.DistanceTo(lastPoint) >= 10)
+		// 		CurrentDrawing.Points.Add(newPoint);
 
-			Service.AddDrawnLine(CurrentDrawing);
-			CurrentDrawing = new();
-			IsDrwaingInDrawMode = false;
-		}
+		// 	Service.AddDrawnLine(CurrentDrawing);
+		// 	CurrentDrawing = new();
+		// 	IsDrwaingInDrawMode = false;
+		// }
 	}
 
 	private async Task AddFromPeople()
