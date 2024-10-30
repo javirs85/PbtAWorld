@@ -112,6 +112,7 @@ public class CityMapService
 			token.X = (int)X - Token.BasicSize / 2;
 			token.Y = (int)Y - Token.BasicSize / 2;
 		}
+		Save();
 		Update();
 	}
 
@@ -183,13 +184,17 @@ public class CityMapService
 	public void AddDrawnLine(DrawnLine line)
 	{
 		drawnLines.Add(line);
+
+		Save();
 		Update();
 	}
 	public void Clear()
 	{
 		drawnLines = new();
+		Save();
 		Update();
 	}
+
 	public void TryDelete(Point click)
 	{
 		if (drawnLines.Count == 0) return;
@@ -209,6 +214,8 @@ public class CityMapService
 		if (minDistance < 30)
 		{
 			drawnLines.Remove(SelectedLine);
+
+			Save();
 			Update();
 		}
 	}

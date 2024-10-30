@@ -40,7 +40,20 @@
 						{
 							<div class="CircleContainer @(IsCurrentCircle(c)? "SuperWide" : "Small") @(IsMaster?"":"opacity:1;")">
 								<div class="header" @onclick=@(()=>{SelectCircle(c);})>
-									@c.Name
+									<span class="ms-2">@c.Name</span>
+									@if(c.Name == "Mortalis")
+									{
+										<span class="Small opacity-50" style="font-size:12px">Cazadores, despertados, veteranos</span>
+									}else if(c.Name == "Noche")
+									{
+										<span class="Small opacity-50" style="font-size:12px">Vampiros, lobos, espectros</span>
+									}else if(c.Name == "Poder")
+									{
+										<span class="Small opacity-50" style="font-size:12px">Magos, Oráculos, Juramentados</span>
+									}else if(c.Name == "Velo")
+									{
+										<span class="Small opacity-50" style="font-size:12px">Corrompidos, Hadas, Diablos</span>
+									}
 									@if(IsMaster && IsCurrentCircle(c))
 									{
 										<button class="btn btn-outline-success" @onclick=@(()=>{EditCircle(c);}) @onclick:stopPropagation><i class="bi bi-pencil"></i></button>

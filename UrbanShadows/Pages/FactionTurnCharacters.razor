@@ -161,6 +161,12 @@
 	{
 		Player.FactionTurnMoves.Add(EditingMovement);
 		await Game.StoreChangesOnCharacter(Player, $"Usó {Moves.GetMovement(EditingMovement.MoveIDs).Title}");
+		Game.RequestUpdateToUIOnClients();
+		EditingMovement = new USCharacterSheet.FactionMoveByUser();
+		EditingMovement.MoveExplanation = "";
+		EditingMovement.Roll = 0;
+
+		SelectedPlayer = null;
 		Game.RequestUpdateToUIOnClients();	
 	}
 
