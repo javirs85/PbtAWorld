@@ -56,7 +56,7 @@ public class WhiteBoardService
 
 	public List<DrawnLine> Walls = new();
 
-	private List<DrawnLine> drawnLines = new();
+	
 	public string VisibilityArea = "";
 
 	public List<Marker> MarkerPositions = new();
@@ -67,7 +67,7 @@ public class WhiteBoardService
 		public bool IsFlashing = false;
 	}
 
-
+	private List<DrawnLine> drawnLines = new();
 	public List<DrawnLine> GetLines() => drawnLines;
 	public List<DrawnLine> GetWalls() => Walls;
 

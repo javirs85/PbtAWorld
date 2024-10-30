@@ -112,6 +112,7 @@ public class CityMapService
 			token.X = (int)X - Token.BasicSize / 2;
 			token.Y = (int)Y - Token.BasicSize / 2;
 		}
+		Save();
 		Update();
 	}
 
@@ -144,6 +145,7 @@ public class CityMapService
 		ToStore toStore = new ToStore();
 		toStore.Tokens = TokensOnScreen;
 		toStore.ImageName = BackgroundImageName;
+		toStore.drawnLines = drawnLines;
 
 		var json = System.Text.Json.JsonSerializer.Serialize(toStore);
 
@@ -164,6 +166,7 @@ public class CityMapService
 				foreach (var t in loaded.Tokens)
 					AddToken(t);
 				BackgroundImageName = loaded.ImageName;
+				drawnLines = loaded.drawnLines;
 			}			
 		}
 	}
@@ -172,6 +175,48 @@ public class CityMapService
 	{
 		public List<Token> Tokens { get; set; } = new List<Token>();
 		public string ImageName { get; set; } = string.Empty;
+		public List<DrawnLine> drawnLines { get; set; } = new();
 	}
 
+
+	private List<DrawnLine> drawnLines = new();
+	public List<DrawnLine> GetLines() => drawnLines;
+	public void AddDrawnLine(DrawnLine line)
+	{
+		drawnLines.Add(line);
+
+		Save();
+		Update();
+	}
+	public void Clear()
+	{
+		drawnLines = new();
+		Save();
+		Update();
+	}
+
+	public void TryDelete(Point click)
+	{
+		if (drawnLines.Count == 0) return;
+
+		DrawnLine SelectedLine = drawnLines[0];
+		var minDistance = click.DistanceTo(drawnLines[0].AnchorPoint);
+		for (int i = 1; i < drawnLines.Count; i++)
+		{
+			var dist = click.DistanceTo(drawnLines[i].AnchorPoint);
+			if (dist < minDistance)
+			{
+				minDistance = dist;
+				SelectedLine = drawnLines[i];
+			}
+		}
+
+		if (minDistance < 30)
+		{
+			drawnLines.Remove(SelectedLine);
+
+			Save();
+			Update();
+		}
+	}
 }
