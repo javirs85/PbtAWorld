@@ -26,9 +26,10 @@ public class CityMapService
 	public string BackgroundImagePath => RootBattleMapsURL + BackgroundImageName;
 
 	public List<Token> TokensOnScreen { get; set; } = new();
+	public List<Annotation> Annotations { get; set; } = new();
 
 	void Update(object? sender, EventArgs e) => Update();
-	void Update() => UpdateUI.Invoke(this, EventArgs.Empty);
+	public void Update() => UpdateUI.Invoke(this, EventArgs.Empty);
 
 	public List<Marker> MarkerPositions = new();
 
@@ -137,6 +138,27 @@ public class CityMapService
 		return SelectedToken;
 	}
 
+	public Annotation? SelectAnnotation(double x, double y)
+	{
+		double minDist = 100;
+		Annotation? SelectedAnnotation = null;
+
+		foreach (var t in Annotations)
+		{
+			var d = Math.Abs(t.X - x) + Math.Abs(t.Y - y);
+			if (d < minDist)
+			{
+				if (d < 100)
+				{
+					minDist = d;
+					SelectedAnnotation = t;
+				}
+			}
+		}
+
+		return SelectedAnnotation;
+	}
+
 	public void Save()
 	{
 		var Folder = $"wwwroot/GameImages/{Game.SessionID.ToString()}";
@@ -146,6 +168,7 @@ public class CityMapService
 		toStore.Tokens = TokensOnScreen;
 		toStore.ImageName = BackgroundImageName;
 		toStore.drawnLines = drawnLines;
+		toStore.Annotations = Annotations;
 
 		var json = System.Text.Json.JsonSerializer.Serialize(toStore);
 
@@ -167,8 +190,33 @@ public class CityMapService
 					AddToken(t);
 				BackgroundImageName = loaded.ImageName;
 				drawnLines = loaded.drawnLines;
+				Annotations = loaded.Annotations;
 			}			
 		}
+	}
+
+	public void AddAnnotation(Annotation note)
+	{
+		Annotations.Add(note);
+		Update();
+		Save();
+	}
+	public void RemoveAnnotation(Annotation note)
+	{
+		if(Annotations.Contains(note))
+		{
+			Annotations.Remove(note);
+			Update();
+			Save();
+		}
+	}
+
+	public class Annotation
+	{
+		public Guid Id { get; set; } = Guid.NewGuid();
+		public int X { get; set; } = 0; 
+		public int Y { get; set; } = 0;
+		public string Text { get; set; } = "";
 	}
 
 	private class ToStore
@@ -176,6 +224,7 @@ public class CityMapService
 		public List<Token> Tokens { get; set; } = new List<Token>();
 		public string ImageName { get; set; } = string.Empty;
 		public List<DrawnLine> drawnLines { get; set; } = new();
+		public List<Annotation> Annotations { get; set; } = new();
 	}
 
 

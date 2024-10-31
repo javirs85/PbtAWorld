@@ -159,3 +159,12 @@
 .DW_Master {
     background: #ff0000;
 }
+
+.AnnotationOpen {
+    padding: 1em;
+    background: white;
+    border: black;
+    border-radius: 1em;
+    color: black;
+    cursor: pointer;
+}
