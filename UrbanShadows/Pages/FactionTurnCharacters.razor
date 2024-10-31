@@ -4,11 +4,11 @@
 @inject CharacterSelectorService CharacterSelectorService
 @inject USMovesService Moves
 
-<div class="back d-flex gap-3" @onclick:stopPropagation=true>
+<div class="back d-flex gap-0" @onclick:stopPropagation=true>
 	<div class="d-flex flex-column gap-2 overflow-auto" style="max-width: 21%; margin-top:70px;">
 		@if(IsMaster)
 		{
-			@foreach(var Player in Game.Players.Select(x=> x as USCharacterSheet))
+			@foreach (var Player in Game.Players.Where(x => x.Name != "Master").Select(x => x as USCharacterSheet))
 			{
 				<div class="d-flex gap-1 flex-column" @onclick=@(()=>{SelectPlayer(Player);}) style="cursor: pointer;">
 					@Player.Name
@@ -18,14 +18,22 @@
 						<div class="d-flex flex-column gap-1 ms-2" style="    background: #3d3c3c;
 																			padding: 5px;
 																			border-radius: 5px;">
-							<div class="d-flex">
-								<div class="d-flex flex-column flex-grow-1">
-									<div>@Moves.GetMovement(m.MoveIDs).Title (@m.Roll)</div>
-									<div class="opacity-50">@m.MoveExplanation</div>
-								</div>
-								<div>
-									<i class="bi bi-trash3-fill hoverable text-danger" @onclick:preventDefault @onclick=@(_=> DeleteMove(m, Player))></i>
-								</div>
+							<div class="d-flex" @onclick="@(()=>{Master_MoveClicked(m);})" @onclick:preventDefault @onclick:stopPropagation>
+								@if(MasterSelectedMove is null || MasterSelectedMove != m)
+								{
+									<div class="d-flex flex-column flex-grow-1">
+										<div>@Moves.GetMovement(m.MoveIDs).Title (@m.Roll)</div>
+										<div class="opacity-50">@m.MoveExplanation</div>
+									</div>
+									<div>
+										<i class="bi bi-trash3-fill hoverable text-danger" @onclick:preventDefault @onclick=@(_=> DeleteMove(m, Player))></i>
+									</div>
+								}
+								else
+								{
+									<MoveViewer ID="m.MoveIDs" Player=Player IsSelected=true ForceUpdate="Update" />
+								}
+
 							</div>
 						</div>
 					}
@@ -47,14 +55,24 @@
 								</InputSelect>
 								<InputTextArea class="form-control" @bind-Value=EditingMovement.MoveExplanation/>
 								<InputNumber class="form-control" @bind-Value=EditingMovement.Roll/>
-								<button class="btn btn-primary" @onclick=@(()=>{SaveMove(EditingMovement, Player);})>Save</button>
+								<button class="btn btn-primary" @onclick=@(async()=>{await SaveMove(Player);})>Save</button>
 							</div>
 						</EditForm>
 					}
 					
 				</div>
 			}
-			
+			<div class="InnerColumnPack FactionMoves">
+				<div class="InnerColumnHeader" style="cursor: pointer;">
+					Movimientos de las facciones:
+				</div>
+				<div class="InnerColumContent">
+					@foreach (var m in Moves.AllMovements.Where(x => x.TypeOfMovement == MovementTypes.FactionPhaseCityMove))
+					{
+						<MoveViewer ID="m.ID" Player=Player IsSelected=IsSelectedMove(m) ForceUpdate="Update" Clicked="@(_ =>{ Select(m);})" />
+					}
+				</div>
+			</div>
 		}
 		else
 		{
@@ -133,8 +151,11 @@
 			x => x.Archetipe == Player.Archetype &&
 			x.TypeOfMovement == MovementTypes.ArchetipeMovement));
 
-		Game.UpdateUI -= Update;
-		Game.UpdateUI += Update;
+		if(Game is not null)
+		{
+			Game.UpdateUI -= Update;
+			Game.UpdateUI += Update;
+		}		
 	}
 
 	void Update(object? sender, EventArgs e) => Update();
@@ -145,6 +166,7 @@
 	private List<USMove> PlaybookMovesOnScreen = new();
 
 	private USCharacterSheet.FactionMoveByUser EditingMovement = new();
+	private USCharacterSheet.FactionMoveByUser? MasterSelectedMove = null;
 
 	private USCharacterSheet? SelectedPlayer = null;
 	private bool IsEditingMove = false;
@@ -157,14 +179,24 @@
 			SelectedPlayer = Player;
 	}
 
-	private async Task SaveMove(USCharacterSheet.FactionMoveByUser EditingMovement, USCharacterSheet Player)
+	void Master_MoveClicked(USCharacterSheet.FactionMoveByUser clicked)
+	{
+		if (MasterSelectedMove == clicked)
+			MasterSelectedMove = null;
+		else
+		{
+			MasterSelectedMove = clicked;
+		}
+	}
+
+	private async Task SaveMove(USCharacterSheet Player)
 	{
 		Player.FactionTurnMoves.Add(EditingMovement);
 		await Game.StoreChangesOnCharacter(Player, $"Usó {Moves.GetMovement(EditingMovement.MoveIDs).Title}");
 		Game.RequestUpdateToUIOnClients();
-		EditingMovement = new USCharacterSheet.FactionMoveByUser();
-		EditingMovement.MoveExplanation = "";
-		EditingMovement.Roll = 0;
+		EditingMovement = new();
+		// EditingMovement.MoveExplanation = "";
+		// EditingMovement.Roll = 0;
 
 		SelectedPlayer = null;
 		Game.RequestUpdateToUIOnClients();	

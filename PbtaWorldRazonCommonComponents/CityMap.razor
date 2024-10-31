@@ -1,6 +1,7 @@
 ﻿@using Blazored.Toast.Services
 @using Microsoft.AspNetCore.Components.Forms
 @using WhiteBoard
+@using static PbtALib.CityMapService
 @inject CityMapService Service
 @inject WhiteBoard.WhiteBoardService WBService
 @inject IToastService Toaster
@@ -37,6 +38,16 @@
 				<button class="btn @(CurrentAction==Actions.Selecting?"btn-success":"btn-outline-success bg-dark")" @onclick=@(()=>{CurrentAction=Actions.Selecting;})>Selecting</button>
 				<button class="btn @(CurrentAction==Actions.DrawMode?"btn-success":"btn-outline-success bg-dark")" @onclick=@(()=>{CurrentAction=Actions.DrawMode;})>Dibujar</button>
 				<button class="btn @(CurrentAction==Actions.deleting?"btn-success":"btn-outline-success bg-dark")" @onclick=@(()=>{CurrentAction=Actions.deleting;})>Eliminar</button>
+				<button class="btn @(CurrentAction==Actions.addingNotes?"btn-outline-info":"btn-info")" @onclick=ClickAddingNotes>
+					@if(CurrentAction == Actions.addingNotes)
+					{
+						<span>Cancel Note</span>
+					}
+					else 
+					{
+						<span>Add note</span>						
+					}
+				</button>
 			</EditForm>
 			<div class="TokensTry @(IsTokensTryMaximized?"":"Minimized")">
 				@if (IsTokensTryMaximized)
@@ -77,12 +88,34 @@
 	}
 	
 	<div class="Map" id="Map" 
-		 style="position:relative; top:0; left:0; width:100%; height:100%; overflow:auto; @(IsDrwaingInDrawMode?"cursor:crosshair;":"")"
+		 style="position:relative; top:0; left:0; width:100%; height:100%; overflow:auto; @(IsDrwaingInDrawMode || CurrentAction==Actions.addingNotes?"cursor:crosshair;":"")"
 		 @onmousemove=MouseMove
-		 @onmouseup=MouseUp
 		@onmousedown=MouseDown @onclick:stopPropagation @onclick:preventDefault 
 		@oncontextmenu:preventDefault>
 		<img src="@Service.BackgroundImagePath" style="position:absolute; top:0; left:0;"/>
+
+		<svg width="100%" height="@(imageH+"px")" style="position:absolute; pointer-events:none; opacity:0.5; z-index:88;">
+			@foreach (var line in Service.GetLines())
+			{
+				<path d="@line.GenerateMonotonePath()" stroke="red" fill="none" stroke-width="9" stroke-linecap="round" />
+			}
+
+			@if (CurrentDrawing.Points.Count < 4)
+			{
+				<polyline class="line" points="@CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
+			}
+			<path d="@CurrentDrawing.GenerateMonotonePath()" stroke="red" stroke-width="3" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
+
+			@if (CurrentAction == Actions.deleting)
+			{
+				@foreach (var line in Service.GetLines())
+				{
+					<circle r="10" cx="@line.AnchorPoint.X" cy="@line.AnchorPoint.Y" fill="blue" stroke="white" />
+				}
+			}
+		</svg>
+
+
 		@foreach (var marker in Service.MarkerPositions)
 		{
 			<div class="AttentionMarker" style="@($"top: {marker.Position.Y}px; left: {marker.Position.X}px;")">
@@ -101,11 +134,12 @@
 							Border="true"
 							ShowingOptionsPanelForSelectedItems=false />
 		}
-		
-		<svg width="100%" height="@imageH px" style="position:absolute; pointer-events:none;">
+
+
+		<svg width="100%" height="@(imageH+"px")" style="position:absolute; pointer-events:none;">
 			@foreach (var line in Service.GetLines())
 			{
-				<path d="@line.GenerateMonotonePath()" stroke="red" fill="none" stroke-width="9" />
+				<path d="@line.GenerateMonotonePath()" stroke="red" fill="none" stroke-width="9" stroke-linecap="round" />
 			}
 
 			@if (CurrentDrawing.Points.Count < 4)
@@ -122,6 +156,45 @@
 				}
 			}
 		</svg>
+
+		@foreach(var Note in Service.Annotations)
+		{
+			<div style="position:absolute; top:@(Note.Y+"px"); left:@(Note.X+"px"); z-index:89; ">
+				@if (Note == CurrentAnnotation)
+				{
+					<div class="AnnotationOpen" @onclick=@(()=>{CurrentAnnotation = null;})>
+						@if(IsMaster)
+						{
+							<EditForm Model="Note">
+								<div class="d-flex flex-column gap-1">
+									<InputTextArea @bind-Value=Note.Text @onclick:stopPropagation />
+									<div class="d-flex justify-content-center gap-1">
+										<button class="btn btn-primary" @onclick="CommitNote">Commit</button>
+										<button class="btn btn-danger" @onclick="DeleteSelectedNote">Delete</button>
+									</div>
+								</div>								
+							</EditForm>
+						}
+						else
+						{
+							@Note.Text
+						}
+					</div>
+				}
+				else
+				{
+					<i class="bi bi-star-fill text-danger fs-3"
+					   style="cursor: pointer;
+								color: #ddb519 !important;
+								filter: drop-shadow(0px 0px 3px black);"
+					@onclick:preventDefault
+						@onclick:stopPropagation
+						@onclick=@(()=>{SelectAnnotation(Note);})>
+					</i>
+				}
+			</div>
+		}
+
 	</div>
 
 	
@@ -135,8 +208,8 @@
 	[Parameter] public PbtACharacter Character { get; set; } = new();
 	[Parameter] public bool IsMaster { get; set; } = false;
 
-	int imageW = 1812;
-	int imageH = 1493;
+	int imageW = 1299;
+	int imageH = 1070;
 
 	bool IsTokensTryMaximized = false;
 
@@ -166,9 +239,10 @@
 
 	}
 
-	private enum Actions {Selecting, moving, attention, DrawMode, deleting};
+	private enum Actions {Selecting, moving, attention, DrawMode, deleting, addingNotes};
 	bool IsDrwaingInDrawMode = false;
 	DrawnLine CurrentDrawing = new();
+	CityMapService.Annotation? CurrentAnnotation = null;
 	Actions CurrentAction;
 
 	public string OwnerStringClass => Character.ClassString;
@@ -178,11 +252,14 @@
 
 	private void MouseDown(MouseEventArgs e)
 	{
+		//if we clicked an annotation it wound fit, the code is handled in SelectAnnotation then
+		if (e.OffsetX != e.PageX) return; 
+
 		if(IsMaster)
 		{
 			if(e.Buttons == 1) //left(normal) click
 			{
-				if(CurrentAction == Actions.Selecting)
+				if (CurrentAction == Actions.Selecting)
 				{
 					var t = Service?.SelectToken(e.OffsetX, e.OffsetY);
 					if (t is not null)
@@ -207,9 +284,9 @@
 						}
 					}
 				}
-				else if(CurrentAction == Actions.DrawMode)
+				else if (CurrentAction == Actions.DrawMode)
 				{
-					if(!IsDrwaingInDrawMode)
+					if (!IsDrwaingInDrawMode)
 					{
 						IsDrwaingInDrawMode = true;
 						CurrentDrawing.Points.Clear();
@@ -229,12 +306,22 @@
 						IsDrwaingInDrawMode = false;
 					}
 				}
-				else if(CurrentAction == Actions.deleting)
+				else if (CurrentAction == Actions.deleting)
 				{
 					Service.TryDelete(new Point((int)e.OffsetX, (int)e.OffsetY));
 				}
+				else if (CurrentAction == Actions.addingNotes)
+				{
+					CurrentAnnotation = new CityMapService.Annotation
+					{
+						X = (int)e.OffsetX,
+						Y = (int)e.OffsetY,
+						Text = "detalles"
+					};
+					Service.AddAnnotation(CurrentAnnotation);
+					CurrentAction = Actions.Selecting;
+				}
 
-				
 			}
 			else //right click for attention marker
 			{
@@ -316,5 +403,36 @@
 		{
 			Service.RemoveToken(SelectedTokens[0]);
 		}
+	}
+
+	private void ClickAddingNotes()
+	{
+		if(CurrentAction ==  Actions.addingNotes)
+			CurrentAction = Actions.Selecting;
+		else
+			CurrentAction = Actions.addingNotes;
+	}
+
+	private void CommitNote()
+	{
+		Service.Save();
+		Service.Update();
+		CurrentAnnotation = null;
+		CurrentAction = Actions.Selecting;
+	}
+
+	private void DeleteSelectedNote()
+	{
+		if(CurrentAnnotation is not null)
+		{
+			Service.RemoveAnnotation(CurrentAnnotation);
+		}
+		CurrentAnnotation = null;
+		CurrentAction = Actions.Selecting;
+	}
+
+	void SelectAnnotation(Annotation note)
+	{
+		CurrentAnnotation = note;
 	}
 }
