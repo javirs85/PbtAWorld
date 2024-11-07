@@ -78,6 +78,7 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	public List<Monster> MonsterDefinitionsInCurrentScene { get; set; } = new();
 	public List<Monster> CurrentSceneEnemies { get; set; } = new();
 	public BaseTextBook TextBook { get; set; }
+	public List<SessionSummary> SessionSummaries { get; set; } = new();
 
 	protected abstract void CreateNewRollReport();
 
@@ -282,4 +283,31 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	{
 		ShowToastEvent?.Invoke(this, message);
 	}
+
+	public async Task StoreSessionSummaries()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID.ToString()}";
+		var path = $"{Folder}/Summaries.json";
+
+		var json = System.Text.Json.JsonSerializer.Serialize(SessionSummaries);
+
+		await System.IO.File.WriteAllTextAsync(path, json);
+	}
+
+	public async Task LoadSessionSummaries()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID.ToString()}";
+		var path = $"{Folder}/Summaries.json";
+        if (File.Exists(path))
+        {
+             var raw = await File.ReadAllTextAsync(path);
+
+			SessionSummaries = System.Text.Json.JsonSerializer.Deserialize<List<SessionSummary>>(raw) ?? new();
+			Update();
+        }
+       
+	}
+
+	
+
 }
