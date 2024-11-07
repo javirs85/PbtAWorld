@@ -19,8 +19,12 @@ public interface IGameController
 
     public event EventHandler UpdateMasterMoveListRequested;
     public void UpdateMasterMoveList();
+	public List<SessionSummary> SessionSummaries { get; set; }
+	public Task StoreSessionSummaries();
+	public Task LoadSessionSummaries();
 
-    public List<Monster> CurrentSceneEnemies { get; set; }
+
+	public List<Monster> CurrentSceneEnemies { get; set; }
 	public void RollMonsterDamage(Monster m);
 
 	public Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null);

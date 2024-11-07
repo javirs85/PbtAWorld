@@ -1,5 +1,6 @@
 ﻿@page "/SeasonViewer/{SelectedSeasonID:guid}"
 @using DungeonWorld;
+@using PbtALib.ifaces
 @using UrbanShadows;
 @inject IDataBaseController Meta;
 @inject NavigationManager nav;
@@ -143,6 +144,68 @@
 				}
 			</div>
 		}
+		<div class="p-3 d-flex flex-column @(SelectedSummary is not null?"flex-grow-1":"") gap-2 text-light" style="background: black;">
+			
+			@if(CurrentGameController is not null)
+			{
+				@if(SelectedSummary is null)
+				{
+					<h5>Sesiones</h5>
+					@foreach (var s in CurrentGameController.SessionSummaries)
+					{
+						<div class="d-flex gap-2 SummaryBox" @onclick=@(()=>{SelectedSummary = s;})>
+							
+							<div class="d-flex flex-column">
+								<span>@s.Title</span>
+								<span class="small opacity-50">@s.Date.ToShortDateString()</span>
+							</div>
+							<div class="d-flex gap-1">
+								<button class="btn btn-primary" @onclick:stopPropagation @onclick=@(()=>{SelectedSummary = s; IsEditingSessionSummary=false;})><i class="bi bi-book"></i></button>
+								<button class="btn btn-success" @onclick:stopPropagation @onclick=@(()=>{StartEditingSummary(s);})><i class="bi bi-pencil"></i></button>
+								<button class="btn btn-danger" @onclick:stopPropagation @onclick=@(async()=>{await DeleteSessionSummary(s);})><i class="bi bi-trash3"></i></button>
+							</div>
+						</div>
+					}
+					<div class="flex-grow-1"></div>
+					<button class="btn btn-primary" @onclick=AddNewSessionSummary>Añadir resumen</button>
+				}
+				else
+				{
+					@if(IsEditingSessionSummary)
+					{
+						<EditForm Model="SelectedSummary">
+							<div class="d-flex flex-column gap-1">
+								<InputDate class="form-control" @bind-Value=SelectedSummary.Date />
+								<InputText class="form-control" @bind-Value=SelectedSummary.Title />
+								<InputTextArea class="form-control flex-grow-1" @bind-Value=SelectedSummary.Summary />
+								<div class="d-flex gap-1">
+									<button class="btn btn-success" @onclick=SaveChangesInSessionSummaries @onclick:stopPropagation>Save</button>
+								</div>
+							</div>
+						</EditForm>
+					}
+					else
+					{
+						<div class="d-flex flex-column gap-2">
+							<div class="d-flex">
+								<h5>
+									<i class="bi bi-arrow-left-circle hoverable" @onclick=@(()=>{SelectedSummary = null;})></i>
+									@SelectedSummary.Title
+									<span class="small opacity-50 ms-1 p-1 bg-Dark">@SelectedSummary.Date.ToShortDateString()</span>
+								</h5>
+							</div>
+							<div>
+								<PbtaWorldRazonCommonComponents.DecodedString Value="@SelectedSummary.Summary"></PbtaWorldRazonCommonComponents.DecodedString>
+							</div>
+							<div></div>
+						</div>
+					}
+					
+					
+				}
+				
+			}			
+		</div>
 	</div>
 </div>
 @code {
@@ -153,6 +216,19 @@
 	private string NewCharacterName = "Nombre";
 	private bool IsShowingDeleteCharacterButton = false;
 	private bool IsLoadingFromDB = false;
+	private bool IsEditingSessionSummary = false;
+
+	private SessionSummary? SelectedSummary = null;
+
+	private IGameController? CurrentGameController
+	{
+		get
+		{
+			if (Meta.SelectedGame == AvailableGames.US) return USGame;
+			if (Meta.SelectedGame == AvailableGames.DI) return DinoGame;
+			else return null;
+		}
+	}
 
 	protected async override Task OnParametersSetAsync()
 	{
@@ -176,6 +252,14 @@
 					nav.NavigateTo("/");
 			}
 		}
+
+
+		if(CurrentGameController is not null)
+		{
+			CurrentGameController.SessionID = Meta.SelectedSeason.CampaignGuid;
+			await CurrentGameController.LoadSessionSummaries();
+		}
+
 	}
 
 	public string FromClassIDToUI(int classID)
@@ -356,5 +440,44 @@
 		{
 			Toaster.ShowError("Character not selected");
 		}
+	}
+
+	private void AddNewSessionSummary()
+	{
+		if (CurrentGameController is not null)
+		{
+			CurrentGameController.SessionSummaries.Add(new SessionSummary());
+		}
+	}
+
+	private async Task DeleteSessionSummary(SessionSummary s)
+	{
+		if (CurrentGameController is not null)
+		{
+			CurrentGameController.SessionSummaries.Remove(s);
+			await CurrentGameController.StoreSessionSummaries();
+			SelectedSummary = null;
+		}
+	}
+
+	private async Task SaveChangesInSessionSummaries()
+	{
+		if (CurrentGameController is not null)
+		{
+			await CurrentGameController.StoreSessionSummaries();
+			SelectedSummary = null;
+		}
+	}
+
+	private void StartEditingSummary(SessionSummary s)
+	{
+		SelectedSummary = s;
+		IsEditingSessionSummary = true;
+	}
+
+	private void FinishEditingSummary()
+	{
+		SelectedSummary = null;
+		IsEditingSessionSummary = false;
 	}
 }

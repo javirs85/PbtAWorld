@@ -79,3 +79,13 @@
 .bitTittle {
     font-family: 'Julius Sans One', sans-serif;
 }
+
+.SummaryBox {
+    background: #1a1c23;
+    padding: 1em;
+    border-radius: 4px;
+    cursor: pointer;
+}
+    .SummaryBox:hover {
+        background: #20232d;
+    }
