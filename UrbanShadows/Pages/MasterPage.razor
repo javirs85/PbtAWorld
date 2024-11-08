@@ -122,23 +122,32 @@
 				@foreach(var c in Game.People.Circles)
 				{
 					<div class="p-1" style="background:#25282c;">
-						<div>@c.Name</div>
+						<div class="opacity-25">@c.Name</div>
+						
 						<div class="d-flex flex-column">
 							@foreach (var f in c.Factions)
 							{
-								<div>@f.Name</div>
-								<EditForm Model="f">
-									<InputTextArea 
-										class="form-control bg-dark text-light" 
-										style="border:1px solid #4f4f4f; outline:none !important;" 
-										@bind-Value="@f.CurrentlyWorkingOn" @onfocus=WarnSaveNeeded/>
-									<InputTextArea 
-										class="form-control bg-dark text-light" 
-										style="border:1px solid #4f4f4f; outline:none !important;" 
-										@bind-Value="@f.MasterSecrets"  @onfocus=WarnSaveNeeded/>
-								</EditForm>
+								<div class="p-1 @(SelectedFactions.Contains(f)?" ":"hoverable")" 
+								style="@(SelectedFactions.Contains(f)?"background:#413a3a; cursor:pointer;":"")"
+								@onclick=@(()=>{ToggleFactionSelection(f);})>
+									<div>@f.Name</div>
+									@if (SelectedFactions.Contains(f))
+									{
+										<EditForm Model="f">
+											<InputTextArea 
+											class="form-control bg-dark text-light" 
+											style="border:1px solid #4f4f4f; outline:none !important;" 
+											@bind-Value="@f.CurrentlyWorkingOn" @onfocus=WarnSaveNeeded/>
+											<InputTextArea 
+											class="form-control bg-dark text-light" 
+											style="border:1px solid #4f4f4f; outline:none !important;" 
+											@bind-Value="@f.MasterSecrets"  @onfocus=WarnSaveNeeded/>
+										</EditForm>
+									}
+								</div>
 							}
 						</div>
+						
 					</div>
 				}
 			</div>
@@ -216,6 +225,8 @@
 	bool IsShowingDebtMap = false;
 	bool IsSaveNeeded = false;
 
+	List<PbtAFaction> SelectedFactions = new();
+
 	USMoveIDs? SelectedMove = null;
 
 	private bool IsTokensTryMaximized = false;
@@ -228,6 +239,13 @@
 	void WarnSaveNeeded()
 	{
 		IsSaveNeeded = true;
+	}
+
+	void ToggleFactionSelection(PbtAFaction f)
+	{
+		if (SelectedFactions.Contains(f)) SelectedFactions.Remove(f);
+		else
+			SelectedFactions.Add(f);
 	}
 
 	async Task SaveAll()
