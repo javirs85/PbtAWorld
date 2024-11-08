@@ -127,12 +127,14 @@
 						<div class="d-flex flex-column">
 							@foreach (var f in c.Factions)
 							{
-								<div class="p-1 @(SelectedFactions.Contains(f)?" ":"hoverable")" 
+								<div class="p-1 @(SelectedFactions.Contains(f)?" ":"hoverable")"
 								style="@(SelectedFactions.Contains(f)?"background:#413a3a; cursor:pointer;":"")"
 								@onclick=@(()=>{ToggleFactionSelection(f);})>
+								
 									<div>@f.Name</div>
 									@if (SelectedFactions.Contains(f))
 									{
+										<div  @onclick:stopPropagation>
 										<EditForm Model="f">
 											<InputTextArea 
 											class="form-control bg-dark text-light" 
@@ -143,6 +145,8 @@
 											style="border:1px solid #4f4f4f; outline:none !important;" 
 											@bind-Value="@f.MasterSecrets"  @onfocus=WarnSaveNeeded/>
 										</EditForm>
+											
+										</div>
 									}
 								</div>
 							}
