@@ -94,27 +94,6 @@
 		@oncontextmenu:preventDefault>
 		<img src="@Service.BackgroundImagePath" style="position:absolute; top:0; left:0;"/>
 
-		<svg width="100%" height="@(imageH+"px")" style="position:absolute; pointer-events:none; opacity:0.5; z-index:88;">
-			@foreach (var line in Service.GetLines())
-			{
-				<path d="@line.GenerateMonotonePath()" stroke="red" fill="none" stroke-width="9" stroke-linecap="round" />
-			}
-
-			@if (CurrentDrawing.Points.Count < 4)
-			{
-				<polyline class="line" points="@CurrentDrawing.GeneratePolyline()" fill="none" stroke="red" stroke-dasharray="3" />
-			}
-			<path d="@CurrentDrawing.GenerateMonotonePath()" stroke="red" stroke-width="3" fill="@(CurrentDrawing.IsFilledIn?"red":"none")" />
-
-			@if (CurrentAction == Actions.deleting)
-			{
-				@foreach (var line in Service.GetLines())
-				{
-					<circle r="10" cx="@line.AnchorPoint.X" cy="@line.AnchorPoint.Y" fill="blue" stroke="white" />
-				}
-			}
-		</svg>
-
 
 		@foreach (var marker in Service.MarkerPositions)
 		{

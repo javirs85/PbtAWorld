@@ -115,16 +115,27 @@
 											<div class="p-2 d-flex">
 												@if (IsMaster && SelectedFaction == f)
 												{
-													<div class="d-flex flex-grow-1 align-items-center gap-1">
-														<EditForm Model="f" class="w-100">
-															<InputTextArea class="form-control" @bind-Value=f.Assets @onfocusout=SpreadChanges />
-														</EditForm>
-														<i class="bi bi-send"></i>
+													<div class="d-flex flex-column w-100">
+														<div class="d-flex flex-grow-1 align-items-center gap-1">
+															<EditForm Model="f" class="w-100">
+																<InputTextArea class="form-control" @bind-Value=f.Assets @onfocusout=SpreadChanges />
+															</EditForm>
+														</div>
+														<div class="MasterSecrets" style="">
+															<EditForm Model="f" class="w-100">
+																<InputTextArea class="form-control" @bind-Value=f.MasterSecrets @onfocusout=SpreadChanges />
+															</EditForm>
+														</div>
 													</div>
 												}
 												else
 												{
-													<DecodedString Value="@f.Assets" />
+													<div class="d-flex flex-column">
+														<DecodedString Value="@f.Assets" />
+														<div class="p-1 bg-Dark opacity-50">
+															<DecodedString Value="@f.MasterSecrets" />
+														</div>
+													</div>
 												}
 											</div>
 
@@ -143,6 +154,7 @@
 										<button class="btn btn-danger" @onclick=@(()=>{Delete(c);})><i class="bi bi-trash3"></i></button>
 									</div>
 								}
+								
 						
 							</div>
 						}				

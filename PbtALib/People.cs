@@ -185,6 +185,7 @@ public class PbtAFaction : IPbtAFaction
 	public List<PbtACharacter> Members { get; set; } = new();
 	public string Assets { get; set; } = "Assets";
 	public string CurrentlyWorkingOn { get; set; } = "en que están ahora mismo";
+	public string MasterSecrets { get; set; } = "";
 	public int Size { get; set; }
 	public int SizeTemp { get; set; }
 	public int Strength { get; set; }
