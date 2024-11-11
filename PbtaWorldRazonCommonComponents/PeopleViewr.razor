@@ -121,20 +121,27 @@
 																<InputTextArea class="form-control" @bind-Value=f.Assets @onfocusout=SpreadChanges />
 															</EditForm>
 														</div>
-														<div class="MasterSecrets" style="">
-															<EditForm Model="f" class="w-100">
-																<InputTextArea class="form-control" @bind-Value=f.MasterSecrets @onfocusout=SpreadChanges />
-															</EditForm>
-														</div>
+														@if(IsMaster)
+														{
+															<div class="MasterSecrets" style="">
+																<EditForm Model="f" class="w-100">
+																	<InputTextArea class="form-control" @bind-Value=f.MasterSecrets @onfocusout=SpreadChanges />
+																</EditForm>
+															</div>
+														}
+														
 													</div>
 												}
 												else
 												{
 													<div class="d-flex flex-column">
 														<DecodedString Value="@f.Assets" />
-														<div class="p-1 bg-Dark opacity-50">
-															<DecodedString Value="@f.MasterSecrets" />
-														</div>
+														@if (IsMaster)
+														{
+															<div class="p-1 bg-Dark opacity-50">
+																<DecodedString Value="@f.MasterSecrets" />
+															</div>
+														}
 													</div>
 												}
 											</div>
