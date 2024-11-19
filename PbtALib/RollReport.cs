@@ -27,9 +27,10 @@ public interface IRollReport
 	string StatString { get; set; }
 	void SetID<T>(T id);
 	T GetID<T>();
+	string MoveIDString { get; }
 	void SetStat<T>(T id);
 	T GetStat<T>();
-
+	DateTime Date { get; set; }
 }
 
 public abstract class RollReport<T_ID, T_Stats> : IRollReport
@@ -59,6 +60,15 @@ public abstract class RollReport<T_ID, T_Stats> : IRollReport
 		RollType = type;
 	}
 
+	public string MoveIDString
+	{
+		get
+		{
+			return GetID<T_ID>()?.ToString() ?? "error";
+		}
+	}
+
+	public DateTime Date { get; set; } = DateTime.Now;
 
 	public RollTypes RollType { get; set; } = RollTypes.Roll_Simple;
 	public string Roller { get; set; } = string.Empty;

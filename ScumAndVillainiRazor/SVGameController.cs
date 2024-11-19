@@ -44,4 +44,5 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 	{
 		LastRoll = new SVRollReport(movesService);
 	}
+
 }

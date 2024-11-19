@@ -104,5 +104,4 @@ public class USGameController : PbtALib.GameControllerBase<USMoveIDs, USAttribut
 	public List<USCharacterSheet> GetMembersOfFaction(USFaction fac) { throw new NotImplementedException(); }
 	public async Task StoreImageBase64(string Data64, Guid CharacterID) { throw new NotImplementedException(); }
 
-	
 }

@@ -1,0 +1,127 @@
+﻿@page "/Statistics/{SelectedGameString}/{SelectedSeasonID:guid}"
+@using DungeonWorld
+@using PbtALib.ifaces
+@using UrbanShadows
+@inject DWGameController DWGame
+@inject SVGameController SVGame
+@inject USGameController USGame
+@inject DinoGameController DIGame
+<div class="text-light">
+	<h3 class="m-2">Statistics</h3>
+
+	@if (Game is not null)
+	{
+		@foreach (var day in Game.AllRollsInTheGame.GroupBy(x => x.Date.Date))
+		{
+			<h4 class="ms-2">@day.Key.ToString("dd.MM.yyyy")</h4>
+			<table class="table table-dark m-3">
+				<thead>
+					<tr>
+						<th>Player</th>
+						<th>Move</th>
+						<th>d1</th>
+						<th>d2</th>
+						<th>Stat</th>
+						<th>Extra</th>
+						<th>Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var roll in day.OrderBy(x => x.PlayerName))
+					{
+						<tr>
+							<td>@roll.PlayerName </td>
+							<td>@roll.MoveTittle </td>
+							<td>@roll.d1</td>
+							<td>@roll.d2</td>
+							<td>@roll.Bonus</td>
+							<td>@roll.Extra</td>
+							<th>@roll.Total</th>
+						</tr>
+					}
+					<tr>
+						<td>Media </td>
+						<td>- </td>
+						<td>@GetAverage(day.ToList(), x => x.d1).ToString("#0.##")</td>
+						<td>@GetAverage(day.ToList(), x => x.d2).ToString("#0.##")</td>
+						<td>@GetAverage(day.ToList(), x => x.Bonus).ToString("#0.##")</td>
+						<td>@GetAverage(day.ToList(), x => x.Extra).ToString("#0.##")</td>
+						<th>@GetAverage(day.ToList(), x => x.Total).ToString("#0.##")</th>
+					</tr>
+				</tbody>
+			</table>
+			<h6 class="ms-3">Medias por jugador</h6>
+			<table class="table table-dark m-3">
+				<thead>
+					<tr>
+						<th>Player</th>
+						<th>d1</th>
+						<th>d2</th>
+						<th>Stat</th>
+						<th>Extra</th>
+						<th>Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var p in GetPlayers(day.ToList()))
+					{
+						<tr>
+							<td>@p </td>
+							<td>@GetAverage(day.Where(x => x.PlayerName == p).ToList(), x => x.d1).ToString("#0.##")</td>
+							<td>@GetAverage(day.Where(x => x.PlayerName == p).ToList(), x => x.d2).ToString("#0.##")</td>
+							<td>@GetAverage(day.Where(x => x.PlayerName == p).ToList(), x => x.Bonus).ToString("#0.##")</td>
+							<td>@GetAverage(day.Where(x => x.PlayerName == p).ToList(), x => x.Extra).ToString("#0.##")</td>
+							<th>@GetAverage(day.Where(x => x.PlayerName == p).ToList(), x => x.Total).ToString("#0.##")</th>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+	}
+</div>
+
+
+
+
+@code {
+	[Parameter] public string SelectedGameString { get; set; } = "NotSet";
+	[Parameter] public Guid SelectedSeasonID { get; set; } = new Guid();
+
+	IGameController? Game;
+
+	List<string> GetPlayers(List<RollStatisticSummary> rolls)
+	{
+		if (Game is not null)
+			return (from i in Game.AllRollsInTheGame
+					select i.PlayerName)
+					.Distinct()
+					.ToList();
+		else
+			return new List<string>();
+	}
+
+	double GetAverage(List<RollStatisticSummary> rolls, Func<RollStatisticSummary, int> selector)
+	{
+		if (rolls == null || !rolls.Any()) return 0;
+
+		return rolls.Average(selector);
+	}
+
+
+	protected async override Task OnParametersSetAsync()
+	{
+		AvailableGames localGameId;
+		bool isOk = Enum.TryParse(SelectedGameString, out localGameId);
+
+		if (localGameId == AvailableGames.DW) Game = DWGame;
+		else if (localGameId == AvailableGames.US) Game = USGame;
+		else if (localGameId == AvailableGames.DI) Game = DIGame;
+
+		if(Game is not null)
+		{
+			await Game.LoadRollStatistics();
+
+		}
+		
+	}
+}

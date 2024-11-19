@@ -122,4 +122,5 @@ public class DinoGameController : GameControllerBase<DinoMoveIDs, DinoStates>
 		else
 			throw new Exception("tried to store a character that is not DinoCharacter from DInoGameController");
 	}
+
 }

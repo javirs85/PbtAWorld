@@ -23,6 +23,10 @@ public interface IGameController
 	public Task StoreSessionSummaries();
 	public Task LoadSessionSummaries();
 
+	public List<RollStatisticSummary> AllRollsInTheGame { get; set; }
+	public Task StoreRollStatistics();
+	public Task LoadRollStatistics();
+
 
 	public List<Monster> CurrentSceneEnemies { get; set; }
 	public void RollMonsterDamage(Monster m);
