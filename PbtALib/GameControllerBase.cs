@@ -47,6 +47,8 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 	public event EventHandler<PNJ> OnMasterShowsPNJ;
 	public event EventHandler<string> ImageToShowToAllPlayers;
 
+	public List<RollStatisticSummary> AllRollsInTheGame { get; set; } = new();
+
 	public ICharacter GetCharacterByID(Guid id)
 	{
 		var p = Players?.Find(x => x.ID == id);
@@ -159,7 +161,7 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		}
 	}
 
-	public void Roll(Guid PlayerID, IMove move, TStatsPack stat, TIDPack moveID, int hardcodedBonus, RollTypes rtype = RollTypes.Roll_Simple, string hardcodedRolledStatName = "", List<RollExtras>? Extras = null)
+	public async Task Roll(Guid PlayerID, IMove move, TStatsPack stat, TIDPack moveID, int hardcodedBonus, RollTypes rtype = RollTypes.Roll_Simple, string hardcodedRolledStatName = "", List<RollExtras>? Extras = null)
 	{
 		var player = Players.Find(x => x.ID == PlayerID);
 		if (player is not null)
@@ -225,8 +227,17 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 			
 		}
 
+		LastRoll.Date = DateTime.Now;
+		await AddRollToStatistics(LastRoll);
+
 		lastRollViewer.Show(LastRoll);
 		OnNewRoll?.Invoke(this, LastRoll);
+	}
+
+	public async Task AddRollToStatistics(IRollReport roll)
+	{
+		AllRollsInTheGame.Add(new RollStatisticSummary(LastRoll));
+		await StoreRollStatistics();
 	}
 
 	public void AddPlayer(PbtACharacter player)
@@ -307,4 +318,30 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
         }
        
 	}
+
+	public async Task StoreRollStatistics()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID.ToString()}";
+		var path = $"{Folder}/RollStatistics.json";
+
+		var json = System.Text.Json.JsonSerializer.Serialize(AllRollsInTheGame);
+
+		await System.IO.File.WriteAllTextAsync(path, json);
+	}
+
+	public async Task LoadRollStatistics()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID.ToString()}";
+		var path = $"{Folder}/RollStatistics.json";
+		if (File.Exists(path))
+		{
+			var raw = await File.ReadAllTextAsync(path);
+
+			AllRollsInTheGame = System.Text.Json.JsonSerializer.Deserialize<List<RollStatisticSummary>>(raw) ?? new();
+
+			Update();
+		}
+	}
+
+	
 }

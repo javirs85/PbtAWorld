@@ -43,4 +43,5 @@ public class DWGameController  : GameControllerBase<DWMovementIDs, DWStats>, IGa
 	{
 		LastRoll = new DWRollReport(movesService);
 	}
+
 }
