@@ -25,31 +25,6 @@
 			</div>
 		</div>
 		
-		@* @if(SelectedTokens.Count > 0)
-		{
-			foreach(var t in SelectedTokens)
-			{
-				<div>
-					<div>@t.ComesFromImage</div>
-					@if(t.ComesFromImage)
-					{
-						<div>@t.Character.Name</div>
-						<div>@t.Character.ID</div>
-						<div>
-							@foreach(var d in Game.AllDebts)
-							{
-								<div class="m-2 p-1 border border-light bg-dark">
-									<div>Receiving: @d.ReceivingID.ToString() (@(GetDude(d.ReceivingID)?.Name ?? ""))</div>
-									<div>PayingID: @d.PayingID.ToString() (@(GetDude(d.PayingID)?.Name ?? ""))</div>
-									<div>@d.Reason</div>
-								</div>
-							}
-						</div>
-					}
-					
-				</div>
-			}
-		} *@
 	}
 	
 	<div class="Map" id="Map" 
@@ -61,6 +36,9 @@
 			{
 				<path d="@line.Line.GenerateMonotonePath()"
 					  class="@(GetClassString(line.Debt.PayingID))"
+					  style="@((SelectedTokens.Count>0 && 
+								(line.Debt.PayingID == SelectedTokens[0].Character.ID 
+								|| line.Debt.ReceivingID == SelectedTokens[0].Character.ID))?"opacity:1;":"opacity:0.2;")"
 					  stroke-width="3"
 					@onclick=@(()=>{Toaster.ShowInfo(line.Debt.Reason);})
 					@onclick:stopPropagation
