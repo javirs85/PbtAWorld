@@ -4582,13 +4582,13 @@ public class USMovesService : MovesServiceBase
 			},
 			new USMove(USMoveIDs.CityStatus1_03, USAttributes.Status)
 			{
-				Title = "Consulta a sus contactos",
+				Title = "Consulta a tus contactos",
 				TypeOfMovement = MovementTypes.CityMoveStatus1,
 				IsSelected = true,
 				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
-					MainText = $"Cuando consultes a tus contactos en otro Círculo, tira con estatus en ese Círculo. Con un éxito, pregunta 3; tus contactos responderán lo mejor que puedan.\n\nGasta los puntos que mantengas para obtener un 12+ en lugar de tirar cuando la respuesta que obtienes te ayudaría en tu movimiento.\r\n\r\n",
+					MainText = $"Cuando consultes a tus contactos en otro Círculo, tira con estatus en ese Círculo. Con un éxito, pregunta 3; tus contactos responderán lo mejor que puedan.\r\n\r\n",
 					Options = new List<string>
 					{
 						"¿De qué conflicto está hablando todo el mundo?",
@@ -4600,7 +4600,11 @@ public class USMovesService : MovesServiceBase
 				},
 				ConsequencesOn79 = new Consequences
 				{
-					MainText="Con un 7-9, mantén 1. Con un 10+, mantén 2."
+					MainText="Con un 7-9, mantén 1."
+				},
+				ConsequencesOn10 = new Consequences
+				{
+					MainText="Con un 10+, mantén 2."
 				},
 				ConsequencesOn6 = new Consequences
 				{
