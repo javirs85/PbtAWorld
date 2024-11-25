@@ -98,3 +98,8 @@
     opacity:1;
 }
 
+.FloatingButtonsShelf{
+    position:fixed;
+    top:0;
+    left:50%;
+}
