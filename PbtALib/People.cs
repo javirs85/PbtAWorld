@@ -240,6 +240,25 @@ public class MasterHint
 	public string Text { get; set; } = string.Empty;
 	public bool IsTicked { get; set; } = false;
 
+	private int _order;
+
+	public int Order
+	{
+		get { 
+			if (IsTicked) return _order;
+			else return _order + 100;
+		}
+		set 
+		{
+			if (IsTicked) _order = value;
+			else _order = value -100;
+		}
+	}
+
+	public void MoveUp() => Order -= 1;
+	public void MoveDown() => Order += 1;
+
+
 	public void Toggle() => IsTicked = !IsTicked;
 }
 
