@@ -8,10 +8,10 @@
 @inject IToastService Toaster
 @inject CharacterSelectorService CharacterSelectorService
 
-<div class="FullScreenModal" style="z-index:1;">
-	<div class="CloseButton" @onclick=ExitRequested style="z-index:9999;"></div>
+<div class="FullScreenModal" style="z-index:1;" @onclick=ExitRequested>
+	<div class="CloseButton"  style="z-index:9999;"></div>
 
-	@if(true)
+	@if(IsMaster)
 	{
 		<div class="MasterTools d-flex gap-1" style="position:fixed; left:10px; top:10px; z-index:120;">
 			<EditForm Model="this">
@@ -65,6 +65,7 @@
 	[Parameter] public EventCallback ShowPeopleViewerRequested { get; set; }
 	[Parameter] public PbtACharacter Character { get; set; } = new();
 	[Parameter] public USGameController Game { get; set; }
+	[Parameter] public bool IsMaster { get; set; } = false;
 
 	public string BackgroundImageName { get; set; } = "FactionMap.jpg";
 	public List<string> AvailableImagePaths { get; set; } = new();
@@ -225,13 +226,21 @@
 			}					
 			else
 			{
-				if (SelectedTokens.Count > 0)
+				if (!IsMaster)
 				{
-					foreach (var tok in SelectedTokens)
+					SelectedTokens.Clear();
+				}
+				else
+				{
+					if (SelectedTokens.Count > 0)
 					{
-						MoveToken(tok, e.OffsetX, e.OffsetY);
+						foreach (var tok in SelectedTokens)
+						{
+							MoveToken(tok, e.OffsetX, e.OffsetY);
+						}
 					}
 				}
+				
 			}	
 		}
 

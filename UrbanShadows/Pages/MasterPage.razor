@@ -16,7 +16,7 @@
 
 @if(IsShowingDebtMap)
 {
-	<DebtMap Game="Game" ExitRequested="@(()=>{IsShowingDebtMap= false;})"/>
+	<DebtMap Game="Game" IsMaster="true" ExitRequested="@(()=>{IsShowingDebtMap= false;})"/>
 }
 
 <div class="text-light p-3 h-100 container-fluid" style="background:black;">
