@@ -131,10 +131,21 @@
 				}
 				else
 				{
-					<div class="d-flex flex-column flex-grow-1">
-						<div>1000 feet vision</div>
-						<EditForm Model="this">
-							<InputTextArea class="h-100 flex-grow-1 w-100" @bind-Value=SessionDetails></InputTextArea> 
+					<div class="d-flex flex-column flex-grow-1 gap-1">
+						@if(Game.People.MasterHints.Count == 0)
+						{
+							<button class="btn btn-primary" @onclick=@(async()=>{await Game.People.LoadMasterHints(Game.SessionID);})>Load</button>
+						}
+						@foreach(var Hint in Game.People.MasterHints.OrderBy(x=>x.IsTicked))
+						{
+							<div class="MasterHint @(Hint.IsTicked?"IsTicked":"")" @onclick=Hint.Toggle>
+								<span class="flex-grow-1">@Hint.Text</span>
+								<button class="btn btn-danger" @onclick=@(async ()=>{await DeleteMasterHint(Hint);})><i class="bi bi-trash3"></i></button>
+							</div>
+						}
+						<EditForm Model="EditableMasterHint">
+							<InputTextArea class="h-100 flex-grow-1 w-100" @bind-Value=EditableMasterHint.Text></InputTextArea> 
+							<button class="btn btn-primary"@onclick=@(async ()=>{await AddMasterHint();})>Add</button>
 						</EditForm>
 					</div>
 				}
@@ -251,13 +262,40 @@
 	bool IsShowingDebtMap = false;
 	bool IsSaveNeeded = false;
 	bool IsShowingPerPlayerDetail = false;
-	string SessionDetails = "";
+	MasterHint EditableMasterHint = new();
 
 	List<PbtAFaction> SelectedFactions = new();
 
 	USMoveIDs? SelectedMove = null;
 
 	private bool IsTokensTryMaximized = false;
+
+	// public override async Task SetParametersAsync(ParameterView parameters)
+	// {
+	// 	await Game.People.LoadMasterHints(Game.SessionID);
+	// }
+
+	async Task AddMasterHint()
+	{
+		MasterHint nh = new MasterHint
+		{
+			Text = EditableMasterHint.Text,
+			IsTicked = false
+		};
+		Game.People.MasterHints.Add(nh);
+		await Game.People.StoreMasterHints(Game.SessionID);
+		EditableMasterHint.Text = "";
+	}
+
+	async Task DeleteMasterHint(MasterHint mh)
+	{
+		var existing = Game.People.MasterHints.Find(x=>x.Id == mh.Id);
+		if(existing is not null)
+		{
+			Game.People.MasterHints.Remove(existing);
+			await Game.People.StoreMasterHints(Game.SessionID);
+		}
+	}
 
 	void Update()
 	{

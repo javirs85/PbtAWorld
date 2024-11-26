@@ -103,3 +103,16 @@
     top:0;
     left:50%;
 }
+
+.MasterHint {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1em;
+    background: #25282c;
+}
+
+    .MasterHint.IsTicked {
+        opacity: 0.5;
+        text-decoration: line-through;
+    }
