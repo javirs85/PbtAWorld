@@ -136,13 +136,24 @@
 						{
 							<button class="btn btn-primary" @onclick=@(async()=>{await Game.People.LoadMasterHints(Game.SessionID);})>Load</button>
 						}
-						@foreach(var Hint in Game.People.MasterHints.OrderBy(x=>x.IsTicked))
-						{
-							<div class="MasterHint @(Hint.IsTicked?"IsTicked":"")" @onclick=Hint.Toggle>
-								<span class="flex-grow-1">@Hint.Text</span>
-								<button class="btn btn-danger" @onclick=@(async ()=>{await DeleteMasterHint(Hint);})><i class="bi bi-trash3"></i></button>
-							</div>
-						}
+						<div class="d-flex flex-column gap-1">
+							@foreach (var Hint in Game.People.MasterHints.Where(x => x.IsTicked == false).OrderBy(x=>x.Order))
+										{
+								<div class="MasterHint gap-1 @(Hint.IsTicked?"IsTicked":"")" @onclick=Hint.Toggle>
+									<span class="flex-grow-1">@Hint.Text</span>
+									<button class="btn btn-secondary" @onclick=Hint.MoveUp @onclick:stopPropagation><i class="bi bi-arrow-up-short"></i></button>
+									<button class="btn btn-secondary" @onclick=Hint.MoveDown @onclick:stopPropagation><i class="bi bi-arrow-down-short"></i></button>
+									<button class="btn btn-danger" @onclick=@(async ()=>{await DeleteMasterHint(Hint);})><i class="bi bi-trash3"></i></button>
+								</div>
+							}
+							@foreach (var Hint in Game.People.MasterHints.Where(x => x.IsTicked == true).OrderBy(x=>x.Order))
+										{
+								<div class="MasterHint @(Hint.IsTicked?"IsTicked":"")" @onclick=Hint.Toggle>
+									<span class="flex-grow-1">@Hint.Text</span>
+									<button class="btn btn-danger" @onclick=@(async ()=>{await DeleteMasterHint(Hint);})><i class="bi bi-trash3"></i></button>
+								</div>
+							}
+						</div>
 						<EditForm Model="EditableMasterHint">
 							<InputTextArea class="h-100 flex-grow-1 w-100" @bind-Value=EditableMasterHint.Text></InputTextArea> 
 							<button class="btn btn-primary"@onclick=@(async ()=>{await AddMasterHint();})>Add</button>
@@ -270,6 +281,11 @@
 
 	private bool IsTokensTryMaximized = false;
 
+	protected override async Task OnParametersSetAsync()
+	{
+		await Game.People.LoadMasterHints(Game.SessionID);
+	}
+
 	// public override async Task SetParametersAsync(ParameterView parameters)
 	// {
 	// 	await Game.People.LoadMasterHints(Game.SessionID);
@@ -279,6 +295,7 @@
 	{
 		MasterHint nh = new MasterHint
 		{
+			Order = Game.People.MasterHints.Count,
 			Text = EditableMasterHint.Text,
 			IsTicked = false
 		};
