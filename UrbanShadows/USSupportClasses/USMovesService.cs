@@ -4588,7 +4588,7 @@ public class USMovesService : MovesServiceBase
 				Archetipe = US_Classes.All,
 				PreCondition = new Consequences
 				{
-					MainText = $"Cuando consultes a tus contactos en otro Círculo, tira con estatus en ese Círculo. Con un éxito, pregunta 3; tus contactos responderán lo mejor que puedan.\r\n\r\nÚsal los puntos que mantengas, uno por uno, para obtener un 10+ en lugar de tirar en un movimiento en el que uses la información obtenida",
+					MainText = $"Cuando consultes a tus contactos en otro Círculo, tira con estatus en ese Círculo. Con un éxito, pregunta 3; tus contactos responderán lo mejor que puedan.\r\nLos puntos que mantienes los puedes gastar para obtener un 10+ en lugar de tirar cuando la información obtenida sea relevante para la tirada\r\n\r\n",
 					Options = new List<string>
 					{
 						"¿De qué conflicto está hablando todo el mundo?",

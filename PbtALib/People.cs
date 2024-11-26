@@ -14,8 +14,13 @@ public interface IPeopleCast
 	List<Circle> Circles { get; }
 
 	public void StoreInJsonFile(Guid GameID);
+	public Task StoreMasterHints(Guid GameID);
 	public void LoadFromJsonFile(Guid GameID);
+	public Task LoadMasterHints(Guid GameID);
 	public void LoadFromJsonString(string json, Guid GameID	);
+
+
+	public List<MasterHint> MasterHints { get; set; }
 
 	PbtAFaction AddNewFactionToCircle(Circle c);
 
@@ -34,6 +39,8 @@ public interface IPeopleCast
 
 public class People : IPeopleCast
 {
+	public List<MasterHint> MasterHints { get; set; } = new List<MasterHint>();
+
 	public List<Circle> _circles = new();
 	public List<Circle> Circles => _circles;
 	public event EventHandler<string> SendToastToClients;
@@ -47,6 +54,7 @@ public class People : IPeopleCast
 
 		System.IO.File.WriteAllText(path, json);
 		SendToastToClients?.Invoke(this, "People's data stored");
+
 	}
 
 	public void LoadFromJsonFile(Guid GameID)
@@ -58,6 +66,29 @@ public class People : IPeopleCast
 		{
 			var json = System.IO.File.ReadAllText(path);
 			_circles = System.Text.Json.JsonSerializer.Deserialize<List<Circle>>(json);
+		}
+	}
+
+	public async Task StoreMasterHints(Guid GameID)
+	{
+		var Folder = $"wwwroot/GameImages/{GameID.ToString()}";
+		var path = $"{Folder}/MasterHints.json";
+		var json = System.Text.Json.JsonSerializer.Serialize(MasterHints);
+
+		await System.IO.File.WriteAllTextAsync(path, json);
+		SendToastToClients?.Invoke(this, "MasterHints stored");
+
+	}
+
+	public async Task LoadMasterHints(Guid GameID)
+	{
+		var Folder = $"wwwroot/GameImages/{GameID.ToString()}";
+		var path = $"{Folder}/MasterHints.json";
+
+		if (File.Exists(path))
+		{
+			var json = await File.ReadAllTextAsync(path);
+			MasterHints = System.Text.Json.JsonSerializer.Deserialize<List<MasterHint>>(json);
 		}
 	}
 
@@ -199,6 +230,17 @@ public class PbtAFaction : IPbtAFaction
 	{
 		throw new NotImplementedException();
 	}
+
+
+}
+
+public class MasterHint
+{
+	public Guid Id { get; set; } = Guid.NewGuid();
+	public string Text { get; set; } = string.Empty;
+	public bool IsTicked { get; set; } = false;
+
+	public void Toggle() => IsTicked = !IsTicked;
 }
 
 
