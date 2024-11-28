@@ -3,7 +3,7 @@
 	<div class="d-flex flex-column">
 		<div class="d-flex">
 			<SkewedHeader Text="@HeaderText" />
-			<SkewedList ListSize="6" @bind-Value="RelatedXP"/>
+			<SkewedList ListSize="6" @bind-Value="RelatedXP" StoreChangesNeeded="StoreChangesNeeded" />
 		</div>
 		<div class="d-flex flex-column p-2">
 			<div class="d-flex flex-column gap-0">
@@ -96,6 +96,7 @@
 
 @code {
 	[Parameter] public SVCharacter Player { get; set; } = new SVCharacter { Name = "ERROR" };
+	[Parameter] public EventCallback StoreChangesNeeded { get; set; }
 	[Parameter] public SVStats MainStat { get; set; } = SVStats.Insight;
 	private int _sub1 = 1;
 	private int _sub2 = 1;

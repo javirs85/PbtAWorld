@@ -45,6 +45,7 @@
 @code {
 	[Parameter] public AvilableColors Color { get; set; } = AvilableColors.Blue;
 	[Parameter] public bool IsInverted { get; set; } = false;
+	[Parameter] public EventCallback StoreChangesNeeded { get; set; }
 
 	[Parameter] public int ListSize { get; set; }
 	private int _value = 0;
@@ -55,6 +56,7 @@
 			{
 				_value = value;
 				ValueChanged.InvokeAsync(value);
+				StoreChangesNeeded.InvokeAsync();
 			}
 		}
 	}
@@ -70,5 +72,6 @@
 		{
 			Value++;
 		}
+		StoreChangesNeeded.InvokeAsync();
 	}
 }

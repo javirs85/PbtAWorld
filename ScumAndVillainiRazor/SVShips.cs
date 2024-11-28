@@ -125,6 +125,8 @@ public enum SpecialAbilityIDs
 	HeartsMinds
 }
 
+
+
 public class ShipUpgrade
 {
 	public ShipUpgradeIDs ID { get; set; }
@@ -405,11 +407,10 @@ public class SVShip
 		get { return _shipType; }
 		set { 
 			_shipType = value;
-			InitShip();
 		}
 	}
 
-	private void InitShip()
+	public void InitShip()
 	{
 		if (ShipType == ShipTypes.Stardancer)
 		{

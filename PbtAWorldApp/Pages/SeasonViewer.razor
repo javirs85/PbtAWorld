@@ -7,6 +7,7 @@
 @inject DinoCharacter DinoCharacter;
 @inject DinoGameController DinoGame;
 @inject USGameController USGame;
+@inject SVGameController SVGame;
 @inject USMovesService Moves;
 
 @inject IToastService Toaster;
@@ -226,6 +227,7 @@
 		{
 			if (Meta.SelectedGame == AvailableGames.US) return USGame;
 			if (Meta.SelectedGame == AvailableGames.DI) return DinoGame;
+			if (Meta.SelectedGame == AvailableGames.SV) return SVGame;
 			else return null;
 		}
 	}

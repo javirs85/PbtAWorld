@@ -61,11 +61,14 @@ else
 	protected override void OnParametersSet()
 	{
 		Move = GetMove(MoveID);
-		Owner = GetClassFromAbility(MoveID);
+
 		if (IsShipAbility)
-			IsVeteran = Ship.ShipType != GetShipTypeFromAbility(MoveID);
+			IsVeteran = GetShipTypeFromAbility(MoveID) != Ship.ShipType;
 		else
+		{
+			Owner = GetClassFromAbility(MoveID);
 			IsVeteran = Owner != Player.Profession;
+		}		
 	}
 
 	SVClasses GetClassFromAbility(SVMoveIDs id)
@@ -82,9 +85,9 @@ else
 
 	ShipTypes GetShipTypeFromAbility(SVMoveIDs ability)
 	{
-		if (new SVShip { ShipType = ShipTypes.Cerberus }.AvailableSpecialAbilities.Contains(ability))
+		if (SVGameController.GetAllAvailableSpecialAbiltiesFor(ShipTypes.Cerberus).Contains(ability))
 			return ShipTypes.Cerberus;
-		else if (new SVShip { ShipType = ShipTypes.Stardancer }.AvailableSpecialAbilities.Contains(ability))
+		else if (SVGameController.GetAllAvailableSpecialAbiltiesFor(ShipTypes.Stardancer).Contains(ability))
 			return ShipTypes.Stardancer;
 		else
 			return ShipTypes.Firedrake;

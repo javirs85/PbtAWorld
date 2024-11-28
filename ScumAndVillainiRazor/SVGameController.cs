@@ -17,18 +17,21 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 {
 	public SVShip Ship { get; set; } = new SVShip { ShipType = ShipTypes.NotSet};
 	private SVMovesService movesService;
+
 	public SVGameController(SVMovesService moves, IDataBaseController _db, LastRollViewerService _lastRollViewerService) : base(moves, _db, _lastRollViewerService)
 	{
 		movesService = moves;
 		LastRoll = new SVRollReport(moves);
 		TextBook = new SVTextBook();
-
-		LoadShip();
 	}
 
 	public async Task StoreShip(string notification)
 	{
 		var Folder = $"wwwroot/GameImages/{SessionID}";
+		
+		if (!Path.Exists(Folder))
+			Directory.CreateDirectory(Folder);
+
 		var path = $"{Folder}/Ship.json";
 		var json = JsonSerializer.Serialize(Ship);
 
@@ -67,6 +70,25 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 	protected override void CreateNewRollReport()
 	{
 		LastRoll = new SVRollReport(movesService);
+	}
+
+	public async Task StartShip(ShipTypes type)
+	{
+		Ship = new SVShip();
+		Ship.ShipType = type;
+		Ship.InitShip();
+
+		await StoreShip($"Se ha creado un {type.ToUI()}");
+	}
+
+	public static List<SVMoveIDs> GetAllAvailableSpecialAbiltiesFor(ShipTypes type)
+	{
+		if (type == ShipTypes.Stardancer)
+			return new List<SVMoveIDs> { SVMoveIDs.Getaway, SVMoveIDs.CargoEye, SVMoveIDs.FieldRepairs, SVMoveIDs.Leverage, SVMoveIDs.JustPassingThrough, SVMoveIDs.HomeCooking, SVMoveIDs.ProblemSolvers };
+		else if(type == ShipTypes.Cerberus)
+			return new List<SVMoveIDs> { SVMoveIDs.Licensed, SVMoveIDs.OnTheTrail, SVMoveIDs.LightTouch, SVMoveIDs.SnatchNGrab, SVMoveIDs.LoadedForBear, SVMoveIDs.PlayBothSides, SVMoveIDs.Deadly };
+		else 
+			return new List<SVMoveIDs> { SVMoveIDs.OldHands, SVMoveIDs.ForgedInFire, SVMoveIDs.Sympathisers, SVMoveIDs.NaturalEnemies, SVMoveIDs.SparkOfRebellion, SVMoveIDs.JustCause, SVMoveIDs.HeartsAndMinds };
 	}
 
 }

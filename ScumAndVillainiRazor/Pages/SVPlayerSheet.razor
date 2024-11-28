@@ -18,11 +18,11 @@
 {
 	<div style="position:fixed; top:0; left:0; right:0; bottom:0; background:black; z-index: 22; color: white;">
 		<div class="d-flex gap-3 h-100">
-			<div class="flex-grow-1 border rounded m-2 ShipSelector">
+			<div class="flex-grow-1 border rounded m-2 ShipSelector" @onclick="@(async()=>{await Game.StartShip(ShipTypes.Stardancer);})">
 				<h1 class="text-center">Stardancer</h1>
 				<img class="w-100" src="imgs/SV/stardancer.png"/>
 				<div class="d-flex justify-content-right" style="padding-right:2px;">
-					<SkewedList IsInverted="true" Color="SkewedHeader.AvilableColors.Green" ListSize="3" @bind-Value="@Ship.CrewQuality" />
+					<SkewedList IsInverted="true" Color="SkewedHeader.AvilableColors.Green" ListSize="3" @bind-Value="@Game.Ship.CrewQuality" />
 					<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=true Text="Crew" />
 				</div>
 			</div>
@@ -106,12 +106,12 @@
 			<h2>Seleccione habilidades</h2>
 			@if (!_isShowingAllShipAbilities)
 			{
-				@foreach (var ab in Ship.AvailableSpecialAbilities)
+				@foreach (var ab in Game.Ship.AvailableSpecialAbilities)
 				{
 					<div class="d-flex gap-3">
-						<AbilityCard MoveID="ab" Player="Player" Ship="Ship" IsShipAbility="true" ShowHelp="ShowHelp" Grow="true" />
+						<AbilityCard MoveID="ab" Player="Player" Ship="Game.Ship" IsShipAbility="true" ShowHelp="ShowHelp" Grow="true" />
 						<div>
-							@if (Ship.AvailableSpecialAbilities.Contains(ab))
+							@if (Game.Ship.SelectedSpecialAbilities.Contains(ab))
 							{
 								<i class="bi bi-x-circle CircularButton" style="color:red;" @onclick=@(async()=>{await RemoveShipAbility(ab);})></i>
 							}
@@ -131,17 +131,17 @@
 			}
 			else
 			{
-				@foreach (ShipTypes cl in Enum.GetValues(typeof(ShipTypes)))
+				@foreach (ShipTypes ShipType in Enum.GetValues(typeof(ShipTypes)))
 				{
-					@if (cl != ShipTypes.NotSet)
+					@if (ShipType != ShipTypes.NotSet)
 					{
-						<h3>@cl.ToUI()</h3>
-						@foreach (var ab in new SVShip{ShipType = cl }.AvailableSpecialAbilities)
+						<h3>@ShipType.ToUI()</h3>
+						@foreach (var ab in SVGameController.GetAllAvailableSpecialAbiltiesFor(ShipType))
 						{
 							<div class="d-flex gap-3">
-								<AbilityCard MoveID="ab" Player="Player" Ship="Ship" IsShipAbility="true" ShowHelp="ShowHelp" Grow=true />
+								<AbilityCard MoveID="ab" Player="Player" Ship="Game.Ship" IsShipAbility="true" ShowHelp="ShowHelp" Grow=true />
 								<div>
-									@if (Ship.SelectedSpecialAbilities.Contains(ab))
+									@if (Game.Ship.SelectedSpecialAbilities.Contains(ab))
 									{
 										<i class="bi bi-x-circle CircularButton" style="color:red;" @onclick=@(async()=>{await RemoveShipAbility(ab);})></i>
 									}
@@ -194,7 +194,7 @@
 		</div>
 
 		<div class="d-flex flex-column  flex-grow-1">
-		<StatBlock 
+		<StatBlock StoreChangesNeeded="@(async() => {await Game.StoreChangesOnCharacter(Player, "Cambios guardados");})"
 			Player="Player"
 			MainStat="SVStats.Insight"
 				   @bind-RelatedXP="Player.InsightXP"
@@ -282,8 +282,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="d-flex flex-column pt-2">
-		<div class="flex-grow-1">
+	<div class="d-flex flex-column h-100 pt-2">
+		<div class="flex-grow-1 overflow-auto">
 			<div class="abilitiesContainer" style="margin:0;">
 				<div class="d-flex">
 					<div class="fs-4 flex-fill d-flex align-items-end ps-2">Habilidades especiales</div>
@@ -308,9 +308,9 @@
 					</div>
 				</div>
 
-				@foreach (var ab in Ship.SelectedSpecialAbilities)
+				@foreach (var ab in Game.Ship.SelectedSpecialAbilities)
 				{
-					<AbilityCard MoveID="ab" Player="Player" Ship="Ship" IsShipAbility="true" ShowHelp="ShowHelp" IsExpanded=StartShipAbilitiesMaximized />
+					<AbilityCard MoveID="ab" Player="Player" Ship="Game.Ship" IsShipAbility="true" ShowHelp="ShowHelp" IsExpanded=StartShipAbilitiesMaximized />
 				}
 
 			</div>
@@ -448,7 +448,6 @@
 
 @code {
 	[Parameter] public SVCharacter Player { get; set; } = new();
-	[Parameter] public SVShip Ship { get; set; } = new();
 
 	private bool _isShowingAbilitySelector = false;
 	private bool _isShowingShipAbilitySelector = false;
@@ -532,13 +531,13 @@
 	}
 	async Task AddShipAbility(SVMoveIDs id)
 	{
-		Ship.SelectedSpecialAbilities.Add(id);
+		Game.Ship.SelectedSpecialAbilities.Add(id);
 		await Game.StoreShip($"Añadió {id} a la nave");
 		CloseShipAbilitySelector();
 	}
 	async Task RemoveShipAbility(SVMoveIDs id)
 	{
-		Ship.SelectedSpecialAbilities.Remove(id);
+		Game.Ship.SelectedSpecialAbilities.Remove(id);
 		await Game.StoreShip($"Quitó {id} de la nave");
 		CloseShipAbilitySelector();
 	}

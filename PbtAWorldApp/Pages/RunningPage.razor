@@ -252,6 +252,7 @@ else if(SelectedGame == AvailableGames.SV)
 			SelectedGameController = SVGame;
 			CharacterSelectorService.Game = SelectedGameController;
 			Players = SVGame.Players;
+			await SVGame.LoadShip();
 		}
 
 		SelectedGameController.ShowToastEvent -= ShowInfo;
