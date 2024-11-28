@@ -5,6 +5,7 @@
     width:100%;
     height:100%;
     display:flex;
+    gap:1em;
 }
     .SVPlayerSheet > div{
         display:flex;
@@ -52,8 +53,8 @@
     align-items: stretch;
     gap: 2px;
     overflow-y: auto;
-    background: #01131f;
-    flex: 1 1;
+    background: #01131f45;
+    /*flex: 1 1;*/
     border: 1px solid #15374e;
 }
 
@@ -86,9 +87,9 @@
     display: flex;
     flex-direction: column;
     border: white;
-    margin: 0 8px;
-    margin-bottom: 0px;
-    background: #073003;
+    margin: 0;
+    margin-top: 1em;
+    background: #0803301c;
 }
 
 .TableHeader {
@@ -101,6 +102,8 @@
 }
 .TableCell {
     flex:1 1;
+    font-family:Roboto;
+    font-weight:lighter;
     display:flex;
     justify-content: center;
     align-items: center;
@@ -108,16 +111,16 @@
 }
 
 .ArmorBox {
-    background: #093d04;
+    /*background: #093d04;
     border-left: 1px solid #238519;
-    border-right: 1px solid #238519;
+    border-right: 1px solid #238519;*/
 }
 
 .RecoveryBox {
     width: 83px;
     height: 100%;
-    background: #073003;
-    border-bottom: 1px solid #238519;
+    /*background: #073003;
+    border-bottom: 1px solid #238519;*/
     padding: 5px;
     padding: 0 5px 5px 5px;
     display: flex;
@@ -139,3 +142,14 @@
 .LoadItem {
     padding:10px;
 }
+
+.ShipSelector {
+    cursor: pointer;
+    color: gray;
+    opacity: 0.75;
+    border: 1px solid gray !important;
+}
+    .ShipSelector:hover {
+        opacity: 1;
+        border: 1px solid white;
+    }

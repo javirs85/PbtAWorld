@@ -30,6 +30,11 @@ public enum SVMoveIDs {
 	ImADoctorNotA, Physicker, Patch, WelcomeAnywhere, UnderPressure, CombatMedic, MoralCompass, DrStrange, BookLearning,
 	AirOfRespectability,FavorsOwed,Player, Infiltrator, Subterfuge, HeartToHeart, OldFriends, Disarming, Purpose,
 	Serendipitous, NeverTellMeTheOdds, IKnowAGuy, Tenacious, WhenTheChipsAreDown, DevilsOwnLuck, Daredevil, ShootFirst, AskQuestionsLater,
+	
+	
+	Getaway, FieldRepairs, OldHands, ForgedInFire, Leverage, JustPassingThrough, CargoEye, HomeCooking,
+	ProblemSolvers, SnatchNGrab, Licensed, LightTouch, OnTheTrail, LoadedForBear, PlayBothSides, Deadly,
+	Sympathisers, 	NaturalEnemies,	SparkOfRebellion,	JustCause,	HeartsAndMinds,
 }
 
 public enum Heritages { Imperial, Spacer, Colonist, Manufactured, Wanderer, Xeno, NotSet}
@@ -38,8 +43,23 @@ public enum Vices { Faith, Gambling, Luxury, Obligation, Pleasure, Stupor, Weird
 public enum MaxLoads { Light, Normal, Heavy, NotSet}
 public enum Traumas { NoTrauma, Cold, haunted, Obsessed, Paranoid, Reckless, Soft, Unstable, Vicious}
 
+public enum ShipSystems { Comms, Weapons, Engines, Hull, NotSet}
+
 
 
 public enum ActionRollPositions { Controlled, Risky, Desperate};
 public enum ActionRollEffects { Limited, Standard, Great};
+
+public static class Ex
+{
+	public static string ToUI(this ShipSystems system) => system switch
+	{
+		ShipSystems.Hull => "Casco",
+		ShipSystems.Comms => "Comms",
+		ShipSystems.Weapons => "Armas",
+		ShipSystems.Engines => "Motor",
+		ShipSystems.NotSet => "NotSet",
+		_ => ""
+	};
+}
 

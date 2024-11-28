@@ -416,7 +416,156 @@ public class SVMovesService : MovesServiceBase
 			Title = "Haz preguntas después",
 			Description = "Cuando consientes para reunir información, obtienes *+1 efecto** y, además, puedes preguntar: ¿A quién podría beneficiar esto?",
 			Details = "Cuando hagas tu propia pregunta, aprenderás la"
+		},
+
+		new SVMove(SVMoveIDs.CargoEye, SVStats.NotSet)
+		{
+			Title = "Ojo de Carga",
+			Description = "Tu tripulación gana +1 crédito por trabajos de contrabando o entrega. Siempre que reúnas información, puedes preguntar: ¿qué es lo más valioso aquí?",
+			Details = "Este movimiento recompensa tu enfoque en trabajos de contrabando o entrega, asegurándote mayores ganancias. Además, la capacidad de identificar el valor oculto en cualquier situación al reunir información puede proporcionar una ventaja estratégica crucial durante tus operaciones."
+		},
+
+		new SVMove(SVMoveIDs.Getaway, SVStats.NotSet)
+		{
+			Title = "La Fuga",
+			Description = "Ganas potencia cuando maniobras o pilotas para evitar ser capturado o romper un bloqueo. Al realizar un trabajo de entrega, añade +1d a la tirada de preparación.",
+			Details = "Normalmente necesitarías superar tiradas de **Maniobrar** o **Pilotar** para escapar de situaciones complicadas o cruzar bloqueos. Este movimiento te da una ventaja táctica al realizar trabajos de entrega, asegurando una mejor posición inicial con la tirada de preparación. Trata esto como una bonificación especial durante trabajos que requieran rapidez o evasión."
+		},
+
+		new SVMove(SVMoveIDs.FieldRepairs, SVStats.NotSet)
+		{
+			Title = "Reparaciones de Campo",
+			Description = "Ganas potencia al reparar tu nave mientras estás en el espacio. Si gastas un gambito en una tirada de **Trastear**, ganas +2d (en lugar de +1d).",
+			Details = "Este movimiento mejora significativamente tu capacidad de reparación en situaciones de emergencia, especialmente en el espacio. El uso de un gambito para obtener una bonificación adicional a tus tiradas de reparación puede marcar la diferencia en momentos críticos."
+		},
+
+		new SVMove(SVMoveIDs.Leverage, SVStats.NotSet)
+		{
+			Title = "Influencias",
+			Description = "Tu tripulación sabe cómo mover hilos y cobrar favores. Cuando te mantienes al margen, en lugar de tirar puedes perder -1 de estado con una facción en Amistosa (+1) o mejor para reducir tu nivel de buscado en 1 y poner tu calor a 0 en un sistema.",
+			Details = "Este movimiento ofrece una opción estratégica para manejar las consecuencias legales y sociales de tus acciones. Reducir tu calor y nivel de buscado puede darte un respiro necesario para operar más libremente."
+		},
+
+		new SVMove(SVMoveIDs.JustPassingThrough, SVStats.NotSet)
+		{
+			Title = "De Paso",
+			Description = "Durante el reparto, reduce tu calor en -1. Cuando tu calor es 4 o menos, obtienes +1d para engañar a otros haciéndote pasar por ciudadanos comunes, y todavía tienes 2 actividades de inactividad incluso si estás en Guerra (-3) con alguna facción, ya que les cuesta localizarte.",
+			Details = "Este movimiento permite a tu tripulación mantener un perfil bajo, incluso en situaciones tensas. La reducción de calor y las bonificaciones para engañar son ideales para evitar conflictos mayores."
+		},
+
+		new SVMove(SVMoveIDs.HomeCooking, SVStats.NotSet)
+		{
+			Title = "Cocina Casera",
+			Description = "Toda tu tripulación gana Cocina Casera como un vicio. Justo después de un trabajo, puedes gastar 1 crédito y una actividad de inactividad para cocinar para todos, permitiendo que toda la tripulación presente haga una tirada de vicio. Si alguien se excede, estalla una pelea y todos ganan 1 estrés después de la tirada de vicio. Requiere un módulo de cocina.",
+			Details = "Este movimiento añade un elemento narrativo único y mecánico al enfoque de la tripulación en la camaradería y recuperación. Sin embargo, conlleva riesgos que podrían aumentar la tensión dentro del grupo."
+		},
+
+		new SVMove(SVMoveIDs.ProblemSolvers, SVStats.NotSet)
+		{
+			Title = "Resolutores de Problemas",
+			Description = "Cada PJ puede añadir 1 punto de clasificación a **Pilotar**, **Trastear** o **Maniobrar** (hasta un máximo de 3).",
+			Details = "Este movimiento mejora la especialización y la eficacia de cada personaje en áreas clave, permitiendo a la tripulación abordar desafíos técnicos o tácticos con mayor facilidad."
+		},
+
+		
+		new SVMove(SVMoveIDs.Licensed, SVStats.NotSet)
+		{
+			Title = "Con Licencia",
+			Description = "Resta -2 de calor en cualquier trabajo legítimo de cazarrecompensas. Tu nave puede portar armas de partículas, y tu tripulación puede portar y usar legalmente blásters pesados en la persecución de un objetivo.",
+			Details = "Este movimiento permite a tu tripulación operar dentro de los límites legales al realizar trabajos de cazarrecompensas, reduciendo la atención no deseada y mejorando tu capacidad de combate en dichas operaciones."
+		},
+
+		new SVMove(SVMoveIDs.OnTheTrail, SVStats.NotSet)
+		{
+			Title = "En la Pista",
+			Description = "Tu tripulación gana una actividad de inactividad extra para trabajar en proyectos a largo plazo que rastreen recompensas que se han ocultado.",
+			Details = "Este movimiento te da más tiempo y recursos para seguir rastros difíciles, asegurando que puedes mantener la presión sobre tus objetivos incluso cuando tratan de desaparecer."
+		},
+
+		new SVMove(SVMoveIDs.LightTouch, SVStats.NotSet)
+		{
+			Title = "Toque Ligero",
+			Description = "Ganas potencia al seguir a un objetivo o al reunir información en la ubicación previa de un objetivo.",
+			Details = "Este movimiento mejora tus habilidades de rastreo e investigación, dándote una ventaja decisiva al mantenerte un paso por delante de tus objetivos."
+		},
+
+		new SVMove(SVMoveIDs.SnatchNGrab, SVStats.NotSet)
+		{
+			Title = "Secuestro Rápido",
+			Description = "Cuando usas un plan de engaño, infiltración o social para ejecutar un secuestro, añade +1d a la tirada de preparación.",
+			Details = "Este movimiento te asegura una mejor posición inicial al planificar secuestros, aumentando la eficacia de tus estrategias basadas en astucia o subterfugio."
+		},
+
+		new SVMove(SVMoveIDs.LoadedForBear, SVStats.NotSet)
+		{
+			Title = "Listos para Todo",
+			Description = "Tu tripulación puede cargar +1 de carga. Tienen armaduras distintivas y de alta calidad. Cuando usas armadura, cuenta como armadura pesada (2 usos).",
+			Details = "Este movimiento mejora la capacidad de carga de tu tripulación y aumenta su durabilidad en combate, dándoles un aspecto imponente y resistencia adicional en situaciones peligrosas."
+		},
+
+		new SVMove(SVMoveIDs.PlayBothSides, SVStats.NotSet)
+		{
+			Title = "Jugar a Dos Bandos",
+			Description = "Cuando liberas a un objetivo de recompensa, lo conviertes en un contacto de la tripulación y añades +2 de calor.",
+			Details = "Este movimiento te permite convertir un fracaso en una oportunidad, expandiendo tu red de contactos aunque aumente la atención hacia tus actividades."
+		},
+
+		new SVMove(SVMoveIDs.Deadly, SVStats.NotSet)
+		{
+			Title = "Letales",
+			Description = "Cada miembro de la tripulación puede añadir 1 punto de clasificación a **Comandar**, **Luchar** o **Acechar** (hasta un máximo de 3).",
+			Details = "Este movimiento refuerza las capacidades ofensivas y tácticas de tu tripulación, permitiendo a cada miembro especializarse aún más en roles críticos para el éxito en combate o sigilo."
+		},
+
+		new SVMove(SVMoveIDs.OldHands, SVStats.NotSet)
+		{
+			Title = "Veteranos",
+			Description = "Cuando están en Guerra (-3) con una facción de la Hegemonía, todos los miembros de la tripulación obtienen +1d en las tiradas de vicio y aún tienen 2 actividades de inactividad, en lugar de solo 1.",
+			Details = "Este movimiento asegura que tu tripulación puede mantenerse funcional bajo presión extrema, manejando mejor su estrés incluso en los momentos más tensos."
+		},
+
+		new SVMove(SVMoveIDs.ForgedInFire, SVStats.NotSet)
+		{
+			Title = "Forjados en Fuego",
+			Description = "Tu tripulación se ha endurecido por experiencias crueles. Cada uno obtiene +1d en todas las tiradas de resistencia.",
+			Details = "Este movimiento mejora la capacidad de tu tripulación para soportar desafíos difíciles, volviéndolos más resilientes frente a cualquier tipo de amenaza."
+		},
+
+		new SVMove(SVMoveIDs.Sympathisers, SVStats.NotSet)
+		{
+			Title = "Simpatizantes",
+			Description = "Tu ideología es especialmente atractiva. Cuando tratas con una tripulación o facción, el GM te dirá quién entre ellos cree en tu causa (uno, algunos, muchos o todos).",
+			Details = "Este movimiento te permite aprovechar las conexiones ideológicas para influir en otros y ganar aliados en tu lucha."
+		},
+
+		new SVMove(SVMoveIDs.NaturalEnemies, SVStats.NotSet)
+		{
+			Title = "Enemigos Naturales",
+			Description = "Cuando realizas un trabajo contra facciones de la Hegemonía, añade +1d a la tirada de preparación.",
+			Details = "Este movimiento mejora tu efectividad al enfrentarte a enemigos habituales, asegurando mejores resultados al planificar operaciones contra ellos."
+		},
+
+		new SVMove(SVMoveIDs.SparkOfRebellion, SVStats.NotSet)
+		{
+			Title = "Chispa de Rebelión",
+			Description = "Si dejas una tarjeta de presentación o un símbolo altamente visible de resistencia en tu trabajo, ganas +2 de calor. Tu tripulación gana +1d en vicio durante la siguiente inactividad y no puede excederse en indulgencia.",
+			Details = "Este movimiento fomenta un espíritu rebelde en tu tripulación, proporcionando beneficios motivacionales al mismo tiempo que aumenta la notoriedad."
+		},
+
+		new SVMove(SVMoveIDs.JustCause, SVStats.NotSet)
+		{
+			Title = "Causa Justa",
+			Description = "Cuando tu tripulación hace lo correcto a costa de sí misma, puedes marcar una experiencia de tripulación.",
+			Details = "Este movimiento recompensa las acciones altruistas, promoviendo un juego orientado a la moralidad dentro de tu equipo."
+		},
+
+		new SVMove(SVMoveIDs.HeartsAndMinds, SVStats.NotSet)
+		{
+			Title = "Corazones y Mentes",
+			Description = "Cada miembro de la tripulación puede añadir 1 punto de clasificación a **Comandar**, **Conversar** o **Persuadir** (hasta un máximo de 3).",
+			Details = "Este movimiento mejora las habilidades sociales de tu tripulación, permitiéndoles ser más efectivos al interactuar y convencer a otros."
 		}
+
 	};
 
 	public override IMove GetMovement<TMovIDs, TClases>(TMovIDs _ID, TClases _class)

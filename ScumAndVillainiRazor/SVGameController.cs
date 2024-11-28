@@ -15,15 +15,39 @@ namespace ScumAndVillainy;
 
 public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SVStats>, IGameController
 {
+	public SVShip Ship { get; set; } = new SVShip { ShipType = ShipTypes.NotSet};
 	private SVMovesService movesService;
 	public SVGameController(SVMovesService moves, IDataBaseController _db, LastRollViewerService _lastRollViewerService) : base(moves, _db, _lastRollViewerService)
 	{
 		movesService = moves;
 		LastRoll = new SVRollReport(moves);
 		TextBook = new SVTextBook();
+
+		LoadShip();
+	}
+
+	public async Task StoreShip(string notification)
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID}";
+		var path = $"{Folder}/Ship.json";
+		var json = JsonSerializer.Serialize(Ship);
+
+		await File.WriteAllTextAsync(path, json);
+		ShowToast("notification");
 	}
 
 
+	public async Task LoadShip()
+	{
+		var Folder = $"wwwroot/GameImages/{SessionID}";
+		var path = $"{Folder}/Ship.json";
+
+		if (File.Exists(path))
+		{
+			var json = await File.ReadAllTextAsync(path);
+			Ship = JsonSerializer.Deserialize<SVShip>(json);
+		}
+	}
 
 	public override async Task StoreChangesOnCharacter(PbtACharacter ch, string notification, string? newName = null)
 	{

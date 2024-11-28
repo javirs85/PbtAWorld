@@ -1,5 +1,5 @@
 ﻿.ability {
-    background: #3c445d;
+    background: #071b5578;
     padding: 0px 12px;
     border-color: #665efb88;
     color: white;
@@ -16,8 +16,14 @@
 
     .ability.VeteranAbility {
         border-color: #a900ff88;
-        background: #3c0755;
+        background: #250755;
     }
+    .ability.Ship {
+        background: #012904;
+    }
+        .ability.Ship.VeteranAbility {
+            background: #012904;
+        }
 
 .ExpandButton {
     margin-bottom: -7px;

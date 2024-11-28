@@ -14,6 +14,30 @@
 
 <HelpPanel @ref="helpPanel" />
 
+@if(Game.Ship.ShipType == ShipTypes.NotSet)
+{
+	<div style="position:fixed; top:0; left:0; right:0; bottom:0; background:black; z-index: 22; color: white;">
+		<div class="d-flex gap-3 h-100">
+			<div class="flex-grow-1 border rounded m-2 ShipSelector">
+				<h1 class="text-center">Stardancer</h1>
+				<img class="w-100" src="imgs/SV/stardancer.png"/>
+				<div class="d-flex justify-content-right" style="padding-right:2px;">
+					<SkewedList IsInverted="true" Color="SkewedHeader.AvilableColors.Green" ListSize="3" @bind-Value="@Ship.CrewQuality" />
+					<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=true Text="Crew" />
+				</div>
+			</div>
+			<div class="flex-grow-1 border rounded m-2 ShipSelector">
+				<h1 class="text-center">Firedrake</h1>
+				<img class="w-100" src="imgs/SV/firedrake.png"/>
+			</div>
+			<div class="flex-grow-1 border rounded m-2 ShipSelector">
+				<h1 class="text-center">Cerberus</h1>
+				<img class="w-100" src="imgs/SV/cerberus.png" />
+			</div>
+		</div>
+	</div>
+}
+
 @if(_isShowingAbilitySelector)
 {
 	<div class="FullScreenModal" @onclick=CloseAbilitySelector>
@@ -74,6 +98,66 @@
 		</div>
 	</div>
 }
+@if (_isShowingShipAbilitySelector)
+{
+	<div class="FullScreenModal" @onclick=CloseShipAbilitySelector>
+		<div class="ModalBody" style="align-items: stretch;" @onclick:stopPropagation>
+			<div class="CloseButton hoverable" style="pointer-events:none;" />
+			<h2>Seleccione habilidades</h2>
+			@if (!_isShowingAllShipAbilities)
+			{
+				@foreach (var ab in Ship.AvailableSpecialAbilities)
+				{
+					<div class="d-flex gap-3">
+						<AbilityCard MoveID="ab" Player="Player" Ship="Ship" IsShipAbility="true" ShowHelp="ShowHelp" Grow="true" />
+						<div>
+							@if (Ship.AvailableSpecialAbilities.Contains(ab))
+							{
+								<i class="bi bi-x-circle CircularButton" style="color:red;" @onclick=@(async()=>{await RemoveShipAbility(ab);})></i>
+							}
+							else
+							{
+								<i class="bi bi-plus-circle CircularButton" style="color:green;" @onclick=@(async()=>{await AddShipAbility(ab);})></i>
+							}
+						</div>
+					</div>
+				}
+				<div class="d-flex gap-2 align-items-center">
+					<i class="bi bi-plus-circle CircularButton" style="color:green;" @onclick=@(()=>{_isShowingAllShipAbilities = true;})></i>
+					<div>
+						<b>Veterano:</b> Añade un máximo de UNA habilidade de otra nave
+					</div>
+				</div>
+			}
+			else
+			{
+				@foreach (ShipTypes cl in Enum.GetValues(typeof(ShipTypes)))
+				{
+					@if (cl != ShipTypes.NotSet)
+					{
+						<h3>@cl.ToUI()</h3>
+						@foreach (var ab in new SVShip{ShipType = cl }.AvailableSpecialAbilities)
+						{
+							<div class="d-flex gap-3">
+								<AbilityCard MoveID="ab" Player="Player" Ship="Ship" IsShipAbility="true" ShowHelp="ShowHelp" Grow=true />
+								<div>
+									@if (Ship.SelectedSpecialAbilities.Contains(ab))
+									{
+										<i class="bi bi-x-circle CircularButton" style="color:red;" @onclick=@(async()=>{await RemoveShipAbility(ab);})></i>
+									}
+									else
+									{
+										<i class="bi bi-plus-circle CircularButton" style="color:green;" @onclick=@(async()=>{await AddShipAbility(ab);})></i>
+									}
+								</div>
+							</div>
+						}
+					}
+				}
+			}
+		</div>
+	</div>
+}
 
 <div class="SVPlayerSheet">
 	<div class="d-flex flex-column" style="max-width:292px; min-width:292px; overflow-y:auto; overflow-x:hidden;">
@@ -87,9 +171,6 @@
 				<div class="me-2">"</div>
 				<div>El @Player.Profession.ToUI()</div>
 			</div>
-			@* <div style="font-size:16px!important; margin-top:-15px; opacity:0.5;">
-				<HiddeableInput @bind-Value="Player.Look" />
-			</div> *@
 			<div class="d-flex justify-content-between">
 				<div class="d-flex gap-1">
 					<HideableComboBox TEnum="Backgrounds" @bind-CurrentValue=Player.Background />
@@ -110,45 +191,6 @@
 								   HelpText="@Player.Vice.GetDescription()" ForcedOpacity="75" />
 				</div>
 			</div>
-			@* <div style="display:flex; margin-top:10px;">
-				<div style="display:flex; gap:5px; flex:1 1;">
-					<div class="d-flex flex-column">
-						<span class="d-flex align-items-center gap-1" style="opacity: 0.5; line-height:8px;">
-							Herencia <HelperStarter HelperInvoked="ShowHelp"
-											Title=@(@"Herencia: " +Player.Heritage.ToUI())
-											 HelpText="@Player.Heritage.GetDescription()" ForcedOpacity="75" />
-						</span>
-						<div class="d-flex" style="font-size:20px;">
-							<HideableComboBox TEnum="Heritages" @bind-CurrentValue=Player.Heritage />
-						</div>
-					</div>
-				</div>
-				<div style="display:flex;justify-content: center; gap:5px; flex:1 1;">
-					<div class="d-flex flex-column">
-						<span class="d-flex align-items-center gap-1" style="opacity: 0.5; line-height:8px;">
-							Trasfondo <HelperStarter HelperInvoked="ShowHelp"
-											 Title=@(@"Trasfondo: " +Player.Background.ToUI())
-											  HelpText="@Player.Background.GetDescription()" ForcedOpacity="75" />
-						</span>
-						<div class="d-flex" style="font-size:20px;">
-							<HideableComboBox TEnum="Backgrounds" @bind-CurrentValue=Player.Background />
-						</div>
-					</div>
-				</div>
-				<div style="display:flex;justify-content: flex-end; gap:5px; flex:1 1; ">
-					<div class="d-flex flex-column">
-						<span class="d-flex align-items-center gap-1" style="opacity: 0.5; line-height:8px;">
-							Vicio <HelperStarter HelperInvoked="ShowHelp"
-										  Title=@(@"Trasfondo: " +Player.Vice.ToUI())
-										  HelpText="@Player.Vice.GetDescription()" ForcedOpacity="75" />
-						</span>
-						<div class="d-flex" style="font-size:20px;">
-							<HideableComboBox TEnum="Vices" @bind-CurrentValue=Player.Vice />
-						</div>
-					</div>
-				</div>
-			</div>
-			 *@
 		</div>
 
 		<div class="d-flex flex-column  flex-grow-1">
@@ -241,72 +283,105 @@
 		</div>
 	</div>
 	<div class="d-flex flex-column pt-2">
-		<div class="HarmBox">
-			<div class="d-flex" style="border:1px solid #238519; height:48px;">
-				<div class="TableHeader ps-2">3</div>
-				<div class="TableCell"><HiddeableInput @bind-Value=Player.Harm3 /></div>
-				<div class="d-flex justify-content-center" style="width: 46px; align-items: center;"><HelperStarter HelperInvoked="ShowHelp" HelpText="Necesitas ayuda para todo" Title="Daño nivel 3" ForcedOpacity="75" /></div>
-			</div>
-			<div class="d-flex" style="border:1px solid #238519; border-top:none; border-bottom:none; height:48px;">
-				<div class="TableHeader ps-2"> 2</div>
-				<div class="d-flex flex-grow-1">
-					<div class="TableCell" style="border-right:1px solid #238519;"><HiddeableInput @bind-Value=Player.Harm2A /></div>
-					<div class="TableCell"><HiddeableInput @bind-Value=Player.Harm2B /></div>
+		<div class="flex-grow-1">
+			<div class="abilitiesContainer" style="margin:0;">
+				<div class="d-flex">
+					<div class="fs-4 flex-fill d-flex align-items-end ps-2">Habilidades especiales</div>
+					<div class="d-flex gap-2 align-items-center pe-2" style="color: #665efb;">
+						<i class="bi bi-plus-square fs-3 hoverable d-flex" @onclick=OpenAbilitySelector></i>
+						<i class="bi bi-arrows-expand fs-3 hoverable d-flex" @onclick=@(()=>{StartAbilitiesMaximized = !StartAbilitiesMaximized;})></i>
+					</div>
 				</div>
-				<div class="d-flex justify-content-center" style="width: 46px; align-items: center;">-1d</div>
+
+				@foreach (var ab in Player.SelectedAbilities)
+				{
+					<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp" IsExpanded=StartAbilitiesMaximized />
+				}
+
 			</div>
-			<div class="d-flex" style="border:1px solid #238519; height:48px;">
+			<div class="abilitiesContainer" style="background: #0f5b230f; border: 1px solid #0f5b23a1;">
+				<div class="d-flex">
+					<div class="fs-4 flex-fill d-flex align-items-end ps-2">Habilidades de la nave</div>
+					<div class="d-flex gap-2 align-items-center pe-2" style="color: #299129;">
+						<i class="bi bi-plus-square fs-3 hoverable d-flex" @onclick=OpenShipAbilitySelector></i>
+						<i class="bi bi-arrows-expand fs-3 hoverable d-flex" @onclick=@(()=>{StartShipAbilitiesMaximized = !StartShipAbilitiesMaximized;})></i>
+					</div>
+				</div>
+
+				@foreach (var ab in Ship.SelectedSpecialAbilities)
+				{
+					<AbilityCard MoveID="ab" Player="Player" Ship="Ship" IsShipAbility="true" ShowHelp="ShowHelp" IsExpanded=StartShipAbilitiesMaximized />
+				}
+
+			</div>
+		</div>	
+
+		<div class="HarmBox">
+			<div class="d-flex" style="border:1px solid #665efb9e; height:48px;">
 				<div class="TableHeader ps-2">1</div>
 				<div class="d-flex flex-grow-1">
-					<div class="TableCell" style=" border-right:1px solid #238519;">
-						<HiddeableInput @bind-Value=Player.Harm1A/>
-					</div>
-					<div class="TableCell">
-						<HiddeableInput @bind-Value=Player.Harm1B />
-					</div>
+					<div class="TableCell opacity-75" style=" border-right:1px solid #665efb9e;"><HiddeableInput @bind-Value=Player.Harm1A /></div>
+					<div class="TableCell opacity-75"><HiddeableInput @bind-Value=Player.Harm1B /></div>
 				</div>
 				<div class="d-flex text-center" style="width: 46px;">poco<br />efecto</div>
 			</div>
-		</div>
-		<div class="ArmorBox d-flex mx-2 px-2 pt-2">
-			<div class="d-flex align-items-center">Armadura 
-				@if(Player.UsedArmorNormal)
-				{
-					<i class="bi bi-shield-slash-fill fs-3" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorNormal = false;})></i>
-				}
-				else
-				{
-					<i class="bi bi-shield fs-3" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorNormal = true;})></i>
-				}				
+			<div class="d-flex" style="border:1px solid #665efb45; border-top:none; height:48px;">
+				<div class="TableHeader ps-2 opacity-50"> 2</div>
+				<div class="d-flex flex-grow-1">
+					<div class="TableCell opacity-75" style="border-right:1px solid #665efb45;"><HiddeableInput @bind-Value=Player.Harm2A /></div>
+					<div class="TableCell opacity-75"><HiddeableInput @bind-Value=Player.Harm2B /></div>
+				</div>
+				<div class="d-flex justify-content-center" style="width: 46px; align-items: center;">-1d</div>
 			</div>
-			<div class="d-flex flex-grow-1 justify-content-center align-items-center">Pesada 
-				@if (Player.UsedArmorHeavy)
-				{
-					<i class="bi bi-shield-slash-fill fs-3" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorHeavy = false;})></i>
-				}
-				else
-				{
-					<i class="bi bi-shield fs-3" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorHeavy = true;})></i>
-				}
-			</div>
-			<div class="d-flex text-end align-items-center">Especial 
-				@if (Player.UsedArmorSpecial)
-				{
-					<i class="bi bi-shield-slash-fill fs-3" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorSpecial = false;})></i>
-				}
-				else
-				{
-					<i class="bi bi-shield fs-3" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorSpecial = true;})></i>
-				}
+			
+			<div class="d-flex" style="border:1px solid #1712799e; height:48px;">
+				<div class="TableHeader ps-2 opacity-25">3</div>
+				<div class="TableCell opacity-75"><HiddeableInput @bind-Value=Player.Harm3 /></div>
+				<div class="d-flex justify-content-center" style="width: 46px; align-items: center;"><HelperStarter HelperInvoked="ShowHelp" HelpText="Necesitas ayuda para todo" Title="Daño nivel 3" ForcedOpacity="75" /></div>
 			</div>
 		</div>
-		<div class="d-flex pt-2 mx-2 justify-content-between" style="	background:#093d04;
+		<div class="d-flex pt-2 mb-2 gap-2 justify-content-between" style="/* 	background:#093d04;
 																		border-left: 1px solid #238519;
-																		border-right: 1px solid #238519;">
+																		border-right: 1px solid #238519; */">
 			<div class="d-flex flex-column gap-2">
 				<div class="RecoveryBox d-flex flex-column align-items-center">
 					<span>Curación</span>
 					<CircularClock clock="Player.Recovery" Width="55" Color="#207817" BackColor="#052102" HideTitle=true />
+				</div>
+			</div>
+			<div class="ArmorBox flex-column d-flex ">
+				<div class="d-flex flex-grow-1 justify-content-between gap-2 align-items-center">
+					Armadura
+					@if (Player.UsedArmorNormal)
+					{
+						<i class="bi bi-shield-slash-fill fs-5" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorNormal = false;})></i>
+					}
+					else
+					{
+						<i class="bi bi-shield fs-5	" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorNormal = true;})></i>
+					}
+				</div>
+				<div class="d-flex flex-grow-1 justify-content-between align-items-center">
+					Pesada
+					@if (Player.UsedArmorHeavy)
+					{
+						<i class="bi bi-shield-slash-fill fs-5" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorHeavy = false;})></i>
+					}
+					else
+					{
+						<i class="bi bi-shield fs-5" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorHeavy = true;})></i>
+					}
+				</div>
+				<div class="d-flex flex-grow-1 justify-content-between align-items-center">
+					Especial
+					@if (Player.UsedArmorSpecial)
+					{
+						<i class="bi bi-shield-slash-fill fs-5" style="line-height: 14px; color:red; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorSpecial = false;})></i>
+					}
+					else
+					{
+						<i class="bi bi-shield fs-5" style="line-height: 14px; cursor:pointer;" @onclick=@(()=>{Player.UsedArmorSpecial = true;})></i>
+					}
 				</div>
 			</div>
 			<div class="d-flex gap-0" style="   background: rgb(69 39 3);
@@ -318,25 +393,10 @@
 					</div>
 				</div>
 				<div style="border-left:1px solid #ffa5008a; padding-left:5px;">
-					<StashViewer Player="Player" UpdateUI="UpdateUI"/>
+					<StashViewer Player="Player" UpdateUI="UpdateUI" />
 				</div>
 			</div>
-			
-		</div>
-		<div class="abilitiesContainer">
-			<div class="d-flex">
-				<div class="fs-4 flex-fill d-flex align-items-end ps-2">Habilidades especiales</div>
-				<div class="d-flex gap-2 align-items-center pe-2" style="color: #665efb;">
-					<i class="bi bi-plus-square fs-3 hoverable d-flex" @onclick=OpenAbilitySelector></i>
-					<i class="bi bi-arrows-expand fs-3 hoverable d-flex" @onclick=@(()=>{StartAbilitiesMaximized = !StartAbilitiesMaximized;})></i>
-				</div>
-			</div>
-			
-			@foreach(var ab in Player.SelectedAbilities)
-			{
-				<AbilityCard MoveID="ab" Player="Player" ShowHelp="ShowHelp" IsExpanded=StartAbilitiesMaximized />
-			}
-			
+
 		</div>
 	</div>
 	<div class="d-flex flex-column" style="max-width: 360px; min-width: 360px;">
@@ -388,10 +448,14 @@
 
 @code {
 	[Parameter] public SVCharacter Player { get; set; } = new();
+	[Parameter] public SVShip Ship { get; set; } = new();
 
 	private bool _isShowingAbilitySelector = false;
+	private bool _isShowingShipAbilitySelector = false;
 	private bool _isShowingAllAbilities = false;
+	private bool _isShowingAllShipAbilities = false;
 	private bool StartAbilitiesMaximized = true;
+	private bool StartShipAbilitiesMaximized = true;
 
 	HelpPanel helpPanel = new();
 	SVTextBook? Book = null;
@@ -444,16 +508,39 @@
 		_isShowingAbilitySelector = false;
 		_isShowingAllAbilities = false;
 	}
+	private void OpenShipAbilitySelector()
+	{
+		_isShowingShipAbilitySelector = true;
+	}
+	private void CloseShipAbilitySelector()
+	{
+		_isShowingShipAbilitySelector = false;
+		_isShowingAllShipAbilities = false;
+	}
 
-	void AddAbility(SVMoveIDs id)
+	async Task AddAbility(SVMoveIDs id)
 	{
 		Player.SelectedAbilities.Add(id);
+		await Game.StoreChangesOnCharacter(Player, $"Aprendió {id}");
 		CloseAbilitySelector();
 	}
-	void RemoveAbility(SVMoveIDs id)
+	async Task RemoveAbility(SVMoveIDs id)
 	{
 		Player.SelectedAbilities.Remove(id);
+		await Game.StoreChangesOnCharacter(Player, $"Olvidó {id}");
 		CloseAbilitySelector();
+	}
+	async Task AddShipAbility(SVMoveIDs id)
+	{
+		Ship.SelectedSpecialAbilities.Add(id);
+		await Game.StoreShip($"Añadió {id} a la nave");
+		CloseShipAbilitySelector();
+	}
+	async Task RemoveShipAbility(SVMoveIDs id)
+	{
+		Ship.SelectedSpecialAbilities.Remove(id);
+		await Game.StoreShip($"Quitó {id} de la nave");
+		CloseShipAbilitySelector();
 	}
 
 	SVClasses GetClassFromAbility(SVMoveIDs id)

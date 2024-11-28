@@ -32,6 +32,8 @@ public static class ShipExtensions
 
 public enum ShipUpgradeIDs
 {
+	NotSet,
+
 	//ship upgrades
 	HoloEmitters,
 	IntruderAlarm,
@@ -129,6 +131,7 @@ public class ShipUpgrade
 	public string Title { get; set; } = string.Empty;
 	public string Description { get; set; } = string.Empty;
 	public int Cost { get; set; } = 1;
+	public bool IsTicked { get; set; } = false;
 }
 
 public class ShipSpecialAbility
@@ -350,48 +353,52 @@ public class SVShip
 		new ShipUpgrade { ID = ShipUpgradeIDs.LuckyCharm, Cost=2, Title = "Amuleto de la Suerte", Description = "Ya sea un artefacto de Ur o unos recuerdos exhibidos prominentemente en el puente, a veces la suerte solo se trata de creer en algo. La tripulación comienza con +1 gambito en cada trabajo. Cuesta dos mejoras desbloquear esto en lugar de solo una." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.Thrillseekers, Cost=3, Title = "Buscadores de Emociones", Description = "Cada PC recibe una casilla de estrés adicional (aumenta el máximo de estrés a 10). Cuesta tres mejoras desbloquearlo, no solo una." }
 	};
-
-
-
-	public List<ShipSpecialAbility> AllSpecialAbilities = new List<ShipSpecialAbility>
-	{
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.TheGetaway, Title = "La Huida", Description = "Obtienes *potencia** cuando *Maniobras** o *Pilotas** para evitar ser capturado o atravesar un bloqueo. Cuando haces un trabajo de entrega, obtienes *+1d** en la tirada de *Aterrizar**.", FlavorText = "A veces la escapada es la mejor parte del valor. Esta habilidad funciona para cualquier persona en la tripulación, ya sea que estén en la nave o no. Una entrega puede incluir cualquier trabajo donde llevar carga (legal, ilegal o una persona) entre dos ubicaciones sea el objetivo principal." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.CargoEye, Title = "Ojo de Carga", Description = "Tu tripulación gana *+1 cred** para trabajos de contrabando o entrega. Siempre que *reúnas información**, siempre puedes preguntar: '¿Qué es lo más valioso aquí?'", FlavorText="El cred extra se obtiene durante la liquidación más allá de lo que el trabajo paga. Puedes hacer la pregunta siempre que sea aplicable." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.FieldRepairs, Title = "Reparaciones de Campo", Description = "Obtienes *potencia** al reparar tu nave mientras estás en el espacio. Si gastas un *gambito** en un lanzamiento de *Trastear**, obtienes *+2d** (en lugar de +1d).", FlavorText="La potencia puede permitirte ficcionalmente hacer reparaciones que otros no pueden, por ejemplo, arreglar temporalmente una lesión en la nave que normalmente requiere un dique seco. Los dados extra del gambito se aplican a cualquier lanzamiento de rig, no solo a reparaciones." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.Leverage, Title = "Apalancamiento", Description = "Tu tripulación sabe cómo mover los hilos y cobrar favores. Cuando *mantienes el perfil bajo**, en lugar de lanzar, puedes tomar *-1 de estatus** con una facción amiga (+1) o mejor para reducir tu nivel de* SE BUSCA** en 1 y establecer tu nivel de *calor** en 0 en un sistema.", FlavorText="Puedes canjear los cambios de facción que obtuviste del trabajo actual. No tienes que despejar el sistema en el que hiciste el trabajo: la facción ayudará a encubrir tus huellas independientemente." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.JustPassingThrough, Title = "Solo de Paso", Description = "Durante la *liquidación**, toma *-1 de calor** del trabajo. Cuando tu *calor** es de 4 o menos, obtienes *+1d** para engañar a la gente cuando te haces pasar por ciudadanos comunes, y aún tienes dos *actividades de tiempo libre** incluso si estás en Guerra (-3) con alguna facción, ya que tienen problemas para ubicarte.", FlavorText="Usa el calor del sistema en el que te encuentres al comienzo del tiempo libre para determinar el número de actividades que cada miembro de la tripulación recibe. Si, durante el tiempo libre, la tripulación pasa por un sistema en el que tiene mucho calor, las facciones enemigas podrían encontrarlos de todos modos." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.HomeCooking, Title = "Cocina Casera", Description = "Toda tu tripulación obtiene Cocina Casera como un *vicio**. Justo después de un trabajo, puedes gastar *1 cred y una actividad de tiempo libre** para cocinar para todos, lo que permite que toda la tripulación presente haga una tirada de *vicio**. Si alguien se *excede**, estalla una pelea y todos ganan *1 estrés** después de la tirada de vicio. Requiere un módulo de* cocina**.", FlavorText="La tripulación puede dividir quién realiza la actividad y quién paga el cred. El estrés al final se aplica después de todos los resultados." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.ProblemSolvers, Title = "Solucionadores de Problemas", Description = "Cada PC puede agregar 1 clasificación de acción a *Pilotar**, *Trastear** o *Maniobrar** (hasta un máximo de 3).", FlavorText="Cada jugador puede elegir la acción que prefiera (no todos tienen que elegir la misma). Si tomas esta habilidad durante la creación inicial de personajes y tripulaciones, sustituye el límite de clasificaciones de acción normal para comenzar." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.Licensed, Title = "Licenciado", Description = "Toma *-2 de calor** en cualquier trabajo legítimo de caza de recompensas. Tu nave puede llevar armas de partículas, y tu tripulación puede llevar y usar legalmente blásteres pesados en la persecución de un objetivo.", FlavorText="Esto también significa que tienes licencias de caza de recompensas. A veces esto se puede aprovechar para explicar por qué estás en lugares donde generalmente no deberías estar y llevas armas cuando a otros se les puede despojar de ellas. La cooperación legal varía de planeta a planeta." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.OnTheTrail, Title = "En la Pista", Description = "Tu tripulación gana* una actividad de tiempo libre adicional** para trabajar en proyectos a largo plazo, o adquirir activos para rastrear recompensas.", FlavorText="A veces sabes quién es la recompensa, pero no dónde se esconden. Dependiendo de tus contactos y apalancamiento, puede requerirse más que una simple verificación de información. Cualquier miembro de la tripulación puede usar esta acción de tiempo libre y hacer la tirada apropiada." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.LightTouch, Title = "Toque Ligero", Description = "Obtienes *potencia** cuando sigues a un objetivo o cuando* reúnes información** en la ubicación anterior de un objetivo.", FlavorText="Las ubicaciones anteriores pueden incluir lugares donde han estado, escenas del crimen, bares favoritos, y similares. También puede usarse para rastrear si estás siguiendo de cerca." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.SnatchNGrab, Title = "Agarrar y Llevar", Description = "Cuando usas un plan de engaño, infiltración o social para ejecutar un secuestro o extracción, añade *+1d** a la tirada de *Aterrizar**.", FlavorText="La atención de tu tripulación se centra en sacar a un objetivo prioritario de manera segura, y hacerlo sin levantar alarmas. Cualquier misión en la que tengas que sacar a un objetivo bajo la vigilancia de sus guardias se aplica a esta habilidad." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.LoadedForBear, Title = "Cargado para el Combate", Description = "Tu tripulación puede llevar *+1 carga**. Tienen armaduras distintivas y de alta calidad. Cuando usas *armadura**, cuenta como *armadura pesada** (dos usos).", FlavorText="Los máximos de carga de cada miembro de la tripulación se incrementan (así que carga ligera se convierte en 1-4, media en 5-6, y pesada en 7-9). ¿Quién fabricó tal armadura distintiva (y quién podría reconocer su fabricación)? La armadura pesada te permite también marcar la segunda casilla (pesada) de armadura en tu hoja para reducir el daño apropiado." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.PlayBothSides, Title = "Jugar a Dos Bandas", Description = "Cuando liberas a un objetivo de recompensa, hazlo un contacto de tripulación.", FlavorText="Si bien es posible que no recibas un pago de las facciones que te contratan, muchas recompensas tienen algunos créditos guardados que están dispuestos a cambiar por libertad. Sin embargo, son más lucrativos los trabajos o consejos calientes que puedan tener. Añade al objetivo como un contacto de tripulación, aunque ten en cuenta que algún día pueden ser capturados por otros cazadores de recompensas (y pueden pagar por un rescate por parte de tu tripulación). No todos los cazadores de recompensas capturan a sus objetivos, por lo que el GM ajustará (o no) el estado de la facción según sea necesario al final de dicho trabajo." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.Deadly, Title = "Mortal", Description = "Cada PC puede agregar 1 clasificación de acción a *Comandar**, *Luchar** o *Acechar** (hasta un máximo de 3).", FlavorText="Cada jugador puede elegir la acción que prefiera (no todos tienen que elegir la misma). Si tomas esta habilidad durante la creación inicial de personajes y tripulaciones, sustituye el límite de clasificaciones de acción normal para comenzar." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.OldHands, Title = "Veteranos", Description = "Cuando estás en Guerra (-3) con una facción de la Hegemonía, todos los miembros de la tripulación obtienen *+1d* en las tiradas de *vicio** y aún reciben *dos actividades de tiempo libre** en lugar de solo una.", FlavorText = "Puedes optar por no lanzar el dado extra para el vicio, si lo deseas." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.ForgedInFire, Title = "Forjados en el Fuego", Description = "Tu tripulación ha sido endurecida por una experiencia cruel. Cada uno obtiene *+1d* en todas las tiradas de *resistencia**.", FlavorText = "Esta habilidad se aplica a todos los PCs de la tripulación." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.Sympathizers, Title = "Simpatizantes", Description = "Tu ideología es especialmente atractiva. Cuando tratas con una tripulación o facción, el GM te dirá quién entre ellos cree en tu causa (uno, unos pocos, muchos o todos).", FlavorText = "Si el GM no está seguro de la respuesta, puede hacer una tirada de fortuna usando la calidad de la tripulación, tal vez modificada por su posición con una facción. Las facciones no son monolíticas y, aunque la facción en su conjunto (y ciertos individuos dentro de ella) pueden despreciar a los PCs, algunos de sus miembros aún pueden tener inclinaciones rebeldes. Ten en cuenta que la respuesta a la pregunta de los creyentes es siempre al menos uno." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.NaturalEnemies, Title = "Enemigos Naturales", Description = "Cuando realizas un trabajo contra las facciones de la Hegemonía, obtén *+1d* en la tirada de *Aterrizar**.", FlavorText = "Esto se aplica a cualquier trabajo donde tu objetivo principal sea una de las facciones en la columna de la Hegemonía (ver página 316), como los Gremios, Cultos o la Casa Malklaith. Si el trabajo incomoda a una facción pero no involucra a sus miembros, el bono no se aplica." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.SparkOfRebellion, Title = "Chispa de Rebelión", Description = "Si dejas una tarjeta de presentación o un símbolo altamente visible de resistencia en tu trabajo, gana *+2 de calor*. Tu tripulación obtiene *+1d* para el *vicio** durante el próximo tiempo libre, y no pueden *excederse**.", FlavorText = "Cuando tomas esta habilidad, discute cuál es el símbolo de tu rebelión. Cuando dejas tu tarjeta de presentación, debe ser prominente o seguro que será encontrada (preferiblemente por más que solo la Hegemonía)." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.JustCause, Title = "Causa Justa", Description = "Cuando tu tripulación hace lo correcto a costa de ellos mismos, puedes marcar* un punto de experiencia de tripulación**.", FlavorText = "El costo para tu tripulación debe ser real, aunque no necesariamente devastador. Perder una oportunidad significativa, experimentar un contratiempo con un proyecto o enfurecer a una facción poderosa podrían contar." },
-		new ShipSpecialAbility { ID = SpecialAbilityIDs.HeartsMinds, Title = "Corazones y Mentes", Description = "Cada miembro de la tripulación puede agregar 1 clasificación de acción a *Comandar**, *Conversar** o *Persuadir** (hasta un máximo de 3).", FlavorText = "Cada jugador puede elegir la acción que prefiera (no todos tienen que elegir la misma). Si tomas esta habilidad durante la creación inicial de personajes y tripulaciones, sustituye el límite de clasificaciones de acción normal para comenzar." }
-	};
 	
 
 
 	public string Name { get; set; } = "El nombre de la nave";
-	public int Credits { get; set; } = 2;
-	public string HowXp = "Consigues XP cuando completas satisfactoriamente trabajos de transporte o contrabando";
+	public int CrewXP { get; set; } = 0;
+	public int CrewQuality { get; set; } = 3;
 
-	public int CrewQuality { get; set; } = 0;
-	public int MaxCrewQuality = 3;
+	public int UpkeepCost 
+	{ 
+		get 
+		{
+			int cost = 0;
+			foreach (var s in Systems)
+				cost += s.Level;
+
+			cost += CrewQuality;
+			cost = (int)Math.Round((float)cost / 4.0);
+			return cost;
+		} 
+	}
+
+	public int SkippedUpkeeps { get; set; } = 0;
+	public int MaxShields { get; set; } = 1;
+	public int UsedShields { get; set; } = 0;
+	public string Notes { get; set; } = string.Empty;
+	public int Gambits { get; set; } = 2;
+	public int Cred { get; set; } = 0;
+	public int Debt { get; set; } = 0;
+	public List<string> HowToXp = new();
+	
 
 	public ShipReputations Reputation { get; set; } = ShipReputations.NotSet;
 	private ShipTypes _shipType = ShipTypes.NotSet;
 
-	private List<SpecialAbilityIDs> AvailableSpecialAbilities = new List<SpecialAbilityIDs>();
-	private List<SpecialAbilityIDs> SelectedSpecialAbilities = new List<SpecialAbilityIDs>();
+	public List<SVMoveIDs> AvailableSpecialAbilities { get; set; } = new List<SVMoveIDs>();
+	public List<SVMoveIDs> SelectedSpecialAbilities { get; set; } = new List<SVMoveIDs>();
+
+	public List<ShipSystem> Systems { get; set; } = new List<ShipSystem>();
+	public List<ShipUpgradeIDs> Upgrades
+	{
+		get {
+			if (ShipType == ShipTypes.Firedrake) return AllFireDrakeCrewShipUpgrades.Select(x=>x.ID).ToList();
+			else if (ShipType == ShipTypes.Cerberus) return AllCerberusCrewShipUpgrades.Select(x=>x.ID).ToList();
+			else return AllStarDancerCrewShipUpgrades.Select(x=>x.ID).ToList();
+		}
+	}
 
 	public ShipTypes ShipType
 	{
@@ -406,15 +413,214 @@ public class SVShip
 	{
 		if (ShipType == ShipTypes.Stardancer)
 		{
-			AvailableSpecialAbilities = new List<SpecialAbilityIDs> { SpecialAbilityIDs.TheGetaway, SpecialAbilityIDs.CargoEye, SpecialAbilityIDs.FieldRepairs, SpecialAbilityIDs.Leverage, SpecialAbilityIDs.JustPassingThrough, SpecialAbilityIDs.HomeCooking, SpecialAbilityIDs.ProblemSolvers };
+			AvailableSpecialAbilities = new List<SVMoveIDs> { SVMoveIDs.Getaway, SVMoveIDs.CargoEye, SVMoveIDs.FieldRepairs, SVMoveIDs.Leverage, SVMoveIDs.JustPassingThrough, SVMoveIDs.HomeCooking, SVMoveIDs.ProblemSolvers };
+			HowToXp = new List<string>
+			{
+				"Ejecutaste con éxito una operación de transporte o contrabando.",
+				"Te enfrentaste a desafíos superiores a tu situación actual.",
+				"Reforzaste la reputación de tu tripulación o desarrollaste una nueva.",
+				"Expresaste los objetivos, las motivaciones, el conflicto interno o la naturaleza esencial de la tripulación."
+			};
+			Systems = new List<ShipSystem>
+			{
+				new ShipSystem
+				{
+					System = ShipSystems.Hull,
+					MaxLevel = 4,
+					Level = 2,
+					MaxHealth = 2,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.SmugglingCompartments, IsTicked = true },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CargoHold, IsTicked = true },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Engines,
+					MaxLevel = 4,
+					Level = 1,
+					MaxHealth = 1,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, IsTicked = true },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.Afterburners, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Comms,
+					MaxLevel = 3,
+					Level = 0,
+					MaxHealth = 0,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.FakeTransponder, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.QuantumEncryptor, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Weapons,
+					MaxLevel = 2,
+					Level = 0,
+					MaxHealth = 0,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				}
+			};
 		}
 		else if (ShipType == ShipTypes.Cerberus)
 		{
-			AvailableSpecialAbilities = new List<SpecialAbilityIDs> { SpecialAbilityIDs.Licensed, SpecialAbilityIDs.OnTheTrail, SpecialAbilityIDs.LightTouch, SpecialAbilityIDs.SnatchNGrab, SpecialAbilityIDs.LoadedForBear, SpecialAbilityIDs.PlayBothSides, SpecialAbilityIDs.Deadly };
+			AvailableSpecialAbilities = new List<SVMoveIDs> { SVMoveIDs.Licensed, SVMoveIDs.OnTheTrail, SVMoveIDs.LightTouch, SVMoveIDs.SnatchNGrab, SVMoveIDs.LoadedForBear, SVMoveIDs.PlayBothSides, SVMoveIDs.Deadly };
+			HowToXp = new List<string>
+			{
+				"Ejecutaste con éxito una operación de extracción o capturaste una recompensa.",
+				"Te enfrentaste a desafíos superiores a tu situación actual.",
+				"Reforzaste la reputación de tu tripulación o desarrollaste una nueva.",
+				"Expresaste los objetivos, las motivaciones, el conflicto interno o la naturaleza esencial de la tripulación."
+			};
+			Systems = new List<ShipSystem>
+			{
+				new ShipSystem
+				{
+					System = ShipSystems.Hull,
+					MaxLevel = 2,
+					Level = 0,
+					MaxHealth = 0,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Engines,
+					MaxLevel = 3,
+					Level = 1,
+					MaxHealth = 1,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, IsTicked = true },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Comms,
+					MaxLevel = 4,
+					Level = 2,
+					MaxHealth = 2,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.LongRangeScanner, IsTicked = true },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NexusLink, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Weapons,
+					MaxLevel = 3,
+					Level = 1,
+					MaxHealth = 1,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.GrapplingHooks, IsTicked = true },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.ParticleCannons, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				}
+			};
 		}
 		else if (ShipType == ShipTypes.Firedrake)
 		{
-			AvailableSpecialAbilities = new List<SpecialAbilityIDs> { SpecialAbilityIDs.OldHands, SpecialAbilityIDs.ForgedInFire, SpecialAbilityIDs.Sympathizers, SpecialAbilityIDs.NaturalEnemies, SpecialAbilityIDs.SparkOfRebellion, SpecialAbilityIDs.JustCause, SpecialAbilityIDs.HeartsMinds, };
+			AvailableSpecialAbilities = new List<SVMoveIDs> { SVMoveIDs.OldHands, SVMoveIDs.ForgedInFire, SVMoveIDs.Sympathisers, SVMoveIDs.NaturalEnemies, SVMoveIDs.SparkOfRebellion, SVMoveIDs.JustCause, SVMoveIDs.HeartsAndMinds };
+			HowToXp = new List<string>
+			{
+				"Ejecutaste con éxito un trabajo que se opone al dominio de la Hegemonía.",
+				"Te enfrentaste a desafíos superiores a tu posición actual.",
+				"Reforzaste la reputación de tu tripulación o desarrollaste una nueva.",
+				"Expresaste los objetivos, las motivaciones, el conflicto interno o la naturaleza esencial de la tripulación."
+			};
+			Systems = new List<ShipSystem>
+			{
+				new ShipSystem
+				{
+					System = ShipSystems.Hull,
+					MaxLevel = 2,
+					Level = 1,
+					MaxHealth = 1,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CrewQuarters, IsTicked = true },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.LandingBay, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Engines,
+					MaxLevel = 3,
+					Level = 1,
+					MaxHealth = 1,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, IsTicked = true },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Comms,
+					MaxLevel = 4,
+					Level = 0,
+					MaxHealth = 0,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.TargetingComputer, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.FakeTransponder, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				},
+				new ShipSystem
+				{
+					System = ShipSystems.Weapons,
+					MaxLevel = 3,
+					Level = 1,
+					MaxHealth = 1,
+					Health = 0,
+					Upgrades = new List<UpgradeInSystem>
+					{
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.ParticleCannons, IsTicked =  true},
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CoherenceCannon, IsTicked =  false},
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+					}
+				}
+			};
 		}
 	}
 
@@ -427,5 +633,23 @@ public class SVShip
 		"Timarlos: Para qué pagar a alguien que no cobra por adelantado? Apunta *status -1** con esa facción"
 	};
 
+}
+
+public class ShipSystem
+{
+	public ShipSystems System { get; set; } = ShipSystems.NotSet;
+	public int Level { get; set; } = 0;
+	public int MaxLevel { get; set; } = 0;
+	public int MaxHealth { get; set; } = 0;
+	public int Health { get; set; } = 0;
+	public int Size { get; set; } = 0;
+	public List<UpgradeInSystem> Upgrades { get; set; } = new List<UpgradeInSystem>();
+
+}
+
+public class UpgradeInSystem
+{
+	public ShipUpgradeIDs UpgradeID { get; set; } = ShipUpgradeIDs.NotSet;
+	public bool IsTicked { get; set; } = false;
 }
 

@@ -7,6 +7,9 @@
     height: calc(100% + 4px);
     cursor:pointer;
 }
+    .Tick.IsInverted {
+        transform: skewX(20deg);
+    }
     .Tick:hover {
         background: #272551;
     }
@@ -29,4 +32,14 @@
     }
     .Tick.Red > .Ticked {
         background: #7f0303 !important;
+    }
+
+.Tick.Green {
+    border: 2px solid #6cb26c;
+}
+    .Tick.Green:hover {
+        background: #0060006b;
+    }
+    .Tick.Green > .Ticked {
+        background: #006000 !important;
     }

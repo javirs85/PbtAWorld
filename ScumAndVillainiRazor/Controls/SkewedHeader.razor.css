@@ -3,13 +3,16 @@
     font-size: 22px;
     padding: 0 15px 0 10px;
 }
+    .BlockHeader.Inverted {
+        transform: skewX(-20deg);
+        text-align: right;
+    }
 
-.skewOut {
-    padding-left: 7px;
-    position: relative;
-    margin-right:12px;
-
-}
+    .skewOut {
+        padding-left: 7px;
+        position: relative;
+        margin-right: 12px;
+    }
     .skewOut > div {
         border: 2px solid #665efb;
         background: #071b55;
@@ -19,6 +22,10 @@
         background: #7f0303 !important;
         border: 2px solid #db2727;
     }
+    .skewOut.Green > div {
+        background: green !important;
+        border: 2px solid lightgreen;
+    }
 
 .skewIn {
     border-left-color: transparent;
@@ -26,8 +33,14 @@
     margin: -2px;
     margin-right: -7px;
     padding-right: 5px;
-    
 }
+    .skewIn.Inverted {
+        border-left-color: transparent;
+        transform: skewX(+20deg);
+        margin: -2px;
+        margin-right: -7px;
+        padding-right: 5px;
+    }
 .FakeCover {
     background: red;
     position: absolute;
@@ -36,5 +49,15 @@
     border-right:none !important;
     top: 0;
     left: 0;
+    margin: -2px;
+}
+.FakeCoverInverted {
+    background: red;
+    position: absolute;
+    width: 17px;
+    height: calc(100% + 4px);
+    border-left: none !important;
+    top: 0;
+    right: -13px;
     margin: -2px;
 }

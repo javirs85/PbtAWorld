@@ -1,0 +1,14 @@
+﻿
+<div class="d-flex flex-column">
+	<div class="d-flex">
+		<SkewedHeader Text="@System.System.ToUI()" />
+		<SkewedList ListSize="System.MaxLevel" @bind-Value="@System.Level" />
+	</div>
+		
+</div>
+
+@code {
+	[Parameter] public SVCharacter Player { get; set; } = new SVCharacter { Name = "ERROR" };
+	[Parameter] public SVShip Ship { get; set; } = new();
+	[Parameter] public ShipSystem System { get; set; } = new();
+}

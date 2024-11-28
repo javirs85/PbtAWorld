@@ -1,11 +1,24 @@
-﻿<div class="skewOut @Color.ToString()">
-	<div class="skewIn @Color.ToString()">
-		<div class="BlockHeader" style="width:@(ForzedWidth)px;">@Text</div>
+﻿@if(IsForShips)
+{
+	<div class="skewOut @Color.ToString()" style="color:white;">
+		<div class="skewIn Inverted">
+			<div class="BlockHeader Inverted" style="width:@(ForzedWidth)px;">@Text</div>
+		</div>
+		<div class="FakeCoverInverted @Color.ToString()" />
 	</div>
-	<div class="FakeCover @Color.ToString()" />
-</div>
+}
+else
+{
+	<div class="skewOut @Color.ToString()" style="color:white;">
+		<div class="skewIn">
+			<div class="BlockHeader" style="width:@(ForzedWidth+"px");">@Text</div>
+		</div>
+		<div class="FakeCover @Color.ToString()" />
+	</div>
+}
 
 @code {
+	[Parameter] public bool IsForShips { get; set; } = true;
 	[Parameter] public string Text { get; set; } = "Tittle";
 	[Parameter] public int ForzedWidth { get; set; } = 154;
 	public enum AvilableColors {Blue, Red, Green}
