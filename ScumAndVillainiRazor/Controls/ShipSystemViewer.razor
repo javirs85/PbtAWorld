@@ -1,14 +1,167 @@
 ﻿
 <div class="d-flex flex-column">
-	<div class="d-flex">
-		<SkewedHeader Text="@System.System.ToUI()" />
-		<SkewedList ListSize="System.MaxLevel" @bind-Value="@System.Level" />
+	<div class="d-flex SystemBoxHeader">
+		<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="@SystemID.ToUI()" />
+		<div style="position:relative; margin-left:4px;">
+			<div style="position:absolute; top:0; left:0;">
+				<SkewedList 
+					StoreChangesNeeded="StoreChanges" 
+					ForceSize="16"
+							Color="SkewedHeader.AvilableColors.Green"
+							ListSize="@System.MaxLevel" @bind-Value="@System.Level" />
+			</div>
+			
+			<div style="position:absolute; top:20px; left:-7px;">
+				<SkewedList StoreChangesNeeded="StoreChanges"
+							ForceSize="16"
+							Color="SkewedHeader.AvilableColors.Red"
+							ListSize="@System.MaxLevel" 
+							@bind-Value="@System.Health" />
+			</div>
+		</div>
 	</div>
-		
+	<div class="SystemBoxBody p-2" style="margin-left:-2px; border-left:2px solid #489748; font-family:Consolas;">
+		@if(IsSelectingUpgrade)
+		{
+			<div class="d-flex flex-column">
+				@foreach (var upgrade in GetUpgradesFor(SystemID))
+				{
+					<div class="d-flex gap-2 ConsoleHoverable" @onclick=@(async()=>{await AddUpgrade(upgrade);})>
+						<span style="text-overflow: ellipsis;
+									white-space: nowrap;
+									max-width: 201px;
+									overflow: hidden;">
+							@SVShip.FindUpgradeByID(upgrade).Title
+						</span>
+
+						<HelperStarter HelperInvoked="ShowHelp"
+									   Title=@SVShip.FindUpgradeByID(upgrade).Title
+									   HelpText=@SVShip.FindUpgradeByID(upgrade).Description />
+					</div>
+				}
+				<div class="d-flex gap-1 ConsoleHoverable">
+					<i class="bi bi-arrow-left-short"></i>
+					<span @onclick=@(()=>{IsSelectingUpgrade = false;})>Exit</span>
+				</div>
+			</div>
+		}
+		else
+		{
+			@foreach (var upgradeInSystem in System.Upgrades)
+			{
+				@if (upgradeInSystem.UpgradeID != ShipUpgradeIDs.NotSet)
+				{
+					<div class="d-flex gap-2 @(upgradeInSystem.NumTicks == 1?"":"opacity-50")">
+						<i class="bi bi-@(upgradeInSystem.NumTicks == 1?"check-":"")square hoverable" @onclick=@(async()=>{await Toggle(upgradeInSystem);})></i>
+						<span style="text-overflow: ellipsis;
+									cursor:pointer;
+									white-space: nowrap;
+									max-width: 201px;
+									overflow: hidden;"
+							@onclick=@(()=>{StartUpgrading(upgradeInSystem);})>
+							@SVShip.FindUpgradeByID(upgradeInSystem.UpgradeID).Title
+						</span>
+
+						<HelperStarter HelperInvoked="ShowHelp"
+									   Title=@SVShip.FindUpgradeByID(upgradeInSystem.UpgradeID).Title
+									   HelpText=@SVShip.FindUpgradeByID(upgradeInSystem.UpgradeID).Description />
+					</div>
+				}
+				else
+				{
+					<div class="d-flex gap-2" style="@(upgradeInSystem.NumTicks == 1?"":"opacity:0.3;")">
+						<i class="bi bi-@(upgradeInSystem.NumTicks == 1?"check-":"")square" style="opacity:0.4;"></i>
+						<span class="hoverable" @onclick=@(()=>{StartUpgrading(upgradeInSystem);})>____________</span>
+					</div>
+				}
+
+			}
+		}
+	</div>
 </div>
 
 @code {
 	[Parameter] public SVCharacter Player { get; set; } = new SVCharacter { Name = "ERROR" };
 	[Parameter] public SVShip Ship { get; set; } = new();
-	[Parameter] public ShipSystem System { get; set; } = new();
+	[Parameter] public SVGameController? Game { get; set; }
+	[Parameter] public ShipSystems SystemID { get; set; } = ShipSystems.NotSet;
+	[Parameter] public EventCallback<Tuple<string, string>> ShowHelpRequested { get; set; }
+	[Parameter] public bool Minimalistic { get; set; } = false;
+
+	bool IsSelectingUpgrade = false;
+	ShipSystem System = new();
+	UpgradeInSystem EditingUpgrade = new();
+
+	protected override void OnParametersSet()
+	{
+		System = Ship.Systems.Find(x => x.System == SystemID) ?? new();
+	}
+
+	private List<ShipUpgradeIDs> GetUpgradesFor(ShipSystems system)
+	{
+		return system switch
+		{
+			ShipSystems.Engines => SVShip.AllEngineModules.Select(x=>x.ID).ToList(),
+			ShipSystems.Hull => SVShip.AllHullModules.Select(x=>x.ID).ToList(),
+			ShipSystems.Weapons => SVShip.AllWeaponsModules.Select(x=>x.ID).ToList(),
+			ShipSystems.Comms => SVShip.AllCommsModules.Select(x=>x.ID).ToList(),
+			_ => new List<ShipUpgradeIDs>()
+		};
+	}
+
+	private async Task ShowHelp(Tuple<string, string> data)
+	{
+		await ShowHelpRequested.InvokeAsync(data);
+	}
+
+	void StartUpgrading(UpgradeInSystem up)
+	{
+		EditingUpgrade = up;
+		IsSelectingUpgrade = true;
+	}
+
+
+	async Task AddUpgrade(ShipUpgradeIDs id)
+	{
+		EditingUpgrade.UpgradeID = id;
+
+		await StoreChanges($"Añadido {SVShip.FindUpgradeByID(id).Title}");
+		IsSelectingUpgrade = false;
+	}
+
+	async Task Toggle(UpgradeInSystem id)
+	{
+		if (id.NumTicks == 0) 
+		{
+			if (System.Level < System.Upgrades.Where(x => x.NumTicks == 1).Count()+1)
+				Game?.ShowToast("Este systema ya está lleno, avánzalo antes de instalar mejoras");
+			else
+				await TickItem(id);
+		}
+		else await UnTickItem(id);
+	}
+
+	async Task TickItem(UpgradeInSystem sys)
+	{
+		sys.NumTicks = 1;
+		await StoreChanges($"Añadido {SVShip.FindUpgradeByID(sys.UpgradeID).Title}");
+	}
+
+	async Task UnTickItem(UpgradeInSystem sys)
+	{
+		sys.NumTicks = 0;
+		await StoreChanges($"Eliminado {SVShip.FindUpgradeByID(sys.UpgradeID).Title}");
+	}
+
+	async Task StoreChanges()
+	{
+		if (Game is not null)
+			await Game.StoreShip("Nave actualizada");
+	}
+
+	async Task StoreChanges(string msg)
+	{
+		if (Game is not null)
+			await Game.StoreShip(msg);
+	}
 }

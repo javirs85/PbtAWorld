@@ -19,3 +19,10 @@
     width: 242px;
     height: 100%;
 }
+
+.ConsoleHoverable{
+    cursor:pointer;
+}
+    .ConsoleHoverable:hover {
+        background: #0b430f;
+    }

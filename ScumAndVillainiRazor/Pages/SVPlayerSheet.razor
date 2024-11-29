@@ -26,11 +26,11 @@
 					<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=true Text="Crew" />
 				</div>
 			</div>
-			<div class="flex-grow-1 border rounded m-2 ShipSelector">
+			<div class="flex-grow-1 border rounded m-2 ShipSelector" @onclick="@(async()=>{await Game.StartShip(ShipTypes.Firedrake);})">
 				<h1 class="text-center">Firedrake</h1>
 				<img class="w-100" src="imgs/SV/firedrake.png"/>
 			</div>
-			<div class="flex-grow-1 border rounded m-2 ShipSelector">
+			<div class="flex-grow-1 border rounded m-2 ShipSelector" @onclick="@(async()=>{await Game.StartShip(ShipTypes.Cerberus);})">
 				<h1 class="text-center">Cerberus</h1>
 				<img class="w-100" src="imgs/SV/cerberus.png" />
 			</div>
@@ -194,7 +194,8 @@
 		</div>
 
 		<div class="d-flex flex-column  flex-grow-1">
-		<StatBlock StoreChangesNeeded="@(async() => {await Game.StoreChangesOnCharacter(Player, "Cambios guardados");})"
+			<StatBlock StoreChangesNeeded="@EventCallback.Factory.Create(this, async () =>
+						await Game.StoreChangesOnCharacter(Player, "Cambios guardados"))"
 			Player="Player"
 			MainStat="SVStats.Insight"
 				   @bind-RelatedXP="Player.InsightXP"
@@ -206,7 +207,8 @@
 				   @bind-Sub2="Player.Hack"
 				   @bind-Sub3="Player.Rig"
 				   @bind-Sub4="Player.Study" />
-		<StatBlock
+			<StatBlock StoreChangesNeeded="@EventCallback.Factory.Create(this, async () =>
+						await Game.StoreChangesOnCharacter(Player, "Cambios guardados"))"
 			Player="Player"
 			MainStat="SVStats.Prowess"
 				   @bind-RelatedXP="Player.ProwessXP"
@@ -218,7 +220,8 @@
 				   @bind-Sub2="Player.Scramble"
 				   @bind-Sub3="Player.Scrap"
 				   @bind-Sub4="Player.Skulk" />
-		<StatBlock 
+			<StatBlock StoreChangesNeeded="@EventCallback.Factory.Create(this, async () =>
+						await Game.StoreChangesOnCharacter(Player, "Cambios guardados"))"
 			Player="Player"
 			MainStat="SVStats.Resolve"
 				   @bind-RelatedXP="Player.ResolveXP"
@@ -282,7 +285,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="d-flex flex-column h-100 pt-2">
+	<div class="d-flex flex-column h-100 pt-2" style="max-width:650px; min-width:292px; overflow-y:auto; overflow-x:hidden;">
 		<div class="flex-grow-1 overflow-auto">
 			<div class="abilitiesContainer" style="margin:0;">
 				<div class="d-flex">
@@ -399,6 +402,70 @@
 
 		</div>
 	</div>
+	<div class="d-flex flex-column align-items-start gap-2 p-2" style="max-width:292px; min-width:292px; overflow-y:auto; overflow-x:hidden;">
+		
+		<div class="d-flex justify-content-right">
+			<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="Crew" />
+			<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" ListSize="3" @bind-Value="@Game.Ship.CrewQuality" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Tripulación actualizada");})" />
+		</div>
+		<div class="d-flex justify-content-right">
+			<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="Gámbitos" />
+			<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" ListSize="8" @bind-Value="@Game.Ship.Gambits" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Gámbitos actualizada");})" />
+		</div>
+		<div class="d-flex justify-content-right">
+			<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="@($"Mant. ({Game.Ship.UpkeepCost} cr)")" />
+			<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" ListSize="4" @bind-Value="@Game.Ship.SkippedUpkeeps" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Mantenimiento actualizada");})" />
+		</div>
+		@if(Game.Ship.Upgrades.Find(x=>x.UpgradeID == ShipUpgradeIDs.Shields && x.NumTicks >= 2) is not null)
+		{
+			<div class="d-flex justify-content-right">
+				<SkewedHeader Color="SkewedHeader.AvilableColors.Red" IsForShips=false Text="Escudo" />
+				<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Red" ListSize="1" @bind-Value="@Game.Ship.UsedShields" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Escudos actualizada");})" />
+			</div>
+		}
+		<ShipSystemViewer Player="Player" Ship="Game.Ship" Game="Game" SystemID="ShipSystems.Comms" ShowHelpRequested="ShowHelp" />
+		<ShipSystemViewer Player="Player" Ship="Game.Ship" Game="Game" SystemID="ShipSystems.Engines" ShowHelpRequested="ShowHelp" />
+		<ShipSystemViewer Player="Player" Ship="Game.Ship" Game="Game" SystemID="ShipSystems.Hull" ShowHelpRequested="ShowHelp" />
+		<ShipSystemViewer Player="Player" Ship="Game.Ship" Game="Game" SystemID="ShipSystems.Weapons" ShowHelpRequested="ShowHelp" />
+		
+		<div class="d-flex flex-column">
+			<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="Extras" />
+			<div class="d-flex flex-column" style="border-left:2px solid green; margin-left:-2px; padding-top:5px; ">
+				<ShipUpgradesArea Player="Player" Ship="Game.Ship" Game="Game"
+								  Title="Módulos auxiliares"
+								  Definitions="SVShip.AuxiliaryModules"
+								  ShowHelpRequested="ShowHelp"
+								  Minimalistic="true"
+								  StoreChangesRequested="@(async(string msg)=>{await Game.StoreShip(msg);})" />
+
+				<ShipUpgradesArea Player="Player" Ship="Game.Ship" Game="Game"
+								  Title="Equipo en la nave"
+								  Definitions="SVShip.AllShipUpgrades"
+								  ShowHelpRequested="ShowHelp"
+								  Minimalistic="true"
+								  StoreChangesRequested="@(async(string msg)=>{await Game.StoreShip(msg);})" />
+				<ShipUpgradesArea Player="Player" Ship="Game.Ship" Game="Game"
+								  Title="Equipo personal"
+								  Definitions="SVShip.AllCrewUpgrades"
+								  ShowHelpRequested="ShowHelp"
+								  Minimalistic="true"
+								  StoreChangesRequested="@(async(string msg)=>{await Game.StoreShip(msg);})" />
+				<ShipUpgradesArea Player="Player" Ship="Game.Ship" Game="Game"
+								  Title="Entrenamiento"
+								  Definitions="SVShip.AllTrainUpgrades"
+								  ShowHelpRequested="ShowHelp"
+								  Minimalistic="true"
+								  StoreChangesRequested="@(async(string msg)=>{await Game.StoreShip(msg);})" />
+				<ShipUpgradesArea Player="Player" Ship="Game.Ship" Game="Game"
+								  Title="@Game.Ship.ShipType.ToUI()"
+								  Definitions="SpecialUpgrades"
+								  ShowHelpRequested="ShowHelp"
+								  Minimalistic="true"
+								  StoreChangesRequested="@(async(string msg)=>{await Game.StoreShip(msg);})" />
+			</div>
+		</div>
+		
+	</div>
 	<div class="d-flex flex-column" style="max-width: 360px; min-width: 360px;">
 		<div class="EquipeBox">
 			<div class="d-flex flex-fill">
@@ -439,9 +506,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="d-flex flex-column">
-		Ship2
-	</div>
+	
 </div>
 
 
@@ -459,6 +524,7 @@
 	HelpPanel helpPanel = new();
 	SVTextBook? Book = null;
 
+	string UpkeepCostString => Game.Ship.UpkeepCost.ToString();
 
 	protected async override void OnParametersSet()
 	{
@@ -473,6 +539,20 @@
 		Book = Game.TextBook as SVTextBook;
 
 		if (Player.SelectedAbilities.Count > 3) StartAbilitiesMaximized = false;
+	}
+
+	List<ShipUpgrade> SpecialUpgrades
+	{
+		get
+		{
+			return Game.Ship.ShipType switch
+			{
+				ShipTypes.Stardancer => SVShip.AllStarDancerCrewShipUpgrades,
+				ShipTypes.Cerberus => SVShip.AllCerberusCrewShipUpgrades,
+				ShipTypes.Firedrake => SVShip.AllFireDrakeCrewShipUpgrades,
+				_ => new List<ShipUpgrade> { new ShipUpgrade { ID = ShipUpgradeIDs.NotSet } }
+			};
+		}
 	}
 
 	private async Task UpdateUI() => await InvokeAsync(StateHasChanged);
@@ -491,9 +571,7 @@
 	private async Task ShowHelp(Tuple<string, string> data)
 	{
 		await helpPanel.Show(data.Item1, data.Item2);
-
-
-		await Game.StoreChangesOnCharacter(Player, "Saving to cloud");
+		//await Game.StoreChangesOnCharacter(Player, "Saving to cloud");
 	}
 
 	private void ShowInfo(object? sender, string msg) => Toaster.ShowInfo(msg);

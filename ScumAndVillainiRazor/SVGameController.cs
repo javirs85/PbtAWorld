@@ -36,7 +36,7 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 		var json = JsonSerializer.Serialize(Ship);
 
 		await File.WriteAllTextAsync(path, json);
-		ShowToast("notification");
+		ShowToast(notification);
 	}
 
 

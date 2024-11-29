@@ -5,7 +5,8 @@
     width: 15px;
     margin-top: -2px;
     height: calc(100% + 4px);
-    cursor:pointer;
+    cursor: pointer;
+    opacity: 0.5;
 }
     .Tick.IsInverted {
         transform: skewX(20deg);
@@ -35,11 +36,17 @@
     }
 
 .Tick.Green {
-    border: 2px solid #6cb26c;
+    border: 2px solid #489748;
+    opacity:0.5;
 }
     .Tick.Green:hover {
         background: #0060006b;
     }
     .Tick.Green > .Ticked {
         background: #006000 !important;
+        opacity:1;
     }
+
+.Tick:has(> .Ticked){
+    opacity:1;
+}

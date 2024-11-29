@@ -22,10 +22,10 @@
         background: #7f0303 !important;
         border: 2px solid #db2727;
     }
-    .skewOut.Green > div {
-        background: green !important;
-        border: 2px solid lightgreen;
-    }
+        .skewOut.Green > div {
+            background: #07550d !important;
+            border: 2px solid #489748;
+        }
 
 .skewIn {
     border-left-color: transparent;

@@ -95,7 +95,8 @@ public enum ShipUpgradeIDs
 	DarkHyperspaceLaneMaps,
 	SmugglersRigging,
 	LuckyCharm,
-	Thrillseekers
+	Thrillseekers,
+	Insight, Prowess, Resolve, Playbook
 }
 public enum SpecialAbilityIDs
 {
@@ -133,7 +134,14 @@ public class ShipUpgrade
 	public string Title { get; set; } = string.Empty;
 	public string Description { get; set; } = string.Empty;
 	public int Cost { get; set; } = 1;
-	public bool IsTicked { get; set; } = false;
+	public int Ticks { get; set; } = 0;
+	public bool IsTicked
+	{
+		get
+		{
+			return Ticks >= Cost;
+		}
+	}
 }
 
 public class ShipSpecialAbility
@@ -147,7 +155,7 @@ public class ShipSpecialAbility
 
 public class SVShip
 {
-	public List<ShipUpgrade> AllUpgrades = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllShipUpgrades = new List<ShipUpgrade>
 	{
 		new ShipUpgrade
 		{
@@ -188,11 +196,11 @@ public class SVShip
 		new ShipUpgrade
 		{
 			ID = ShipUpgradeIDs.Vault,
-			Title = "Bóveda",
+			Title = "Cámara acorazada",
 			Description = "Muy útil para asegurar objetos valiosos durante los viajes espaciales. Cerradura programable que permite códigos de seguridad personalizados, códigos de un solo uso y registros de acceso. Usa la calificación del casco cuando es disputada."
 		}
 	};
-	public List<ShipUpgrade> AllCrewUpgrades = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllCrewUpgrades = new List<ShipUpgrade>
 	{
 		new ShipUpgrade
 		{
@@ -225,7 +233,7 @@ public class SVShip
 			Description = "Cortadores de plasma, un nano-ensamblador, un stock de componentes metálicos y eléctricos, una forja: todo lo necesario para construir, modificar o desmontar máquinas, armas y herramientas complejas. Añade +1 de calidad a las tiradas de creación."
 		}
 	};
-	public List<ShipUpgrade> AuxiliaryModules = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AuxiliaryModules = new List<ShipUpgrade>
 	{
 		 new ShipUpgrade
 		{
@@ -271,7 +279,14 @@ public class SVShip
 			Description = "Sumideros de partículas y deflectores EM. Pueden ser abrumados con fuego concentrado. Cuenta como armadura contra armas de naves y descargas de energía. Absorbe completamente disparos de bláster. Cuesta dos mejoras en lugar de solo una."
 		}
 	};
-	public List<ShipUpgrade> AllHullModules = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllTrainUpgrades = new List<ShipUpgrade>
+	{
+		new ShipUpgrade { ID = ShipUpgradeIDs.Insight, Title = SVStats.Insight.ToUI(), Description = "Representa un espacio o equipamiento destinado al entrenamiento y la mejora. Marca 2puntos en lugar de 1 cada vez que mejores esta característica entre misiones." },
+		new ShipUpgrade { ID = ShipUpgradeIDs.Prowess, Title = SVStats.Prowess.ToUI(), Description = "Representa un espacio o equipamiento destinado al entrenamiento y la mejora. Marca 2puntos en lugar de 1 cada vez que mejores esta característica entre misiones." },
+		new ShipUpgrade { ID = ShipUpgradeIDs.Resolve, Title = SVStats.Resolve.ToUI(), Description = "Representa un espacio o equipamiento destinado al entrenamiento y la mejora. Marca 2puntos en lugar de 1 cada vez que mejores esta característica entre misiones." },
+		new ShipUpgrade { ID = ShipUpgradeIDs.Playbook, Title = "Libreto", Description = "Representa un espacio o equipamiento destinado al entrenamiento y la mejora. Marca 2puntos en lugar de 1 cada vez que mejores esta característica entre misiones." },
+	};
+	public static List<ShipUpgrade> AllHullModules = new List<ShipUpgrade>
 	{
 		new ShipUpgrade
 		{
@@ -294,11 +309,11 @@ public class SVShip
 		new ShipUpgrade
 		{
 			ID = ShipUpgradeIDs.SmugglingCompartments,
-			Title = "Compartimientos de Contrabando",
+			Title = "Comp. para Contrabando",
 			Description = "Como una bodega de carga (puede llevar un pequeño cargamento), pero no aparecerá en escaneos rutinarios o inspecciones visuales de la nave. Con una calificación de casco de 3 o más, tiene soporte vital para contrabandear personas también."
 		}
 	};
-	public List<ShipUpgrade> AllEngineModules = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllEngineModules = new List<ShipUpgrade>
 	{
 		new ShipUpgrade
 		{
@@ -312,10 +327,10 @@ public class SVShip
 			Title = "Dispositivo de Camuflaje",
 			Description = "No necesariamente hace que la nave sea invisible a simple vista, pero enmascara la firma de calor y eléctrica de la nave, haciendo muy difícil detectarla o identificarla. Súper ilegal."
 		},
-		new ShipUpgrade { ID = ShipUpgradeIDs.GraviticFieldGenerator, Title = "Gravitic Field Generator", Description = "Creates a large gravitic field extending ship to ship. Can be used to grapple or tow. Temperamental and dangerous. Guild prototype only. Not legal." },
-		new ShipUpgrade { ID = ShipUpgradeIDs.JumpDrive, Title = "Jump Drive", Description = "A special engine that can activate the Ur gates that connect systems and translate ships into hyperspace lanes." }
+		new ShipUpgrade { ID = ShipUpgradeIDs.GraviticFieldGenerator, Title = "Gravitic Field Generator", Description = "Crea un gran campo gravitatorio que se extiende de una nave a otra. Se puede usar para agarrar o remolcar. Temperamental y peligroso. Prototipo de gremio únicamente. No es legal." },
+		new ShipUpgrade { ID = ShipUpgradeIDs.JumpDrive, Title = "Jump Drive", Description = "Un motor especial que puede activar las puertas UR que conectan sistemas y puede transferir naves a canales hisperespaciales." }
 	};
-	public List<ShipUpgrade> AllWeaponsModules = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllWeaponsModules = new List<ShipUpgrade>
 	{
 		new ShipUpgrade { ID = ShipUpgradeIDs.CoherenceCannon, Title = "Cañón de Coherencia", Description = "Un arma capital. Un solo disparo hasta que sea reparado o recargado en naves más pequeñas que los acorazados. Puede quemar sistemas. Increíblemente mortal. Super no legal." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.GrapplingHooks, Title = "Ganchos de Abordaje", Description = "Oficialmente para engancharse a asteroides y asegurar la carga, es una serie de redes, líneas de agarre y brazos que pueden unir dos naves para remolcarlas o abordarlas. Legal." },
@@ -323,7 +338,7 @@ public class SVShip
 		new ShipUpgrade { ID = ShipUpgradeIDs.Missiles, Title = "Misiles", Description = "Proyectiles con motor montado. No legales." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.ParticleCannons, Title = "Cañones de Partículas", Description = "¡Piu! ¡Piu! Normalmente fijados en una dirección en naves personales. A menudo interconectados. No legales sin licencia." }
 	};
-	public List<ShipUpgrade> AllCommsModules = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllCommsModules = new List<ShipUpgrade>
 	{
 		new ShipUpgrade { ID = ShipUpgradeIDs.FakeTransponder, Title = "Transpondedor Falso", Description = "Transmite la señal de una nave diferente o reproduce una grabación potente de ecos de sensores (o actúa como una baliza). Utilizable de forma remota." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.LongRangeScanner, Title = "Escáner de Largo Alcance", Description = "Proporciona una variedad de lecturas del espectro electromagnético y gravimétrico, dando a la tripulación advertencia avanzada hasta una docena de minutos luz de distancia." },
@@ -331,7 +346,7 @@ public class SVShip
 		new ShipUpgrade { ID = ShipUpgradeIDs.QuantumEncryptor, Title = "Cifrador Cuántico", Description = "Cifra las comunicaciones y el almacenamiento de datos. Concede armadura contra la interceptación de comunicaciones digitales. Los datos en la nave se almacenan de forma segura hasta que se desbloquean." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.TargetingComputer, Title = "Computadora de Apuntamiento", Description = "Maneja los cálculos y el apuntamiento para sistemas de armas sin que un miembro de la tripulación real lo haga. Tira con la puntuación de comunicaciones al disparar." }
 	};
-	public List<ShipUpgrade> AllFireDrakeCrewShipUpgrades = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllFireDrakeCrewShipUpgrades = new List<ShipUpgrade>
 	{
 		new ShipUpgrade { ID = ShipUpgradeIDs.BlackMarketContacts, Title = "Contactos del Mercado Negro", Description = "Capaz de conseguirte todos los módulos (incluso los ilegales) que tu nave necesita, incluso cuando estás buscado. Ingenioso. Móvil. Los módulos ilegales (como de costumbre) pueden requerir que realices un trabajo para adquirirlos. Tu contacto puede saber dónde encontrarlos y darte una ventaja, pero depende de ti obtener cosas que simplemente no están disponibles a cualquier precio (prototipos, dispositivos raros y cosas increíblemente ilegales como los cañones de coherencia)." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.SecretBase, Title = "Base Secreta", Description = "Podría estar dentro de ruinas antiguas de Ur en un planeta. Tal vez edificios dentro de un asteroide masivo. Posiblemente una estación vieja y olvidada, abandonada hace mucho pero ahora reutilizada. Has encontrado y comisionado un lugar de escondite lejos de la mirada malévola de la Hegemonía donde tú y tus aliados pueden reunirse, esconderse, lamerse las heridas y planificar tus trabajos, todo sin que la Hegemonía lo descubra. Es secreto... por ahora." },
@@ -339,7 +354,7 @@ public class SVShip
 		new ShipUpgrade { ID = ShipUpgradeIDs.WayBlessed,  Cost=2, Title = "Bendecido por el Camino", Description = "Algunas personas simplemente tienen suerte. La gente común piensa que esto es algún tipo de señal. No te adentres demasiado en ello. Comienzas con +1 gambito al inicio de cada trabajo. Cuesta dos mejoras desbloquear esto en lugar de una." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.Driven, Cost=3, Title = "Impulsado", Description = "Cada PC recibe +1 casilla de trauma. Esto puede devolver a un PC con 4 traumas al juego si lo deseas. Cuesta tres mejoras desbloquear esto en lugar de una." }
 	};
-	public List<ShipUpgrade> AllCerberusCrewShipUpgrades = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllCerberusCrewShipUpgrades = new List<ShipUpgrade>
 	{
 		new ShipUpgrade { ID = ShipUpgradeIDs.Tracers, Title = "Rastreadores", Description = "Una amplia variedad de formas de rastrear a tus objetivos. Incluye pequeños dispositivos que pueden ocultarse en la ropa con una palmadita elegante en la espalda, balizas que pueden sujetarse a cascos e incluso clonadores de transmisiones para comunicaciones. La legalidad varía (a menudo por la importancia del objetivo), pero una licencia lo hace todo legal." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.StunWeapons, Title = "Armas Aturdidoras", Description = "Una amplia variedad de armas para capturar y asegurar prisioneros sin causar (graves) daños. Incluye, pero no se limita a: Grilletes, Bastones aturdidores, Ajustes de aturdimiento en blásters. No del tipo pesado, Granadas aturdidoras. Reemplaza el detonador en la hoja, Medicamentos sedantes. Puede que no funcionen en algunos xenos. No es necesario llevarlos en trabajos, pero útiles si quieres reclamar recompensas. Generalmente legales." },
@@ -347,7 +362,7 @@ public class SVShip
 		new ShipUpgrade { ID = ShipUpgradeIDs.HardKnocks, Cost=2, Title = "Golpes Duros", Description = "A veces la suerte es simplemente experiencia ganada a pulso. Tu tripulación comienza cada trabajo con +1 gambito. Cuesta dos mejoras desbloquear esto en lugar de una." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.SmoothCriminals, Cost=3, Title = "Delincuentes Suaves", Description = "A veces la legalidad es solo una cuestión de quién tiene el arma. Cada miembro de la tripulación obtiene +1 casilla de estrés (total 10). Cuesta tres mejoras desbloquear esto en lugar de una." }
 	};
-	public List<ShipUpgrade> AllStarDancerCrewShipUpgrades = new List<ShipUpgrade>
+	public static List<ShipUpgrade> AllStarDancerCrewShipUpgrades = new List<ShipUpgrade>
 	{
 		new ShipUpgrade { ID = ShipUpgradeIDs.FalseShipPapers, Title = "Documentos Falsos de la Nave", Description = "Todo contrabandista necesita algunos documentos bien falsificados, dando a la tripulación y a la nave identidades menos buscadas en cualquier sistema dado. Estos papeles a menudo simplifican el viaje a través de las puertas si el transpondedor y la nave coinciden. Tienes un par de juegos diferentes que puedes intercambiar, incluso si tienes que practicar para responder a un nuevo nombre en cada punto de control. Puede dificultar que las facciones enemigas te sigan y te rastreen." },
 		new ShipUpgrade { ID = ShipUpgradeIDs.DarkHyperspaceLaneMaps, Title = "Mapas de Rutas de Hiperespacio Oscuro", Description = "Estas son rutas a través de sistemas que no están oficialmente mantenidas. A veces son más rápidas. Siempre están menos patrulladas. A menudo están llenas de criaturas del Camino, piratas y otros bribones. El viaje nunca es tan suave como lo es a lo largo de las rutas mantenidas por los Maestros Estelares. No querrás pensar demasiado en los pobres tontos que murieron o se perdieron para siempre mapeando estas rutas." },
@@ -356,6 +371,33 @@ public class SVShip
 		new ShipUpgrade { ID = ShipUpgradeIDs.Thrillseekers, Cost=3, Title = "Buscadores de Emociones", Description = "Cada PC recibe una casilla de estrés adicional (aumenta el máximo de estrés a 10). Cuesta tres mejoras desbloquearlo, no solo una." }
 	};
 	
+	public static ShipUpgrade FindUpgradeByID(ShipUpgradeIDs ID)
+	{
+		var result = AllShipUpgrades.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllTrainUpgrades.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllCrewUpgrades.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AuxiliaryModules.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllHullModules.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllEngineModules.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllWeaponsModules.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllCommsModules.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllFireDrakeCrewShipUpgrades.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllCerberusCrewShipUpgrades.Find(x => x.ID == ID);
+		if (result is not null) return result;
+		result = AllStarDancerCrewShipUpgrades.Find(x => x.ID == ID);
+		if (result is not null) return result;
+
+		else return new ShipUpgrade { ID = ShipUpgradeIDs.NotSet};
+	}
 
 
 	public string Name { get; set; } = "El nombre de la nave";
@@ -393,14 +435,7 @@ public class SVShip
 	public List<SVMoveIDs> SelectedSpecialAbilities { get; set; } = new List<SVMoveIDs>();
 
 	public List<ShipSystem> Systems { get; set; } = new List<ShipSystem>();
-	public List<ShipUpgradeIDs> Upgrades
-	{
-		get {
-			if (ShipType == ShipTypes.Firedrake) return AllFireDrakeCrewShipUpgrades.Select(x=>x.ID).ToList();
-			else if (ShipType == ShipTypes.Cerberus) return AllCerberusCrewShipUpgrades.Select(x=>x.ID).ToList();
-			else return AllStarDancerCrewShipUpgrades.Select(x=>x.ID).ToList();
-		}
-	}
+	public List<UpgradeInSystem> Upgrades { get; set; } = new();
 
 	public ShipTypes ShipType
 	{
@@ -433,10 +468,10 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.SmugglingCompartments, IsTicked = true },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CargoHold, IsTicked = true },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.SmugglingCompartments, NumTicks = 1 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CargoHold, NumTicks = 1 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -448,10 +483,10 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, IsTicked = true },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.Afterburners, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, NumTicks = 1 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.Afterburners, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -463,9 +498,9 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.FakeTransponder, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.QuantumEncryptor, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.FakeTransponder, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.QuantumEncryptor, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -477,9 +512,22 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
+				}
+			};
+			Upgrades = new List<UpgradeInSystem>
+			{
+				new UpgradeInSystem
+				{
+					UpgradeID = ShipUpgradeIDs.Galley,
+					NumTicks = 1
+				},
+				new UpgradeInSystem
+				{
+					UpgradeID = ShipUpgradeIDs.Insight,
+					NumTicks = 1
 				}
 			};
 		}
@@ -504,8 +552,8 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -517,9 +565,9 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, IsTicked = true },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, NumTicks = 1 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -531,10 +579,10 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.LongRangeScanner, IsTicked = true },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NexusLink, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.LongRangeScanner, NumTicks = 1 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NexusLink, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -546,10 +594,23 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.GrapplingHooks, IsTicked = true },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.ParticleCannons, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.GrapplingHooks, NumTicks = 1 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.ParticleCannons, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
+				}
+			};
+			Upgrades = new List<UpgradeInSystem>
+			{
+				new UpgradeInSystem
+				{
+					UpgradeID = ShipUpgradeIDs.Brig,
+					NumTicks = 1
+				},
+				new UpgradeInSystem
+				{
+					UpgradeID = ShipUpgradeIDs.Prowess,
+					NumTicks = 1
 				}
 			};
 		}
@@ -574,8 +635,8 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CrewQuarters, IsTicked = true },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.LandingBay, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CrewQuarters, NumTicks = 1 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.LandingBay, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -587,9 +648,9 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, IsTicked = true },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.JumpDrive, NumTicks = 1 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -601,10 +662,10 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.TargetingComputer, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.FakeTransponder, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false },
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.TargetingComputer, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.FakeTransponder, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 },
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
 				},
 				new ShipSystem
@@ -616,10 +677,23 @@ public class SVShip
 					Health = 0,
 					Upgrades = new List<UpgradeInSystem>
 					{
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.ParticleCannons, IsTicked =  true},
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CoherenceCannon, IsTicked =  false},
-						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, IsTicked = false }
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.ParticleCannons, NumTicks = 1},
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.CoherenceCannon, NumTicks = 0},
+						new UpgradeInSystem{ UpgradeID = ShipUpgradeIDs.NotSet, NumTicks = 0 }
 					}
+				}
+			};
+			Upgrades = new List<UpgradeInSystem>
+			{
+				new UpgradeInSystem
+				{
+					UpgradeID = ShipUpgradeIDs.Shields,
+					NumTicks = 2
+				},
+				new UpgradeInSystem
+				{
+					UpgradeID = ShipUpgradeIDs.Shuttle,
+					NumTicks = 1
 				}
 			};
 		}
@@ -651,6 +725,6 @@ public class ShipSystem
 public class UpgradeInSystem
 {
 	public ShipUpgradeIDs UpgradeID { get; set; } = ShipUpgradeIDs.NotSet;
-	public bool IsTicked { get; set; } = false;
+	public int NumTicks { get; set; } = 0;
 }
 

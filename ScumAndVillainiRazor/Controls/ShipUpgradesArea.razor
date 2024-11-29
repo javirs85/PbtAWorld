@@ -1,0 +1,127 @@
+﻿<div class="d-flex flex-column" style="font-family:Consolas; @(IsExpanded?"border-left:2px solid white; padding-left:0.5em; background:#FFFFFF05;":"")">
+	@if(Minimalistic)
+	{
+		@foreach (var Definition in Definitions)
+		{
+			@if (IsUpgradeCompleted(Definition))
+			{
+				<div class="d-flex gap-1">
+					<span style="text-overflow: ellipsis;
+						cursor:pointer;
+						white-space: nowrap;
+						max-width: 201px;
+						overflow: hidden;
+						@(!IsExpanded?"padding-left:1em;":"")">
+						@Definition.Title
+					</span>
+
+					<HelperStarter HelperInvoked="ShowHelp"
+								   Title=@Definition.Title
+								   HelpText=@Definition.Description />
+				</div>
+			}
+		}			
+	}
+	else
+	{
+		<div class="d-flex gap-2"
+			 @onclick=@(()=>{IsExpanded = !IsExpanded;})
+			 style="cursor:pointer; opacity:@(IsExpanded?"1":"0.5");">
+			<span>@Title</span>
+			<i class="bi bi-caret-@(IsExpanded?"up":"down")"></i>
+		</div>
+		@foreach (var Definition in Definitions)
+		{
+			@if (IsExpanded || (!IsExpanded && IsUpgradeCompleted(Definition)))
+			{
+				<div class="d-flex gap-2 @(IsUpgradeCompleted(Definition)?"":"opacity-50")">
+					@if (IsExpanded)
+					{
+						@if (Definition.Cost > 0)
+						{
+							<i class="bi bi-@(GetUpgradeInShip(Definition).NumTicks >= 1?"check-":"")square hoverable" @onclick=@(async()=>{await UpdateUpgradeTicks(Definition, 1);})></i>
+						}
+						@if (Definition.Cost > 1)
+						{
+							<i class="bi bi-@(GetUpgradeInShip(Definition).NumTicks >= 2?"check-":"")square hoverable" @onclick=@(async()=>{await UpdateUpgradeTicks(Definition, 2);})></i>
+						}
+						@if (Definition.Cost > 2)
+						{
+							<i class="bi bi-@(GetUpgradeInShip(Definition).NumTicks >= 3?"check-":"")square hoverable" @onclick=@(async()=>{await UpdateUpgradeTicks(Definition, 3);})></i>
+						}
+					}
+
+					<span style="text-overflow: ellipsis;
+						cursor:pointer;
+						white-space: nowrap;
+						max-width: 201px;
+						overflow: hidden;
+						@(!IsExpanded?"padding-left:1em;":"")">
+						@Definition.Title
+					</span>
+
+					<HelperStarter HelperInvoked="ShowHelp"
+								   Title=@Definition.Title
+								   HelpText=@Definition.Description />
+				</div>
+			}
+		}
+	}
+</div>
+
+@code {
+	[Parameter] public SVCharacter Player { get; set; } = new SVCharacter { Name = "ERROR" };
+	[Parameter] public SVShip Ship { get; set; } = new();
+	[Parameter] public SVGameController? Game { get; set; }
+	[Parameter] public EventCallback<Tuple<string, string>> ShowHelpRequested { get; set; }
+	[Parameter] public EventCallback<string> StoreChangesRequested { get; set; }
+	[Parameter] public string Title { get; set; } = "Title";
+	[Parameter] public List<ShipUpgrade> Definitions { get; set; } = new();
+	[Parameter] public bool Minimalistic { get; set; } = false;
+
+	bool IsExpanded = false;
+
+	private async Task ShowHelp(Tuple<string, string> data)
+	{
+		await ShowHelpRequested.InvokeAsync(data);
+	}
+
+
+	bool DoesShipHas(ShipUpgrade definition)
+	{
+		return Ship.Upgrades.Find(x => x.UpgradeID == definition.ID) != null;
+	}
+
+	UpgradeInSystem GetUpgradeInShip(ShipUpgrade definition)
+	{
+		var up = Ship.Upgrades.Find(x => x.UpgradeID == definition.ID);
+
+		if(up is not null)
+			return up;
+		else
+			return new UpgradeInSystem { UpgradeID = ShipUpgradeIDs.NotSet };
+	}
+
+	async Task UpdateUpgradeTicks(ShipUpgrade Def, int newTicks)
+	{
+		var up = GetUpgradeInShip(Def);
+
+		if (up.NumTicks == newTicks) up.NumTicks--;
+		else
+			up.NumTicks = newTicks;
+
+		if (up.NumTicks <= 0) up.NumTicks = 0;
+		if (up.NumTicks >= Def.Cost) up.NumTicks = Def.Cost;
+
+		await StoreChangesRequested.InvokeAsync($"{Def.Title}: {up.NumTicks}");
+	}
+
+	bool IsUpgradeCompleted(ShipUpgrade Def)
+	{
+		var up = GetUpgradeInShip(Def);
+		if (up.NumTicks >= Def.Cost)
+			return true;
+		else
+			return false;
+	}
+}
