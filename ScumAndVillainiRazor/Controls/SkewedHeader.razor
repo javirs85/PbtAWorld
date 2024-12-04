@@ -1,6 +1,6 @@
 ﻿@if(IsForShips)
 {
-	<div class="skewOut @Color.ToString()" style="color:white;">
+	<div class="skewOut @Color.ToString()" style="color:white; width:100px!important;">
 		<div class="skewIn Inverted">
 			<div class="BlockHeader Inverted" style="width:@(ForzedWidth)px;">@Text</div>
 		</div>
@@ -10,8 +10,14 @@
 else
 {
 	<div class="skewOut @Color.ToString()" style="color:white;">
-		<div class="skewIn">
+		<div class="skewIn d-flex gap-1 align-items-center">
 			<div class="BlockHeader" style="width:@(ForzedWidth+"px");">@Text</div>
+			@if(HelpText != string.Empty)
+			{
+				<div style="transform: skewX(+20deg);">
+					<HelperStarter Title="@Text" HelpText="@HelpText" HelperInvoked="ShowHelp" />
+				</div>
+			}
 		</div>
 		<div class="FakeCover @Color.ToString()" />
 	</div>
@@ -23,4 +29,12 @@ else
 	[Parameter] public int ForzedWidth { get; set; } = 154;
 	public enum AvilableColors {Blue, Red, Green}
 	[Parameter] public AvilableColors Color { get; set; } = AvilableColors.Blue;
+	[Parameter] public string HelpText { get; set; } = string.Empty;
+	[Parameter] public EventCallback<Tuple<string,string>> ShowHelpRequested { get; set; }
+
+
+	private async Task ShowHelp(Tuple<string, string> data)
+	{
+		await ShowHelpRequested.InvokeAsync(data);
+	}
 }

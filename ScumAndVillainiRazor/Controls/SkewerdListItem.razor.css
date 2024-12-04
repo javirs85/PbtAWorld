@@ -50,3 +50,8 @@
 .Tick:has(> .Ticked){
     opacity:1;
 }
+
+.NotUsable {
+    pointer-events: none;
+    opacity: 0.1;
+}

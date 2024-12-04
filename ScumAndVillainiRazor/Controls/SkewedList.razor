@@ -1,56 +1,116 @@
 ﻿@using static ScumAndVillainy.Controls.SkewedHeader
-<div class="d-flex gap-1">
-	@if(ListSize > 0)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>0) Clicked=@(()=>{ClickAt(0);}) />
-	}
-	@if (ListSize > 1)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>1) Clicked=@(()=>{ClickAt(1);}) />
-	}
-	@if (ListSize > 2)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>2) Clicked=@(()=>{ClickAt(2);}) />
-	}
-	@if(ListSize > 3)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>3) Clicked=@(()=>{ClickAt(3);}) />
-	}
-	@if (ListSize > 4)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>4) Clicked=@(()=>{ClickAt(4);}) />
-	}
-	@if (ListSize > 5)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>5) Clicked=@(()=>{ClickAt(5);}) />
-	}
-	@if (ListSize > 6)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>6) Clicked=@(()=>{ClickAt(6);}) />
-	}
-	@if (ListSize > 7)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>7) Clicked=@(()=>{ClickAt(7);}) />
-	}
-	@if (ListSize > 8)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>8) Clicked=@(()=>{ClickAt(8);}) />
-	}
-	@if (ListSize > 9)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>9) Clicked=@(()=>{ClickAt(9);}) />
-	}
-	@if (ListSize > 9)
-	{
-		<SkewerdListItem IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>9) Clicked=@(()=>{ClickAt(10);}) />
-	}
-</div>
+@if(IsDouble)
+{
+	<div class="" style="position:relative;margin-left:4px;">
+		<div class="d-flex gap-1" style=" position:absolute; top:0; left:0;">
+			@if (ListSize > 0)
+			{
+				<SkewerdListItem IsUsable="@(Usable>0)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>0) Clicked=@(()=>{ClickAt(0);}) />
+			}
+			@if (ListSize > 1)
+			{
+				<SkewerdListItem IsUsable="@(Usable>1)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>1) Clicked=@(()=>{ClickAt(1);}) />
+			}
+			@if (ListSize > 2)
+			{
+				<SkewerdListItem IsUsable="@(Usable>2)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>2) Clicked=@(()=>{ClickAt(2);}) />
+			}
+			@if (ListSize > 3)
+			{
+				<SkewerdListItem IsUsable="@(Usable>3)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>3) Clicked=@(()=>{ClickAt(3);}) />
+			}
+		</div>
+		<div class="d-flex gap-1" style="position: absolute; top: 20px; left: -7px;">
+			@if (ListSize > 4)
+			{
+				<SkewerdListItem IsUsable="@(Usable>4)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>4) Clicked=@(()=>{ClickAt(4);}) />
+			}
+			@if (ListSize > 5)
+			{
+				<SkewerdListItem IsUsable="@(Usable>5)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>5) Clicked=@(()=>{ClickAt(5);}) />
+			}
+			@if (ListSize > 6)
+			{
+				<SkewerdListItem IsUsable="@(Usable>6)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>6) Clicked=@(()=>{ClickAt(6);}) />
+			}
+			@if (ListSize > 7)
+			{
+				<SkewerdListItem IsUsable="@(Usable>7)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>7) Clicked=@(()=>{ClickAt(7);}) />
+			}
+			@if (ListSize > 8)
+			{
+				<SkewerdListItem IsUsable="@(Usable>8)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>8) Clicked=@(()=>{ClickAt(8);}) />
+			}
+			@if (ListSize > 9)
+			{
+				<SkewerdListItem IsUsable="@(Usable>9)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>9) Clicked=@(()=>{ClickAt(9);}) />
+			}
+			@if (ListSize > 10)
+			{
+				<SkewerdListItem IsUsable="@(Usable>10)" IsInverted="IsInverted" ForceSize="16" Color=Color IsTicked=@(Value>9) Clicked=@(()=>{ClickAt(10);}) />
+			}
+		</div>
+	</div>
+	
+}
+else
+{
+	<div class="d-flex gap-1">
+		@if (ListSize > 0)
+		{
+			<SkewerdListItem IsUsable="@(Usable>0)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>0) Clicked=@(()=>{ClickAt(0);}) />
+		}
+		@if (ListSize > 1)
+		{
+			<SkewerdListItem IsUsable="@(Usable>1)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>1) Clicked=@(()=>{ClickAt(1);}) />
+		}
+		@if (ListSize > 2)
+		{
+			<SkewerdListItem IsUsable="@(Usable>2)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>2) Clicked=@(()=>{ClickAt(2);}) />
+		}
+		@if (ListSize > 3)
+		{
+			<SkewerdListItem IsUsable="@(Usable>3)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>3) Clicked=@(()=>{ClickAt(3);}) />
+		}
+		@if (ListSize > 4)
+		{
+			<SkewerdListItem IsUsable="@(Usable>4)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>4) Clicked=@(()=>{ClickAt(4);}) />
+		}
+		@if (ListSize > 5)
+		{
+			<SkewerdListItem IsUsable="@(Usable>5)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>5) Clicked=@(()=>{ClickAt(5);}) />
+		}
+		@if (ListSize > 6)
+		{
+			<SkewerdListItem IsUsable="@(Usable>6)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>6) Clicked=@(()=>{ClickAt(6);}) />
+		}
+		@if (ListSize > 7)
+		{
+			<SkewerdListItem IsUsable="@(Usable>7)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>7) Clicked=@(()=>{ClickAt(7);}) />
+		}
+		@if (ListSize > 8)
+		{
+			<SkewerdListItem IsUsable="@(Usable>8)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>8) Clicked=@(()=>{ClickAt(8);}) />
+		}
+		@if (ListSize > 9)
+		{
+			<SkewerdListItem IsUsable="@(Usable>9)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>9) Clicked=@(()=>{ClickAt(9);}) />
+		}
+		@if (ListSize > 10)
+		{
+			<SkewerdListItem IsUsable="@(Usable>10)" IsInverted="IsInverted" ForceSize="@ForceSize" Color=Color IsTicked=@(Value>9) Clicked=@(()=>{ClickAt(10);}) />
+		}
+	</div>
+
+}
 
 @code {
 	[Parameter] public AvilableColors Color { get; set; } = AvilableColors.Blue;
 	[Parameter] public bool IsInverted { get; set; } = false;
 	[Parameter] public EventCallback StoreChangesNeeded { get; set; }
 	[Parameter] public float ForceSize { get; set; } = 0;
+	[Parameter] public int Usable { get; set; } = 15;
+	[Parameter] public bool IsDouble { get; set; } = false;
 
 	[Parameter] public int ListSize { get; set; }
 	private int _value = 0;

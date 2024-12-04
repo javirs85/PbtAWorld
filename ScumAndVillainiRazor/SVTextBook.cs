@@ -472,6 +472,8 @@ public class SVTextBook : BaseTextBook
 		"Sufrir daño."
 	};
 
+	public string GambitExplanation = "Los gambitos son un recurso que representa la acumulación de buena suerte, circunstancias extrañas y el destino que les sobreviene a los héroes del género, y las oportunidades que se pueden aprovechar cuando un equipo se arriesga.\nEs un recurso de la tripulación, que puede utilizar cualquier miembro, al igual que los creditos de la nave.\r\nCualquier miembro de la tripulación puede gastar un gambito durante una tirada de acción para sumar *+1d**, y sólo se puede gastar una táctica de esta manera.\n\nObtienes nuevas tácticas de dos maneras: Al comienzo de cada trabajo, restableces el número de gambitos que tiene la tripulación al valor de gambitos iniciales. Para Stardancer o Firedrake, esto es 2. Para Cerberus, esto es 1, aunque esto se puede aumentar con mejoras de tripulación. Esto garantiza que cada trabajo que intente el equipo venga acompañado de una cierta cantidad de fortuna.\n\nAdemás, cada vez que obtienes un *6 o un resultado crítico en una acción arriesgada** en la que no has gastado un gámbito, tu tripulación gana otro gámbito.\r\nCon ellos, una tripulación puede intentar incluso las acrobacias más peligrosas y tener buenas probabilidades de éxito; Sin embargo, al final se les acaba la suerte y tienen que confiar en su ingenio y habilidad para conseguir victorias ganadas con tanto esfuerzo.";
+
 
 	public string GetResultsOfRoll(ActionRollPositions poss, int result)
 	{

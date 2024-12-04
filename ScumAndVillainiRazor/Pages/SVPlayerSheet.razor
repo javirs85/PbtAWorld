@@ -403,26 +403,28 @@
 		</div>
 	</div>
 	<div class="d-flex flex-column align-items-start gap-2 p-2" style="max-width:292px; min-width:292px; overflow-y:auto; overflow-x:hidden;">
-		
-		<div class="d-flex justify-content-right">
-			<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="Crew" />
-			<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" ListSize="3" @bind-Value="@Game.Ship.CrewQuality" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Tripulación actualizada");})" />
-		</div>
-		<div class="d-flex justify-content-right">
-			<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="Gámbitos" />
-			<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" ListSize="8" @bind-Value="@Game.Ship.Gambits" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Gámbitos actualizada");})" />
-		</div>
-		<div class="d-flex justify-content-right">
-			<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="@($"Mant. ({Game.Ship.UpkeepCost} cr)")" />
-			<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" ListSize="4" @bind-Value="@Game.Ship.SkippedUpkeeps" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Mantenimiento actualizada");})" />
-		</div>
-		@if(Game.Ship.Upgrades.Find(x=>x.UpgradeID == ShipUpgradeIDs.Shields && x.NumTicks >= 2) is not null)
-		{
+		<div class="d-flex flex-column gap-3 mb-2">
 			<div class="d-flex justify-content-right">
-				<SkewedHeader Color="SkewedHeader.AvilableColors.Red" IsForShips=false Text="Escudo" />
-				<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Red" ListSize="1" @bind-Value="@Game.Ship.UsedShields" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Escudos actualizada");})" />
+				<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="Crew" />
+				<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" ListSize="3" @bind-Value="@Game.Ship.CrewQuality" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Tripulación actualizada");})" />
+			</div>		
+			<div class="d-flex justify-content-right">
+				<SkewedHeader Color="SkewedHeader.AvilableColors.Green" Text="@($"Mantenimiento")" HelpText=@($"El mantenimiento de tu nave requiere (Crew + Sistemas)/4 ({Game.Ship.UpkeepCost}) creditos tras cada misión. \nSi no lo pagas, marca un punto en mantenimiento y tiras 1 dado por cada vez consecutiva que no lo hayas pagado. \n\n6+: Un sistema está gravemente dañado. Puedes repararlo con una actividad de tiempo de inactividad la próxima vez que estés en el puerto.\n4/5: Un sistema funciona mal pero es menor. Puede preparar una solución en el campo.\n1-3: No te preocupes. El desgaste es menor y no afectará el rendimiento en el siguiente trabajo.\n\nBorra todas las marcas cuando hagas tu mantenimiento como es debido.") ShowHelpRequested="ShowHelp"/>
+				<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" ListSize="4" @bind-Value="@Game.Ship.SkippedUpkeeps" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Mantenimiento actualizada");})" />
 			</div>
-		}
+			<div class="d-flex justify-content-right">
+				<SkewedHeader Color="SkewedHeader.AvilableColors.Green" IsForShips=false Text="Gámbitos" ForzedWidth="130" HelpText="@((Game.TextBook as SVTextBook).GambitExplanation)" ShowHelpRequested="ShowHelp" />
+				<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Green" IsDouble="true" ListSize="8" @bind-Value="@Game.Ship.Gambits" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Gámbitos actualizada");})" />
+			</div>
+		
+			@if(Game.Ship.Upgrades.Find(x=>x.UpgradeID == ShipUpgradeIDs.Shields && x.NumTicks >= 2) is not null)
+			{
+				<div class="d-flex justify-content-right">
+					<SkewedHeader Color="SkewedHeader.AvilableColors.Red" IsForShips=false Text="Escudo" />
+					<SkewedList IsInverted="false" Color="SkewedHeader.AvilableColors.Red" ListSize="1" @bind-Value="@Game.Ship.UsedShields" StoreChangesNeeded="@(async()=>{await Game.StoreShip("Escudos actualizada");})" />
+				</div>
+			}
+		</div>
 		<ShipSystemViewer Player="Player" Ship="Game.Ship" Game="Game" SystemID="ShipSystems.Comms" ShowHelpRequested="ShowHelp" />
 		<ShipSystemViewer Player="Player" Ship="Game.Ship" Game="Game" SystemID="ShipSystems.Engines" ShowHelpRequested="ShowHelp" />
 		<ShipSystemViewer Player="Player" Ship="Game.Ship" Game="Game" SystemID="ShipSystems.Hull" ShowHelpRequested="ShowHelp" />
