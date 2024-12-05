@@ -173,6 +173,14 @@ public class SVCharacter : PbtALib.PbtACharacter
 	}
 	#endregion
 	public int Stress { get; set; } = 0;
+	public int MaxStress { get; set; } = 9;
+	public int StresLeft
+	{
+		get
+		{
+			return MaxStress - Stress;
+		}
+	}
 	public string Harm1A { get; set; } = string.Empty;
 	public string Harm1B { get; set; } = string.Empty;
 	public string Harm2A { get; set; } = string.Empty;

@@ -98,33 +98,7 @@ public enum ShipUpgradeIDs
 	Thrillseekers,
 	Insight, Prowess, Resolve, Playbook
 }
-public enum SpecialAbilityIDs
-{
-	//stardancer
-	TheGetaway,
-	CargoEye,
-	FieldRepairs,
-	Leverage,
-	JustPassingThrough,
-	HomeCooking,
-	ProblemSolvers,
-	//cerberus
-	Licensed,
-	OnTheTrail,
-	LightTouch,
-	SnatchNGrab,
-	LoadedForBear,
-	PlayBothSides,
-	Deadly,
-	//firedrake
-	OldHands,
-	ForgedInFire,
-	Sympathizers,
-	NaturalEnemies,
-	SparkOfRebellion,
-	JustCause,
-	HeartsMinds
-}
+
 
 
 
@@ -146,7 +120,7 @@ public class ShipUpgrade
 
 public class ShipSpecialAbility
 {
-	public SpecialAbilityIDs ID { get; set; }
+	public SVMoveIDs ID { get; set; }
 	public string Title { get; set; } = string.Empty;
 	public string Description { get; set; } = string.Empty;
 	public string FlavorText { get; set; } = string.Empty;
@@ -399,6 +373,16 @@ public class SVShip
 		else return new ShipUpgrade { ID = ShipUpgradeIDs.NotSet};
 	}
 
+	public static List<SVMoveIDs> GetAllAvailableSpecialAbiltiesFor(ShipTypes type)
+	{
+		if (type == ShipTypes.Stardancer)
+			return new List<SVMoveIDs> { SVMoveIDs.TheGetaway, SVMoveIDs.CargoEye, SVMoveIDs.FieldRepairs, SVMoveIDs.Leverage, SVMoveIDs.JustPassingThrough, SVMoveIDs.HomeCooking, SVMoveIDs.ProblemSolvers };
+		else if (type == ShipTypes.Cerberus)
+			return new List<SVMoveIDs> { SVMoveIDs.Licensed, SVMoveIDs.OnTheTrail, SVMoveIDs.LightTouch, SVMoveIDs.SnatchNGrab, SVMoveIDs.LoadedForBear, SVMoveIDs.PlayBothSides, SVMoveIDs.Deadly };
+		else
+			return new List<SVMoveIDs> { SVMoveIDs.OldHands, SVMoveIDs.ForgedInFire, SVMoveIDs.Sympathizers, SVMoveIDs.NaturalEnemies, SVMoveIDs.SparkOfRebellion, SVMoveIDs.JustCause, SVMoveIDs.HeartsMinds };
+	}
+
 
 	public string Name { get; set; } = "El nombre de la nave";
 	public int CrewXP { get; set; } = 0;
@@ -449,7 +433,7 @@ public class SVShip
 	{
 		if (ShipType == ShipTypes.Stardancer)
 		{
-			AvailableSpecialAbilities = new List<SVMoveIDs> { SVMoveIDs.Getaway, SVMoveIDs.CargoEye, SVMoveIDs.FieldRepairs, SVMoveIDs.Leverage, SVMoveIDs.JustPassingThrough, SVMoveIDs.HomeCooking, SVMoveIDs.ProblemSolvers };
+			AvailableSpecialAbilities = new List<SVMoveIDs> { SVMoveIDs.TheGetaway, SVMoveIDs.CargoEye, SVMoveIDs.FieldRepairs, SVMoveIDs.Leverage, SVMoveIDs.JustPassingThrough, SVMoveIDs.HomeCooking, SVMoveIDs.ProblemSolvers };
 			HowToXp = new List<string>
 			{
 				"Ejecutaste con éxito una operación de transporte o contrabando.",
@@ -616,7 +600,7 @@ public class SVShip
 		}
 		else if (ShipType == ShipTypes.Firedrake)
 		{
-			AvailableSpecialAbilities = new List<SVMoveIDs> { SVMoveIDs.OldHands, SVMoveIDs.ForgedInFire, SVMoveIDs.Sympathisers, SVMoveIDs.NaturalEnemies, SVMoveIDs.SparkOfRebellion, SVMoveIDs.JustCause, SVMoveIDs.HeartsAndMinds };
+			AvailableSpecialAbilities = new List<SVMoveIDs> { SVMoveIDs.OldHands, SVMoveIDs.ForgedInFire, SVMoveIDs.Sympathizers, SVMoveIDs.NaturalEnemies, SVMoveIDs.SparkOfRebellion, SVMoveIDs.JustCause, SVMoveIDs.HeartsMinds };
 			HowToXp = new List<string>
 			{
 				"Ejecutaste con éxito un trabajo que se opone al dominio de la Hegemonía.",

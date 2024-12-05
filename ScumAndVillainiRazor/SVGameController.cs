@@ -15,6 +15,8 @@ namespace ScumAndVillainy;
 
 public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SVStats>, IGameController
 {
+	public event EventHandler OpenSharedRoll;
+
 	public SVShip Ship { get; set; } = new SVShip { ShipType = ShipTypes.NotSet};
 	private SVMovesService movesService;
 
@@ -81,14 +83,20 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 		await StoreShip($"Se ha creado un {type.ToUI()}");
 	}
 
-	public static List<SVMoveIDs> GetAllAvailableSpecialAbiltiesFor(ShipTypes type)
+	
+
+
+	public SVRollReport? CurrentRoll;
+	public void StartSharedRoll(SVCharacter player, SVStats stat)
 	{
-		if (type == ShipTypes.Stardancer)
-			return new List<SVMoveIDs> { SVMoveIDs.Getaway, SVMoveIDs.CargoEye, SVMoveIDs.FieldRepairs, SVMoveIDs.Leverage, SVMoveIDs.JustPassingThrough, SVMoveIDs.HomeCooking, SVMoveIDs.ProblemSolvers };
-		else if(type == ShipTypes.Cerberus)
-			return new List<SVMoveIDs> { SVMoveIDs.Licensed, SVMoveIDs.OnTheTrail, SVMoveIDs.LightTouch, SVMoveIDs.SnatchNGrab, SVMoveIDs.LoadedForBear, SVMoveIDs.PlayBothSides, SVMoveIDs.Deadly };
-		else 
-			return new List<SVMoveIDs> { SVMoveIDs.OldHands, SVMoveIDs.ForgedInFire, SVMoveIDs.Sympathisers, SVMoveIDs.NaturalEnemies, SVMoveIDs.SparkOfRebellion, SVMoveIDs.JustCause, SVMoveIDs.HeartsAndMinds };
+		CurrentRoll = new SVRollReport(movesService);
+		CurrentRoll.Player = player;
+		CurrentRoll.Stat = stat;
+		OpenSharedRoll.Invoke(this, EventArgs.Empty);	
 	}
 
+	public void UpdateSharedRollInAllClients()
+	{
+		OpenSharedRoll.Invoke(this, EventArgs.Empty);
+	}
 }

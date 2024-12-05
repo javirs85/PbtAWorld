@@ -1,0 +1,47 @@
+﻿.HelpButton {
+    padding: 2em;
+    background: white;
+    color: black;
+    border-radius: 1em;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    cursor:pointer;
+}
+    .HelpButton.Pressed {
+        background: #930000 !important;
+        color: white;
+        box-shadow: inset black 1px 1px 6px;
+    }
+    .HelpButton.Pressed.Green {
+        background: green !important;
+    }
+    .HelpButton.Pressed.Blue {
+        background: blue !important;
+        }
+    .HelpBox {
+        padding: 2em;
+        background: gray;
+        border-radius: 1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+.Ship {
+    background: #74cb7f;
+    color: black;
+}
+.Player {
+    background: #81bfff;
+    color: black;
+}
+.Stress {
+    background: #ff8181;
+    color: black;
+}
+
+.Cancelled{
+    pointer-events:none;
+    opacity:0.3;
+}

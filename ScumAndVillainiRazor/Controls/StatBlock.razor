@@ -24,7 +24,7 @@
 							<polygon class="@CheckValue(Sub1,2)" points="0,0 20,10 0,20" />
 						</svg>
 					</div>
-					<div class="d-flex align-items-center StatName">
+					<div class="d-flex align-items-center StatName" style="cursor:pointer" @onclick=@(async ()=>{await StatWordClicked(Sub1Stat);})>
 						<div>@Sub1Stat.ToUI()</div>
 					</div>
 					
@@ -45,7 +45,7 @@
 							<polygon class="@CheckValue(Sub2,2)" points="0,0 20,10 0,20" />
 						</svg>
 					</div>
-					<div class="d-flex align-items-center StatName">
+					<div class="d-flex align-items-center StatName" style="cursor:pointer" @onclick=@(async ()=>{await StatWordClicked(Sub2Stat);})>
 						<div>@Sub2Stat.ToUI()</div>
 					</div>
 				</div>
@@ -65,7 +65,7 @@
 							<polygon class="@CheckValue(Sub3,2)" points="0,0 20,10 0,20" />
 						</svg>
 					</div>
-					<div class="d-flex align-items-center StatName">
+					<div class="d-flex align-items-center StatName" style="cursor:pointer" @onclick=@(async ()=>{await StatWordClicked(Sub3Stat);})>
 						<div>@Sub3Stat.ToUI()</div>
 					</div>
 				</div>
@@ -85,7 +85,7 @@
 							<polygon class="@CheckValue(Sub4,2)" points="0,0 20,10 0,20" />
 						</svg>
 					</div>
-					<div class="d-flex align-items-center StatName">
+					<div class="d-flex align-items-center StatName" style="cursor:pointer" @onclick=@(async ()=>{await StatWordClicked(Sub4Stat);})>
 						<div>@Sub4Stat.ToUI()</div>
 					</div>
 				</div>
@@ -97,6 +97,7 @@
 @code {
 	[Parameter] public SVCharacter Player { get; set; } = new SVCharacter { Name = "ERROR" };
 	[Parameter] public EventCallback StoreChangesNeeded { get; set; }
+	[Parameter] public EventCallback<SVStats> StatClicked { get; set; }
 	[Parameter] public SVStats MainStat { get; set; } = SVStats.Insight;
 	private int _sub1 = 1;
 	private int _sub2 = 1;
@@ -208,5 +209,10 @@
 			return "UsedTriangle";
 		else
 			return "NotUsedTriangle";
+	}
+
+	private async Task StatWordClicked(SVStats st)
+	{
+		await StatClicked.InvokeAsync(st);
 	}
 }

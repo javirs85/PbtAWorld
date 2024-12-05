@@ -85,9 +85,9 @@ else
 
 	ShipTypes GetShipTypeFromAbility(SVMoveIDs ability)
 	{
-		if (SVGameController.GetAllAvailableSpecialAbiltiesFor(ShipTypes.Cerberus).Contains(ability))
+		if (SVShip.GetAllAvailableSpecialAbiltiesFor(ShipTypes.Cerberus).Contains(ability))
 			return ShipTypes.Cerberus;
-		else if (SVGameController.GetAllAvailableSpecialAbiltiesFor(ShipTypes.Stardancer).Contains(ability))
+		else if (SVShip.GetAllAvailableSpecialAbiltiesFor(ShipTypes.Stardancer).Contains(ability))
 			return ShipTypes.Stardancer;
 		else
 			return ShipTypes.Firedrake;
