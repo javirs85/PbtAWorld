@@ -20,6 +20,8 @@ public enum SVItemIDs
 	FineBlasterPistolPair,	FineMedkit,	FineBedsideManner,	FineClothing,	RecognizableMedicGarb,	CandiesAndTreats,	SyringesAndApplicators,
 };
 
+public enum SVPositions { Controlled, Risky, Desperate};
+public enum SVEffect { Limited, Standard, Great};
 
 public enum SVMoveIDs {
 	NotSet, 
@@ -30,11 +32,26 @@ public enum SVMoveIDs {
 	ImADoctorNotA, Physicker, Patch, WelcomeAnywhere, UnderPressure, CombatMedic, MoralCompass, DrStrange, BookLearning,
 	AirOfRespectability,FavorsOwed,Player, Infiltrator, Subterfuge, HeartToHeart, OldFriends, Disarming, Purpose,
 	Serendipitous, NeverTellMeTheOdds, IKnowAGuy, Tenacious, WhenTheChipsAreDown, DevilsOwnLuck, Daredevil, ShootFirst, AskQuestionsLater,
-	
-	
-	Getaway, FieldRepairs, OldHands, ForgedInFire, Leverage, JustPassingThrough, CargoEye, HomeCooking,
-	ProblemSolvers, SnatchNGrab, Licensed, LightTouch, OnTheTrail, LoadedForBear, PlayBothSides, Deadly,
-	Sympathisers, 	NaturalEnemies,	SparkOfRebellion,	JustCause,	HeartsAndMinds,
+
+
+	//stardancer
+	TheGetaway,	CargoEye,	FieldRepairs,	Leverage,	JustPassingThrough,	HomeCooking,	ProblemSolvers,
+	//cerberus
+	Licensed,	OnTheTrail,	LightTouch,	SnatchNGrab,	LoadedForBear,	PlayBothSides,	Deadly,
+	//firedrake
+	OldHands,	ForgedInFire,	Sympathizers,	NaturalEnemies,	SparkOfRebellion,	JustCause,	HeartsMinds,
+	Skulk,
+	Scramble,
+	Scrap,
+	Helm,
+	Doctor,
+	Hack,
+	Rig,
+	Study,
+	Attune,
+	Command,
+	Consort,
+	Sway
 }
 
 public enum Heritages { Imperial, Spacer, Colonist, Manufactured, Wanderer, Xeno, NotSet}
@@ -59,6 +76,28 @@ public static class Ex
 		ShipSystems.Weapons => "Armas",
 		ShipSystems.Engines => "Motor",
 		ShipSystems.NotSet => "NotSet",
+		_ => ""
+	};
+
+	public static string ToUI(this SVEffect system) => system switch
+	{
+		SVEffect.Great => "Enorme",
+		SVEffect.Limited => "Limitada",
+		SVEffect.Standard => "Estandard",
+		_ => ""
+	};
+	public static string ToUI(this SVPositions system) => system switch
+	{
+		SVPositions.Controlled => "Bajo control",
+		SVPositions.Desperate => "Desesperada",
+		SVPositions.Risky => "Arriesgada",
+		_ => ""
+	};
+	public static string GetDescription(this SVPositions system) => system switch
+	{
+		SVPositions.Controlled => "Todo está listo para tu éxito, estás explotando una posición ventajosa",
+		SVPositions.Desperate => "Te estás pasando. Estas en problemas, una maniobra muy arriesgada",
+		SVPositions.Risky => "Estás ahí-ahí, estás bajo presión y te estás arriesgando",
 		_ => ""
 	};
 }

@@ -1,0 +1,209 @@
+﻿<div class="d-flex flex-column gap-1">
+	<h2>
+		@Roll.Player.Name tira por @Roll.Stat.ToUI()
+	</h2>
+	<div class="flex-grow-1 d-flex flex-column w-100">
+		<div>Dados a tirar: @Roll.TotalDices</div>
+		<div class="d-flex flex gap-2">
+			<div class="HelpBox Player">
+				<h4>Ayudas</h4>
+				<div class="flex-grow-1 d-flex flex-column justify-content-center">
+				@if(Roll.Player == Player)
+				{
+					@if(Roll.HelperPlayer is null)
+					{
+						<span>Nadie te ayuda</span>
+					}
+					else
+					{
+						<div class="d-flex flex-column">
+							<span>@Roll.HelperPlayer.Name te ayuda!</span>
+							<span>+1 dado</span>
+						</div>
+					}
+				}
+				else if(Roll.Player != Player)
+				{
+					if(Roll.HelperPlayer is null)
+					{
+						<div class="HelpButton hoverable" @onclick=Help>
+							<span>AYUDAR</span>
+							<span>+1 dado</span>
+							<span>+2 estrés (estás en @Player.Stress/9)</span>
+						</div>
+					}
+					else if(Roll.HelperPlayer != Player)
+					{
+						<div class="d-flex flex-column">
+							<span>@Roll.HelperPlayer.Name le ayuda!</span>
+							<span>+1 dado</span>
+						</div>
+					}
+					else
+					{
+						<div class="flex-grow-1 d-flex flex-column justify-content-center">
+								<div class="HelpButton Pressed Blue"
+									style="height:55px;"
+									@onclick=RemoveHelp>
+								<div class="d-flex gap-1 justify-content-center">
+									+2 estrés (@Player.Stress/@Player.MaxStress) <i class="bi bi-caret-right-fill"></i> +1 dado
+								</div>
+							</div>
+						</div>
+					}
+				}
+				</div>
+			</div>
+			<div class="HelpBox Ship GambitBox">
+				<h4>Gámbitos</h4>
+				<div class="flex-grow-1 d-flex flex-column justify-content-center">
+					<div class="HelpButton
+									@(Roll.UsedAGambit?"Pressed Green":"")
+									@(!Roll.UsedAGambit && Ship.Gambits < 1?"Cancelled":"")"
+						 style="height:55px;"
+						 @onclick=UseGambit>
+						<div class="d-flex gap-1 justify-content-center">
+							-1 Gámbito (@Ship.Gambits) <i class="bi bi-caret-right-fill"></i> +1 dado
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="HelpBox Stress">
+				<h4 class="w-100 text-center">Extra</h4>
+				<div class="d-flex gap-4 flex-grow-1">
+					<div class="d-flex flex-column gap-2" style="flex:1;">
+						<h5>Llevarte al límite</h5>
+						<div class="HelpButton 
+									@(Roll.UsedPYForDice?"Pressed":"") 
+									@(!Roll.UsedPYForDice && Player.StresLeft < 2 || Roll.Player != Player?"Cancelled":"")"
+									style="height:55px;" 
+									@onclick=UsePYDice>
+							<div class="d-flex gap-1 justify-content-center">
+								+2 estrés (@Player.Stress) <i class="bi bi-caret-right-fill"></i> +1 dado
+							</div>
+						</div>
+						<div class="HelpButton
+									@(Roll.UsedPYForLevel?"Pressed":"")
+									@(!Roll.UsedPYForLevel && Player.StresLeft < 2 || Roll.Player != Player?"Cancelled":"")"
+							 style="height:55px;"
+							 @onclick=UsePYEffect>
+							<div class="d-flex gap-1 justify-content-center">
+								+2 estrés (@Player.Stress) <i class="bi bi-caret-right-fill"></i> +1 dado
+							</div>
+						</div>
+						<div class="HelpButton
+									@(Roll.UsedPYIncapacitate?"Pressed":"")
+									@(!Roll.UsedPYIncapacitate && Player.StresLeft < 2 || Roll.Player != Player?"Cancelled":"")"
+							 style="height:55px;"
+							 @onclick=UsePYIncapacitate>
+							<div class="d-flex gap-1 justify-content-center">
+								+2 estrés (@Player.Stress) <i class="bi bi-caret-right-fill"></i> +1 dado
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter] public SVCharacter Player { get; set; } = new();
+	[Parameter] public SVGameController? Game { get; set; }
+	[Parameter] public EventCallback<Tuple<string, string>> ShowHelp{ get; set; }
+
+	SVShip Ship => Game?.Ship ?? new SVShip();
+	SVRollReport Roll => Game!.CurrentRoll!;
+
+	private void Help()
+	{
+		Roll.HelperPlayer = Player;
+		Player.Stress += 2;
+		Game?.UpdateSharedRollInAllClients();
+	}
+	private void RemoveHelp()
+	{
+		Roll.HelperPlayer = null;
+		Player.Stress -= 2;
+		Game?.UpdateSharedRollInAllClients();
+	}
+	private async void UseGambit()
+	{
+		if(Roll.UsedAGambit)
+		{
+			Roll.UsedAGambit = false ;
+			Ship.Gambits++;
+		}
+		else
+		{
+			Roll.UsedAGambit = true;
+			Ship.Gambits--;
+		}
+		await Game!.StoreShip($"Gámbitos guardados: {Ship.Gambits}");
+		Game?.UpdateSharedRollInAllClients();
+	}
+	private async Task UsePYDice()
+	{
+		if(Roll.UsedPYForDice)
+		{
+			Roll.UsedPYForDice = false;
+			Player.Stress -= 2;
+		}
+		else
+		{
+			Roll.UsedPYForDice = true;
+			Player.Stress += 2;
+		}
+		if(Game is not null && Player is not null)
+			await Game.StoreChangesOnCharacter(Player, $"Estrés: {Player.Stress}.");	
+
+		Game?.UpdateSharedRollInAllClients();
+	}
+	private async Task UsePYEffect()
+	{
+		if(Roll.UsedPYForLevel)
+		{
+			Roll.UsedPYForLevel = false;
+			Player.Stress -= 2;
+		}
+		else
+		{
+			Roll.UsedPYForLevel = true;
+			Player.Stress += 2;
+		}
+		if (Game is not null && Player is not null)
+			await Game.StoreChangesOnCharacter(Player, $"Estrés: {Player.Stress}.");
+		Game?.UpdateSharedRollInAllClients();
+	}
+	private async Task UsePYIncapacitate()
+	{
+		if (Roll.UsedPYIncapacitate)
+		{
+			Roll.UsedPYIncapacitate = false;
+			Player.Stress -= 2;
+		}
+		else
+		{
+			Roll.UsedPYIncapacitate = true;
+			Player.Stress += 2;
+		}
+
+		if (Game is not null && Player is not null)
+			await Game.StoreChangesOnCharacter(Player, $"Estrés: {Player.Stress}.");
+		Game?.UpdateSharedRollInAllClients();
+	}
+
+	private async Task ShowDevilsHelp()
+	{
+		await ShowHelp.InvokeAsync(new Tuple<string, string>(
+			"Pactar con el diablo",
+				@"Acepa un pacto con el diablo a cambio de un dado extra, algunos ejemplos son:\nDaños colaterales, daños no intencionados.
+				\nSacrificar un crédito o un objeto.
+				\nTraicionar a un amigo o a un ser querido.
+				\nOfender o enfadar a una facción.
+				\nIniciar y/o marcar un reloj problemático.
+				\nAgregar presión a la tripulación a partir de pruebas o testigos.
+				\nSufrir daño."));
+	}
+}

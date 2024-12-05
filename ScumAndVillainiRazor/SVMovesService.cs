@@ -14,6 +14,8 @@ public class SVMove : BaseMove<SVMoveIDs, SVStats>
 		
 	}
 
+	public List<SVStats> AffectedStats = new();
+
 	public string Description { get; set; } = string.Empty;
 	public string Details { get; set; } = string.Empty;
 
@@ -32,35 +34,88 @@ public class SVMovesService : MovesServiceBase
 {
 
 	public List<SVMove> AllMoves = new List<SVMove> {
+		new SVMove(SVMoveIDs.Skulk, SVStats.Skulk)
+		{
+			Title = SVStats.Skulk.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Scramble, SVStats.Scramble)
+		{
+			Title = SVStats.Scramble.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Scrap, SVStats.Scrap)
+		{
+			Title = SVStats.Scrap.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Helm, SVStats.Helm)
+		{
+			Title = SVStats.Helm.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Doctor, SVStats.Doctor)
+		{
+			Title = SVStats.Doctor.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Hack, SVStats.Hack)
+		{
+			Title = SVStats.Hack.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Rig, SVStats.Rig)
+		{
+			Title = SVStats.Rig.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Study, SVStats.Study)
+		{
+			Title = SVStats.Study.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Attune, SVStats.Attune)
+		{
+			Title = SVStats.Attune.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Command, SVStats.Command)
+		{
+			Title = SVStats.Command.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Consort, SVStats.Consort)
+		{
+			Title = SVStats.Consort.ToUI(),
+		},
+		new SVMove(SVMoveIDs.Sway, SVStats.Sway)
+		{
+			Title = SVStats.Sway.ToUI(),
+		},
 		new SVMove(SVMoveIDs.Tinker, SVStats.NotSet)
 		{
 			Title = "Manitas",
 			Description =  "Cuando trabajas en un mecanismo con *Trastear** o *Hackear** o cuando *Estudias** unos planos, llena +1 segmento",
-			Details = "Obtienes este segmento extra sin importar si es una actividad de 'tiempo libre' o no. Esto quire decir que superar seguridad en un trabajo o hacer un arreglo rápido mientras escapamos es más fácil para tí que para cualquier otro."
+			Details = "Obtienes este segmento extra sin importar si es una actividad de 'tiempo libre' o no. Esto quire decir que superar seguridad en un trabajo o hacer un arreglo rápido mientras escapamos es más fácil para tí que para cualquier otro.",
+			AffectedStats= new List<SVStats>{ SVStats.Rig, SVStats.Hack, SVStats.Study}
 		},
 		new SVMove(SVMoveIDs.BailandoWireAndMechTape, SVStats.NotSet)
 		{
 			Title = "Cinta americana y tres en uno",
 			Description = "Obtienes una actividad extra durante el tiempo libre para reparar, y la actividad de reparación no te cuesta NADA DE CRÉDITOS.",
 			Details = "La actividad de reparación normalmente cuesta 1 CRÉDITO. Con esta habilidad, puedes realizar la actividad sin costo alguno de CRÉDITOS. Las reparaciones gratuitas no se pueden 'acumular'. Obtienes una por cada periodo de tiempo libre."
+			,AffectedStats= new List<SVStats>{ }
 		},
 		new SVMove(SVMoveIDs.ConstructWhisperer, SVStats.NotSet)
 		{
 			Title = "Susurrador de Constructos",
 			Description = "Las máquinas te hablan cuando las *Estudias**. La primera vez que sacas un crítico mientras reparas o construyes una máquina en particular, puedes agregarle una modificación simple (ver Creación, página 282).",
 			Details = "¿Cómo te susurran las máquinas sus secretos? ¿Es intuitivo? ¿Sientes lo que sienten ellas? No obtienes la modificación si mejoras el resultado con CRÉDITOS."
+			,AffectedStats= new List<SVStats>{ SVStats.Study}
 		},
 		new SVMove(SVMoveIDs.JunkyardHunter, SVStats.NotSet)
 		{
 			Title = "Señor de la basura",
 			Description = "Cuando adquieres piezas o equipos durante el tiempo libre, puedes obtener dos activos o un activo de calidad +1.",
 			Details = "Tus contactos en el desguace pueden conseguir lo que necesitas restaurado o en oferta especial. Si obtienes dos activos, ambos tienen la misma calidad que tu tirada."
+			,AffectedStats= new List<SVStats>{ }
 		},
 		new SVMove(SVMoveIDs.Hacker, SVStats.NotSet)
 		{
 			Title = "Pirata Informático",
 			Description = "Puedes gastar tu armadura especial para resistir las consecuencias de *Hackear**, o para potenciarte cuando hackeas o recopilas información electrónicamente.",
 			Details = "Cuando uses esta habilidad, marca la casilla de armadura especial en tu hoja de personaje. Si usas esta habilidad para potenciarte, obtienes uno de los beneficios (+1d, +1 efecto, actuar a pesar de una lesión grave), pero no recibes 2 puntos de estrés. Tu armadura especial se restaura cuando seleccionas tu equipo al comienzo de un trabajo."
+			,AffectedStats= new List<SVStats>{ }
 		},
 		new SVMove(SVMoveIDs.Fixed, SVStats.NotSet)
 		{
@@ -79,12 +134,14 @@ public class SVMovesService : MovesServiceBase
 			Title = "Sobrecarga",
 			Description = "Cuando gastas un gambito en una tirada de *Trastear** para reparar o mejorar, trata el sistema en el que trabajaste como si tuviera 1 calidad más alta durante el resto del trabajo.",
 			Details = "Puedes hacer una tirada de *Trastear** durante un trabajo simplemente para obtener más de un sistema, pero tales mejoras temporales son solo situacionales y deben deshacerse la próxima vez que vayas al dique seco. Puedes hacer overclock a sistemas que no sean naves, mejorando la calidad del sistema."
+			,AffectedStats= new List<SVStats>{ SVStats.Rig}
 		},
 		new SVMove(SVMoveIDs.Analyst, SVStats.NotSet)
 		{
 			Title = "Analista",
 			Description = "Cuando *HACKEAS** un sistema, también puedes hacer una pregunta sobre el propietario o la ubicación del sistema como si hubieras sacado un 6 en recopilar información. Cuando resistes las consecuencias de HACKEAR, tira +1d. Independientemente del propósito para el que estés HACKEANDO, aprendes algo sobre los sistemas que estás manipulando. Si estabas recopilando información, puedes tirar para aprender una segunda cosa, o simplemente aceptar el 6 para lo que querías saber.",
 			Details = "A veces, los números pueden decirte más de lo que piensas, ¿verdad? ¡Ahora tu análisis te llevará más allá de lo esperado!"
+			,AffectedStats= new List<SVStats>{SVStats.Hack, SVStats.Insight }
 		},
 		new SVMove(SVMoveIDs.Unstoppable, SVStats.NotSet)
 		{
@@ -425,7 +482,7 @@ public class SVMovesService : MovesServiceBase
 			Details = "Este movimiento recompensa tu enfoque en trabajos de contrabando o entrega, asegurándote mayores ganancias. Además, la capacidad de identificar el valor oculto en cualquier situación al reunir información puede proporcionar una ventaja estratégica crucial durante tus operaciones."
 		},
 
-		new SVMove(SVMoveIDs.Getaway, SVStats.NotSet)
+		new SVMove(SVMoveIDs.TheGetaway, SVStats.NotSet)
 		{
 			Title = "La Fuga",
 			Description = "Ganas potencia cuando maniobras o pilotas para evitar ser capturado o romper un bloqueo. Al realizar un trabajo de entrega, añade +1d a la tirada de preparación.",
@@ -467,7 +524,7 @@ public class SVMovesService : MovesServiceBase
 			Details = "Este movimiento mejora la especialización y la eficacia de cada personaje en áreas clave, permitiendo a la tripulación abordar desafíos técnicos o tácticos con mayor facilidad."
 		},
 
-		
+
 		new SVMove(SVMoveIDs.Licensed, SVStats.NotSet)
 		{
 			Title = "Con Licencia",
@@ -531,7 +588,7 @@ public class SVMovesService : MovesServiceBase
 			Details = "Este movimiento mejora la capacidad de tu tripulación para soportar desafíos difíciles, volviéndolos más resilientes frente a cualquier tipo de amenaza."
 		},
 
-		new SVMove(SVMoveIDs.Sympathisers, SVStats.NotSet)
+		new SVMove(SVMoveIDs.Sympathizers, SVStats.NotSet)
 		{
 			Title = "Simpatizantes",
 			Description = "Tu ideología es especialmente atractiva. Cuando tratas con una tripulación o facción, el GM te dirá quién entre ellos cree en tu causa (uno, algunos, muchos o todos).",
@@ -559,7 +616,7 @@ public class SVMovesService : MovesServiceBase
 			Details = "Este movimiento recompensa las acciones altruistas, promoviendo un juego orientado a la moralidad dentro de tu equipo."
 		},
 
-		new SVMove(SVMoveIDs.HeartsAndMinds, SVStats.NotSet)
+		new SVMove(SVMoveIDs.HeartsMinds, SVStats.NotSet)
 		{
 			Title = "Corazones y Mentes",
 			Description = "Cada miembro de la tripulación puede añadir 1 punto de clasificación a **Comandar**, **Conversar** o **Persuadir** (hasta un máximo de 3).",

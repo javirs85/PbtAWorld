@@ -136,7 +136,7 @@
 					@if (ShipType != ShipTypes.NotSet)
 					{
 						<h3>@ShipType.ToUI()</h3>
-						@foreach (var ab in SVGameController.GetAllAvailableSpecialAbiltiesFor(ShipType))
+						@foreach (var ab in SVShip.GetAllAvailableSpecialAbiltiesFor(ShipType))
 						{
 							<div class="d-flex gap-3">
 								<AbilityCard MoveID="ab" Player="Player" Ship="Game.Ship" IsShipAbility="true" ShowHelp="ShowHelp" Grow=true />
@@ -155,6 +155,22 @@
 					}
 				}
 			}
+		</div>
+	</div>
+}
+@if(IsShowingCurrentRoll)
+{
+	<!-- Corruption Upgrades Modal -->
+	<div class="FullScreenModal SharedRollContainer @(IsShowingCurrentRoll?"":"HideModal")"
+		 @onclick=HideSharedRollView>
+		<div class="CloseButton"></div>
+		<div class="ModalBody" @onclick:stopPropagation=true>
+			<div class="d-flex flex-column align-items-center justify-content-start mb-3 w-100 h-100">
+				@if(Game.CurrentRoll is not null)
+				{
+					<SharedRollPanel Game="Game" Player="Player" ShowHelp="ShowHelp"/>
+				}
+			</div>
 		</div>
 	</div>
 }
@@ -193,46 +209,49 @@
 			</div>
 		</div>
 
-		<div class="d-flex flex-column  flex-grow-1">
+		<div class="d-flex flex-column Stats flex-grow-1">
 			<StatBlock StoreChangesNeeded="@EventCallback.Factory.Create(this, async () =>
 						await Game.StoreChangesOnCharacter(Player, "Cambios guardados"))"
-			Player="Player"
-			MainStat="SVStats.Insight"
-				   @bind-RelatedXP="Player.InsightXP"
-				   Sub1Stat="SVStats.Doctor"
-				   Sub2Stat="SVStats.Hack"
-				   Sub3Stat="SVStats.Rig"
-				   Sub4Stat="SVStats.Study"
-				   @bind-Sub1="Player.Doctor"
-				   @bind-Sub2="Player.Hack"
-				   @bind-Sub3="Player.Rig"
-				   @bind-Sub4="Player.Study" />
+						Player="Player"
+						StatClicked="StartSharedRoll"
+						MainStat="SVStats.Insight"
+						@bind-RelatedXP="Player.InsightXP"
+						Sub1Stat="SVStats.Doctor"
+						Sub2Stat="SVStats.Hack"
+						Sub3Stat="SVStats.Rig"
+						Sub4Stat="SVStats.Study"
+						@bind-Sub1="Player.Doctor"
+						@bind-Sub2="Player.Hack"
+						@bind-Sub3="Player.Rig"
+						@bind-Sub4="Player.Study" />
 			<StatBlock StoreChangesNeeded="@EventCallback.Factory.Create(this, async () =>
 						await Game.StoreChangesOnCharacter(Player, "Cambios guardados"))"
-			Player="Player"
-			MainStat="SVStats.Prowess"
-				   @bind-RelatedXP="Player.ProwessXP"
-				   Sub1Stat="SVStats.Helm"
-				   Sub2Stat="SVStats.Scramble"
-				   Sub3Stat="SVStats.Scrap"
-				   Sub4Stat="SVStats.Skulk"
-				   @bind-Sub1="Player.Helm"
-				   @bind-Sub2="Player.Scramble"
-				   @bind-Sub3="Player.Scrap"
-				   @bind-Sub4="Player.Skulk" />
+						Player="Player"
+						StatClicked="StartSharedRoll"
+						MainStat="SVStats.Prowess"
+						@bind-RelatedXP="Player.ProwessXP"
+						Sub1Stat="SVStats.Helm"
+						Sub2Stat="SVStats.Scramble"
+						Sub3Stat="SVStats.Scrap"
+						Sub4Stat="SVStats.Skulk"
+						@bind-Sub1="Player.Helm"
+						@bind-Sub2="Player.Scramble"
+						@bind-Sub3="Player.Scrap"
+						@bind-Sub4="Player.Skulk" />
 			<StatBlock StoreChangesNeeded="@EventCallback.Factory.Create(this, async () =>
 						await Game.StoreChangesOnCharacter(Player, "Cambios guardados"))"
-			Player="Player"
-			MainStat="SVStats.Resolve"
-				   @bind-RelatedXP="Player.ResolveXP"
-				   Sub1Stat="SVStats.Attune"
-				   Sub2Stat="SVStats.Command"
-				   Sub3Stat="SVStats.Consort"
-				   Sub4Stat="SVStats.Sway"
-				   @bind-Sub1="Player.Attune"
-				   @bind-Sub2="Player.Command"
-				   @bind-Sub3="Player.Consort"
-				   @bind-Sub4="Player.Sway" />
+					   Player="Player"
+					   StatClicked="StartSharedRoll"
+						MainStat="SVStats.Resolve"
+					   @bind-RelatedXP="Player.ResolveXP"
+					   Sub1Stat="SVStats.Attune"
+					   Sub2Stat="SVStats.Command"
+					   Sub3Stat="SVStats.Consort"
+					   Sub4Stat="SVStats.Sway"
+					   @bind-Sub1="Player.Attune"
+					   @bind-Sub2="Player.Command"
+					   @bind-Sub3="Player.Consort"
+					   @bind-Sub4="Player.Sway" />
 			<div class="d-flex">
 				<SkewedHeader Text="XP" ForzedWidth="115" />
 				<SkewedList ListSize="8" @bind-Value="Player.PlaybookXP" />
@@ -240,7 +259,7 @@
 			
 		</div>
 
-		<div class="d-flex flex-column  flex-grow-1">
+		<div class="d-flex flex-column StressAndTraumas flex-grow-1">
 			<div class="d-flex mt-2">
 				<SkewedHeader Text="Estres" Color=SkewedHeader.AvilableColors.Red ForzedWidth="97" />
 				<SkewedList ListSize="9" Color=SkewedHeader.AvilableColors.Red @bind-Value="Player.Stress" />
@@ -509,8 +528,6 @@
 	
 </div>
 
-
-
 @code {
 	[Parameter] public SVCharacter Player { get; set; } = new();
 
@@ -526,14 +543,40 @@
 
 	string UpkeepCostString => Game.Ship.UpkeepCost.ToString();
 
-	protected async override void OnParametersSet()
+	private bool IsShowingCurrentRoll = false;
+
+	protected override void OnInitialized()
+	{
+		Game.NewInfoToast -= ShowInfo;
+		Game.NewInfoToast += ShowInfo;
+
+		(Game as SVGameController).OpenSharedRoll += ShowSharedRollView;
+
+	}
+
+	void ShowSharedRollView(object? sender, EventArgs e)
+	{
+		IsShowingCurrentRoll = true;
+		InvokeAsync(StateHasChanged);
+	}
+	void HideSharedRollView()
+	{
+		IsShowingCurrentRoll = false;
+	}
+
+	void StartSharedRoll(SVStats stat)
+	{
+		Game.StartSharedRoll(Player, stat);
+	}
+
+
+	protected override void OnParametersSet()
 	{
 		if (Player is null) Player = new();
 
 		VTT.Players = Game.Players;
 
-		Game.NewInfoToast -= ShowInfo;
-		Game.NewInfoToast += ShowInfo;
+		
 
 		CharacterSelectorService.SetPeople(Game.People);
 		Book = Game.TextBook as SVTextBook;
