@@ -1,0 +1,160 @@
+.SVPanelContainer {
+    min-width: 200px;
+    min-height: 153px;
+    position:relative;
+}
+.Title {
+    position: absolute;
+    top: 7px;
+    left: 29px;
+    font-family: consolas;
+    font-size: 1.5em;
+    z-index:3;
+}
+.Glass {
+    /*filter: blur(1px);*/
+    opacity: 1;
+}
+.CoolBack{
+    display:flex;
+}
+
+.sv11 {
+    background-image: url(./SVBack11.png);
+    width: 36px;
+    height: 40px;
+}
+.sv12 {
+    background-image: url(./SVBack12.png);
+    height:40px;
+    flex:1;
+}
+.sv13 {
+    background-image: url(./SVBack13.png);
+    height:40px;
+    width:163px;
+}
+
+.sv21 {
+    background-image: url(./SVBack21.png);
+    width:36px;
+
+}
+
+.sv22 {
+    background-image: url(./SVBack22.png);
+    display: flex; /* Asegura que el contenido interno también use flexbox */
+    align-items: center; /* Centra verticalmente el contenido */
+    justify-content: center; /* Centra horizontalmente el contenido */
+    margin: 0;
+    margin-top: -15px;
+    margin-bottom: -72px;
+    z-index: 2;
+    flex: 1;
+}
+
+.sv23 {
+    background-image: url(./SVBack23.png);
+    width:25px;
+}
+
+.sv31 {
+    background-image: url(./SVBack31.png);
+    width: 49px;
+    height: 97px;
+}
+
+.sv32 {
+    background-image: url(./SVBack32.png);
+    height: 97px;
+    flex:1;
+}
+
+.sv33 {
+    background-image: url(./SVBack33.png);
+    width: 36px;
+    height: 97px;
+}
+
+.content {
+   /* position: absolute;
+    top: 7px;
+    left: 40px;*/
+}
+
+.sv1 {
+    width: 31px;
+    height: 40px;
+}
+.sv11 {
+    width: 31px;
+    height: 40px;
+}
+.sv12{
+    height: 40px;
+    padding-top: 6px;
+}
+.sv13 {
+    width: 17px;
+    height: 40px;
+}
+.sv1mini {
+    width: 134px;
+    height: 40px;
+}
+.sv2 {
+    height: 40px;
+    flex: 1;
+}
+.sv2mini {
+    height: 40px;
+    flex: 1;
+}
+.sv3 {
+    width: 163px;
+    height: 40px;
+}
+.sv3mini {
+    width: 79px;
+    height: 40px;
+}
+.sv41 {
+    background-image: url(./SV41.png);
+    width: 31px;
+    flex:1;
+}
+.sv42 {
+    background-image: url(./SV42.png);
+    width: 31px;
+    height:68px;
+}
+.sv5 {
+    background-image: url(./SV5.png);
+    display: flex;
+    padding-left:10px;
+    flex: 1;
+}
+.sv6 {
+    background-image: url(./SV6.png);
+    width: 25px;
+}
+.sv71 {
+    background-image: url(./SV71.png);
+    width: 31px;
+    height: 27px;
+}
+.sv72 {
+    background-image: url(./SV72.png);
+    width: 42px;
+    height: 27px;
+}
+.sv8 {
+    background-image: url(./SV8.png);
+    flex: 1;
+    height: 27px;
+}
+.sv9 {
+    background-image: url(./SV9.png);
+    width: 25px;
+    height: 27px;
+}

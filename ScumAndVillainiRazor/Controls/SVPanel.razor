@@ -1,0 +1,89 @@
+﻿@page "/Panel"
+
+
+@* <div class="SVPanelContainer d-flex flex-column @Color.ToString()">
+    <div class="Glass">
+        <div class="d-flex">
+            <div class="CoolBack sv11"></div>
+            <div class="CoolBack sv12"></div>
+            <div class="CoolBack sv13"></div>
+        </div>
+        <div class="d-flex flex-grow-1">
+            <div class="CoolBack sv21"></div>
+            <div class="CoolBack sv22">
+                @if (ChildContent is not null)
+                {
+                    <div class="content">
+                        @ChildContent
+                    </div>
+                }
+            </div>
+            <div class="CoolBack sv23"></div>
+        </div>
+        <div class="d-flex">
+            <div class="CoolBack sv31"></div>
+            <div class="CoolBack sv32"></div>
+            <div class="CoolBack sv33"></div>
+        </div>
+    </div>
+    <div class="Title">
+        @Title
+    </div>
+    
+</div> *@
+<div class="SVPanelContainer d-flex flex-column @Class" style="@Style">
+    <div class="d-flex">
+        @* <div class="@(IsMini?"sv1mini":"sv1")" style="background-image:url(@GenerateURL(1))"></div> *@
+        <div class="d-flex">
+            <div class="sv11" style="background-image:url(@GenerateURL(11))"></div>
+            <div class="sv12 fs-5" style="background-image:url(@GenerateURL(12))">
+                @Title
+            </div>
+            <div class="sv13" style="background-image:url(@GenerateURL(13))"></div>
+        </div>
+        <div class="@(IsMini?"sv2mini":"sv2")" style="background-image:url(@GenerateURL(2))"></div>
+        <div class="@(IsMini?"sv3mini":"sv3")" style="background-image:url(@GenerateURL(3))"></div>
+    </div>
+    <div class="d-flex" style="flex:1">
+        <div class="sv4 d-flex flex-column">
+            <div class="sv41" style="background-image:url(@GenerateURL(41))"></div>
+            <div class="sv42" style="background-image:url(@GenerateURL(42))"></div>
+        </div>
+        <div class="sv5" style="background-image:url(@GenerateURL(5))">
+            @ChildContent
+        </div>
+        <div class="sv6" style="background-image:url(@GenerateURL(6))"></div>
+    </div>
+    <div class="d-flex">
+        <div class="d-flex">
+            <div class="sv71" style="background-image:url(@GenerateURL(71))"></div>
+            <div class="sv72" style="background-image:url(@GenerateURL(72))"></div>
+        </div>
+        <div class="sv8" style="background-image:url(@GenerateURL(8))"></div>
+        <div class="sv9" style="background-image:url(@GenerateURL(9))"></div>
+    </div>
+    @* <div class="Title">
+        @Title
+    </div> *@
+</div>
+
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public SVPanelColors Color { get; set; } = SVPanelColors.Blue;
+    [Parameter] public bool IsMini { get; set; } = false;
+    [Parameter] public String Class { get; set; } = string.Empty;
+    [Parameter] public String Style { get; set; } = string.Empty;
+
+    public enum SVPanelColors {Blue, Turquoise, Green, Red}
+
+    string GenerateURL(int position)
+    {
+        string mini = "";
+        if ( position == 3 && IsMini)
+            mini = "Mini";
+
+        return $"./_content/ScumAndVillainy/{Color.ToString()}/SV{position}{mini}.png";
+    }
+}

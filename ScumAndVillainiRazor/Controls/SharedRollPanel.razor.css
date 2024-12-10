@@ -1,13 +1,16 @@
 ﻿.HelpButton {
-    padding: 2em;
-    background: white;
-    color: black;
-    border-radius: 1em;
+    padding: 1em;
+    background: #ffffff2e;
+    color: #ffffffb6;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     justify-content: center;
-    cursor:pointer;
+    cursor: pointer;
+    font-family: Consolas;
 }
+    .HelpButton:hover {
+        background: #ffffff55;
+    }
     .HelpButton.Pressed {
         background: #930000 !important;
         color: white;
@@ -19,15 +22,27 @@
     .HelpButton.Pressed.Blue {
         background: blue !important;
         }
-    .HelpBox {
-        padding: 2em;
-        background: gray;
-        border-radius: 1em;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+    .HelpButton.Pressed.Turquoise {
+        background: #0e7168 !important;
     }
+.Cancelled {
+    pointer-events: none;
+    opacity: 0.3;
+}
+.Cancelled:hover{
+    background: #932c2c13;
+}
+
+
+.HelpBox {
+    padding: 2em;
+    background-image: url(./SVBack.png);
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .Ship {
     background: #74cb7f;
     color: black;
@@ -36,12 +51,36 @@
     background: #81bfff;
     color: black;
 }
+
+.HelperColor {
+    background: #81ffdc;
+    color:black;
+}
+
 .Stress {
     background: #ff8181;
     color: black;
 }
 
-.Cancelled{
-    pointer-events:none;
-    opacity:0.3;
+.Dice {
+    height: 50px;
+    width: 50px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.BlueDice {
+    background-image: url(./DiceBlue.png);
+}
+
+.GreenDice {
+    background-image: url(./DiceGreen.png);
+}
+
+.RedDice {
+    background-image: url(./DiceRed.png);
+}
+
+.HelperDice {
+    background-image: url(./DiceTurquoise.png);
 }

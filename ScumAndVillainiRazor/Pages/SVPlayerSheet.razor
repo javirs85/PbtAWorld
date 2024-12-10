@@ -161,16 +161,16 @@
 @if(IsShowingCurrentRoll)
 {
 	<!-- Corruption Upgrades Modal -->
-	<div class="FullScreenModal SharedRollContainer @(IsShowingCurrentRoll?"":"HideModal")"
+	<div class="FullScreenModal SharedRollContainer"
 		 @onclick=HideSharedRollView>
 		<div class="CloseButton"></div>
-		<div class="ModalBody" @onclick:stopPropagation=true>
-			<div class="d-flex flex-column align-items-center justify-content-start mb-3 w-100 h-100">
-				@if(Game.CurrentRoll is not null)
-				{
-					<SharedRollPanel Game="Game" Player="Player" ShowHelp="ShowHelp"/>
-				}
-			</div>
+		<div class="ModalBody" style="max-height:95%; max-width:95%;min-height:95%; min-width:95%;" @onclick:stopPropagation=true>
+			
+			@if(Game.CurrentRoll is not null)
+			{
+				<SharedRollPanel Game="Game" Player="Player" ShowHelp="ShowHelp"/>
+			}
+			
 		</div>
 	</div>
 }
