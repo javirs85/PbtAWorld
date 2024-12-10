@@ -29,6 +29,10 @@
             encodedValue = encodedValue.Replace("**", "</b>");
             encodedValue = encodedValue.Replace("*", "<b>");
 
+            encodedValue = encodedValue.Replace("||", "</i>");
+            encodedValue = encodedValue.Replace("|", "<i>");
+
+
 
             return encodedValue;
         }

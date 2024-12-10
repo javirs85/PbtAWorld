@@ -141,7 +141,53 @@
 		<h2>
 			@Roll.Player.Name tira por @Roll.Stat.ToUI()
 		</h2>
-		
+		<div class="d-flex gap-2 Consolas">
+			<div class="d-flex flex-column align-items-end me-1 pe-2" style="border-right:1px solid white;">
+				<div class="d-flex gap-2">
+					Potencia? 
+					<HelperStarter 
+									HelperInvoked="ShowHelp" 
+									Title="Potencia"
+									HelpText="Este factor tiene en cuenta debilidades particulares, la necesidad de tomarte un tiempo extra o un tomar mayores riesgos, o la influencia de poderes extraños.\n Un dispositivo de alta gama del Gremio puede ser un potente abridor de cajas fuertes. Un artefacto de Ur puede ser potente contra los encantos de un Portavoz de la Noche. Un ladrón será más potente acechando en la oscuridad."/>
+				</div>
+				<div class="d-flex gap-2">
+					Calidad/Nivel?
+					<HelperStarter 
+									HelperInvoked="ShowHelp" 
+									Title="Calidad/Nivel"
+									HelpText="La calidad representa la eficacia de las herramientas, armas u otros recursos, generalmente resumida por la calidad de la tripulación o el nivel de facción.\nLos objetos de calidad cuentan como una bonificación de +1 en calidad, que se acumula con el nivel/calidad de la tripulación.\n\n|Hayley está abriendo la cerradura de un almacén de Malklaith.\nLa calidad de su tripulación es I y tiene ganzúas de calidad: está en el nivel II.\nMalklaith es de nivel III. Hayley está superada en calidad, por lo que su efecto en la cerradura será limitado.||"/>
+				</div>
+				<div class="d-flex gap-2">
+					Escala?
+					<HelperStarter 
+									HelperInvoked="ShowHelp" 
+									Title="Escala"
+									HelpText="La escala representa la cantidad de oponentes, el tamaño de un área cubierta, el alcance de influencia, etc. Una escala mayor puede ser una ventaja o desventaja según la situación. En la batalla, más gente es mejor. Al infiltrarse, más gente es un obstáculo."/>
+				</div>
+				<div class="d-flex gap-2">
+					Dominante?
+					<HelperStarter 
+									HelperInvoked="ShowHelp" 
+									Title="Dominante"
+									HelpText="Si un factor de efecto eclipsa a los demás, el bando con esa ventaja domina la situación. No importa si tienes una buena vibroespada y un efecto extra si intentas luchar contra 20 personas a la vez. Su escala domina la batalla y te quedas con un efecto muy limitado, o ninguno en absoluto. El mismo principio se aplica a las acciones 'imposibles'.\n|Aleera quiere derribar una cañonera que los acosa con su excelente pistola bláster, Krieger. Ella dice: 'Tomo a Krieger y lucho con la nave, disparando a los motores. ¡Ja! ¡He sacado un crítico! ¡Gran efecto!'.\nObviamente, esto no es posible. Una persona no puede derribar una cañonera con un bláster. Sabemos que es inherentemente tonto, como saltar sobre la luna. Pero esto también está codificado en los factores de efecto. La nave es dominante en calidad, escala y potencia.A menos que esos factores se contrarresten de alguna manera, el nivel de efecto de Aleera es cero antes de que empiece. No importa lo que tire para su acción, no tendrá ningún efecto. Este concepto es útil para evaluar otras situaciones muy difíciles (pero alcanzables).\nPero esta situación no es completamente desesperada. Aquí es donde los factores de efecto pueden ayudar a darle sentido a la situación. Si la nave es dominante en calidad, escala y potencia, entonces los PJ pueden tratar de comprender los factores y tomar acciones para abordarlos. ¿Hay una debilidad en la armadura de la nave? Pueden usarla para eliminar su potencia (y aprovechar esa ventaja para sí mismos).\n¿De qué escala es? Necesitan un arma más grande. Y así sucesivamente.||"/>
+				</div>
+			</div>
+			<div class="EffectBox @(Roll.Effect==SVEffect.Extreme?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Extreme;})">
+				Extremo <HelperStarter HelperInvoked="ShowHelp" Title="Extremo" HelpText="Un efecto superior a todo lo normal."/>
+			</div>
+			<div class="EffectBox @(Roll.Effect == SVEffect.Great?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Great;})">
+				Excelente <HelperStarter HelperInvoked="ShowHelp" Title="Excelente" HelpText="Lograste más de lo habitual. ¿Cómo se manifiesta el esfuerzo adicional? ¿Qué beneficio adicional disfrutas? 3 ticks del reloj." />
+			</div>
+			<div class="EffectBox @(Roll.Effect==SVEffect.Standard?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Standard;})">
+				Estándar <HelperStarter HelperInvoked="ShowHelp" Title="Estándard" HelpText="Logras lo que esperaríamos como normal con esta acción. ¿Es suficiente o queda más por hacer? 2 ticks del reloj." />
+			</div>
+			<div class="EffectBox @(Roll.Effect==SVEffect.Limited?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Limited;})">
+				Limitado<HelperStarter HelperInvoked="ShowHelp" Title="Limitado" HelpText="Logras un efecto parcial o débil. ¿Cómo se reduce tu impacto? ¿Qué esfuerzo te queda para lograr tu objetivo? 1 tick del reloj." />
+			</div>
+			<div class="EffectBox @(Roll.Effect == SVEffect.Zero?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Zero;})">
+				Sin efecto<HelperStarter HelperInvoked="ShowHelp" Title="Sin efecto" HelpText="Por muy buena que sea la tirada, no es posible tener ningún efecto, vas a tener que trabjar en aquello que imposibilita tu acción antes de poder siquiera intentarlo." />
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -257,4 +303,6 @@
 				Agregar presión a la tripulación a partir de pruebas o testigos.
 				Sufrir daño."));
 	}
+
+
 }

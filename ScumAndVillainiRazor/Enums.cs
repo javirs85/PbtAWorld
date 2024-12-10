@@ -21,7 +21,7 @@ public enum SVItemIDs
 };
 
 public enum SVPositions { Controlled, Risky, Desperate};
-public enum SVEffect { Limited, Standard, Great};
+public enum SVEffect { Limited, Standard, Great, Extreme, Zero};
 
 public enum SVMoveIDs {
 	NotSet, 
