@@ -1,10 +1,14 @@
 ﻿<div class="d-flex gap-3 w-100 flex-grow-1">	
 	<div class="d-flex flex-column gap-2 justify-content-center">
+		<h2>
+			@Roll.Player.Name tira por @Roll.Stat.ToUI()
+		</h2>
 		<div class="d-flex gap-1 DicesTry">
 			@if (Roll.TotalDices == 0)
 			{
-				<div class="Dice BlueDice" />
-				<div class="Dice BlueDice" />
+				<div class="Dice BlueDice" style="opacity:0.2;"/>
+				<div class="Dice BlueDice" style="opacity:0.2;" />
+				<HelperStarter Title="Tirar sin dados" HelperInvoked="ShowHelp" HelpText="Cuando tiras con zero dados, tiras dos dados y te quedas el peor"/>
 			}
 			@for (int i = 0; i < Roll.Player.GetBonus(Roll.Stat); ++i)
 			{
@@ -53,7 +57,7 @@
 								<span>AYUDAR</span>
 								<span>+1 dado</span>
 								<span>+2 estrés</span>
-								<span>(estás en @Player.Stress/9)</span>
+								<span>(@Player.Stress/9)</span>
 							</div>
 						}
 						else if (Roll.HelperPlayer != Player)
@@ -137,12 +141,9 @@
 			</div>
 		</SVPanel>
 	</div>
-	<div class="flex-grow-1 d-flex flex-column flex-grow-1">
-		<h2>
-			@Roll.Player.Name tira por @Roll.Stat.ToUI()
-		</h2>
-		<div class="d-flex gap-2 Consolas">
-			<div class="d-flex flex-column align-items-end me-1 pe-2" style="border-right:1px solid white;">
+	<div class="flex-grow-1 d-flex flex-column flex-grow-1 Consolas">
+		<div class="d-flex gap-2">
+			<div class="d-flex flex-column align-items-end me-1 pe-2" >
 				<div class="d-flex gap-2">
 					Potencia? 
 					<HelperStarter 
@@ -171,23 +172,231 @@
 									Title="Dominante"
 									HelpText="Si un factor de efecto eclipsa a los demás, el bando con esa ventaja domina la situación. No importa si tienes una buena vibroespada y un efecto extra si intentas luchar contra 20 personas a la vez. Su escala domina la batalla y te quedas con un efecto muy limitado, o ninguno en absoluto. El mismo principio se aplica a las acciones 'imposibles'.\n|Aleera quiere derribar una cañonera que los acosa con su excelente pistola bláster, Krieger. Ella dice: 'Tomo a Krieger y lucho con la nave, disparando a los motores. ¡Ja! ¡He sacado un crítico! ¡Gran efecto!'.\nObviamente, esto no es posible. Una persona no puede derribar una cañonera con un bláster. Sabemos que es inherentemente tonto, como saltar sobre la luna. Pero esto también está codificado en los factores de efecto. La nave es dominante en calidad, escala y potencia.A menos que esos factores se contrarresten de alguna manera, el nivel de efecto de Aleera es cero antes de que empiece. No importa lo que tire para su acción, no tendrá ningún efecto. Este concepto es útil para evaluar otras situaciones muy difíciles (pero alcanzables).\nPero esta situación no es completamente desesperada. Aquí es donde los factores de efecto pueden ayudar a darle sentido a la situación. Si la nave es dominante en calidad, escala y potencia, entonces los PJ pueden tratar de comprender los factores y tomar acciones para abordarlos. ¿Hay una debilidad en la armadura de la nave? Pueden usarla para eliminar su potencia (y aprovechar esa ventaja para sí mismos).\n¿De qué escala es? Necesitan un arma más grande. Y así sucesivamente.||"/>
 				</div>
-			</div>
-			<div class="EffectBox @(Roll.Effect==SVEffect.Extreme?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Extreme;})">
-				Extremo <HelperStarter HelperInvoked="ShowHelp" Title="Extremo" HelpText="Un efecto superior a todo lo normal."/>
-			</div>
-			<div class="EffectBox @(Roll.Effect == SVEffect.Great?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Great;})">
-				Excelente <HelperStarter HelperInvoked="ShowHelp" Title="Excelente" HelpText="Lograste más de lo habitual. ¿Cómo se manifiesta el esfuerzo adicional? ¿Qué beneficio adicional disfrutas? 3 ticks del reloj." />
-			</div>
+            </div><div class="EffectBox @(Roll.Effect == SVEffect.Zero?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Zero;})">
+                Sin efecto<HelperStarter HelperInvoked="ShowHelp" Title="Sin efecto" HelpText="Por muy buena que sea la tirada, no es posible tener ningún efecto, vas a tener que trabjar en aquello que imposibilita tu acción antes de poder siquiera intentarlo." />
+            </div>
+            <div class="EffectBox @(Roll.Effect==SVEffect.Limited?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Limited;})">
+                Limitado<HelperStarter HelperInvoked="ShowHelp" Title="Limitado" HelpText="Logras un efecto parcial o débil. ¿Cómo se reduce tu impacto? ¿Qué esfuerzo te queda para lograr tu objetivo? 1 tick del reloj." />
+            </div>
 			<div class="EffectBox @(Roll.Effect==SVEffect.Standard?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Standard;})">
 				Estándar <HelperStarter HelperInvoked="ShowHelp" Title="Estándard" HelpText="Logras lo que esperaríamos como normal con esta acción. ¿Es suficiente o queda más por hacer? 2 ticks del reloj." />
 			</div>
-			<div class="EffectBox @(Roll.Effect==SVEffect.Limited?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Limited;})">
-				Limitado<HelperStarter HelperInvoked="ShowHelp" Title="Limitado" HelpText="Logras un efecto parcial o débil. ¿Cómo se reduce tu impacto? ¿Qué esfuerzo te queda para lograr tu objetivo? 1 tick del reloj." />
-			</div>
-			<div class="EffectBox @(Roll.Effect == SVEffect.Zero?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Zero;})">
-				Sin efecto<HelperStarter HelperInvoked="ShowHelp" Title="Sin efecto" HelpText="Por muy buena que sea la tirada, no es posible tener ningún efecto, vas a tener que trabjar en aquello que imposibilita tu acción antes de poder siquiera intentarlo." />
-			</div>
+            <div class="EffectBox @(Roll.Effect == SVEffect.Great?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Great;})">
+                Excelente <HelperStarter HelperInvoked="ShowHelp" Title="Excelente" HelpText="Lograste más de lo habitual. ¿Cómo se manifiesta el esfuerzo adicional? ¿Qué beneficio adicional disfrutas? 3 ticks del reloj." />
+            </div>
+            <div class="EffectBox @(Roll.Effect==SVEffect.Extreme?"Selected":"")" @onclick="@(()=>{Roll.Effect = SVEffect.Extreme;})">
+				<div class="d-flex flex-column align-items-center">
+					<div class="d-flex gap-2">
+						Extremo 
+						<HelperStarter HelperInvoked="ShowHelp" 
+							Title="Extremo" 
+							HelpText="Un efecto superior a todo lo normal." />
+					</div>
+				</div>
+            </div>
 		</div>
+
+		<table class="table table-dark mt-3">
+			<thead>
+				<tr>
+					<td class="NotSelected"></td>
+					<td class="@(Roll.Position == SVPositions.Controlled?"Selected":"NotSelected")" 
+						@onclick="@(()=>{Roll.Position = SVPositions.Controlled;})">CONTROLADO</td>
+					<td class="@(Roll.Position == SVPositions.Risky?"Selected":"NotSelected")"
+						@onclick="@(()=>{Roll.Position = SVPositions.Risky;})">ARRIESGADO</td>
+					<td class="@(Roll.Position == SVPositions.Desperate?"Selected":"NotSelected")"
+						@onclick="@(()=>{Roll.Position = SVPositions.Desperate;})">DESESPERADO</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="NotSelected">
+						CRÍTICO
+						<span class="DiceHint">Doble seis</span>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Controlled?"Selected":"NotSelected")">
+                        <strong>Éxito</strong> con efecto mejorado
+					</td>
+					<td class="@(Roll.Position == SVPositions.Risky?"Selected":"NotSelected")">
+						<strong>Éxito</strong> con efecto mejorado
+					</td>
+					<td class="@(Roll.Position == SVPositions.Desperate?"Selected":"NotSelected")">
+						<strong>Éxito</strong> con efecto mejorado
+						<div class="XPHint">
+							+ 1 XP!
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="NotSelected">
+						<strong>Éxito</strong>
+						<span class="DiceHint">Seis</span>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Controlled?"Selected":"NotSelected")">
+						<strong>Éxito</strong>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Risky?"Selected":"NotSelected")">
+						<strong>Éxito</strong>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Desperate?"Selected":"NotSelected")">
+						<strong>Éxito</strong>
+						<div class="XPHint">
+							+1 XP!
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="NotSelected">
+						<strong>Éxito con consequencias</strong>
+						<span class="DiceHint">máx 4 o 5</span>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Controlled?"Selected":"NotSelected")">
+						<strong>Dudas</strong>
+						<div>
+							Te retiras y pruebas algo diferente ..
+						</div>
+						<div class="w-100 text-center my-3">
+							o bien ...
+						</div>
+						<div>
+							Lo consigues pero ...
+						</div>
+
+						<div class="d-flex flex-column ps-2 mt-2">							
+                            <div class="d-flex gap-2">
+                                Complicacion MENOR <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+                                                                  HelperInvoked="ShowHelp"
+                                                                  HelpText="@SVConsequences.Comlpication.GetDescription()" />
+                            </div>
+                            <div class="d-flex gap-2">
+                                @SVConsequences.ReducedEffect.ToUI() <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
+                                                                                    HelperInvoked="ShowHelp"
+                                                                                    HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
+                            </div>
+                            <div class="d-flex gap-2">
+                                Daño MENOR <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+                                                          HelperInvoked="ShowHelp"
+                                                          HelpText="@SVConsequences.Harm.GetDescription()" />
+                            </div>
+                            <div class="d-flex gap-2">
+                                Empeora tu posición <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
+                                                                   HelperInvoked="ShowHelp"
+                                                                   HelpText="@SVConsequences.WorsePosition.GetDescription()" />
+                            </div>
+
+						</div>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Risky?"Selected":"NotSelected")">
+						<strong>Éxito con consequencias</strong>
+						<div class="d-flex flex-column ps-2">							
+							<div class="d-flex gap-2">
+								Una complicacion <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+												HelperInvoked="ShowHelp"
+												HelpText="@SVConsequences.Comlpication.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Efecto reducido <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
+											   HelperInvoked="ShowHelp"
+											   HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Daño MODERADO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+											 HelperInvoked="ShowHelp"
+											 HelpText="@SVConsequences.Harm.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Acaba en una posición desesperada <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
+																		 HelperInvoked="ShowHelp"
+																		 HelpText="@SVConsequences.WorsePosition.GetDescription()" />
+							</div>
+						</div>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Desperate?"Selected":"NotSelected")">
+						<div class="d-flex flex-column ps-2">
+							<strong>Éxito con consequencias MAYORES</strong>
+							
+							<div class="d-flex gap-2">
+								Una complicacion SERIA <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+												HelperInvoked="ShowHelp"
+												HelpText="@SVConsequences.Comlpication.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Efecto reducido <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
+											   HelperInvoked="ShowHelp"
+											   HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Daño SEVERO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+											 HelperInvoked="ShowHelp"
+											 HelpText="@SVConsequences.Harm.GetDescription()" />
+							</div>
+							<div class="XPHint">
+								+1 XP!
+							</div>
+						</div>						
+					</td>
+				</tr>
+				<tr>
+					<td class="NotSelected">
+						<strong>Malas noticias</strong>
+						<span class="DiceHint">&lt;3 </span>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Controlled?"Selected":"NotSelected")">
+						Avanza aprovechando una oportunidad arriesgada<br />
+						o<br />
+						Retrocede y prueba un enfoque diferente.
+					</td>
+					<td class="@(Roll.Position == SVPositions.Risky?"Selected":"NotSelected")">
+						<div class="d-flex flex-column ps-2">
+							<div class="d-flex gap-2">
+								Una complicacion <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+												  HelperInvoked="ShowHelp"
+												  HelpText="@SVConsequences.Comlpication.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Daño MODERADO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+										  HelperInvoked="ShowHelp"
+										  HelpText="@SVConsequences.Harm.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Acaba en una posición desesperada <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
+										   HelperInvoked="ShowHelp"
+										   HelpText="@SVConsequences.WorsePosition.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Pierde la oportunida <HelperStarter Title="@SVConsequences.LostOportunity.ToUI()"
+										   HelperInvoked="ShowHelp"
+											HelpText="@SVConsequences.LostOportunity.GetDescription()" />
+							</div>
+						</div>
+					</td>
+					<td class="@(Roll.Position == SVPositions.Desperate?"Selected":"NotSelected")">
+						<strong>La peor posibilidad</strong>
+						<div class="d-flex flex-column ps-2">
+							
+							<div class="d-flex gap-2">
+								Una complicacion SERIA <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+											  HelperInvoked="ShowHelp"
+											  HelpText="@SVConsequences.Comlpication.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Pierde la oportunida <HelperStarter Title="@SVConsequences.LostOportunity.ToUI()"
+										   HelperInvoked="ShowHelp"
+										   HelpText="@SVConsequences.LostOportunity.GetDescription()" />
+							</div>
+							<div class="d-flex gap-2">
+								Daño SEVERO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+										   HelperInvoked="ShowHelp"
+										   HelpText="@SVConsequences.Harm.GetDescription()" />
+							</div>
+							<div class="XPHint">
+								+1 XP!
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </div>
 
