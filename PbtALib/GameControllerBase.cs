@@ -161,6 +161,11 @@ public abstract class GameControllerBase<TIDPack, TStatsPack> : IGameController
 		}
 	}
 
+	public int RollD6()
+	{
+		return random.Next(1, 6 + 1);
+	}
+
 	public async Task Roll(Guid PlayerID, IMove move, TStatsPack stat, TIDPack moveID, int hardcodedBonus, RollTypes rtype = RollTypes.Roll_Simple, string hardcodedRolledStatName = "", List<RollExtras>? Extras = null)
 	{
 		var player = Players.Find(x => x.ID == PlayerID);

@@ -77,6 +77,42 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 		(LastRoll as SVRollReport).Position = position;
 	}
 
+	public void RollCurrentRoll()
+	{
+		if(CurrentRoll is not null)
+		{
+			CurrentRoll.Dices.Clear();
+			for (int i = 0; i < CurrentRoll.TotalDices; ++i)
+			{
+				CurrentRoll.Dices.Add(new Tuple<DiceTypes, int>(DiceTypes.d6, RollD6()));
+			}
+			bool isCritic = CurrentRoll.Dices.Count(dice => dice.Item2 == 6) >= 2;
+			if(isCritic)
+			{
+				CurrentRoll.Result = SVRollResult.Critic;
+				return;
+			}
+
+			int maxRoll = CurrentRoll.Dices.Any() ? CurrentRoll.Dices.Max(dice => dice.Item2) : 0;
+
+			if(maxRoll >= 6)
+			{
+				CurrentRoll.Result = SVRollResult.Success;
+				return;
+			}
+			if (maxRoll >= 4)
+			{
+				CurrentRoll.Result = SVRollResult.Mild;
+				return;
+			}
+			else
+			{
+				CurrentRoll.Result = SVRollResult.Fatal;
+				return;
+			}
+		}		
+	}
+
 	public async Task StartShip(ShipTypes type)
 	{
 		Ship = new SVShip();
