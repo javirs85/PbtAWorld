@@ -82,6 +82,24 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 		if(CurrentRoll is not null)
 		{
 			CurrentRoll.Dices.Clear();
+			if(CurrentRoll.TotalDices == 0)
+			{
+				var a = RollD6();
+				var b = RollD6();
+				CurrentRoll.Dices.Add(new Tuple<DiceTypes, int>(DiceTypes.d6, a));
+				CurrentRoll.Dices.Add(new Tuple<DiceTypes, int>(DiceTypes.d6, b));
+
+				CurrentRoll.Dices = CurrentRoll.Dices.OrderByDescending(x => x.Item2).ToList();
+
+				int useme = CurrentRoll.Dices[1].Item2;
+
+				if (useme >= 6) CurrentRoll.Result = SVRollResult.Critic;
+				else if (useme >= 4) CurrentRoll.Result = SVRollResult.Success;
+				else CurrentRoll.Result = SVRollResult.Fatal;
+
+				return;
+			}
+
 			for (int i = 0; i < CurrentRoll.TotalDices; ++i)
 			{
 				CurrentRoll.Dices.Add(new Tuple<DiceTypes, int>(DiceTypes.d6, RollD6()));

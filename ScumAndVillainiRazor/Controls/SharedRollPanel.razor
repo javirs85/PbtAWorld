@@ -18,6 +18,10 @@
 			{
 				<div class="Dice HelperDice" />
 			}
+			@if (Roll.HasExtraDice)
+			{
+				<div class="Dice YellowDice" />
+			}
 			@if (Roll.UsedAGambit)
 			{
 				<div class="Dice GreenDice" />
@@ -29,8 +33,14 @@
 		</div>
 		<div class="d-flex w-100 gap-2">
 			<SVPanel IsMini="true" Title="@Roll.Stat.ToUI()" Style="flex:1;">
-				<div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center fs-1">
+				<div class="flex-grow-1 d-flex justify-content-center align-items-center fs-1 gap-4">
 					@Roll.Player.GetBonus(Roll.Stat)
+					<div class="d-flex gap-1 justify-content-center align-items-center p-2 ExtraDiceQuestionPanel"
+						 style="@(Roll.HasExtraDice?"opacity:0.2 !important;":"")"
+						@onclick=UseExtraDice>
+						<div class="Dice YellowDice"></div>
+						<span class="fs-1">?</span>
+					</div>
 				</div>
 			</SVPanel>
 			<SVPanel Title="Ayudas" IsMini="true"  Style="flex:1;" Color="SVPanel.SVPanelColors.Turquoise">
@@ -268,26 +278,56 @@
 					<td class="@(GetBackgroundTag(SVPositions.NotSet, SVRollResult.Critic)) Pointer"
 					@onclick="@(()=>{ForceRollResult(SVRollResult.Critic);})">
 						<div class="TdContainer">
-							CRÍTICO
-							<span class="DiceHint">Doble seis</span>
+							@if (IsResisting && (GetBackgroundTag(SVPositions.NotSet, SVRollResult.Critic) != "Final"))
+							{
+								<div>2x6</div>
+							}
+							else
+							{
+								<div class="d-flex flex-column">
+									CRÍTICO
+									<span class="DiceHint">Doble seis</span>
+								</div>
+							}
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Controlled, SVRollResult.Critic))">
 						<div class="TdContainer">
-							<strong>Éxito</strong> con efecto mejorado
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Controlled, SVRollResult.Critic) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<div class="d-flex gap-1"><strong>Éxito</strong> con efecto mejorado</div>
+							}
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Risky, SVRollResult.Critic))">
 						<div class="TdContainer">
-							<strong>Éxito</strong> con efecto mejorado
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Risky, SVRollResult.Critic) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<div class="d-flex gap-1"><strong>Éxito</strong> con efecto mejorado</div>
+							}
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Desperate, SVRollResult.Critic))">
 						<div class="TdContainer">
-							<strong>Éxito</strong> con efecto mejorado
-							<div class="XPHint">
-								+ 1 XP!
-							</div>
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Desperate, SVRollResult.Critic) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<div class="d-flex gap-1"><strong>Éxito</strong> con efecto mejorado</div>
+								<div class="XPHint">
+									+ 1 XP!
+								</div>
+							}
 						</div>
 					</td>
 				</tr>
@@ -295,188 +335,272 @@
 					<td class="@(GetBackgroundTag(SVPositions.NotSet, SVRollResult.Success)) Pointer"
 					@onclick="@(()=>{ForceRollResult(SVRollResult.Success);})">
 						<div class="TdContainer">
-							<strong>Éxito</strong>
-							<span class="DiceHint">Seis</span>
+							@if (IsResisting && (GetBackgroundTag(SVPositions.NotSet, SVRollResult.Success) != "Final"))
+							{
+								<div>6</div>
+							}
+							else
+							{
+								<strong>Éxito</strong>
+								<span class="DiceHint">Seis</span>
+							}
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Controlled, SVRollResult.Success))">
 						<div class="TdContainer">
-							<strong>Éxito</strong>
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Controlled, SVRollResult.Success) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<strong>Éxito</strong>
+							}
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Risky, SVRollResult.Success))">
 						<div class="TdContainer">
-							<strong>Éxito</strong>
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Risky, SVRollResult.Success) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<strong>Éxito</strong>
+							}
 						</div>						
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Desperate, SVRollResult.Success))">
-						<div class="TdContainer">
-							<strong>Éxito</strong>
-							<div class="XPHint">
-								+1 XP!
+						@if (IsResisting && (GetBackgroundTag(SVPositions.Desperate, SVRollResult.Success) != "Final"))
+						{
+							<div>-</div>
+						}
+						else
+						{
+							<div class="TdContainer">
+								<strong>Éxito</strong>
+								<div class="XPHint">
+									+1 XP!
+								</div>
 							</div>
-						</div>
+						}						
 					</td>
 				</tr>
 				<tr>
 					<td class="@(GetBackgroundTag(SVPositions.NotSet, SVRollResult.Mild)) Pointer"
 					@onclick="@(()=>{ForceRollResult(SVRollResult.Mild);})">
-						<div class="TdContainer">
-							<strong>Éxito con consequencias</strong>
-							<span class="DiceHint">máx 4 o 5</span>
-						</div>
+						@if (IsResisting && (GetBackgroundTag(SVPositions.NotSet, SVRollResult.Mild) != "Final"))
+						{
+							<div>4-5</div>
+						}
+						else
+						{
+							<div class="TdContainer">
+								<strong>Éxito con consequencias</strong>
+								<span class="DiceHint">máx 4 o 5</span>
+							</div>
+						}						
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Controlled, SVRollResult.Mild))">
 						<div class="TdContainer">
-							<ul>
-								<li>Te retiras y pruebas algo diferente o...</li>
-								<li>
-									Lo consigues pero ...
-									<div class="d-flex flex-column ps-2 mt-2">
-										<div class="d-flex gap-2">
-											Complicacion MENOR <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
-											HelperInvoked="ShowHelp"
-											HelpText="@SVConsequences.Comlpication.GetDescription()" />
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Controlled, SVRollResult.Mild) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<ul>
+									<li>Te retiras y pruebas algo diferente o...</li>
+									<li>
+										Lo consigues pero ...
+										<div class="d-flex flex-column ps-2 mt-2">
+											<div class="d-flex gap-2">
+												Complicacion MENOR <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+															HelperInvoked="ShowHelp"
+															HelpText="@SVConsequences.Comlpication.GetDescription()" />
+											</div>
+											<div class="d-flex gap-2">
+												@SVConsequences.ReducedEffect.ToUI() <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
+																						 HelperInvoked="ShowHelp"
+																						 HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
+											</div>
+											<div class="d-flex gap-2">
+												Daño MENOR <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+													HelperInvoked="ShowHelp"
+													HelpText="@SVConsequences.Harm.GetDescription()" />
+											</div>
+											<div class="d-flex gap-2">
+												Empeora tu posición <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
+												  HelperInvoked="ShowHelp"
+												  HelpText="@SVConsequences.WorsePosition.GetDescription()" />
+											</div>
 										</div>
-										<div class="d-flex gap-2">
-											@SVConsequences.ReducedEffect.ToUI() <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
-											HelperInvoked="ShowHelp"
-											HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
-										</div>
-										<div class="d-flex gap-2">
-											Daño MENOR <HelperStarter Title="@SVConsequences.Harm.ToUI()"
-											HelperInvoked="ShowHelp"
-											HelpText="@SVConsequences.Harm.GetDescription()" />
-										</div>
-										<div class="d-flex gap-2">
-											Empeora tu posición <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
-											HelperInvoked="ShowHelp"
-											HelpText="@SVConsequences.WorsePosition.GetDescription()" />
-										</div>
-									</div>
-								</li>
-							</ul>
+									</li>
+								</ul>
+							}							
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Risky, SVRollResult.Mild))">
 						<div class="TdContainer">
-							<strong class="mb-2">Éxito con consequencias</strong>
-							<div class="d-flex flex-column ps-2 opacity-75">							
-								<div class="d-flex gap-2">
-									Una complicacion <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.Comlpication.GetDescription()" />
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Risky, SVRollResult.Mild) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<strong class="mb-2">Éxito con consequencias</strong>
+								<div class="d-flex flex-column ps-2 opacity-75">
+									<div class="d-flex gap-2">
+										Una complicacion <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+													  HelperInvoked="ShowHelp"
+													  HelpText="@SVConsequences.Comlpication.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Efecto reducido <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
+													 HelperInvoked="ShowHelp"
+													 HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Daño MODERADO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+												   HelperInvoked="ShowHelp"
+												   HelpText="@SVConsequences.Harm.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Empeora tu posición <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
+												HelperInvoked="ShowHelp"
+												HelpText="@SVConsequences.WorsePosition.GetDescription()" />
+									</div>
 								</div>
-								<div class="d-flex gap-2">
-									Efecto reducido <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
-								</div>
-								<div class="d-flex gap-2">
-									Daño MODERADO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.Harm.GetDescription()" />
-								</div>
-								<div class="d-flex gap-2">
-									Empeora tu posición <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.WorsePosition.GetDescription()" />
-								</div>
-							</div>
+							}							
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Desperate, SVRollResult.Mild))">
 						<div class="TdContainer">
-							<strong class="mb-2">Éxito con consequencias MAYORES</strong>
-							<div class="d-flex flex-column ps-2 opacity-75">
-								<div class="d-flex gap-2">
-									Una complicacion SERIA <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.Comlpication.GetDescription()" />
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Desperate, SVRollResult.Mild) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<strong class="mb-2">Éxito con consequencias MAYORES</strong>
+								<div class="d-flex flex-column ps-2 opacity-75">
+									<div class="d-flex gap-2">
+										Una complicacion SERIA <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+												   HelperInvoked="ShowHelp"
+												   HelpText="@SVConsequences.Comlpication.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Efecto reducido <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
+													 HelperInvoked="ShowHelp"
+													 HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Daño SEVERO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+												 HelperInvoked="ShowHelp"
+												 HelpText="@SVConsequences.Harm.GetDescription()" />
+									</div>
+									<div class="XPHint">
+										+1 XP!
+									</div>
 								</div>
-								<div class="d-flex gap-2">
-									Efecto reducido <HelperStarter Title="@SVConsequences.ReducedEffect.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.ReducedEffect.GetDescription()" />
-								</div>
-								<div class="d-flex gap-2">
-									Daño SEVERO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.Harm.GetDescription()" />
-								</div>
-								<div class="XPHint">
-									+1 XP!
-								</div>
-							</div>		
+							}								
 						</div>
 					</td>
 				</tr>
 				<tr>
 					<td class="@(GetBackgroundTag(SVPositions.NotSet, SVRollResult.Fatal)) Pointer"
-					@onclick="@(()=>{ForceRollResult(SVRollResult.Fatal);})">
+						@onclick="@(()=>{ForceRollResult(SVRollResult.Fatal);})">
 						<div class="TdContainer">
-							<strong>Malas noticias</strong>
-							<span class="DiceHint">&lt;3 </span>
+							@if (IsResisting && (GetBackgroundTag(SVPositions.NotSet, SVRollResult.Fatal) != "Final"))
+							{
+								<div>&lt;=3 </div>
+							}
+							else
+							{
+								<strong>Malas noticias</strong>
+								<span class="DiceHint">&lt;=3</span>
+							}							
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Controlled, SVRollResult.Fatal))">
 						<div class="TdContainer">
-							<ul>
-								<li>Avanzas pasando a una oportunidad arriesgada o...</li>
-								<li>Retrocedes y prueba un enfoque diferente.</li>
-							</ul>
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Controlled, SVRollResult.Fatal) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<ul>
+									<li>Avanzas pasando a una oportunidad arriesgada o...</li>
+									<li>Retrocedes y prueba un enfoque diferente.</li>
+								</ul>
+							}							
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Risky, SVRollResult.Fatal))">
 						<div class="TdContainer">
-							<div class="d-flex flex-column ps-2">
-								<div class="d-flex gap-2">
-									Una complicacion <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.Comlpication.GetDescription()" />
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Risky, SVRollResult.Fatal) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<div class="d-flex flex-column ps-2">
+									<div class="d-flex gap-2">
+										Una complicacion <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+													  HelperInvoked="ShowHelp"
+													  HelpText="@SVConsequences.Comlpication.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Daño MODERADO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+												   HelperInvoked="ShowHelp"
+												   HelpText="@SVConsequences.Harm.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Empeora tu posición <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
+												HelperInvoked="ShowHelp"
+												HelpText="@SVConsequences.WorsePosition.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Pierde la oportunida <HelperStarter Title="@SVConsequences.LostOportunity.ToUI()"
+												 HelperInvoked="ShowHelp"
+												 HelpText="@SVConsequences.LostOportunity.GetDescription()" />
+									</div>
 								</div>
-								<div class="d-flex gap-2">
-									Daño MODERADO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.Harm.GetDescription()" />
-								</div>
-								<div class="d-flex gap-2">
-									Empeora tu posición <HelperStarter Title="@SVConsequences.WorsePosition.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.WorsePosition.GetDescription()" />
-								</div>
-								<div class="d-flex gap-2">
-									Pierde la oportunida <HelperStarter Title="@SVConsequences.LostOportunity.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.LostOportunity.GetDescription()" />
-								</div>
-							</div>
+							}							
 						</div>
 					</td>
 					<td class="@(GetBackgroundTag(SVPositions.Desperate, SVRollResult.Fatal))">
 						<div class="TdContainer">
-							<strong class="mb-2 w-100 text-right ps-5">La peor posibilidad</strong>
-							<div class="d-flex flex-column ps-2 opacity-75">
+							@if (IsResisting && (GetBackgroundTag(SVPositions.Desperate, SVRollResult.Fatal) != "Final"))
+							{
+								<div>-</div>
+							}
+							else
+							{
+								<strong class="mb-2 w-100 text-right ps-5">La peor posibilidad</strong>
+								<div class="d-flex flex-column ps-2 opacity-75">
 
-								<div class="d-flex gap-2">
-									Una complicacion SERIA <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.Comlpication.GetDescription()" />
+									<div class="d-flex gap-2">
+										Una complicacion SERIA <HelperStarter Title="@SVConsequences.Comlpication.ToUI()"
+												   HelperInvoked="ShowHelp"
+												   HelpText="@SVConsequences.Comlpication.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Pierde la oportunida <HelperStarter Title="@SVConsequences.LostOportunity.ToUI()"
+												 HelperInvoked="ShowHelp"
+												 HelpText="@SVConsequences.LostOportunity.GetDescription()" />
+									</div>
+									<div class="d-flex gap-2">
+										Daño SEVERO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
+												 HelperInvoked="ShowHelp"
+												 HelpText="@SVConsequences.Harm.GetDescription()" />
+									</div>
+									<div class="XPHint">
+										+1 XP!
+									</div>
 								</div>
-								<div class="d-flex gap-2">
-									Pierde la oportunida <HelperStarter Title="@SVConsequences.LostOportunity.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.LostOportunity.GetDescription()" />
-								</div>
-								<div class="d-flex gap-2">
-									Daño SEVERO <HelperStarter Title="@SVConsequences.Harm.ToUI()"
-									HelperInvoked="ShowHelp"
-									HelpText="@SVConsequences.Harm.GetDescription()" />
-								</div>
-								<div class="XPHint">
-									+1 XP!
-								</div>
-							</div>
+							}
 						</div>
 					</td>
 				</tr>
@@ -519,29 +643,132 @@
 		else
 		{
 			<div class="d-flex gap-1">
-				@for(int i=0;i<Roll.TotalDices;++i)
+				@if(Roll.TotalDices == 0)
 				{
-					@if (i <  Roll.Player.GetBonus(Roll.Stat))
+					<div class="Dice BrokenDice">
+						<div class="DiceNumber">
+							@Roll.Dices[0].Item2
+						</div>
+					</div>
+					<div class="Dice BlueDice">
+						<div class="DiceNumber">
+							@Roll.Dices[1].Item2
+						</div>
+					</div>
+				}
+				else
+				{
+					@for (int i = 0; i < Roll.TotalDices; ++i)
 					{
-						<div class="Dice BlueDice">@i</div>
-					}
-					else
-					{
-						@if(Roll.UsedAGambit && (Roll.UsedPYForDice || Roll.UsedDevilsBargain))
+						@if (DiceColors.Count > 0 && DiceColors.Count >= i)
 						{
-							<div class="Dice GreenDice">@i</div>
-							<div class="Dice RedDice">@i</div>
-						}
-						else if (Roll.UsedAGambit && !Roll.UsedPYForDice && !Roll.UsedDevilsBargain)
-						{
-							<div class="Dice GreenDice">@i</div>
-						}
-						else if (!Roll.UsedAGambit && (Roll.UsedPYForDice || Roll.UsedDevilsBargain))
-						{
-							<div class="Dice RedDice">@i</div>
+							<div class="Dice @DiceColors[i]">
+								<div class="DiceNumber">
+									@Roll.Dices[i].Item2
+								</div>
+							</div>
 						}
 					}
 				}
+
+				<div class="EffectBox" @onclick=@(()=>{IsResisting = !IsResisting;})>
+					Resistir
+				</div>
+				
+			</div>
+		}
+
+		@if(IsResisting)
+		{
+			<div class="d-flex Stats gap-3 justify-content-evenly mt-2">
+				<div class="hoverable ResistanceBox">
+					<div style="pointer-events:none;">
+						<StatBlock Player="Roll.Player"
+								   MainStat="SVStats.Insight"
+								   @bind-RelatedXP="Player.InsightXP"
+								   Sub1Stat="SVStats.Doctor"
+								   Sub2Stat="SVStats.Hack"
+								   Sub3Stat="SVStats.Rig"
+								   Sub4Stat="SVStats.Study"
+								   @bind-Sub1="Player.Doctor"
+								   @bind-Sub2="Player.Hack"
+								   @bind-Sub3="Player.Rig"
+								   @bind-Sub4="Player.Study" />
+					</div>
+					<div class="d-flex gap-1 align-items-center">
+						PERSPICACIA: 
+						@if(@Roll.Player.GetBonus(SVStats.Insight) == 0)
+						{
+							<small>None</small>
+						}
+						else
+						{
+							@for (int i = 0; i < Roll.Player.GetBonus(SVStats.Insight); i++)
+							{
+								<div class="Dice BlueDice" />
+							}
+						}
+						
+					</div>
+				</div>
+				<div class="hoverable ResistanceBox">
+					<div style="pointer-events:none;">
+						<StatBlock Player="Roll.Player"
+								   MainStat="SVStats.Prowess"
+								   @bind-RelatedXP="Player.ProwessXP"
+								   Sub1Stat="SVStats.Helm"
+								   Sub2Stat="SVStats.Scramble"
+								   Sub3Stat="SVStats.Scrap"
+								   Sub4Stat="SVStats.Skulk"
+								   @bind-Sub1="Player.Helm"
+								   @bind-Sub2="Player.Scramble"
+								   @bind-Sub3="Player.Scrap"
+								   @bind-Sub4="Player.Skulk" />
+					</div>
+					<div class="d-flex gap-1 align-items-center">
+						PERSPICACIA:
+						@if (@Roll.Player.GetBonus(SVStats.Prowess) == 0)
+						{
+							<small>None</small>
+						}
+						else
+						{
+							@for (int i = 0; i < Roll.Player.GetBonus(SVStats.Prowess); i++)
+							{
+								<div class="Dice BlueDice" />
+							}
+						}
+					</div>
+				</div>
+				<div class="hoverable ResistanceBox">
+					<div style="pointer-events:none;">
+						<StatBlock Player="Roll.Player"
+								   MainStat="SVStats.Resolve"
+								   @bind-RelatedXP="Player.ResolveXP"
+								   Sub1Stat="SVStats.Attune"
+								   Sub2Stat="SVStats.Command"
+								   Sub3Stat="SVStats.Consort"
+								   Sub4Stat="SVStats.Sway"
+								   @bind-Sub1="Player.Attune"
+								   @bind-Sub2="Player.Command"
+								   @bind-Sub3="Player.Consort"
+								   @bind-Sub4="Player.Sway" />
+					</div>
+					<div class="d-flex gap-1 align-items-center">
+						Resolución:
+						@if (@Roll.Player.GetBonus(SVStats.Resolve) == 0)
+						{
+							<small>None</small>
+						}
+						else
+						{
+							@for (int i = 0; i < Roll.Player.GetBonus(SVStats.Resolve); i++)
+							{
+								<div class="Dice BlueDice" />
+							}
+						}
+					</div>
+				</div>
 			</div>
 		}
 	</div>
@@ -555,6 +782,9 @@
 
 	SVShip Ship => Game?.Ship ?? new SVShip();
 	SVRollReport Roll => Game!.CurrentRoll!;
+	List<string> DiceColors = new();
+
+	bool IsResisting = false;
 
 	private void Help()
 	{
@@ -602,6 +832,14 @@
 	}
 
 	void SendUpdate() => Game?.UpdateSharedRollInAllClients();
+
+	private void UseExtraDice()
+	{
+		if (Roll.HasExtraDice) Roll.HasExtraDice = false;
+		else Roll.HasExtraDice = true;
+
+		SendUpdate();
+	}
 
 	private async Task UsePYEffect()
 	{
@@ -726,7 +964,34 @@
 
 	void RollCurrentRoll()
 	{
-		Game?.RollCurrentRoll();
+		if(Game is not null && Game.CurrentRoll is not null )
+		{
+			Game?.RollCurrentRoll();
+			DiceColors.Clear();
+
+			if(Roll.TotalDices == 0)
+			{
+				DiceColors.Add("BrokenDice");
+				DiceColors.Add("BlueDice");
+			}
+			else
+			{
+				for (int i = 0; i < Roll.Player.GetBonus(Roll.Stat); i++)
+				{
+					DiceColors.Add("BlueDice");
+				}
+				if (Roll.HelperPlayer is not null)
+					DiceColors.Add("HelperDice");
+				if (Roll.HasExtraDice)
+					DiceColors.Add("YellowDice");
+				if (Roll.UsedAGambit)
+					DiceColors.Add("GreenDice");
+				if (Roll.UsedPYForDice)
+					DiceColors.Add("RedDice");
+				if (Roll.UsedDevilsBargain)
+					DiceColors.Add("RedDice");
+			}		
+		}
 		SendUpdate();
 	}
 
