@@ -18,6 +18,10 @@
     cursor:pointer;
 }
 
+.Pointer {
+    cursor: pointer;
+}
+
 .hoverableSelected{
     opacity: 1;
 }

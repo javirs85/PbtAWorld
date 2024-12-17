@@ -161,10 +161,9 @@
 @if(IsShowingCurrentRoll)
 {
 	<!-- Corruption Upgrades Modal -->
-	<div class="FullScreenModal SharedRollContainer"
-		 @onclick=HideSharedRollView>
+	<div class="FullScreenModal SharedRollContainer">
 		<div class="CloseButton"></div>
-		<div class="ModalBody" style="max-height:95%; max-width:95%;min-height:95%; min-width:95%;" @onclick:stopPropagation=true>
+		<div class="ModalBody" style="background: #01050e!important; max-height:100%; max-width:100%;min-height:100%; min-width:100%;" @onclick:stopPropagation=true>
 			
 			@if(Game.CurrentRoll is not null)
 			{
@@ -553,6 +552,7 @@
 		Game.NewInfoToast += ShowInfo;
 
 		(Game as SVGameController).OpenSharedRoll += ShowSharedRollView;
+		(Game as SVGameController).CloseShareRoll += HideSharedRollView;
 
 	}
 
@@ -561,9 +561,10 @@
 		IsShowingCurrentRoll = true;
 		InvokeAsync(StateHasChanged);
 	}
-	void HideSharedRollView()
+	void HideSharedRollView(object? sender, EventArgs e)
 	{
 		IsShowingCurrentRoll = false;
+		InvokeAsync(StateHasChanged);
 	}
 
 	void StartSharedRoll(SVStats stat)

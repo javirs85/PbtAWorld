@@ -16,6 +16,7 @@ namespace ScumAndVillainy;
 public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SVStats>, IGameController
 {
 	public event EventHandler OpenSharedRoll;
+	public event EventHandler CloseShareRoll;
 
 	public SVShip Ship { get; set; } = new SVShip { ShipType = ShipTypes.NotSet};
 	private SVMovesService movesService;
@@ -71,7 +72,9 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 
 	protected override void CreateNewRollReport()
 	{
+		var position = (LastRoll as SVRollReport).Position; 
 		LastRoll = new SVRollReport(movesService);
+		(LastRoll as SVRollReport).Position = position;
 	}
 
 	public async Task StartShip(ShipTypes type)
@@ -89,10 +92,22 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 	public SVRollReport? CurrentRoll;
 	public void StartSharedRoll(SVCharacter player, SVStats stat)
 	{
+		SVPositions position = SVPositions.NotSet;
+		if (CurrentRoll is not null)
+			position = CurrentRoll.Position;
+		else
+			position = SVPositions.Risky;
+
 		CurrentRoll = new SVRollReport(movesService);
+		CurrentRoll.Position = position;
 		CurrentRoll.Player = player;
 		CurrentRoll.Stat = stat;
 		OpenSharedRoll.Invoke(this, EventArgs.Empty);	
+	}
+
+	public void CloseCurrentRollWindowInAllClients()
+	{
+		CloseShareRoll.Invoke(this, EventArgs.Empty);
 	}
 
 	public void UpdateSharedRollInAllClients()

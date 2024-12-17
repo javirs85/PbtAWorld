@@ -20,7 +20,8 @@ public enum SVItemIDs
 	FineBlasterPistolPair,	FineMedkit,	FineBedsideManner,	FineClothing,	RecognizableMedicGarb,	CandiesAndTreats,	SyringesAndApplicators,
 };
 
-public enum SVPositions { Controlled, Risky, Desperate};
+public enum SVPositions { NotSet, Controlled, Risky, Desperate};
+public enum SVRollResult { NotSet, Critic, Success, Mild, Fatal};
 public enum SVEffect { Limited, Standard, Great, Extreme, Zero};
 public enum SVConsequences { ReducedEffect, Comlpication, LostOportunity, WorsePosition, Harm};
 
@@ -107,7 +108,7 @@ public static class Ex
         SVConsequences.ReducedEffect => "Efecto reducido",
         SVConsequences.Comlpication => "Complicación",
         SVConsequences.LostOportunity => "Oportunidad perdida",
-        SVConsequences.WorsePosition => "Peor posición",
+        SVConsequences.WorsePosition => "Empeora tu posición",
         SVConsequences.Harm => "Daño",
         _ => ""
     };

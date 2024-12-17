@@ -26,7 +26,11 @@ public class SVRollReport : RollReport<SVMoves, SVStats>
 			return d;
 		}
 	}
+
+	public bool HasBeenNegotiated { get; set; } = false;
+
 	public SVPositions Position { get; set; } = SVPositions.Risky;
+	public SVRollResult Result { get; set; } = SVRollResult.NotSet;
 	public SVEffect Effect { get; set; } = SVEffect.Standard;
 
 	public SVCharacter Player { get; set; } = new SVCharacter();
