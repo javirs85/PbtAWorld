@@ -21,6 +21,7 @@ public class SVRollReport : RollReport<SVMoves, SVStats>
 			d += Player.GetBonus(Stat);
 			if (HelperPlayer is not null) d++;
 			if (UsedPYForDice) d++;
+			if (HasExtraDice) d++;
 			if (UsedAGambit) d++;
 			if (UsedDevilsBargain) d++;
 			return d;
@@ -36,6 +37,7 @@ public class SVRollReport : RollReport<SVMoves, SVStats>
 	public SVCharacter Player { get; set; } = new SVCharacter();
 	public SVCharacter? HelperPlayer { get; set; }
 	public bool UsedAGambit { get; set; } = false;
+	public bool HasExtraDice { get; set; } = false;
 	public bool UsedPYForLevel { get; set; } = false;
 	public bool UsedPYForDice { get; set; } = false;
 	public bool UsedPYIncapacitate { get; set; } = false;
