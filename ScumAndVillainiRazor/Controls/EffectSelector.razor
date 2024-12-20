@@ -1,0 +1,358 @@
+﻿<div class="d-flex flex-column gap-2">
+	@if(!Roll.EffectSet)
+	{
+		<div class="mt-3">
+			Seleccione el grado de efecto
+		</div>
+	}
+	<div class="d-flex gap-2">
+		@if (!Roll.EffectSet)
+		{
+			<div class="d-flex flex-column align-items-end me-1 pe-2 HINTS">
+				<div class="d-flex gap-2 Potencia">
+					Potencia?
+					<HelperStarter HelperInvoked="ShowHelp"
+					Title="Potencia"
+					HelpText="Este factor tiene en cuenta debilidades particulares, la necesidad de tomarte un tiempo extra o un tomar mayores riesgos, o la influencia de poderes extraños.\n Un dispositivo de alta gama del Gremio puede ser un potente abridor de cajas fuertes. Un artefacto de Ur puede ser potente contra los encantos de un Portavoz de la Noche. Un ladrón será más potente acechando en la oscuridad." />
+				</div>
+				<div class="d-flex gap-2 Calidad">
+					Calidad/Nivel?
+					<HelperStarter HelperInvoked="ShowHelp"
+					Title="Calidad/Nivel"
+					HelpText="La calidad representa la eficacia de las herramientas, armas u otros recursos, generalmente resumida por la calidad de la tripulación o el nivel de facción.\nLos objetos FINOS cuentan como una bonificación de +1 en calidad, que se acumula con el nivel/calidad de la tripulación.\n\n|Hayley está abriendo la cerradura de un almacén de Malklaith.\nLa calidad de su tripulación es I y tiene ganzúas de calidad: está en el nivel II.\nMalklaith es de nivel III. Hayley está superada en calidad, por lo que su efecto en la cerradura será limitado.||" />
+				</div>
+				<div class="d-flex gap-2 Escala">
+					Escala?
+					<HelperStarter HelperInvoked="ShowHelp"
+					Title="Escala"
+					HelpText="La escala representa la cantidad de oponentes, el tamaño de un área cubierta, el alcance de influencia, etc. Una escala mayor puede ser una ventaja o desventaja según la situación. En la batalla, más gente es mejor. Al infiltrarse, más gente es un obstáculo." />
+				</div>
+				<div class="d-flex gap-2 Dominante">
+					Dominante?
+					<HelperStarter HelperInvoked="ShowHelp"
+					Title="Dominante"
+					HelpText="Si un factor de efecto eclipsa a los demás, el bando con esa ventaja domina la situación. No importa si tienes una buena vibroespada y un efecto extra si intentas luchar contra 20 personas a la vez. Su escala domina la batalla y te quedas con un efecto muy limitado, o ninguno en absoluto. El mismo principio se aplica a las acciones 'imposibles'.\n|Aleera quiere derribar una cañonera que los acosa con su excelente pistola bláster, Krieger. Ella dice: 'Tomo a Krieger y lucho con la nave, disparando a los motores. ¡Ja! ¡He sacado un crítico! ¡Gran efecto!'.\nObviamente, esto no es posible. Una persona no puede derribar una cañonera con un bláster. Sabemos que es inherentemente tonto, como saltar sobre la luna. Pero esto también está codificado en los factores de efecto. La nave es dominante en calidad, escala y potencia.A menos que esos factores se contrarresten de alguna manera, el nivel de efecto de Aleera es cero antes de que empiece. No importa lo que tire para su acción, no tendrá ningún efecto. Este concepto es útil para evaluar otras situaciones muy difíciles (pero alcanzables).\nPero esta situación no es completamente desesperada. Aquí es donde los factores de efecto pueden ayudar a darle sentido a la situación. Si la nave es dominante en calidad, escala y potencia, entonces los PJ pueden tratar de comprender los factores y tomar acciones para abordarlos. ¿Hay una debilidad en la armadura de la nave? Pueden usarla para eliminar su potencia (y aprovechar esa ventaja para sí mismos).\n¿De qué escala es? Necesitan un arma más grande. Y así sucesivamente.||" />
+				</div>
+			</div>
+		}
+
+		@if (Roll.Result == SVRollResult.NotSet || (Roll.EffectSet && Roll.Effect == SVEffect.Zero))
+		{
+			<div class="EffectBox opacity-25 @BackgroundClass(SVEffect.Zero)"
+			@onclick="@(()=>{SetEffect(SVEffect.Zero);})">
+				@if (NeedsLeftChevron(SVEffect.Zero))
+				{
+					<i class="bi bi-chevron-double-left"></i>
+				}
+				@if (Roll.Effect == SVEffect.Zero && Roll.HasBeenNegotiated)
+				{
+					<i class="bi bi-chevron-double-up"></i>
+				}
+				Sin efecto<HelperStarter HelperInvoked="ShowHelp" Title="Sin efecto" HelpText="Por muy buena que sea la tirada, no es posible tener ningún efecto, vas a tener que trabjar en aquello que imposibilita tu acción antes de poder siquiera intentarlo." />
+			</div>
+		}
+		@if (Roll.Result == SVRollResult.NotSet || (Roll.EffectSet && Roll.Effect == SVEffect.Limited))
+		{
+			<div class="EffectBox @BackgroundClass(SVEffect.Limited)"
+			@onclick="@(()=>{SetEffect(SVEffect.Limited);})">
+				@if (NeedsLeftChevron(SVEffect.Limited))
+				{
+					<i class="bi bi-chevron-double-left"></i>
+				}
+				@if (Roll.Effect == SVEffect.Limited && Roll.HasBeenNegotiated)
+				{
+					<i class="bi bi-chevron-double-up"></i>
+				}
+				Limitado<HelperStarter HelperInvoked="ShowHelp" Title="Limitado" HelpText="Logras un efecto parcial o débil. ¿Cómo se reduce tu impacto? ¿Qué esfuerzo te queda para lograr tu objetivo? 1 tick del reloj." />
+			</div>
+		}
+		@if (Roll.Result == SVRollResult.NotSet || (Roll.EffectSet && Roll.Effect == SVEffect.Standard))
+		{
+			<div class="EffectBox @BackgroundClass(SVEffect.Standard)"
+			@onclick="@(()=>{SetEffect(SVEffect.Standard);})">
+				@if (NeedsLeftChevron(SVEffect.Standard))
+				{
+					<i class="bi bi-chevron-double-left"></i>
+				}
+				@if (Roll.Effect == SVEffect.Standard && Roll.HasBeenNegotiated)
+				{
+					<i class="bi bi-chevron-double-up"></i>
+				}
+				Estándar <HelperStarter HelperInvoked="ShowHelp" Title="Estándard" HelpText="Logras lo que esperaríamos como normal con esta acción. ¿Es suficiente o queda más por hacer? 2 ticks del reloj." />
+			</div>
+		}
+		@if (Roll.Result == SVRollResult.NotSet || (Roll.EffectSet && Roll.Effect == SVEffect.Great))
+		{
+			<div class="EffectBox @BackgroundClass(SVEffect.Great)"
+			@onclick="@(()=>{SetEffect(SVEffect.Great);})">
+				@if (NeedsLeftChevron(SVEffect.Great))
+				{
+					<i class="bi bi-chevron-double-left"></i>
+				}
+				@if (Roll.Effect == SVEffect.Great && Roll.HasBeenNegotiated)
+				{
+					<i class="bi bi-chevron-double-up"></i>
+				}
+				Excelente <HelperStarter HelperInvoked="ShowHelp" Title="Excelente" HelpText="Lograste más de lo habitual. ¿Cómo se manifiesta el esfuerzo adicional? ¿Qué beneficio adicional disfrutas? 3 ticks del reloj." />
+			</div>
+		}
+		@if (Roll.Result == SVRollResult.NotSet || (Roll.EffectSet && Roll.Effect == SVEffect.Extreme))
+		{
+			<div class="EffectBox opacity-25 @BackgroundClass(SVEffect.Extreme)"
+			@onclick="@(()=>{SetEffect(SVEffect.Extreme);})">
+				<div class="d-flex flex-column align-items-center">
+					<div class="d-flex gap-2">
+						@if (NeedsLeftChevron(SVEffect.Extreme))
+						{
+							<i class="bi bi-chevron-double-left"></i>
+						}
+						@if (Roll.Effect == SVEffect.Extreme && Roll.HasBeenNegotiated)
+						{
+							<i class="bi bi-chevron-double-up"></i>
+						}
+						@SVEffect.Extreme.ToUI()
+						<HelperStarter HelperInvoked="ShowHelp"
+						Title="SVEffect.Extreme.ToUI()"
+						HelpText="SVEffect.Extreme.GetDescription()" />
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+
+	@if(!Roll.EffectSet)
+	{
+		<div class="d-flex gap-4 justify-content-evenly">
+			<div class="d-flex flex-column flex-grow-1">
+				<div class="mt-3">
+					Habilidades
+				</div>
+				<div>
+					<div class="abilitiesContainer" style="margin:0; width:470px;">
+						<div class="d-flex">
+							<div class="flex-fill d-flex align-items-end ps-2">Habilidades especiales</div>
+							<div class="d-flex gap-2 align-items-center pe-2" style="color: #665efb;">
+								<i class="bi bi-arrows-expand fs-5 hoverable d-flex" @onclick=@(()=>{StartAbilitiesMaximized = !StartAbilitiesMaximized;})></i>
+							</div>
+						</div>
+
+						@foreach (var ab in Player.SelectedAbilities)
+						{
+							<AbilityCard MoveID="ab" SmallText="true" Player="Player" ShowHelp="ShowHelp" IsExpanded=StartAbilitiesMaximized />
+						}
+
+					</div>
+					<div class="abilitiesContainer" style="background: #0f5b230f; border: 1px solid #0f5b23a1; width:470px;">
+						<div class="d-flex">
+							<div class="flex-fill d-flex align-items-end ps-2">Habilidades de la nave</div>
+							<div class="d-flex gap-2 align-items-center pe-2" style="color: #299129;">
+								<i class="bi bi-arrows-expand fs-5 hoverable d-flex" @onclick=@(()=>{StartShipAbilitiesMaximized = !StartShipAbilitiesMaximized;})></i>
+							</div>
+						</div>
+
+						@foreach (var ab in Game.Ship.SelectedSpecialAbilities)
+						{
+							<AbilityCard MoveID="ab" SmallText="true" Player="Player" Ship="Game.Ship" IsShipAbility="true" ShowHelp="ShowHelp" IsExpanded=StartShipAbilitiesMaximized />
+						}
+
+					</div>
+				</div>
+			</div>
+			<div class="d-flex flex-column flex-grow-1">
+				<div class="mt-3">
+					Objetos
+				</div>
+				<div>
+					<EquipeBox Game="Game" Player="Player" ShowHelp="ShowHelp" Book=(SVTextBook)Game!.TextBook />
+				</div>
+			</div>
+			<div class="d-flex flex-column flex-grow-1">
+				<div class="mt-3">
+					Problemas de salud
+				</div>
+
+				<div class="d-flex gap-2 p-3">
+					<div class="d-flex flex-column flex-grow-1 gap-2">
+						@if (!string.IsNullOrEmpty(Roll.Player.Harm1A))
+						{
+							<div class="EffectBox justify-content-center @(Roll.AffectedPerHealth1A?"Selected":"")"
+							@onclick="ApplyHarm1A">
+								@if (Roll.AffectedPerHealth1A)
+								{
+									<i class="bi bi-chevron-double-left me-3" style="color:red;"></i>
+								}
+
+								<div class="d-flex flex-column d-flex">
+									<div>@Roll.Player.Harm1A</div>
+									<div>Aplica?</div>
+								</div>
+
+							</div>
+						}
+						@if (!string.IsNullOrEmpty(Roll.Player.Harm1B))
+						{
+							<div class="EffectBox justify-content-center @(Roll.AffectedPerHealth1B?"Selected":"")"
+							@onclick="ApplyHarm1B">
+								@if (Roll.AffectedPerHealth1B)
+								{
+									<i class="bi bi-chevron-double-left me-3" style="color:red;"></i>
+								}
+
+								<div class="d-flex flex-column d-flex">
+									<div>@Roll.Player.Harm1B</div>
+									<div>Aplica?</div>
+								</div>
+
+							</div>
+						}
+					</div>
+				</div>
+				<div class="d-flex gap-2">
+					<div class="GreenButton" @onclick=Validate>
+						VALIDAR
+					</div>
+					<div class="RedButton" @onclick=CancelEverything>
+						CANCELAR
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+	}
+
+</div>
+
+@code {
+	[Parameter] public SVCharacter Player { get; set; } = new();
+	[Parameter] public SVGameController? Game { get; set; }
+	[Parameter] public EventCallback<Tuple<string, string>> ShowHelp { get; set; }
+	[Parameter] public EventCallback CancelEverything { get; set; }
+
+	SVShip Ship => Game?.Ship ?? new SVShip();
+	SVRollReport Roll => Game!.CurrentRoll!;
+
+	bool StartAbilitiesMaximized = false;
+	bool StartShipAbilitiesMaximized = false;
+
+
+	void SendUpdate() => Game?.UpdateSharedRollInAllClients();
+
+	private void ApplyHarm1A()
+	{
+		if (Roll.AffectedPerHealth1A)
+			Roll.AffectedPerHealth1A = false;
+		else
+			Roll.AffectedPerHealth1A = true;
+
+		SetEffect(Roll.BaseEffect);
+
+		SendUpdate();
+	}
+
+	private void ApplyHarm1B()
+	{
+		if (Roll.AffectedPerHealth1B)
+			Roll.AffectedPerHealth1B = false;
+		else
+			Roll.AffectedPerHealth1B = true;
+
+		SetEffect(Roll.BaseEffect);
+
+		SendUpdate();
+	}
+
+	private string BackgroundClass(SVEffect ef){
+		string str = "";
+
+		if (Roll.BaseEffect == ef)
+		{
+			if (Roll.AffectedPerHealth1A || Roll.AffectedPerHealth1B)
+				str = "AffectedByHealth";
+			else
+				str = "Selected";
+		}
+		else if (Roll.Effect == ef)
+			str = "Selected";
+		else if (AffectedBy1 == ef || AffectedBy2 == ef)
+			str = "AffectedByHealth";
+		return str;
+	}
+
+	private SVEffect _affectedBy1 = SVEffect.NotSet;
+
+	public SVEffect AffectedBy1
+	{
+		get 
+		{
+			UpdateAffectedBy();
+			return _affectedBy1; 
+		}
+		set { _affectedBy1 = value; }
+	}
+	private SVEffect _affectedBy2 = SVEffect.NotSet;
+
+	public SVEffect AffectedBy2
+	{
+		get
+		{
+			UpdateAffectedBy(); 
+			return _affectedBy2;
+		}
+		set { _affectedBy2 = value; }
+	}
+
+	void UpdateAffectedBy()
+	{
+		_affectedBy1 = SVEffect.NotSet;
+		_affectedBy2 = SVEffect.NotSet;
+		if (Roll.AffectedPerHealth1A && Roll.AffectedPerHealth1B)
+		{
+			_affectedBy1 = Roll.BaseEffect.MinusOne();
+			_affectedBy2 = _affectedBy1.MinusOne();
+		}
+		else
+		{
+			if (Roll.AffectedPerHealth1A)
+			{
+				_affectedBy1 = Roll.BaseEffect.MinusOne();
+			}
+			else if (Roll.AffectedPerHealth1B)
+			{
+				_affectedBy1 = Roll.BaseEffect.MinusOne();
+			}
+		}
+	}
+
+
+	void SetEffect(SVEffect ef)
+	{
+		Roll.BaseEffect = ef;
+		UpdateAffectedBy();
+		SendUpdate();
+	}
+
+	bool NeedsLeftChevron(SVEffect ef)
+	{
+		bool result = false;
+		if(Roll.AffectedPerHealth1A || Roll.AffectedPerHealth1B)
+		{
+			if (Roll.BaseEffect == ef) result= true;
+		}
+
+		if(Roll.AffectedPerHealth1A && Roll.AffectedPerHealth1A)
+		{
+			if (ef == Roll.BaseEffect.MinusOne()) result=  true;
+		}
+
+		if (Roll.Effect == ef) result = false;
+
+		return result;
+	}
+
+	void Validate(){
+		Roll.EffectSet = true;
+		SendUpdate();
+	}
+}

@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Diagnostics.Metrics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 
 namespace ScumAndVillainy;
@@ -22,7 +23,7 @@ public enum SVItemIDs
 
 public enum SVPositions { NotSet, Controlled, Risky, Desperate};
 public enum SVRollResult { NotSet, Critic, Success, Mild, Fatal};
-public enum SVEffect { Limited, Standard, Great, Extreme, Zero};
+public enum SVEffect {NotSet, Limited, Standard, Great, Extreme, Zero};
 public enum SVConsequences { ReducedEffect, Comlpication, LostOportunity, WorsePosition, Harm};
 
 public enum SVMoveIDs {
@@ -71,6 +72,22 @@ public enum ActionRollEffects { Limited, Standard, Great};
 
 public static class Ex
 {
+	public static SVEffect PlusOne(this SVEffect ef)
+	{
+		if (ef == SVEffect.Zero) return SVEffect.Limited;
+		if (ef == SVEffect.Limited) return SVEffect.Standard;
+		if (ef == SVEffect.Standard) return SVEffect.Great;
+		if (ef == SVEffect.Great) return SVEffect.Extreme;
+		return SVEffect.Extreme;
+	}
+	public static SVEffect MinusOne(this SVEffect ef)
+	{
+		if (ef == SVEffect.Extreme) return SVEffect.Great;
+		if (ef == SVEffect.Great) return SVEffect.Standard;
+		if (ef == SVEffect.Standard) return SVEffect.Limited;
+		if (ef == SVEffect.Limited) return SVEffect.Zero;
+		return SVEffect.Zero;
+	}
 	public static string ToUI(this ShipSystems system) => system switch
 	{
 		ShipSystems.Hull => "Casco",
@@ -83,9 +100,20 @@ public static class Ex
 
 	public static string ToUI(this SVEffect system) => system switch
 	{
-		SVEffect.Great => "Enorme",
+		SVEffect.Zero => "Sin efecto",
+		SVEffect.Great => "Excelente",
 		SVEffect.Limited => "Limitada",
 		SVEffect.Standard => "Estandard",
+		SVEffect.Extreme => "Extremo",
+		_ => ""
+	};
+	public static string GetDescription(this SVEffect system) => system switch
+	{
+		SVEffect.Zero => "Por muy buena que sea la tirada, no es posible tener ningún efecto, vas a tener que trabjar en aquello que imposibilita tu acción antes de poder siquiera intentarlo.",
+		SVEffect.Great => "Lograste más de lo habitual. ¿Cómo se manifiesta el esfuerzo adicional? ¿Qué beneficio adicional disfrutas? 3 ticks del reloj.",
+		SVEffect.Limited => "Logras un efecto parcial o débil. ¿Cómo se reduce tu impacto? ¿Qué esfuerzo te queda para lograr tu objetivo? 1 tick del reloj.",
+		SVEffect.Standard => "Logras lo que esperaríamos como normal con esta acción. ¿Es suficiente o queda más por hacer? 2 ticks del reloj.",
+		SVEffect.Extreme => "Un efecto superior a todo lo normal.",
 		_ => ""
 	};
 	public static string ToUI(this SVPositions system) => system switch

@@ -8,30 +8,37 @@
     cursor: pointer;
     font-family: Consolas;
 }
+
     .HelpButton:hover {
         background: #ffffff55;
     }
+
     .HelpButton.Pressed {
         background: #930000 !important;
         color: white;
         box-shadow: inset black 1px 1px 6px;
     }
-    .HelpButton.Pressed.Green {
-        background: green !important;
-    }
-    .HelpButton.Pressed.Blue {
-        background: blue !important;
+
+        .HelpButton.Pressed.Green {
+            background: green !important;
         }
-    .HelpButton.Pressed.Turquoise {
-        background: #0e7168 !important;
-    }
+
+        .HelpButton.Pressed.Blue {
+            background: blue !important;
+        }
+
+        .HelpButton.Pressed.Turquoise {
+            background: #0e7168 !important;
+        }
+
 .Cancelled {
     pointer-events: none;
     opacity: 0.3;
 }
-.Cancelled:hover{
-    background: #932c2c13;
-}
+
+    .Cancelled:hover {
+        background: #932c2c13;
+    }
 
 
 .HelpBox {
@@ -43,10 +50,12 @@
     justify-content: center;
     align-items: center;
 }
+
 .Ship {
     background: #74cb7f;
     color: black;
 }
+
 .Player {
     background: #81bfff;
     color: black;
@@ -54,7 +63,7 @@
 
 .HelperColor {
     background: #81ffdc;
-    color:black;
+    color: black;
 }
 
 .Stress {
@@ -67,37 +76,44 @@
     width: 50px;
     background-size: cover;
     background-repeat: no-repeat;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .BlueDice {
     background-image: url(./DiceBlue.png);
 }
+
 .BrokenDice {
     background-image: url(./DiceBlue.png);
     opacity: 0.5;
     filter: blur(2px);
 }
+
 .GreenDice {
     background-image: url(./DiceGreen.png);
 }
+
 .YellowDice {
     background-image: url(./YellowDice.png);
 }
+
 .ExtraDiceQuestionPanel {
     cursor: pointer;
     background: #ffffff1a;
     border-radius: 5px;
-    opacity:0.5;
+    opacity: 0.5;
 }
-.ExtraDiceQuestionPanel:hover{
-    opacity:1;
-}
+
+    .ExtraDiceQuestionPanel:hover {
+        opacity: 1;
+    }
+
 .RedDice {
     background-image: url(./DiceRed.png);
 }
+
 .DiceNumber {
     font-weight: bold;
     font-size: 30px;
@@ -122,38 +138,47 @@
     gap: 5px;
     opacity: 0.75;
 }
+
     .EffectBox:hover {
         background: #020b14;
     }
+
     .EffectBox.Ticked {
         background: #020b14;
     }
+
     .EffectBox.Selected {
         opacity: 1 !important;
         background: #021a23 !important;
         filter: drop-shadow(0px 0px 6px rgb(7 213 251 / 50%));
     }
+    .EffectBox.AffectedByHealth{
+        border:1px solid red !important;
+        color:red;
+    }
 
-.Consolas{
-    font-family:Consolas;
+.Consolas {
+    font-family: Consolas;
 }
 
-td{
-    width:29%; 
+td {
+    width: 29%;
 }
 
-td:first-child{
-    width:13%;
-    text-align:center;
+    td:first-child {
+        width: 13%;
+        text-align: center;
+    }
+
+.DiceHint {
+    margin-top: 3px;
+    display: block;
 }
-.DiceHint{
-    margin-top:3px;
-    display:block;
-}
+
 .XPHint {
     color: #00ff2d;
-    font-weight:bold;
-    padding-left:10px;
+    font-weight: bold;
+    padding-left: 10px;
 }
 
 td.Selected {
@@ -162,18 +187,21 @@ td.Selected {
     background: #021a23 !important;
     height: 1px;
 }
+
 td.NotSelected {
     opacity: 0.5;
     border: 1px solid rgb(7 213 251 / 2%) !important;
     height: 1px;
     background: black !important;
 }
+
 td.Final {
     opacity: 1;
     background: #021a23 !important;
     height: 1px;
     filter: drop-shadow(0px 0px 6px rgb(7 213 251 / 50%));
 }
+
 .TdContainer {
     display: flex;
     height: 100%;
@@ -193,9 +221,10 @@ td.Final {
     filter: drop-shadow(0px 0px 1px #db2727);
     cursor: pointer;
 }
+
     .RedButton:hover {
         background: #4d050d;
-        filter: drop-shadow(0px 0px 7px #db2727)!important;
+        filter: drop-shadow(0px 0px 7px #db2727) !important;
     }
 
 .GreenButton {
@@ -215,12 +244,12 @@ td.Final {
         filter: drop-shadow(0px 0px 7px #27db5e88) !important;
     }
 
-.BigButtonsbox{
+.BigButtonsbox {
+}
 
-}
-.BigButtonsbox:hover div{
-    filter:none;
-}
+    .BigButtonsbox:hover div {
+        filter: none;
+    }
 
 .ResistanceBox {
     background: #021a23 !important;
@@ -230,14 +259,25 @@ td.Final {
     opacity: 0.5;
     border: 1px solid rgb(7 213 251 / 17%) !important;
 }
+
     .ResistanceBox:hover {
         opacity: 1;
         border: 1px solid green;
     }
+
 .TooMuchStressBox {
-    margin: 15px;
-    padding: 15px;
-    border: 1px solid #5d1717;
-    background: #0e0307;
-    filter: drop-shadow(0px 0px 6px #5d1717);
+}
+
+.abilitiesContainer {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    overflow-y: auto;
+    background: #01131f45;
+    /*flex: 1 1;*/
+    border: 1px solid #15374e;
+    overflow: auto;
+    padding-bottom: 4px
 }

@@ -1,0 +1,54 @@
+﻿@using static ScumAndVillainy.SVTextBook
+<div class="EquipeBox">
+	<div class="d-flex flex-fill">
+		<div class="d-flex flex-fill align-items-center gap-2 hoverable LoadItem" style="@(Player.SelectedMaxLoad == MaxLoads.Light?"opacity:100%!important; background:#2F2F2F;":"")" @onclick="@(()=>{Player.SelectedMaxLoad = MaxLoads.Light;})">
+			<i class="bi bi@(Player.SelectedMaxLoad == MaxLoads.Light?"-x":"")-square"></i>
+			<span>Ligero (3)</span>
+		</div>
+		<div class="d-flex flex-fill align-items-center gap-2 hoverable LoadItem" style="@(Player.SelectedMaxLoad == MaxLoads.Normal?"opacity:100%!important; background:#2F2F2F;":"")" @onclick="@(()=>{Player.SelectedMaxLoad = MaxLoads.Normal;})">
+			<i class="bi bi@((Player.SelectedMaxLoad == MaxLoads.Normal)?"-x":"")-square"></i>
+			<span>Normal (5)</span>
+		</div>
+		<div class="d-flex flex-fill align-items-center gap-2 hoverable LoadItem" style="@(Player.SelectedMaxLoad == MaxLoads.Heavy?"opacity:100%!important; background:#2F2F2F;":"")" @onclick="@(()=>{Player.SelectedMaxLoad = MaxLoads.Heavy;})">
+			<i class="bi bi@((Player.SelectedMaxLoad == MaxLoads.Heavy)?"-x":"")-square"></i>
+			<span>Pesado (6)</span>
+		</div>
+	</div>
+	<div class="d-flex align-items-center EquipeHeader">
+		Equipo
+	</div>
+	<div class="d-flex flex-column gap-1 pb-3" style="border-left:2px solid #2F2F2F;  padding-left:5px;">
+		@foreach (var e in Player.Profession.AvailableItems()
+				.OrderByDescending(x => FromIDtoItem(x).IsFine)
+				.OrderByDescending(x => FromIDtoItem(x).Load))
+		{
+			<SVItemViewer Item="@FromIDtoItem(e)" ShowHelp="ShowHelp" Player="Player" Book="Book" />
+		}
+	</div>
+	<div class="d-flex align-items-center EquipeHeader">
+		Equipo común
+	</div>
+	<div class="d-flex flex-column gap-1" style="border-left:2px solid #2F2F2F;  padding-left:5px;">
+		@foreach (var e in Book.StandardItems
+				.OrderByDescending(x => FromIDtoItem(x).IsFine)
+				.OrderByDescending(x => FromIDtoItem(x).Load))
+		{
+			<SVItemViewer Item="@FromIDtoItem(e)" ShowHelp="ShowHelp" Player="Player" Book="Book" />
+		}
+	</div>
+</div>
+@code {
+	[Parameter] public SVCharacter Player { get; set; } = new();
+	[Parameter] public SVGameController? Game { get; set; }
+	[Parameter] public SVTextBook Book { get; set; }
+	[Parameter] public EventCallback<Tuple<string, string>> ShowHelp { get; set; }
+
+	private SVItem FromIDtoItem(SVItemIDs ID)
+	{
+		if (Book is not null)
+		{
+			return Book.Items.Find(x => x.ID == ID) ?? new SVItem { Name = "Error" };
+		}
+		return new SVItem { Name = "No book" };
+	}
+}

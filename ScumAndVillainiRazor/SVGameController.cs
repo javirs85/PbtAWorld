@@ -93,8 +93,8 @@ public class SVGameController : GameControllerBase<ScumAndVillainy.SVClasses, SV
 
 				int useme = CurrentRoll.Dices[1].Item2;
 
-				if (useme >= 6) CurrentRoll.Result = SVRollResult.Critic;
-				else if (useme >= 4) CurrentRoll.Result = SVRollResult.Success;
+				if (useme >= 6) CurrentRoll.Result = SVRollResult.Success;
+				else if (useme >= 4) CurrentRoll.Result = SVRollResult.Mild;
 				else CurrentRoll.Result = SVRollResult.Fatal;
 
 				return;

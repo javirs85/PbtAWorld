@@ -37,7 +37,6 @@
 		</div>
 	</div>
 }
-
 @if(_isShowingAbilitySelector)
 {
 	<div class="FullScreenModal" @onclick=CloseAbilitySelector>
@@ -162,7 +161,6 @@
 {
 	<!-- Corruption Upgrades Modal -->
 	<div class="FullScreenModal SharedRollContainer">
-		<div class="CloseButton"></div>
 		<div class="ModalBody" style="background: #01050e!important; max-height:100%; max-width:100%;min-height:100%; min-width:100%;" @onclick:stopPropagation=true>
 			
 			@if(Game.CurrentRoll is not null)
@@ -331,7 +329,7 @@
 
 				@foreach (var ab in Game.Ship.SelectedSpecialAbilities)
 				{
-					<AbilityCard MoveID="ab" Player="Player" Ship="Game.Ship" IsShipAbility="true" ShowHelp="ShowHelp" IsExpanded=StartShipAbilitiesMaximized />
+					<AbilityCard MoveID="ab"  Player="Player" Ship="Game.Ship" IsShipAbility="true" ShowHelp="ShowHelp" IsExpanded=StartShipAbilitiesMaximized />
 				}
 
 			</div>

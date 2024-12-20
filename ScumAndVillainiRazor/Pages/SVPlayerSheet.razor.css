@@ -56,7 +56,8 @@
     background: #01131f45;
     /*flex: 1 1;*/
     border: 1px solid #15374e;
-    overflow:auto;
+    overflow: auto;
+    padding-bottom: 4px
 }
 
 .AddButton {
