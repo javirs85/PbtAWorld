@@ -60,6 +60,8 @@ public class SVRollReport : RollReport<SVMoves, SVStats>
 	public bool UsedPYIncapacitate { get; set; } = false;
 	public bool AffectedPerHealth1A { get; set; } = false;
 	public bool AffectedPerHealth1B { get; set; } = false;
+	public bool AffectedPerHealth2A { get; set; } = false;
+	public bool AffectedPerHealth2B { get; set; } = false;
 	public bool UsedPushYourself
 	{
 		get

@@ -1,157 +1,161 @@
 ﻿<div class="d-flex gap-3 w-100 flex-grow-1">	
-	<div class="d-flex flex-column gap-2">
-		<h2>
-			@Roll.Player.Name tira por @Roll.Stat.ToUI()
-		</h2>
-		<div class="d-flex gap-1 DicesTry">
-			@if (Roll.TotalDices == 0)
-			{
-				<div class="Dice BlueDice" style="opacity:0.2;"/>
-				<div class="Dice BlueDice" style="opacity:0.2;" />
-				<HelperStarter Title="Tirar sin dados" HelperInvoked="ShowHelp" HelpText="Cuando tiras con zero dados, tiras dos dados y te quedas el peor"/>
-			}
-			@for (int i = 0; i < Roll.Player.GetBonus(Roll.Stat); ++i)
-			{
-				<div class="Dice BlueDice" />
-			}
-			@if (Roll.HelperPlayer is not null)
-			{
-				<div class="Dice HelperDice" />
-			}
-			@for (int i = 0; i < Roll.ExtraDices; ++i)
-			{
-				<div class="Dice YellowDice" />
-			}
-			@if (Roll.UsedAGambit)
-			{
-				<div class="Dice GreenDice" />
-			}
-			@if (Roll.UsedDevilsBargain || Roll.UsedPYForDice)
-			{
-				<div class="Dice RedDice" />
-			}
-		</div>
-		<div class="d-flex w-100 gap-2">
-			<SVPanel IsMini="true" Title="@Roll.Stat.ToUI()" Style="flex:1;">
-				<div class="flex-grow-1 d-flex justify-content-center align-items-center fs-1 gap-4">
-					@Roll.Player.GetBonus(Roll.Stat)
-					<div class="d-flex gap-1 justify-content-center align-items-center p-2 ExtraDiceQuestionPanel">
-						<div class="Dice YellowDice"></div>
-						<div class="d-flex fs-3 flex-column">
-							<i class="bi bi-chevron-double-up hoverable" @onclick="AddExtraDie"></i>
-							<i class="bi bi-chevron-double-down hoverable" @onclick="RemoveExtraDie"></i>
+	@if(Roll.Result == SVRollResult.NotSet)
+	{
+		<div class="d-flex flex-column gap-2">
+			<h2>
+				@Roll.Player.Name tira por @Roll.Stat.ToUI()
+			</h2>
+			<div class="d-flex gap-1 DicesTry">
+				@if (Roll.TotalDices == 0)
+				{
+					<div class="Dice BlueDice" style="opacity:0.2;" />
+					<div class="Dice BlueDice" style="opacity:0.2;" />
+					<HelperStarter Title="Tirar sin dados" HelperInvoked="ShowHelp" HelpText="Cuando tiras con zero dados, tiras dos dados y te quedas el peor" />
+				}
+				@for (int i = 0; i < Roll.Player.GetBonus(Roll.Stat); ++i)
+				{
+					<div class="Dice BlueDice" />
+				}
+				@if (Roll.HelperPlayer is not null)
+				{
+					<div class="Dice HelperDice" />
+				}
+				@for (int i = 0; i < Roll.ExtraDices; ++i)
+				{
+					<div class="Dice YellowDice" />
+				}
+				@if (Roll.UsedAGambit)
+				{
+					<div class="Dice GreenDice" />
+				}
+				@if (Roll.UsedDevilsBargain || Roll.UsedPYForDice)
+				{
+					<div class="Dice RedDice" />
+				}
+			</div>
+			<div class="d-flex w-100 gap-2">
+				<SVPanel IsMini="true" Title="@Roll.Stat.ToUI()" Style="flex:1;">
+					<div class="flex-grow-1 d-flex justify-content-center align-items-center fs-1 gap-4">
+						@Roll.Player.GetBonus(Roll.Stat)
+						<div class="d-flex gap-1 justify-content-center align-items-center p-2 ExtraDiceQuestionPanel">
+							<div class="Dice YellowDice"></div>
+							<div class="d-flex fs-3 flex-column">
+								<i class="bi bi-chevron-double-up hoverable" @onclick="AddExtraDie"></i>
+								<i class="bi bi-chevron-double-down hoverable" @onclick="RemoveExtraDie"></i>
+							</div>
 						</div>
 					</div>
-				</div>
-			</SVPanel>
-			<SVPanel Title="Ayudas" IsMini="true"  Style="flex:1;" Color="SVPanel.SVPanelColors.Turquoise">
-				<div class="flex-grow-1 d-flex flex-column justify-content-center">
-					@if (Roll.Player == Player)
-					{
-						@if (Roll.HelperPlayer is null)
+				</SVPanel>
+				<SVPanel Title="Ayudas" IsMini="true" Style="flex:1;" Color="SVPanel.SVPanelColors.Turquoise">
+					<div class="flex-grow-1 d-flex flex-column justify-content-center">
+						@if (Roll.Player == Player)
 						{
-							<span>Nadie te ayuda</span>
+							@if (Roll.HelperPlayer is null)
+							{
+								<span>Nadie te ayuda</span>
+							}
+							else
+							{
+								<div class="d-flex flex-column">
+									<span>@Roll.HelperPlayer.Name te ayuda!</span>
+									<span>+1 dado</span>
+								</div>
+							}
 						}
-						else
+						else if (Roll.Player != Player)
 						{
-							<div class="d-flex flex-column">
-								<span>@Roll.HelperPlayer.Name te ayuda!</span>
-								<span>+1 dado</span>
-							</div>
-						}
-					}
-					else if (Roll.Player != Player)
-					{
-						if (Roll.HelperPlayer is null)
-						{
-							<div class="HelpButton hoverable" @onclick=Help>
-								<span>AYUDAR</span>
-								<span>+1 dado</span>
-								<span>+2 estrés</span>
-								<span>(@Player.Stress/9)</span>
-							</div>
-						}
-						else if (Roll.HelperPlayer != Player)
-						{
-							<div class="d-flex flex-column">
-								<span>@Roll.HelperPlayer.Name le ayuda!</span>
-								<span>+1 dado</span>
-							</div>
-						}
-						else
-						{
-							<div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center">
-								<div class="HelpButton Pressed Turquoise"
-								style="height:55px;"
-								@onclick=RemoveHelp>
-									<div class="d-flex gap-1 justify-content-center align-items-center text-center">
-										+2 estrés (@Player.Stress/@Player.MaxStress) 
-										<i class="bi bi-caret-right-fill"></i> 
-										+1 dado
+							if (Roll.HelperPlayer is null)
+							{
+								<div class="HelpButton hoverable" @onclick=Help>
+									<span>AYUDAR</span>
+									<span>+1 dado</span>
+									<span>+2 estrés</span>
+									<span>(@Player.Stress/9)</span>
+								</div>
+							}
+							else if (Roll.HelperPlayer != Player)
+							{
+								<div class="d-flex flex-column">
+									<span>@Roll.HelperPlayer.Name le ayuda!</span>
+									<span>+1 dado</span>
+								</div>
+							}
+							else
+							{
+								<div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+									<div class="HelpButton Pressed Turquoise"
+										 style="height:55px;"
+										 @onclick=RemoveHelp>
+										<div class="d-flex gap-1 justify-content-center align-items-center text-center">
+											+2 estrés (@Player.Stress/@Player.MaxStress)
+											<i class="bi bi-caret-right-fill"></i>
+											+1 dado
+										</div>
 									</div>
 								</div>
-							</div>
+							}
 						}
-					}
+					</div>
+				</SVPanel>
+			</div>
+			<SVPanel Title="Gámbitos" Color="SVPanel.SVPanelColors.Green">
+				<div class="flex-grow-1 d-flex flex-column justify-content-center">
+					<div class="HelpButton
+								@(Roll.UsedAGambit?"Pressed Green":"")
+								@(!Roll.UsedAGambit && Ship.Gambits < 1?"Cancelled":"")"
+						 style="height:55px;"
+						 @onclick=UseGambit>
+						<div class="d-flex gap-1 justify-content-center">
+							-1 Gámbito (@Ship.Gambits) <i class="bi @(Ship.Gambits < 1?"bi-ban":"bi-caret-right-fill")"></i> +1 dado
+						</div>
+					</div>
+				</div>
+			</SVPanel>
+			<SVPanel Title="Llevarte al límite" Color="SVPanel.SVPanelColors.Red">
+				<div class="d-flex gap-4 flex-grow-1">
+					<div class="d-flex flex-column gap-2 py-2" style="flex:1;">
+						<div class="HelpButton
+								@(Roll.UsedPYForDice?"Pressed":"")
+								@(!Roll.UsedPYForDice && Player.StresLeft < 2 || Roll.Player != Player || Roll.UsedDevilsBargain?"Cancelled":"")"
+							 style="height:55px;"
+							 @onclick=UsePYDice>
+							<div class="d-flex gap-1 justify-content-center">
+								+2 estrés (@Player.Stress/@Player.MaxStress) <i class="bi bi-caret-right-fill"></i> +1 dado
+							</div>
+						</div>
+						<div class="HelpButton
+								@(Roll.UsedPYForLevel?"Pressed":"")
+								@(!Roll.UsedPYForLevel && Player.StresLeft < 2 || Roll.Player != Player?"Cancelled":"")"
+							 style="height:55px;"
+							 @onclick=UsePYEffect>
+							<div class="d-flex gap-1 justify-content-center">
+								+2 estrés (@Player.Stress/@Player.MaxStress) <i class="bi bi-caret-right-fill"></i> Efecto +1
+							</div>
+						</div>
+						<div class="HelpButton
+								@(Roll.UsedPYIncapacitate?"Pressed":"")
+								@(!Roll.UsedPYIncapacitate && Player.StresLeft < 2 || Roll.Player != Player?"Cancelled":"")"
+							 style="height:55px;"
+							 @onclick=UsePYIncapacitate>
+							<div class="d-flex gap-1 justify-content-center">
+								+2 estrés (@Player.Stress/@Player.MaxStress) <i class="bi bi-caret-right-fill"></i> Actuar estando incapacitado
+							</div>
+						</div>
+						<div class="HelpButton
+								@(Roll.UsedDevilsBargain?"Pressed":"")
+								@(Roll.Player != Player || Roll.UsedPYForDice?"Cancelled":"")"
+							 style="height:55px;"
+							 @onclick=UseDevilsBargain>
+							<div class="d-flex gap-3 justify-content-center">
+								Pactar con el diablo <i class="bi bi-info-circle" @onclick=ShowDevilsHelp @onclick:stopPropagation></i>
+							</div>
+						</div>
+					</div>
 				</div>
 			</SVPanel>
 		</div>
-		<SVPanel Title="Gámbitos" Color="SVPanel.SVPanelColors.Green">
-			<div class="flex-grow-1 d-flex flex-column justify-content-center">
-				<div class="HelpButton
-								@(Roll.UsedAGambit?"Pressed Green":"")
-								@(!Roll.UsedAGambit && Ship.Gambits < 1?"Cancelled":"")"
-				style="height:55px;"
-				@onclick=UseGambit>
-					<div class="d-flex gap-1 justify-content-center">
-						-1 Gámbito (@Ship.Gambits) <i class="bi @(Ship.Gambits < 1?"bi-ban":"bi-caret-right-fill")"></i> +1 dado
-					</div>
-				</div>
-			</div>
-		</SVPanel>
-		<SVPanel Title="Llevarte al límite" Color="SVPanel.SVPanelColors.Red">
-			<div class="d-flex gap-4 flex-grow-1">
-				<div class="d-flex flex-column gap-2 py-2" style="flex:1;">
-					<div class="HelpButton
-								@(Roll.UsedPYForDice?"Pressed":"")
-								@(!Roll.UsedPYForDice && Player.StresLeft < 2 || Roll.Player != Player || Roll.UsedDevilsBargain?"Cancelled":"")"
-					style="height:55px;"
-					@onclick=UsePYDice>
-						<div class="d-flex gap-1 justify-content-center">
-							+2 estrés (@Player.Stress/@Player.MaxStress) <i class="bi bi-caret-right-fill"></i> +1 dado
-						</div>
-					</div>
-					<div class="HelpButton
-								@(Roll.UsedPYForLevel?"Pressed":"")
-								@(!Roll.UsedPYForLevel && Player.StresLeft < 2 || Roll.Player != Player?"Cancelled":"")"
-					style="height:55px;"
-					@onclick=UsePYEffect>
-						<div class="d-flex gap-1 justify-content-center">
-							+2 estrés (@Player.Stress/@Player.MaxStress) <i class="bi bi-caret-right-fill"></i> Efecto +1
-						</div>
-					</div>
-					<div class="HelpButton
-								@(Roll.UsedPYIncapacitate?"Pressed":"")
-								@(!Roll.UsedPYIncapacitate && Player.StresLeft < 2 || Roll.Player != Player?"Cancelled":"")"
-					style="height:55px;"
-					@onclick=UsePYIncapacitate>
-						<div class="d-flex gap-1 justify-content-center">
-							+2 estrés (@Player.Stress/@Player.MaxStress) <i class="bi bi-caret-right-fill"></i> Actuar estando incapacitado
-						</div>
-					</div>
-					<div class="HelpButton
-								@(Roll.UsedDevilsBargain?"Pressed":"")
-								@(Roll.Player != Player || Roll.UsedPYForDice?"Cancelled":"")"
-					style="height:55px;"
-					@onclick=UseDevilsBargain>
-						<div class="d-flex gap-3 justify-content-center">
-							Pactar con el diablo <i class="bi bi-info-circle" @onclick=ShowDevilsHelp @onclick:stopPropagation></i>
-						</div>
-					</div>
-				</div>
-			</div>
-		</SVPanel>
-	</div>
+	}
+	
 	<div class="flex-grow-1 d-flex flex-column flex-grow-1 Consolas">
 
 		@if (Roll.Result == SVRollResult.NotSet)
@@ -553,30 +557,130 @@
 						</tr>
 					</tbody>
 				</table>
+				<div class="d-flex flex-column gap-2">
+					@if (Roll.Result != SVRollResult.NotSet)
+					{
+						<div style="min-width:300px;">
+							<div>Tirada:</div>
+							<div class="d-flex gap-1 m-3">
+								@if (Roll.TotalDices == 0)
+								{
+									<div class="Dice BrokenDice">
+										<div class="DiceNumber">
+											@Roll.Dices[0].Item2
+										</div>
+									</div>
+									<div class="Dice BlueDice">
+										<div class="DiceNumber">
+											@Roll.Dices[1].Item2
+										</div>
+									</div>
+								}
+								else
+								{
+									@for (int i = 0; i < Roll.TotalDices; ++i)
+									{
+										@if (DiceColors.Count > 0 && DiceColors.Count >= i)
+										{
+											<div class="Dice @DiceColors[i]">
+												<div class="DiceNumber">
+													@Roll.Dices[i].Item2
+												</div>
+											</div>
+										}
+									}
+								}
+							</div>
+						</div>
+					}
+					@if (Roll.HasResisted)
+					{
+						<div class="d-flex flex-column gap-2">
+
+							<div>Tirada de resistencia</div>
+							<div class="d-flex gap-1 align-items-start">
+								<div class="d-flex flex-column gap-1 align-items-start px-3">
+									@if (Roll.Player.GetBonus(Roll.ResistanceStat) == 0)
+									{
+										<div class="Dice BrokenDice">
+											<div class="DiceNumber">
+												@Roll.ResistanceDices.OrderByDescending(x => x).ToList()[0]
+											</div>
+										</div>
+										<div class="Dice BlueDice">
+											<div class="DiceNumber">
+												@Roll.ResistanceDices.OrderByDescending(x => x).ToList()[1]
+											</div>
+										</div>
+									}
+									else
+									{
+										@for (int i = 0; i < Roll.ResistanceDices.Count; ++i)
+										{
+											<div class="Dice BlueDice">
+												<div class="DiceNumber">
+													@Roll.ResistanceDices[i]
+												</div>
+											</div>
+										}
+									}
+									@if (Roll.Player.GetBonus(Roll.ResistanceStat) == 0)
+									{
+										<div>(6-@Roll.ResistanceDices.Min()) = @(6 - @Roll.ResistanceDices.Min())<br/>Estrés: @OldStress <i class="bi bi-arrow-right-short"></i> @Roll.Player.Stress</div>
+									}
+									else
+									{
+										<div>(6-@Roll.ResistanceDices.Max()) = @(6 - @Roll.ResistanceDices.Max())<br/>Estrés: @OldStress <i class="bi bi-arrow-right-short"></i> @Roll.Player.Stress</div>
+									}
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+				
 			</div>
 
 			@if(Roll.Result == SVRollResult.NotSet)
 			{
-				<div class="d-flex gap-2 align-items-center">
-					<div class="EffectBox"
-					@onclick=NegotiateEffect>
-						@if(Roll.HasBeenNegotiated)
+				<div class="d-flex gap-2 align-items-end">
+					<div class="d-flex flex-column flex-grow-1 gap-2">
+						<div class="EffectBox"
+							 @onclick=NegotiateEffect>
+							@if (Roll.HasBeenNegotiated)
+							{
+								<div class="d-flex gap-2">
+									<i class="bi bi-chevron-double-down"></i>
+									Deshacer negociación
+									<i class="bi bi-chevron-double-down"></i>
+								</div>
+							}
+							else
+							{
+								<div class="d-flex gap-2">
+									<i class="bi bi-chevron-double-up"></i>
+									Mejorar efecto, empeorando posición
+									<i class="bi bi-chevron-double-up"></i>
+								</div>
+							}
+						</div>
+						@if (!string.IsNullOrEmpty(Roll.Player.Harm2A) || !string.IsNullOrEmpty(Roll.Player.Harm2B))
 						{
-							<div class="d-flex gap-2">
-								<i class="bi bi-chevron-double-down"></i>
-								Deshacer negociación
-								<i class="bi bi-chevron-double-down"></i>
+							<div class="mt-2">Daño:</div>
+						}
+						@if (!string.IsNullOrEmpty(Roll.Player.Harm2A))
+						{
+							<div class="EffectBox  @(Roll.AffectedPerHealth2A?"Selected":"")" @onclick=Harm2AClicked>
+								<strong class="fs-4">@Roll.Player.Harm2A:</strong> <small>Daño nivel 2 (-1d), Aplica?</small>
 							</div>
 						}
-						else
+						@if (!string.IsNullOrEmpty(Roll.Player.Harm2B))
 						{
-							<div class="d-flex gap-2">
-								<i class="bi bi-chevron-double-up"></i>
-								Mejorar efecto, empeorando posición
-								<i class="bi bi-chevron-double-up"></i>
+							<div class="EffectBox @(Roll.AffectedPerHealth2B?"Selected":"")" @onclick=Harm2BClicked>
+								<strong class="fs-4">@Roll.Player.Harm2B:</strong> <small>Daño nivel 2 (-1d), Aplica?</small>
 							</div>
 						}
 					</div>
+					
 
 					<div class="d-flex gap-2 align-items-center BigButtonsbox">
 						<div class="GreenButton" @onclick=RollCurrentRoll>
@@ -750,79 +854,7 @@
 			}
 			else if(Roll.HasResisted)
 			{
-				<div class="d-flex gap-2">
-					<div>
-						<div>Tirada:</div>
-						<div class="d-flex gap-1 m-3">
-							@if (Roll.TotalDices == 0)
-							{
-								<div class="Dice BrokenDice">
-									<div class="DiceNumber">
-										@Roll.Dices[0].Item2
-									</div>
-								</div>
-								<div class="Dice BlueDice">
-									<div class="DiceNumber">
-										@Roll.Dices[1].Item2
-									</div>
-								</div>
-							}
-							else
-							{
-								@for (int i = 0; i < Roll.TotalDices; ++i)
-								{
-									@if (DiceColors.Count > 0 && DiceColors.Count >= i)
-									{
-										<div class="Dice @DiceColors[i]">
-											<div class="DiceNumber">
-												@Roll.Dices[i].Item2
-											</div>
-										</div>
-									}
-								}
-							}
-						</div>
-					</div>
-					<div>
-						<div>Tirada de resistencia</div>
-						<div class="d-flex gap-1 m-3 align-items-start">
-							<div class="d-flex gap-1 align-items-center">
-								@if (Roll.Player.GetBonus(Roll.ResistanceStat) == 0)
-								{
-									<div class="Dice BrokenDice">
-										<div class="DiceNumber">
-											@Roll.ResistanceDices.OrderByDescending(x=>x).ToList()[0]
-										</div>
-									</div>
-									<div class="Dice BlueDice">
-										<div class="DiceNumber">
-											@Roll.ResistanceDices.OrderByDescending(x => x).ToList()[1]
-										</div>
-									</div>
-								}
-								else
-								{
-									@for (int i = 0; i < Roll.ResistanceDices.Count; ++i)
-									{
-										<div class="Dice BlueDice">
-											<div class="DiceNumber">
-												@Roll.ResistanceDices[i]
-											</div>
-										</div>
-									}
-								}
-								@if (Roll.Player.GetBonus(Roll.ResistanceStat) == 0)
-								{
-									<div>(6-@Roll.ResistanceDices.Min()) = @(6 - @Roll.ResistanceDices.Min()), Estrés: @OldStress <i class="bi bi-arrow-right-short"></i> @Roll.Player.Stress</div>
-								}
-								else
-								{
-									<div>(6-@Roll.ResistanceDices.Max()) = @(6 - @Roll.ResistanceDices.Max()), Estrés: @OldStress <i class="bi bi-arrow-right-short"></i> @Roll.Player.Stress</div>
-								}
-							</div>
-						</div>
-					</div>				
-				</div>
+				
 
 				@if (Roll.WasTooMuchStress)
 				{
@@ -925,7 +957,7 @@
 					Roll.Player.Stress += (6 - max);
 			}
 
-			
+
 
 			if(Roll.Player.StresLeft <= 0)
 			{
@@ -1197,5 +1229,16 @@
 
 	void FinishCurrentRoll(){
 		Game!.CloseCurrentRollWindowInAllClients();
+	}
+
+	void Harm2AClicked()
+	{
+		Roll.AffectedPerHealth2A = !Roll.AffectedPerHealth2A;
+		SendUpdate();
+	}
+	void Harm2BClicked()
+	{
+		Roll.AffectedPerHealth2B = !Roll.AffectedPerHealth2B;
+		SendUpdate();
 	}
 }
