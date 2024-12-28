@@ -24,6 +24,8 @@ public class SVRollReport : RollReport<SVMoves, SVStats>
 			d += ExtraDices;
 			if (UsedAGambit) d++;
 			if (UsedDevilsBargain) d++;
+			if(AffectedPerHealth2A) d--;
+			if(AffectedPerHealth2B) d--;
 			return d;
 		}
 	}

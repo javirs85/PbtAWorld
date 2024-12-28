@@ -70,7 +70,21 @@
     display:flex;
     align-items:center;
     justify-content:center;
+    position:relative;
 }
+
+.Broken{
+    opacity:0.4;
+}
+    .Broken:after {
+        content: "✗"; /* Add an X or any symbol */
+        color: red; /* Choose an attention-grabbing color */
+        font-size: 53px; /* Adjust size based on dice dimensions */
+        position: absolute; /* Center the symbol over the dice */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 
 .BlueDice {
     background-image: url(./DiceBlue.png);
@@ -80,6 +94,15 @@
     opacity: 0.5;
     filter: blur(2px);
 }
+    .BrokenDice:after {
+        content: "-";
+        color: red;
+        font-size: 109px;
+        position: absolute;
+        top: 28%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 .GreenDice {
     background-image: url(./DiceGreen.png);
 }
@@ -103,6 +126,7 @@
     font-size: 30px;
     filter: drop-shadow(0px 0px 7px black);
     color: #fff;
+    z-index: 2;
     text-shadow: 3px 3px 2px #000, -3px 3px 2px #000, -3px -3px 2px #000, 3px -3px 2px #000;
 }
 

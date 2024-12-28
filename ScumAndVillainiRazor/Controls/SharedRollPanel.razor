@@ -6,32 +6,16 @@
 				@Roll.Player.Name tira por @Roll.Stat.ToUI()
 			</h2>
 			<div class="d-flex gap-1 DicesTry">
-				@if (Roll.TotalDices == 0)
+				
+				@for (int i = 0; i < MainRollDicesOnScreen.Count; ++i)
 				{
-					<div class="Dice BlueDice" style="opacity:0.2;" />
-					<div class="Dice BlueDice" style="opacity:0.2;" />
+					<div class="Dice @MainRollDicesOnScreen[i]" />
+				}
+				@if (Roll.TotalDices <= 0)
+				{
 					<HelperStarter Title="Tirar sin dados" HelperInvoked="ShowHelp" HelpText="Cuando tiras con zero dados, tiras dos dados y te quedas el peor" />
 				}
-				@for (int i = 0; i < Roll.Player.GetBonus(Roll.Stat); ++i)
-				{
-					<div class="Dice BlueDice" />
-				}
-				@if (Roll.HelperPlayer is not null)
-				{
-					<div class="Dice HelperDice" />
-				}
-				@for (int i = 0; i < Roll.ExtraDices; ++i)
-				{
-					<div class="Dice YellowDice" />
-				}
-				@if (Roll.UsedAGambit)
-				{
-					<div class="Dice GreenDice" />
-				}
-				@if (Roll.UsedDevilsBargain || Roll.UsedPYForDice)
-				{
-					<div class="Dice RedDice" />
-				}
+							
 			</div>
 			<div class="d-flex w-100 gap-2">
 				<SVPanel IsMini="true" Title="@Roll.Stat.ToUI()" Style="flex:1;">
@@ -39,8 +23,9 @@
 						@Roll.Player.GetBonus(Roll.Stat)
 						<div class="d-flex gap-1 justify-content-center align-items-center p-2 ExtraDiceQuestionPanel">
 							<div class="Dice YellowDice"></div>
-							<div class="d-flex fs-3 flex-column">
-								<i class="bi bi-chevron-double-up hoverable" @onclick="AddExtraDie"></i>
+							<div class="d-flex fs-3 flex-column align-items-center">
+								<i class="bi bi-chevron-double-up hoverable" @onclick="AddExtraDie" style="margin-bottom:-5px;"></i>
+								@Roll.ExtraDices
 								<i class="bi bi-chevron-double-down hoverable" @onclick="RemoveExtraDie"></i>
 							</div>
 						</div>
@@ -563,7 +548,7 @@
 						<div style="min-width:300px;">
 							<div>Tirada:</div>
 							<div class="d-flex gap-1 m-3">
-								@if (Roll.TotalDices == 0)
+								@if (Roll.TotalDices <= 0)
 								{
 									<div class="Dice BrokenDice">
 										<div class="DiceNumber">
@@ -578,16 +563,16 @@
 								}
 								else
 								{
-									@for (int i = 0; i < Roll.TotalDices; ++i)
+									@for(int i=0; i<MainRollDicesOnScreenWithResult.Count; i++)
 									{
-										@if (DiceColors.Count > 0 && DiceColors.Count >= i)
-										{
-											<div class="Dice @DiceColors[i]">
+										<div class="Dice @MainRollDicesOnScreenWithResult[i].Item1">
+											@if (MainRollDicesOnScreenWithResult[i].Item2 != 0)
+											{
 												<div class="DiceNumber">
-													@Roll.Dices[i].Item2
+													@MainRollDicesOnScreenWithResult[i].Item2
 												</div>
-											</div>
-										}
+											}
+										</div>
 									}
 								}
 							</div>
@@ -694,48 +679,62 @@
 			}
 			else
 			{
-				@if(!Roll.HasResisted)
-				{
-					<div>Tirada:</div>
-					<div class="d-flex gap-1 m-3">
-						@if (Roll.TotalDices == 0)
-						{
-							<div class="Dice BrokenDice">
-								<div class="DiceNumber">
-									@Roll.Dices[0].Item2
-								</div>
-							</div>
-							<div class="Dice BlueDice">
-								<div class="DiceNumber">
-									@Roll.Dices[1].Item2
-								</div>
-							</div>
-						}
-						else
-						{
-							@for (int i = 0; i < Roll.TotalDices; ++i)
-							{
-								@if (DiceColors.Count > 0 && DiceColors.Count >= i)
-								{
-									<div class="Dice @DiceColors[i]">
-										<div class="DiceNumber">
-											@Roll.Dices[i].Item2
-										</div>
-									</div>
-								}
-							}
-						}
-					</div>
-				}
-				
 				<div class="d-flex flex-column gap-1 m-3">
 					@if(!Roll.IsResisting && !Roll.HasResisted)
 					{
 						<div class="EffectBox" @onclick=ChangeResisting>
 							Resistir | Estrés <i class="bi bi-chevron-double-up"></i>(6 - tirada) | Crítico <i class="bi bi-arrow-right-short"></i> Estrés <i class="bi bi-chevron-double-down"></i> 1
 						</div>
-						<div>
-							Usar armadura
+						<div class="d-flex gap-4 justify-content-evenly">
+							<div class="d-flex flex-column" style="flex:1 !important;">
+								<div class="mt-3">
+									Habilidades
+								</div>
+								<div>
+									<div class="abilitiesContainer" style="margin:0; width:470px;">
+										<div class="d-flex">
+											<div class="flex-fill d-flex align-items-end ps-2">Habilidades especiales</div>
+											<div class="d-flex gap-2 align-items-center pe-2" style="color: #665efb;">
+												<i class="bi bi-arrows-expand fs-5 hoverable d-flex" @onclick=@(()=>{StartAbilitiesMaximized = !StartAbilitiesMaximized;})></i>
+											</div>
+										</div>
+
+										@foreach (var ab in Player.SelectedAbilities)
+										{
+											<AbilityCard MoveID="ab" SmallText="true" Player="Player" ShowHelp="ShowHelp" IsExpanded=StartAbilitiesMaximized />
+										}
+
+									</div>
+									<div class="abilitiesContainer" style="background: #0f5b230f; border: 1px solid #0f5b23a1; width:470px;">
+										<div class="d-flex">
+											<div class="flex-fill d-flex align-items-end ps-2">Habilidades de la nave</div>
+											<div class="d-flex gap-2 align-items-center pe-2" style="color: #299129;">
+												<i class="bi bi-arrows-expand fs-5 hoverable d-flex" @onclick=@(()=>{StartShipAbilitiesMaximized = !StartShipAbilitiesMaximized;})></i>
+											</div>
+										</div>
+
+										@foreach (var ab in Game.Ship.SelectedSpecialAbilities)
+										{
+											<AbilityCard MoveID="ab" SmallText="true" Player="Player" Ship="Game.Ship" IsShipAbility="true" ShowHelp="ShowHelp" IsExpanded=StartShipAbilitiesMaximized />
+										}
+
+									</div>
+								</div>
+							</div>
+
+							<div class="d-flex flex-column" style="flex:1 !important;">
+								<div class="mt-3">
+									Objetos
+								</div>
+								<div>
+									<EquipeBox Game="Game" Player="Player" ShowHelp="ShowHelp" Book=(SVTextBook)Game!.TextBook />
+								</div>
+							</div>
+							<div class="d-flex flex-column" style="flex:1 !important;">
+								<div class="mt-3">
+									Armadura
+								</div>
+							</div>
 						</div>
 					}
 				</div>
@@ -894,6 +893,130 @@
 
 	SVShip Ship => Game?.Ship ?? new SVShip();
 	SVRollReport Roll => Game!.CurrentRoll!;
+
+	bool StartAbilitiesMaximized = false;
+	bool StartShipAbilitiesMaximized = false;
+
+	List<string> MainRollDicesOnScreen
+	{
+		get
+		{
+			List<string> dices = new();
+
+			if(Roll.TotalDices <= 0)
+			{
+				dices.Add("BrokenDice");
+				dices.Add("BrokenDice");
+			}
+			else
+			{
+				int NeededToRemoveDice = 0;
+				if(Roll.AffectedPerHealth2A) NeededToRemoveDice ++;
+				if(Roll.AffectedPerHealth2B) NeededToRemoveDice ++;
+				int effectiveStatDices = Roll.Player.GetBonus(Roll.Stat);
+				for(;NeededToRemoveDice > 0 && effectiveStatDices >0; NeededToRemoveDice--)
+				{
+					effectiveStatDices--;
+					dices.Add("BlueDice Broken");
+				}
+
+				for(int i = 0; i<effectiveStatDices; ++i)
+				{
+					dices.Add("BlueDice");
+				}
+
+
+				int effectiveExtraDices = Roll.ExtraDices;
+				for (; NeededToRemoveDice > 0; NeededToRemoveDice--)
+				{
+					effectiveExtraDices--;
+					NeededToRemoveDice--;
+					dices.Add("YellowDice Broken");
+				}
+				for (int i = 0; i < effectiveExtraDices; ++i)
+				{
+					dices.Add("YellowDice");
+				}
+
+
+				if (Roll.HelperPlayer is not null)
+				{
+					if (NeededToRemoveDice > 0)
+					{
+						NeededToRemoveDice--;
+						dices.Add("HelperDice");
+					}
+					else
+						dices.Add("HelperDice Broken");
+				}
+
+				if (Roll.UsedAGambit)
+				{
+					if (NeededToRemoveDice > 0)
+					{
+						NeededToRemoveDice--;
+						dices.Add("GreenDice Broken");
+					}
+					else
+						dices.Add("GreenDice");
+				}
+
+				if (Roll.UsedPYForDice)
+				{
+					if (NeededToRemoveDice > 0)
+					{
+						NeededToRemoveDice--;
+						dices.Add("RedDice Broken");
+					}
+					else
+						dices.Add("RedDice");
+				}
+				if (Roll.UsedDevilsBargain)
+				{
+					if (NeededToRemoveDice > 0)
+					{
+						NeededToRemoveDice--;
+						dices.Add("RedDice Broken");
+					}
+					else
+						dices.Add("RedDice");
+				}
+			}
+
+			return dices;
+		}
+	}
+
+	List<Tuple<string,int>> MainRollDicesOnScreenWithResult
+	{
+		get
+		{
+			List<Tuple<string, int>> result = new();
+			if(Roll.TotalDices > 0)
+			{
+				int RollCounter = 0;
+				foreach (var s in MainRollDicesOnScreen)
+				{
+					if(s.Contains("Broken"))
+					{
+						result.Add(new Tuple<string, int>(s, 0));
+					}
+					else
+					{
+						result.Add(new Tuple<string, int>(s, Roll.Dices[RollCounter].Item2));
+						RollCounter++;
+					}
+				}
+				
+				for (int i = 0; i < MainRollDicesOnScreen.Count; ++i)
+				{
+
+				}
+			}
+			
+			return result;
+		}
+	}
 
 
 	private void ChangeResisting(){
